@@ -1032,7 +1032,7 @@ var FixedDataTable = React.createClass({
     if (this.isMounted() && !this._isScrolling) {
       this._isScrolling = true;
       if (this.props.onScrollStart) {
-        this.props.onScrollStart(this.state.scrollX, this.state.scrollY);
+        this.props.onScrollStart(this.state.scrollX, this.state.scrollY, this.state.firstRowIndex);
       }
     }
   },
@@ -1042,7 +1042,7 @@ var FixedDataTable = React.createClass({
       this._isScrolling = false;
       this.setState({redraw: true});
       if (this.props.onScrollEnd) {
-        this.props.onScrollEnd(this.state.scrollX, this.state.scrollY);
+        this.props.onScrollEnd(this.state.scrollX, this.state.scrollY, this.state.firstRowIndex);
       }
     }
   },
