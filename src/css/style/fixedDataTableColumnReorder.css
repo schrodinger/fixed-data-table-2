@@ -1,0 +1,10 @@
+/**
+ * Column reorder goodies.
+ */
+.fixedDataTableCellLayout/columnReorderContainer {
+  border-color: #0284ff;
+  background-color: black;
+  width: 10px;
+  margin-right: -10px;
+  float: left;
+}

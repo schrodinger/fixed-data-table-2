@@ -71,6 +71,7 @@ var FixedDataTableCell = React.createClass({
      * @param object event
      */
     onColumnResize: PropTypes.func,
+    onColumnReorder: PropTypes.func,
 
     /**
      * The left offset in pixels of the cell.
@@ -138,6 +139,20 @@ var FixedDataTableCell = React.createClass({
       );
     }
 
+    var columnReorderComponent;
+    console.log(props);
+    if (props.isReorderable && props.rowIndex === -1) { //header row
+      var columnReorderHandleStyle = {
+        height
+      }
+      columnReorderComponent = (
+        <div
+          className={cx('fixedDataTableCellLayout/columnReorderContainer')}
+          style={columnReorderHandleStyle}
+        />
+      )
+    }
+
     var cellProps = {
       columnKey,
       height,
@@ -165,6 +180,7 @@ var FixedDataTableCell = React.createClass({
     return (
       <div className={className} style={style}>
         {columnResizerComponent}
+        {columnReorderComponent}
         {content}
       </div>
     );
