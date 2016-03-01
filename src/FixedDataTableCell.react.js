@@ -140,17 +140,17 @@ var FixedDataTableCell = React.createClass({
     }
 
     var columnReorderComponent;
-    console.log(props);
-    if (props.isReorderable && props.rowIndex === -1) { //header row
+    if (props.onColumnReorder) { //header row
       var columnReorderHandleStyle = {
         height
-      }
+      };
       columnReorderComponent = (
         <div
           className={cx('fixedDataTableCellLayout/columnReorderContainer')}
           style={columnReorderHandleStyle}
+          onMouseDown={this._onColumnReorderMouseDown}
         />
-      )
+      );
     }
 
     var cellProps = {
@@ -188,6 +188,17 @@ var FixedDataTableCell = React.createClass({
 
   _onColumnResizerMouseDown(/*object*/ event) {
     this.props.onColumnResize(
+      this.props.left,
+      this.props.width,
+      this.props.minWidth,
+      this.props.maxWidth,
+      this.props.columnKey,
+      event
+    );
+  },
+
+  _onColumnReorderMouseDown(/*object*/ event) {
+    this.props.onColumnReorder(
       this.props.left,
       this.props.width,
       this.props.minWidth,

@@ -100,7 +100,6 @@ var FixedDataTableRowImpl = React.createClass({
       'public/fixedDataTableRow/odd': (this.props.index % 2 === 1),
       'public/fixedDataTableRow/even': (this.props.index % 2 === 0),
     });
-    console.log('hi!', this.props);
     var fixedColumnsWidth = this._getColumnsWidth(this.props.fixedColumns);
     var fixedColumns =
       <FixedDataTableCellGroup
