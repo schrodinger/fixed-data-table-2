@@ -252,6 +252,11 @@ var FixedDataTable = React.createClass({
      * Whether a column is currently being resized.
      */
     isColumnResizing: PropTypes.bool,
+
+    /**
+     * Whether columns are currently being reordered.
+     */
+    isColumnReordering: PropTypes.bool,
   },
 
   getDefaultProps() /*object*/ {
@@ -416,6 +421,7 @@ var FixedDataTable = React.createClass({
           scrollableColumns={state.groupHeaderScrollableColumns}
           onColumnResize={this._onColumnResize}
           onColumnReorder={this._onColumnReorder}
+          onColumnReorderMove={this._onColumnReorderMove}
         />
       );
     }
@@ -527,6 +533,10 @@ var FixedDataTable = React.createClass({
         scrollableColumns={state.headScrollableColumns}
         onColumnResize={this._onColumnResize}
         onColumnReorder={this._onColumnReorder}
+        onColumnReorderMove={this._onColumnReorderMove}
+        onColumnReorderEnd={this._onColumnReorderEnd}
+        columnsReordering={!!state.isColumnReordering}
+        columnReorderingData={state.columnReorderingData}
       />;
 
     var topShadow;
@@ -645,15 +655,27 @@ var FixedDataTable = React.createClass({
   },
 
   _onColumnReorder(
-    /*number*/ combinedWidth,
-    /*number*/ leftOffset,
-    /*number*/ cellWidth,
-    /*?number*/ cellMinWidth,
-    /*?number*/ cellMaxWidth,
-    /*number|string*/ columnKey,
+    /*object*/ props,
     /*object*/ event
   ) {
+
     console.log('REORDER CALLED!!!', arguments);
+  },
+
+  _onColumnReorderMove(
+    /*object*/ props,
+    /*object*/ event
+  ) {
+
+    console.log('REORDER MVOE CALLED!!!', arguments);
+  },
+
+  _onColumnReorderEnd(
+    /*object*/ props,
+    /*object*/ event
+  ) {
+
+    console.log('REORDER END CALLED!!!', arguments);
   },
 
   _areColumnSettingsIdentical(

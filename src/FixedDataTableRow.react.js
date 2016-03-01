@@ -112,6 +112,8 @@ var FixedDataTableRowImpl = React.createClass({
         columns={this.props.fixedColumns}
         onColumnResize={this.props.onColumnResize}
         onColumnReorder={this.props.onColumnReorder}
+        onColumnReorderMove={this.props.onColumnReorderMove}
+        onColumnReorderEnd={this.props.onColumnReorderEnd}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
       />;
@@ -128,6 +130,8 @@ var FixedDataTableRowImpl = React.createClass({
         columns={this.props.scrollableColumns}
         onColumnResize={this.props.onColumnResize}
         onColumnReorder={this.props.onColumnReorder}
+        onColumnReorderMove={this.props.onColumnReorderMove}
+        onColumnReorderEnd={this.props.onColumnReorderEnd}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
       />;

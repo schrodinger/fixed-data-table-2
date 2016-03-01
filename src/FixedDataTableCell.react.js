@@ -11,6 +11,7 @@
  */
 
 var FixedDataTableCellDefault = require('FixedDataTableCellDefault.react');
+var FixedDataTableColumnReorderHandle = require('./FixedDataTableColumnReorderHandle.react');
 var FixedDataTableHelper = require('FixedDataTableHelper');
 var React = require('React');
 var cx = require('cx');
@@ -141,14 +142,12 @@ var FixedDataTableCell = React.createClass({
 
     var columnReorderComponent;
     if (props.onColumnReorder) { //header row
-      var columnReorderHandleStyle = {
-        height
-      };
       columnReorderComponent = (
-        <div
-          className={cx('fixedDataTableCellLayout/columnReorderContainer')}
-          style={columnReorderHandleStyle}
+        <FixedDataTableColumnReorderHandle
+          columnKey={this.columnKey}
           onMouseDown={this._onColumnReorderMouseDown}
+          height={height}
+          {...this.props}
         />
       );
     }
@@ -199,11 +198,7 @@ var FixedDataTableCell = React.createClass({
 
   _onColumnReorderMouseDown(/*object*/ event) {
     this.props.onColumnReorder(
-      this.props.left,
-      this.props.width,
-      this.props.minWidth,
-      this.props.maxWidth,
-      this.props.columnKey,
+      this.props,
       event
     );
   },
