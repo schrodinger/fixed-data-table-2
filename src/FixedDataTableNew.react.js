@@ -535,7 +535,7 @@ var FixedDataTable = React.createClass({
         onColumnReorder={this._onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
         onColumnReorderEnd={this._onColumnReorderEnd}
-        columnsReordering={!!state.isColumnReordering}
+        isColumnReordering={!!state.isColumnReordering}
         columnReorderingData={state.columnReorderingData}
       />;
 
@@ -658,15 +658,26 @@ var FixedDataTable = React.createClass({
     /*object*/ props,
     /*object*/ event
   ) {
-
+    this.setState({
+      isColumnReordering: true,
+      columnReorderingData: {
+        dragDistance: 0,
+        column: props.columnKey,
+        columnWidth: props.width,
+        originalLeft: props.left
+      }
+    });
     console.log('REORDER CALLED!!!', arguments);
   },
 
   _onColumnReorderMove(
-    /*object*/ props,
-    /*object*/ event
+    /*number*/ deltaX
   ) {
-
+    var reorderingData = this.state.columnReorderingData;
+    reorderingData.dragDistance = deltaX;
+    this.setState({
+      columnReorderingData: reorderingData
+    });
     console.log('REORDER MVOE CALLED!!!', arguments);
   },
 
@@ -674,7 +685,9 @@ var FixedDataTable = React.createClass({
     /*object*/ props,
     /*object*/ event
   ) {
-
+    this.setState({
+      isReordering: false
+    });
     console.log('REORDER END CALLED!!!', arguments);
   },
 

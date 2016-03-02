@@ -100,10 +100,37 @@ var FixedDataTableCell = React.createClass({
       width,
     };
 
+    var left = props.left;
+    var isReorderingThisColumn = false;
+
+    if (props.isColumnReordering) {
+      var originalLeft = props.columnReorderingData.originalLeft;
+      var reorderCellLeft = originalLeft + props.columnReorderingData.dragDistance;
+      var farthestPossiblePoint = props.columnGroupWidth - props.columnReorderingData.columnWidth;
+      // ensure the cell isn't being dragged out of the column group
+      reorderCellLeft = Math.max(reorderCellLeft, 0);
+      reorderCellLeft = Math.min(reorderCellLeft, farthestPossiblePoint);
+
+      if (columnKey === props.columnReorderingData.column) {
+        left = reorderCellLeft;
+        style.zIndex = 1;
+        isReorderingThisColumn = true;
+
+      } else {
+        var theTurningPoint = left + (width / 2) - (props.columnReorderingData.columnWidth / 2);
+        if (originalLeft > left && (reorderCellLeft < theTurningPoint || reorderCellLeft === 0)) {
+          left += props.columnReorderingData.columnWidth;
+        }
+        if (originalLeft < left && (reorderCellLeft > theTurningPoint || reorderCellLeft === farthestPossiblePoint) ) {
+          left -= props.columnReorderingData.columnWidth;
+        }
+      }
+    }
+
     if (DIR_SIGN === 1) {
-      style.left = props.left;
+      style.left = left;
     } else {
-      style.right = props.left;
+      style.right = left;
     }
 
     var className = joinClasses(
@@ -115,6 +142,7 @@ var FixedDataTableCell = React.createClass({
         'public/fixedDataTableCell/alignRight': props.align === 'right',
         'public/fixedDataTableCell/highlighted': props.highlighted,
         'public/fixedDataTableCell/main': true,
+        'public/fixedDataTableCell/reordering': isReorderingThisColumn,
       }),
       props.className,
     );

@@ -57,6 +57,12 @@ var FixedDataTableCellGroupImpl = React.createClass({
     var columns = props.columns;
     var cells = new Array(columns.length);
 
+    var contentWidth = this._getColumnsWidth(columns);
+
+    var isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
+      return acc || props.columnReorderingData.column === column.props.columnKey;
+    }, false);
+
     var currentPosition = 0;
     for (var i = 0, j = columns.length; i < j; i++) {
       var columnProps = columns[i].props;
@@ -70,13 +76,12 @@ var FixedDataTableCellGroupImpl = React.createClass({
           columnProps,
           currentPosition,
           key,
+          contentWidth,
+          isColumnReordering
         );
       }
       currentPosition += columnProps.width;
     }
-
-    var contentWidth = this._getColumnsWidth(columns);
-
     var style = {
       height: props.height,
       position: 'absolute',
@@ -99,14 +104,16 @@ var FixedDataTableCellGroupImpl = React.createClass({
     /*number*/ height,
     /*object*/ columnProps,
     /*number*/ left,
-    /*string*/ key
+    /*string*/ key,
+    /*number*/ columnGroupWidth,
+    /*boolean*/ isColumnReordering,
   ) /*object*/ {
 
     var cellIsResizable = columnProps.isResizable &&
       this.props.onColumnResize;
     var onColumnResize = cellIsResizable ? this.props.onColumnResize : null;
 
-    var cellIsReorderable = this.props.onColumnReorder && !columnProps.fixed && rowIndex === -1;
+    var cellIsReorderable = this.props.onColumnReorder && rowIndex === -1 && columnGroupWidth !== columnProps.width;
     var onColumnReorder = cellIsReorderable ? this.props.onColumnReorder : null;
 
     var className = columnProps.cellClassName;
@@ -123,11 +130,14 @@ var FixedDataTableCellGroupImpl = React.createClass({
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
+        isColumnReordering={isColumnReordering}
+        columnReorderingData={this.props.columnReorderingData}
         rowIndex={rowIndex}
         columnKey={columnProps.columnKey}
         width={columnProps.width}
         left={left}
         cell={columnProps.cell}
+        columnGroupWidth={columnGroupWidth}
       />
     );
   },
@@ -200,7 +210,6 @@ var FixedDataTableCellGroup = React.createClass({
         className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
         <FixedDataTableCellGroupImpl
           {...props}
-          onColumnResize={onColumnResize}
         />
       </div>
     );
