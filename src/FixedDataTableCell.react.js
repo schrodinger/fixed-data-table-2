@@ -185,6 +185,7 @@ var FixedDataTableCell = React.createClass({
         'public/fixedDataTableCell/alignRight': props.align === 'right',
         'public/fixedDataTableCell/highlighted': props.highlighted,
         'public/fixedDataTableCell/main': true,
+        'public/fixedDataTableCell/hasReorderHandle': !!props.onColumnReorder,
         'public/fixedDataTableCell/reordering': this.state.isReorderingThisColumn,
       }),
       props.className,
