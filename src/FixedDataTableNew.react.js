@@ -664,7 +664,9 @@ var FixedDataTable = React.createClass({
         dragDistance: 0,
         columnKey: props.columnKey,
         columnWidth: props.width,
-        originalLeft: props.left
+        originalLeft: props.left,
+        columnsBefore: [],
+        columnsAfter: []
       }
     });
     console.log('REORDER CALLED!!!', arguments);
@@ -675,6 +677,9 @@ var FixedDataTable = React.createClass({
   ) {
     var reorderingData = this.state.columnReorderingData;
     reorderingData.dragDistance = deltaX;
+    reorderingData.columnBefore = undefined;
+    reorderingData.columnAfter = undefined;
+
     this.setState({
       columnReorderingData: reorderingData
     });
@@ -684,29 +689,18 @@ var FixedDataTable = React.createClass({
     /*object*/ props,
     /*object*/ event
   ) {
-    // var reorderingColumnKey = this.state.columnReorderingData.columnKey;
-    // var columns = this.columns.map(function (column) {
-    //   return {
-    //     left: column.props.left,
-    //     width: column.props.width,
-    //     columnKey: column.props.columnKey
-    //   };
-    // });
 
-    // var indexOfColumn = 0;
-    // for (var i = 0; i < columns.length; i++) {
-    //   if (columns[i].columnKey === reorderingColumnKey) {
-    //     break;
-    //   }
-    // }
+    var columnBefore = this.state.columnReorderingData.columnBefore;
+    var columnAfter = this.state.columnReorderingData.columnAfter;
+    var reorderColumn = this.state.columnReorderingData.columnKey;
 
-    // var distanceToTravel = this.state.columnReorderingData.dragDistance;
-
-    // this.setState({
-    //   isReordering: false,
-    //   columnReorderingData: null
-    // });
-    console.log('REORDER END CALLED!!!', arguments);
+    this.setState({
+      isReordering: false,
+      columnReorderingData: {}
+    });
+    this.props.onColumnReorderEndCallback({
+      columnBefore, columnAfter, reorderColumn
+    });
   },
 
   _areColumnSettingsIdentical(

@@ -124,8 +124,12 @@ var FixedDataTableCell = React.createClass({
         if (originalLeft > props.left) {
           if (reorderCellLeft <= theTurningPoint) {
             newState.displacement = props.columnReorderingData.columnWidth;
+            if (!props.columnReorderingData.columnAfter) {
+              props.columnReorderingData.columnAfter = props.columnKey;
+            }
           } else {
             newState.displacement = 0;
+            props.columnReorderingData.columnBefore = props.columnKey;
           }
         }
 
@@ -133,11 +137,17 @@ var FixedDataTableCell = React.createClass({
         if (originalLeft < props.left) {
           if (reorderCellLeft >= theTurningPoint) {
             newState.displacement = -props.columnReorderingData.columnWidth;
+            props.columnReorderingData.columnBefore = props.columnKey;
           } else {
             newState.displacement = 0;
+            if (!props.columnReorderingData.columnAfter) {
+              props.columnReorderingData.columnAfter = props.columnKey;
+            }
           }
         }
       }
+    } else {
+      newState.displacement = 0;
     }
 
     this.setState(newState);

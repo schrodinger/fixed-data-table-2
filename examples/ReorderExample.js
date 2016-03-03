@@ -24,34 +24,55 @@ const TextCell = ({rowIndex, data, columnKey, ...props}) => (
   </Cell>
 );
 
+var columnTitles = {
+  'firstName': 'First Name',
+  'lastName': 'Last Name',
+  'sentence': 'Sentence',
+  'companyName': 'Company'
+};
+
+var columnWidths = {
+  firstName: 150,
+  lastName: 150,
+  sentence: 240,
+  companyName: 100,
+};
+
 class ReorderExample extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       dataList: new FakeObjectDataListStore(1000000),
-      columnWidths: {
-        firstName: 240,
-        lastName: 150,
-        sentence: 140,
-        companyName: 60,
-      },
+      columnOrder: [
+        'firstName',
+        'lastName',
+        'sentence',
+        'companyName'
+      ],
     };
 
     this._onColumnReorderEndCallback = this._onColumnReorderEndCallback.bind(this);
   }
 
-  _onColumnReorderEndCallback(newColumnWidth, columnKey) {
-    this.setState(({columnWidths}) => ({
-      columnWidths: {
-        ...columnWidths,
-        [columnKey]: newColumnWidth,
-      }
-    }));
+  _onColumnReorderEndCallback(event) {
+    var columnOrder = this.state.columnOrder.filter((columnKey) => {
+      return columnKey !== event.reorderColumn;
+    });
+    if (event.columnAfter) {
+      var index = columnOrder.indexOf(event.columnAfter);
+      columnOrder.splice(index, 0, event.reorderColumn);
+    } else {
+      columnOrder.push(event.reorderColumn);
+    }
+    this.setState({
+      columnOrder: columnOrder
+    });
   }
 
   render() {
-    var {dataList, columnWidths} = this.state;
+    var {dataList} = this.state;
+
     return (
       <Table
         rowHeight={30}
@@ -62,34 +83,17 @@ class ReorderExample extends React.Component {
         width={1000}
         height={500}
         {...this.props}>
-        <Column
-          columnKey="firstName"
-          header={<Cell>First Name</Cell>}
-          cell={<TextCell data={dataList} />}
-          fixed={true}
-          width={columnWidths.firstName}
-        />
-        <Column
-          columnKey="lastName"
-          header={<Cell>Last Name (min/max constrained)</Cell>}
-          cell={<TextCell data={dataList} />}
-          width={columnWidths.lastName}
-          minWidth={70}
-          maxWidth={170}
-        />
-        <Column
-          columnKey="companyName"
-          header={<Cell>Company</Cell>}
-          cell={<TextCell data={dataList} />}
-          width={columnWidths.companyName}
-        />
-        <Column
-          columnKey="sentence"
-          header={<Cell>Sentence</Cell>}
-          cell={<TextCell data={dataList} />}
-          width={columnWidths.sentence}
-        />
-      </Table>
+        {this.state.columnOrder.map(function (columnKey, i) {
+          return <Column
+            columnKey={columnKey}
+            key={i}
+            header={<Cell>{columnTitles[columnKey]}</Cell>}
+            cell={<TextCell data={dataList} />}
+            fixed={i === 0}
+            width={columnWidths[columnKey]}
+           />;
+        })}
+       </Table>
     );
   }
 }
