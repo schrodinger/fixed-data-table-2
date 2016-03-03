@@ -210,6 +210,7 @@ var FixedDataTableCellGroup = React.createClass({
         className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
         <FixedDataTableCellGroupImpl
           {...props}
+          onColumnResize={onColumnResize}
         />
       </div>
     );
