@@ -269,7 +269,9 @@ var FixedDataTableCell = React.createClass({
 
   _onColumnReorderMouseDown(/*object*/ event) {
     this.props.onColumnReorder(
-      this.props,
+      this.props.columnKey,
+      this.props.width,
+      this.props.left,
       event
     );
   },

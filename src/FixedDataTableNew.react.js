@@ -246,6 +246,21 @@ var FixedDataTable = React.createClass({
      * ```
      */
     onColumnResizeEndCallback: PropTypes.func,
+
+    /**
+     * Callback that is called when reordering has been completed
+     * and columns need to be updated.
+     *
+     * ```
+     * function(
+     *   event {
+     *     columnBefore: string|undefined, // the column before the new location of this one
+     *     columnAfter: string|undefined,  // the column after the new location of this one
+     *     reorderColumn: string,          // the column key that was just reordered
+     *   }
+     * )
+     * ```
+     */
     onColumnReorderEndCallback: PropTypes.func,
 
     /**
@@ -401,6 +416,8 @@ var FixedDataTable = React.createClass({
     var state = this.state;
     var props = this.props;
 
+    var onColumnReorder = props.onColumnReorderEndCallback ? this._onColumnReorder : null;
+
     var groupHeader;
     if (state.useGroupHeader) {
       groupHeader = (
@@ -420,7 +437,7 @@ var FixedDataTable = React.createClass({
           fixedColumns={state.groupHeaderFixedColumns}
           scrollableColumns={state.groupHeaderScrollableColumns}
           onColumnResize={this._onColumnResize}
-          onColumnReorder={this._onColumnReorder}
+          onColumnReorder={onColumnReorder}
           onColumnReorderMove={this._onColumnReorderMove}
         />
       );
@@ -532,7 +549,7 @@ var FixedDataTable = React.createClass({
         fixedColumns={state.headFixedColumns}
         scrollableColumns={state.headScrollableColumns}
         onColumnResize={this._onColumnResize}
-        onColumnReorder={this._onColumnReorder}
+        onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
         onColumnReorderEnd={this._onColumnReorderEnd}
         isColumnReordering={!!state.isColumnReordering}
@@ -655,21 +672,22 @@ var FixedDataTable = React.createClass({
   },
 
   _onColumnReorder(
-    /*object*/ props,
+    /*string*/ columnKey,
+    /*number*/ width,
+    /*number*/ left,
     /*object*/ event
   ) {
     this.setState({
       isColumnReordering: true,
       columnReorderingData: {
         dragDistance: 0,
-        columnKey: props.columnKey,
-        columnWidth: props.width,
-        originalLeft: props.left,
+        columnKey: columnKey,
+        columnWidth: width,
+        originalLeft: left,
         columnsBefore: [],
         columnsAfter: []
       }
     });
-    console.log('REORDER CALLED!!!', arguments);
   },
 
   _onColumnReorderMove(

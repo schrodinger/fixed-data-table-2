@@ -43,6 +43,10 @@ var FixedDataTableCellGroupImpl = React.createClass({
 
     onColumnResize: PropTypes.func,
 
+    onColumnReorder: PropTypes.func,
+    onColumnReorderMove: PropTypes.func,
+    onColumnReorderEnd: PropTypes.func,
+
     rowHeight: PropTypes.number.isRequired,
 
     rowIndex: PropTypes.number.isRequired,

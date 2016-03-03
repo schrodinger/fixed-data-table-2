@@ -84,7 +84,30 @@ var FixedDataTableRowImpl = React.createClass({
      * @param object event
      */
     onColumnResize: PropTypes.func,
+
+    isColumnReordering: PropTypes.bool,
+    /**
+     * Callback for when reorder handle (in FixedDataTableCell) is clicked
+     * to initialize reordering. Please note this is only on the cells
+     * in the header.
+     * @param number|string columnKey
+     * @param number cellWidth
+     * @param number leftOffset
+     * @param object event
+     */
     onColumnReorder: PropTypes.func,
+
+    /**
+     * Callback for when a cell is moved while reordering.
+     * @param number distance
+     */
+    onColumnReorderMove: PropTypes.func,
+
+    /**
+     * Callback for when the mouse is released to complete reordering.
+     * @param number distance
+     */
+    onColumnReorderEnd: PropTypes.func,
   },
 
   render() /*object*/ {
