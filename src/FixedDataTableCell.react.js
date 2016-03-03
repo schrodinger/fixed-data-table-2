@@ -80,11 +80,67 @@ var FixedDataTableCell = React.createClass({
     left: PropTypes.number,
   },
 
+  getInitialState() {
+    return {
+      isReorderingThisColumn: false,
+      displacement: 0,
+      reorderingDisplacement: 0
+    };
+  },
+
   shouldComponentUpdate(nextProps) {
     return (
       !nextProps.isScrolling ||
       this.props.rowIndex !== nextProps.rowIndex
     );
+  },
+
+  componentWillReceiveProps(props) {
+    var left = props.left + this.state.displacement;
+
+    var newState = {
+      isReorderingThisColumn: false
+    };
+
+    if (props.isColumnReordering) {
+      var originalLeft = props.columnReorderingData.originalLeft;
+      var reorderCellLeft = originalLeft + props.columnReorderingData.dragDistance;
+      var farthestPossiblePoint = props.columnGroupWidth - props.columnReorderingData.columnWidth;
+
+      // ensure the cell isn't being dragged out of the column group
+      reorderCellLeft = Math.max(reorderCellLeft, 0);
+      reorderCellLeft = Math.min(reorderCellLeft, farthestPossiblePoint);
+
+      if (props.columnKey === props.columnReorderingData.columnKey) {
+        newState.displacement = reorderCellLeft - props.left;
+        newState.isReorderingThisColumn = true;
+
+      } else {
+        var theTurningPoint = left + (props.width / 2) - (props.columnReorderingData.columnWidth / 2);
+        theTurningPoint = Math.max(theTurningPoint, 0);
+        theTurningPoint = Math.min(theTurningPoint, farthestPossiblePoint);
+
+        // cell is before the one being dragged
+        if (originalLeft > props.left) {
+          if (reorderCellLeft <= theTurningPoint) {
+            newState.displacement = props.columnReorderingData.columnWidth;
+          } else {
+            newState.displacement = 0;
+          }
+        }
+
+        // cell is after the one being dragged
+        if (originalLeft < props.left) {
+          if (reorderCellLeft >= theTurningPoint) {
+            newState.displacement = -props.columnReorderingData.columnWidth;
+          } else {
+            newState.displacement = 0;
+          }
+        }
+      }
+    }
+
+    this.setState(newState);
   },
 
   getDefaultProps() /*object*/ {
@@ -100,37 +156,14 @@ var FixedDataTableCell = React.createClass({
       width,
     };
 
-    var left = props.left;
-    var isReorderingThisColumn = false;
-
-    if (props.isColumnReordering) {
-      var originalLeft = props.columnReorderingData.originalLeft;
-      var reorderCellLeft = originalLeft + props.columnReorderingData.dragDistance;
-      var farthestPossiblePoint = props.columnGroupWidth - props.columnReorderingData.columnWidth;
-      // ensure the cell isn't being dragged out of the column group
-      reorderCellLeft = Math.max(reorderCellLeft, 0);
-      reorderCellLeft = Math.min(reorderCellLeft, farthestPossiblePoint);
-
-      if (columnKey === props.columnReorderingData.column) {
-        left = reorderCellLeft;
-        style.zIndex = 1;
-        isReorderingThisColumn = true;
-
-      } else {
-        var theTurningPoint = left + (width / 2) - (props.columnReorderingData.columnWidth / 2);
-        if (originalLeft > left && (reorderCellLeft < theTurningPoint || reorderCellLeft === 0)) {
-          left += props.columnReorderingData.columnWidth;
-        }
-        if (originalLeft < left && (reorderCellLeft > theTurningPoint || reorderCellLeft === farthestPossiblePoint) ) {
-          left -= props.columnReorderingData.columnWidth;
-        }
-      }
+    if (DIR_SIGN === 1) {
+      style.left = props.left + this.state.displacement;
+    } else {
+      style.right = props.left + this.state.displacement;
     }
 
-    if (DIR_SIGN === 1) {
-      style.left = left;
-    } else {
-      style.right = left;
+    if (this.state.isReorderingThisColumn) {
+      style.zIndex = 1;
     }
 
     var className = joinClasses(
@@ -142,7 +175,7 @@ var FixedDataTableCell = React.createClass({
         'public/fixedDataTableCell/alignRight': props.align === 'right',
         'public/fixedDataTableCell/highlighted': props.highlighted,
         'public/fixedDataTableCell/main': true,
-        'public/fixedDataTableCell/reordering': isReorderingThisColumn,
+        'public/fixedDataTableCell/reordering': this.state.isReorderingThisColumn,
       }),
       props.className,
     );

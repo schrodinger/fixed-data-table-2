@@ -77,12 +77,10 @@ var FixedDataTableColumnReorderHandle = React.createClass({
   },
 
   onMouseDown(event) {
-    console.log('mousedown!!');
     var targetRect = event.target.getBoundingClientRect();
 
     var mouseLocationInElement = event.clientX - targetRect.offsetLeft;
     var mouseLocationInRelationToColumnGroup = mouseLocationInElement + event.target.parentElement.offsetLeft;
-    console.log(mouseLocationInElement, mouseLocationInRelationToColumnGroup);
 
     this._mouseMoveTracker = new DOMMouseMoveTracker(
       this._onMove,
@@ -109,7 +107,6 @@ var FixedDataTableColumnReorderHandle = React.createClass({
       dragDistance: distance
     });
     this.props.onColumnReorderMove(distance);
-    console.log('onmove', arguments);
   },
 
   _onColumnReorderEnd() {

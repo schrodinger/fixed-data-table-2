@@ -60,7 +60,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
     var contentWidth = this._getColumnsWidth(columns);
 
     var isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
-      return acc || props.columnReorderingData.column === column.props.columnKey;
+      return acc || props.columnReorderingData.columnKey === column.props.columnKey;
     }, false);
 
     var currentPosition = 0;
