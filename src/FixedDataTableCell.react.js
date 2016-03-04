@@ -116,37 +116,50 @@ var FixedDataTableCell = React.createClass({
         newState.isReorderingThisColumn = true;
 
       } else {
+        var reorderCellRight = reorderCellLeft + props.columnReorderingData.columnWidth;
+        var reorderCellCenter = reorderCellLeft + (props.columnReorderingData.columnWidth / 2);
         var centerOfThisColumn = left + (props.width / 2);
 
-        // cell is before the one being dragged
-        if (reorderCellLeft > left) {
+        var cellIsBeforeOneBeingDragged = reorderCellCenter > centerOfThisColumn;
+        var cellWasOriginallyBeforeOneBeingDragged = originalLeft > props.left;
+        var changedPosition = false;
+
+
+        var dragPoint, thisCellPoint;
+        if (cellIsBeforeOneBeingDragged) {
           if (reorderCellLeft < centerOfThisColumn) {
-            newState.displacement = props.columnReorderingData.columnWidth;
-            if (!props.columnReorderingData.columnAfter) {
-              props.columnReorderingData.columnAfter = props.columnKey;
-            }
-          } else {
-            if (props.left < originalLeft) {
+            changedPosition = true;
+            if (cellWasOriginallyBeforeOneBeingDragged) {
+              newState.displacement = props.columnReorderingData.columnWidth;
+            } else {
               newState.displacement = 0;
             }
-            props.columnReorderingData.columnBefore = props.columnKey;
+          }
+        } else {
+          if (reorderCellRight > centerOfThisColumn) {
+            changedPosition = true;
+            if (cellWasOriginallyBeforeOneBeingDragged) {
+              newState.displacement = 0;
+            } else {
+              newState.displacement = props.columnReorderingData.columnWidth * -1;
+            }
           }
         }
 
-        // cell is after the one being dragged
-        if (reorderCellLeft < left) {
-          if (reorderCellLeft + props.columnReorderingData.columnWidth > centerOfThisColumn) {
-            newState.displacement = -props.columnReorderingData.columnWidth;
-            props.columnReorderingData.columnBefore = props.columnKey;
-          } else {
+        if (changedPosition) {
+          if (cellIsBeforeOneBeingDragged) {
             if (!props.columnReorderingData.columnAfter) {
               props.columnReorderingData.columnAfter = props.columnKey;
             }
-            if (props.left > originalLeft) {
-              newState.displacement = 0;
-            }
+          } else {
+            props.columnReorderingData.columnBefore = props.columnKey;
           }
+        } else if (cellIsBeforeOneBeingDragged) {
+          props.columnReorderingData.columnBefore = props.columnKey;
+        } else if (!props.columnReorderingData.columnAfter) {
+          props.columnReorderingData.columnAfter = props.columnKey;
         }
+
       }
     } else {
       newState.displacement = 0;

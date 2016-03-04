@@ -56,6 +56,7 @@ class ReorderExample extends React.Component {
   }
 
   _onColumnReorderEndCallback(event) {
+    console.log(event);
     var columnOrder = this.state.columnOrder.filter((columnKey) => {
       return columnKey !== event.reorderColumn;
     });
