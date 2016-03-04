@@ -116,32 +116,34 @@ var FixedDataTableCell = React.createClass({
         newState.isReorderingThisColumn = true;
 
       } else {
-        var theTurningPoint = left + (props.width / 2) - (props.columnReorderingData.columnWidth / 2);
-        theTurningPoint = Math.max(theTurningPoint, 0);
-        theTurningPoint = Math.min(theTurningPoint, farthestPossiblePoint);
+        var centerOfThisColumn = left + (props.width / 2);
 
         // cell is before the one being dragged
-        if (originalLeft > props.left) {
-          if (reorderCellLeft <= theTurningPoint) {
+        if (reorderCellLeft > left) {
+          if (reorderCellLeft < centerOfThisColumn) {
             newState.displacement = props.columnReorderingData.columnWidth;
             if (!props.columnReorderingData.columnAfter) {
               props.columnReorderingData.columnAfter = props.columnKey;
             }
           } else {
-            newState.displacement = 0;
+            if (props.left < originalLeft) {
+              newState.displacement = 0;
+            }
             props.columnReorderingData.columnBefore = props.columnKey;
           }
         }
 
         // cell is after the one being dragged
-        if (originalLeft < props.left) {
-          if (reorderCellLeft >= theTurningPoint) {
+        if (reorderCellLeft < left) {
+          if (reorderCellLeft + props.columnReorderingData.columnWidth > centerOfThisColumn) {
             newState.displacement = -props.columnReorderingData.columnWidth;
             props.columnReorderingData.columnBefore = props.columnKey;
           } else {
-            newState.displacement = 0;
             if (!props.columnReorderingData.columnAfter) {
               props.columnReorderingData.columnAfter = props.columnKey;
+            }
+            if (props.left > originalLeft) {
+              newState.displacement = 0;
             }
           }
         }
