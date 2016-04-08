@@ -760,7 +760,7 @@ var FixedDataTable = React.createClass({
 
     var firstRowIndex = (oldState && oldState.firstRowIndex) || 0;
     var firstRowOffset = (oldState && oldState.firstRowOffset) || 0;
-    var scrollX, scrollY;
+    var scrollX, scrollY, scrollState;
 
     scrollX = oldState ? oldState.scrollX : 0;
     if (props.scrollLeft !== this.props.scrollLeft) {
@@ -774,19 +774,9 @@ var FixedDataTable = React.createClass({
       firstRowOffset = scrollState.offset;
       scrollY = scrollState.position;
     }
-
-    if (this._rowToScrollTo !== undefined) {
-      scrollState =
-        this._scrollHelper.scrollRowIntoView(this._rowToScrollTo);
-      firstRowIndex = scrollState.index;
-      firstRowOffset = scrollState.offset;
-      scrollY = scrollState.position;
-      delete this._rowToScrollTo;
-    }
-
     var groupHeaderHeight = useGroupHeader ? props.groupHeaderHeight : 0;
 
-    if (oldState && props.rowsCount !== oldState.rowsCount) {
+    if (oldState && (props.rowsCount !== oldState.rowsCount || props.rowHeight !== oldState.rowHeight)) {
       // Number of rows changed, try to scroll to the row from before the
       // change
       var viewportHeight =
@@ -800,13 +790,22 @@ var FixedDataTable = React.createClass({
         viewportHeight,
         props.rowHeightGetter
       );
-      var scrollState =
+      scrollState =
         this._scrollHelper.scrollToRow(firstRowIndex, firstRowOffset);
       firstRowIndex = scrollState.index;
       firstRowOffset = scrollState.offset;
       scrollY = scrollState.position;
     } else if (oldState && props.rowHeightGetter !== oldState.rowHeightGetter) {
       this._scrollHelper.setRowHeightGetter(props.rowHeightGetter);
+    }
+
+    if (this._rowToScrollTo !== undefined) {
+      scrollState =
+        this._scrollHelper.scrollRowIntoView(this._rowToScrollTo);
+      firstRowIndex = scrollState.index;
+      firstRowOffset = scrollState.offset;
+      scrollY = scrollState.position;
+      delete this._rowToScrollTo;
     }
 
     var columnResizingData;
