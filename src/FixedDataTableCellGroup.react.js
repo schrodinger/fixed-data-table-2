@@ -43,6 +43,10 @@ var FixedDataTableCellGroupImpl = React.createClass({
 
     onColumnResize: PropTypes.func,
 
+    onColumnReorder: PropTypes.func,
+    onColumnReorderMove: PropTypes.func,
+    onColumnReorderEnd: PropTypes.func,
+
     rowHeight: PropTypes.number.isRequired,
 
     rowIndex: PropTypes.number.isRequired,
@@ -57,6 +61,12 @@ var FixedDataTableCellGroupImpl = React.createClass({
     var columns = props.columns;
     var cells = new Array(columns.length);
 
+    var contentWidth = this._getColumnsWidth(columns);
+
+    var isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
+      return acc || props.columnReorderingData.columnKey === column.props.columnKey;
+    }, false);
+
     var currentPosition = 0;
     for (var i = 0, j = columns.length; i < j; i++) {
       var columnProps = columns[i].props;
@@ -70,13 +80,12 @@ var FixedDataTableCellGroupImpl = React.createClass({
           columnProps,
           currentPosition,
           key,
+          contentWidth,
+          isColumnReordering
         );
       }
       currentPosition += columnProps.width;
     }
-
-    var contentWidth = this._getColumnsWidth(columns);
-
     var style = {
       height: props.height,
       position: 'absolute',
@@ -99,15 +108,19 @@ var FixedDataTableCellGroupImpl = React.createClass({
     /*number*/ height,
     /*object*/ columnProps,
     /*number*/ left,
-    /*string*/ key
+    /*string*/ key,
+    /*number*/ columnGroupWidth,
+    /*boolean*/ isColumnReordering,
   ) /*object*/ {
 
     var cellIsResizable = columnProps.isResizable &&
       this.props.onColumnResize;
     var onColumnResize = cellIsResizable ? this.props.onColumnResize : null;
 
-    var className = columnProps.cellClassName;
+    var cellIsReorderable = this.props.onColumnReorder && rowIndex === -1 && columnGroupWidth !== columnProps.width;
+    var onColumnReorder = cellIsReorderable ? this.props.onColumnReorder : null;
 
+    var className = columnProps.cellClassName;
     return (
       <FixedDataTableCell
         isScrolling={this.props.isScrolling}
@@ -118,11 +131,17 @@ var FixedDataTableCellGroupImpl = React.createClass({
         maxWidth={columnProps.maxWidth}
         minWidth={columnProps.minWidth}
         onColumnResize={onColumnResize}
+        onColumnReorder={onColumnReorder}
+        onColumnReorderMove={this.props.onColumnReorderMove}
+        onColumnReorderEnd={this.props.onColumnReorderEnd}
+        isColumnReordering={isColumnReordering}
+        columnReorderingData={this.props.columnReorderingData}
         rowIndex={rowIndex}
         columnKey={columnProps.columnKey}
         width={columnProps.width}
         left={left}
         cell={columnProps.cell}
+        columnGroupWidth={columnGroupWidth}
       />
     );
   },
