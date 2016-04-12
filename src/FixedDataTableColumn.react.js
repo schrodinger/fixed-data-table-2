@@ -157,6 +157,15 @@ var FixedDataTableColumn = React.createClass({
     isResizable: PropTypes.bool,
 
     /**
+     * Whether the column can be dragged to reorder.
+     *
+     * This property only provides the UI for the column reordering. If this
+     * is set to true, you will need to set the onColumnReorderEndCallback table
+     * property and render your columns appropriately.
+     */
+    isReorderable: PropTypes.bool,
+
+    /**
      * Whether cells in this column can be removed from document when outside
      * of viewport as a result of horizontal scrolling.
      * Setting this property to true allows the table to not render cells in
