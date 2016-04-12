@@ -158,10 +158,6 @@ var FixedDataTableColumn = React.createClass({
 
     /**
      * Whether the column can be dragged to reorder.
-     *
-     * This property only provides the UI for the column reordering. If this
-     * is set to true, you will need to set the onColumnReorderEndCallback table
-     * property and render your columns appropriately.
      */
     isReorderable: PropTypes.bool,
 
