@@ -57,6 +57,18 @@ exports.ExamplePages = {
     file: EXAMPLES_LOCATION_BASE + 'ScollToExample.js',
     title: 'Jump to row',
     description: 'A table example that will list search matches and jump to specified row',
+  }, 
+  COLLAPSE_EXAMPLE: {
+    location: 'example-collapse-rows.html',
+    file: EXAMPLES_LOCATION_BASE + 'CollapseExample.js',
+    title: 'Collapsable rows',
+    description: 'A table example that will let the user collapse individual rows',
+  },
+  HIDE_COLUMN_EXAMPLE: {
+    location: 'example-collapse.html',
+    file: EXAMPLES_LOCATION_BASE + 'HideColumnExample.js',
+    title: 'Hide Columns',
+    description: 'A table example that is able to hide/show columns',
   },
   COLUMN_GROUPS_EXAMPLE: {
     location: 'example-column-groups.html',
