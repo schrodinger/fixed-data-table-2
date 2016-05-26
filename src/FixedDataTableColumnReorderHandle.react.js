@@ -99,21 +99,31 @@ var FixedDataTableColumnReorderHandle = React.createClass({
         inColumnGroup: mouseLocationInRelationToColumnGroup
       }
     });
+
+    this._distance = 0;
+    this._animating = true;
+    requestAnimationFrame(this._updateState);
   },
 
   _onMove(/*number*/ deltaX) {
-    var distance = this.state.dragDistance + deltaX;
-    this.setState({
-      dragDistance: distance
-    });
-    this.props.onColumnReorderMove(distance);
+    this._distance = this.state.dragDistance + deltaX;
   },
 
   _onColumnReorderEnd() {
+    this._animating = false;
     this._mouseMoveTracker.releaseMouseMoves();
-
     this.props.onColumnReorderEnd();
   },
+
+  _updateState() {
+    if (this._animating) {
+      requestAnimationFrame(this._updateState)
+    } 
+    this.setState({
+      dragDistance: this._distance
+    });
+    this.props.onColumnReorderMove(this._distance);
+  }
 });
 
 module.exports = FixedDataTableColumnReorderHandle;

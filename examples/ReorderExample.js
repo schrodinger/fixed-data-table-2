@@ -15,14 +15,23 @@
 var FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
 var FixedDataTable = require('fixed-data-table');
 var React = require('react');
+var _ = require('lodash');
 
 const {Table, Column, Cell} = FixedDataTable;
 
-const TextCell = ({rowIndex, data, columnKey, ...props}) => (
-  <Cell {...props}>
-    {data.getObjectAt(rowIndex)[columnKey]}
-  </Cell>
-);
+class TextCell extends React.Component {
+  shouldComponentUpdate(newProps) {
+    return !_.isEqual(newProps, this.props);
+  }
+
+  render() {
+    return (
+      <Cell {...this.props}>
+        {this.props.data.getObjectAt(this.props.rowIndex)[this.props.columnKey]}
+      </Cell>
+    );
+  }
+};
 
 var columnTitles = {
   'firstName': 'First Name',
@@ -88,6 +97,7 @@ class ReorderExample extends React.Component {
           return <Column
             columnKey={columnKey}
             key={i}
+            isReorderable={true}
             header={<Cell>{columnTitles[columnKey]}</Cell>}
             cell={<TextCell data={dataList} />}
             fixed={i === 0}

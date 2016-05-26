@@ -182,12 +182,13 @@ var FixedDataTableCell = React.createClass({
     };
 
     if (DIR_SIGN === 1) {
-      style.left = props.left + this.state.displacement;
+      style.left = props.left;
     } else {
-      style.right = props.left + this.state.displacement;
+      style.right = props.left;
     }
 
     if (this.state.isReorderingThisColumn) {
+      style.transform = `translateX(${this.state.displacement}px) translateZ(0)`;
       style.zIndex = 1;
     }
 
