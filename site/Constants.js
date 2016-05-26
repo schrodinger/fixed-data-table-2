@@ -76,6 +76,12 @@ exports.ExamplePages = {
     title: 'Column Groups',
     description: 'Table with column groupings.',
   },
+  PAGINATION_EXAMPLE: {
+    location: 'example-pagination.html',
+    file: EXAMPLES_LOCATION_BASE + 'PaginationExample.js',
+    title: 'Pagination',
+    description: 'A table example that pages in data as the user scrolls. We fake this by having a promise that resolves after a few milliseconds',
+  },
   FILTER_EXAMPLE: {
     location: 'example-filter.html',
     file: EXAMPLES_LOCATION_BASE + 'FilterExample.js',
