@@ -192,4 +192,4 @@ class MyTable extends React.Component {
 
 ## Next Steps
 
-The FixedDataTable has many more options, for more information see the [examples section](http://facebook.github.io/fixed-data-table/example-object-data.html) or the [API docs](http://facebook.github.io/fixed-data-table/api-table.html).
+The FixedDataTable has many more options, for more information see the [examples section](http://schrodinger.github.io/fixed-data-table/example-object-data.html) or the [API docs](http://schrodinger.github.io/fixed-data-table/api-table.html).

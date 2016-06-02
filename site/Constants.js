@@ -1,6 +1,6 @@
 "use strict";
 
-var EXAMPLES_LOCATION_BASE = 'https://github.com/facebook/fixed-data-table/blob/master/examples/';
+var EXAMPLES_LOCATION_BASE = 'https://github.com/schrodinger/fixed-data-table/blob/master/examples/';
 
 exports.OtherPages = {
   HOME: {location: 'index.html', title: 'Home'},

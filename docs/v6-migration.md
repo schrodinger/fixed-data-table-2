@@ -184,4 +184,4 @@ const MyTable = (
 
 More Information
 ---------
-For more information see the updated [examples](http://facebook.github.io/fixed-data-table/example-object-data.html) or [API docs](http://facebook.github.io/fixed-data-table/api-table.html).
+For more information see the updated [examples](http://schrodinger.github.io/fixed-data-table/example-object-data.html) or [API docs](http://schrodinger.github.io/fixed-data-table/api-table.html).

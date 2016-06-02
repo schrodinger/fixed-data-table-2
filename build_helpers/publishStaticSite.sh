@@ -3,8 +3,8 @@ set -e
 
 PROJECT_DIRECTORY="fixed-data-table"
 SITE_DIRECTORY="$PROJECT_DIRECTORY-site"
-GITHUB_REPO="git@github.com:facebook/fixed-data-table.git"
-GH_PAGES_SITE="http://facebook.github.io/fixed-data-table/"
+GITHUB_REPO="git@github.com:schrodinger/fixed-data-table.git"
+GH_PAGES_SITE="http://schrodinger.github.io/fixed-data-table/"
 
 # Move to parent dir
 cd ../
