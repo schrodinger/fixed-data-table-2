@@ -43,11 +43,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/schrodinger/fixed-data-table.git"
+    "url": "https://github.com/schrodinger/fixed-data-table-2.git"
   },
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/schrodinger/fixed-data-table/issues"
+    "url": "https://github.com/schrodinger/fixed-data-table-2/issues"
   },
   "homepage": "http://schrodinger.github.io/fixed-data-table",
   "tags": [
