@@ -35,7 +35,7 @@ Customizable Cell Rendering
 In previous versions of FixedDataTable, it was possible to customize what was rendered into a cell via the `cellRenderer` prop but it was very limited at what could changed as the `cellRenderer` would always wrap the content with a default cell and this default cell could only be customizable in limited ways via column props like `cellClassName`. A typical `Column` config would look like:
 
 ```javascript
-const {Column} = require('fixed-data-table');
+const {Column} = require('fixed-data-table-2');
 
 function renderLink(cellData) {
   return <a href="#">{cellData}</a>;
@@ -56,7 +56,7 @@ The current FixedDataTable version provides the new API's `cell`, `header` and `
 
 To render static content provide a React Element. FixedDataTable will pass through any positional props needed to render the cell:
 ```javascript
-const {Column, Cell} = require('fixed-data-table');
+const {Column, Cell} = require('fixed-data-table-2');
 
 const MyColumn = (
   <Column
@@ -69,7 +69,7 @@ const MyColumn = (
 
 More likely you will want to provide different content per row in a column, this is possible via creating a React Component and handling any necessary logic to get data based on the `rowIndex`. When rendered the `Cell` will receive the props `rowIndex`, `width`, `height` plus any other props provided when initializing the `Cell` component in the `Column` config:
 ```javascript
-const {Column, Cell} = require('fixed-data-table');
+const {Column, Cell} = require('fixed-data-table-2');
 
 class MyDataFetchingCell extends React.Component {
   render() {
@@ -97,7 +97,7 @@ const MyColumn = (
 
 The `cell` prop can also accept render functions. This works well a simple `Cell` that renders based on the parents `state` or `props` is needed:
 ```javascript
-const {Column, Cell} = require('fixed-data-table');
+const {Column, Cell} = require('fixed-data-table-2');
 
 const MyColumn = (
   <Column
@@ -116,7 +116,7 @@ Flexible Data Sources
 ---------------------
 Previously FixedDataTable needed to own the data required to render the table, this data was provided via the `rowGetter` prop. `Cell`s would then be given the relevant data based on the `dataKey` and would render the cell only if the data changed. A typical setup would look like this:
 ```javascript
-const {Table, Column} = require('fixed-data-table');
+const {Table, Column} = require('fixed-data-table-2');
 
 const rows = [
   {name: 'Sally', email: 'sally@gmail.com'},
@@ -149,7 +149,7 @@ There are a number of options to consume data depending on the application. For 
 
 Example basic usage:
 ```javascript
-const {Table, Column, Cell} = require('fixed-data-table');
+const {Table, Column, Cell} = require('fixed-data-table-2');
 
 const rows = [
   {name: 'Sally', email: 'sally@gmail.com'},

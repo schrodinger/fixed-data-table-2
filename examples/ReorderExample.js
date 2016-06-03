@@ -5,7 +5,7 @@
 "use strict";
 
 var FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-var FixedDataTable = require('fixed-data-table');
+var FixedDataTable = require('fixed-data-table-2');
 var React = require('react');
 var ReactShallowCompare = require('react-addons-shallow-compare');
 

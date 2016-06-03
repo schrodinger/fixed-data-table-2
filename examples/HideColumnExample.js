@@ -5,7 +5,7 @@
 "use strict";
 
 let FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-let FixedDataTable = require('fixed-data-table');
+let FixedDataTable = require('fixed-data-table-2');
 let React = require('react');
 
 const {Table, Column, Cell} = FixedDataTable;

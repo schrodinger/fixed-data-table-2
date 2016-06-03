@@ -5,23 +5,23 @@ The easiest way to start using FixedDataTable is to install it via npm:
 
 ```shell
 npm install react --save
-npm install fixed-data-table --save
+npm install fixed-data-table-2 --save
 ```
 
 If you're using a standard build system such as [`browserify`](http://browserify.org/) or [`webpack`](https://webpack.github.io/) it can then be required directly:
 ```
 const React = require('react');
-const {Table, Column, Cell} = require('fixed-data-table');
+const {Table, Column, Cell} = require('fixed-data-table-2');
 ```
 
-For layout and styling the default stylesheet needs to be added: `fixed-data-table/dist/fixed-data-table.min.css`.
+For layout and styling the default stylesheet needs to be added: `fixed-data-table-2/dist/fixed-data-table.min.css`.
 
 ## Create your `Table`
 Setting up your table can be done via the `Table` component. To be able to handle large amounts of data, the table only renders the parts that are visible to the user, in order to calculate this, static `width`, `height`, `rowsCount` and `rowHeight` are required:
 
 ```javascript
 const React = require('react');
-const {Table} = require('fixed-data-table');
+const {Table} = require('fixed-data-table-2');
 
 class MyTable extends React.Component {
   render() {
@@ -43,7 +43,7 @@ For each column that needs to be displayed, a `Column` config with 2 important p
 
 ```javascript
 const React = require('react');
-const {Table, Column, Cell} = require('fixed-data-table');
+const {Table, Column, Cell} = require('fixed-data-table-2');
 
 class MyTable extends React.Component {
   render() {
@@ -68,7 +68,7 @@ Typically you will want to render custom data per row, let's add some data to ou
 
 ```javascript
 const React = require('react');
-const {Table, Column, Cell} = require('fixed-data-table');
+const {Table, Column, Cell} = require('fixed-data-table-2');
 
 class MyTable extends React.Component {
   constructor(props) {
@@ -116,7 +116,7 @@ With larger table setups you will want to reuse the `cell` render functions. To 
 
 ```javascript
 const React = require('react');
-const {Table, Column, Cell} = require('fixed-data-table');
+const {Table, Column, Cell} = require('fixed-data-table-2');
 
 class MyTextCell extends React.Component {
   render() {
@@ -192,4 +192,4 @@ class MyTable extends React.Component {
 
 ## Next Steps
 
-The FixedDataTable has many more options, for more information see the [examples section](http://schrodinger.github.io/fixed-data-table/example-object-data.html) or the [API docs](http://schrodinger.github.io/fixed-data-table/api-table.html).
+The FixedDataTable has many more options, for more information see the [examples section](http://schrodinger.github.io/fixed-data-table-2/example-object-data.html) or the [API docs](http://schrodinger.github.io/fixed-data-table-2/api-table.html).
