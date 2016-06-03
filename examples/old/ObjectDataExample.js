@@ -6,7 +6,7 @@
 
 var ExampleImage = require('../helpers/ExampleImage');
 var FakeObjectDataListStore = require('../helpers/FakeObjectDataListStore');
-var FixedDataTable = require('fixed-data-table');
+var FixedDataTable = require('fixed-data-table-2');
 var React = require('react');
 
 var Column = FixedDataTable.Column;

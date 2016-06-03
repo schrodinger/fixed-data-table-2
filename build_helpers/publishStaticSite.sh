@@ -4,7 +4,7 @@ set -e
 PROJECT_DIRECTORY="fixed-data-table"
 SITE_DIRECTORY="$PROJECT_DIRECTORY-site"
 GITHUB_REPO="git@github.com:schrodinger/fixed-data-table-2.git"
-GH_PAGES_SITE="http://schrodinger.github.io/fixed-data-table/"
+GH_PAGES_SITE="http://schrodinger.github.io/fixed-data-table-2/"
 
 # Move to parent dir
 cd ../

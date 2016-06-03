@@ -26,10 +26,10 @@ This version of FixedDataTable is maintained by Schrödinger, Inc. It is a forke
 Getting started
 ---------------
 
-Install `fixed-data-table` using npm.
+Install `fixed-data-table-2` using npm.
 
 ```shell
-npm install fixed-data-table
+npm install fixed-data-table-2
 ```
 Add the default stylesheet `dist/fixed-data-table.css`, then import it into any module.
 
@@ -38,7 +38,7 @@ Add the default stylesheet `dist/fixed-data-table.css`, then import it into any 
 ```javascript
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Table, Column, Cell} from 'fixed-data-table';
+import {Table, Column, Cell} from 'fixed-data-table-2';
 
 // Table data as a list of array.
 const rows = [

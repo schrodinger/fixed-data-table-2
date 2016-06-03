@@ -1,5 +1,5 @@
 {
-  "name": "fixed-data-table",
+  "name": "fixed-data-table-2",
   "version": "0.6.1",
   "description": "A React table component designed to allow presenting thousands of rows of data.",
   "main": "main.js",
@@ -49,7 +49,7 @@
   "bugs": {
     "url": "https://github.com/schrodinger/fixed-data-table-2/issues"
   },
-  "homepage": "http://schrodinger.github.io/fixed-data-table",
+  "homepage": "http://schrodinger.github.io/fixed-data-table-2",
   "tags": [
     "react",
     "table"
@@ -60,8 +60,5 @@
     "table",
     "data-table",
     "fixed-table"
-  ],
-  "dependencies": {
-    "react-addons-shallow-compare": "^15.1.0"
-  }
+  ]
 }

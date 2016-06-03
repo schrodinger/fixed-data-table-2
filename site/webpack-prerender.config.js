@@ -47,8 +47,8 @@ module.exports = {
 
   resolve: {
     alias: {
-      'fixed-data-table/css': path.join(__dirname, '../src/css'),
-      'fixed-data-table': path.join(__dirname, '../src/FixedDataTableRoot')
+      'fixed-data-table-2/css': path.join(__dirname, '../src/css'),
+      'fixed-data-table-2': path.join(__dirname, '../src/FixedDataTableRoot')
     }
   },
 
