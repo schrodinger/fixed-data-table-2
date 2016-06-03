@@ -57,7 +57,6 @@ class CollapseExample extends React.Component {
           rowHeight={50}
           rowsCount={dataList.getSize()}
           rowHeightGetter={this._rowHeightGetter}
-          rowClass
           headerHeight={50}
           width={1000}
           height={500}

@@ -117,12 +117,22 @@ var FixedDataTableBufferedRows = React.createClass({
     var rowPositionGetter = props.rowPositionGetter;
 
     var rowsToRender = this.state.rowsToRender;
+
+    //Sort the rows, we slice first to avoid changing original
+    var sortedRowsToRender = rowsToRender.slice().sort((a, b) => a - b);
+    var rowPositions = {};
+
+    //Row position calculation requires that rows are calculated in order
+    sortedRowsToRender.forEach((rowIndex) => {
+      rowPositions[rowIndex] = rowPositionGetter(rowIndex);
+    });
+
     this._staticRowArray.length = rowsToRender.length;
 
     for (var i = 0; i < rowsToRender.length; ++i) {
       var rowIndex = rowsToRender[i];
       var currentRowHeight = this._getRowHeight(rowIndex);
-      var rowOffsetTop = rowPositionGetter(rowIndex);
+      var rowOffsetTop = rowPositions[rowIndex];
 
       var hasBottomBorder =
         rowIndex === props.rowsCount - 1 && props.showLastRowBorder;
