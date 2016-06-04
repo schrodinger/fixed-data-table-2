@@ -6,11 +6,10 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * This is to be used with the FixedDataTable. It is a read line
- * that when you click on a column that is resizable appears and allows
- * you to resize the corresponding column.
+ * This is to be used with the FixedDataTable. It is a header icon
+ * that allows you to reorder the corresponding column.
  *
- * @providesModule FixedDataTableColumnResizeHandle.react
+ * @providesModule FixedDataTableColumnReorderHandle.react
  * @typechecks
  */
 
@@ -35,7 +34,7 @@ var FixedDataTableColumnReorderHandle = React.createClass({
     onColumnReorderEnd: PropTypes.func,
 
     /**
-     * Column key for the column being resized.
+     * Column key for the column being reordered.
      */
     columnKey: PropTypes.oneOfType([
       PropTypes.string,
@@ -118,7 +117,7 @@ var FixedDataTableColumnReorderHandle = React.createClass({
   _updateState() {
     if (this._animating) {
       requestAnimationFrame(this._updateState)
-    } 
+    }
     this.setState({
       dragDistance: this._distance
     });
