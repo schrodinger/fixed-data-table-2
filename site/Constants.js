@@ -58,6 +58,12 @@ exports.ExamplePages = {
     title: 'Jump to row',
     description: 'A table example that will list search matches and jump to specified row',
   }, 
+  TOUCH_SCROLL_EXAMPLE: {
+    location: 'example-touch-scroll.html',
+    file: EXAMPLES_LOCATION_BASE + 'TouchScrollExample.js',
+    title: 'Touch scroll',
+    description: 'A table example that will let users scrolls with touch screens. This feature is currently in beta.',
+  },
   COLLAPSE_EXAMPLE: {
     location: 'example-collapse-rows.html',
     file: EXAMPLES_LOCATION_BASE + 'CollapseExample.js',

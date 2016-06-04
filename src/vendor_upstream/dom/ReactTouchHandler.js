@@ -6,36 +6,38 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * This is utility that handles onWheel events and calls provided wheel
+ * This is utility that handles touch events and calls provided touch
  * callback with correct frame rate.
  *
- * @providesModule ReactWheelHandler
+ * @providesModule ReactTouchHandler
  * @typechecks
  */
 
 'use strict';
 
 var emptyFunction = require('emptyFunction');
-var normalizeWheel = require('normalizeWheel');
 var requestAnimationFramePolyfill = require('requestAnimationFramePolyfill');
 
-class ReactWheelHandler {
+class ReactTouchHandler {
   /**
-   * onWheel is the callback that will be called with right frame rate if
-   * any wheel events happened
-   * onWheel should is to be called with two arguments: deltaX and deltaY in
+   * onTouchScroll is the callback that will be called with right frame rate if
+   * any touch events happened
+   * onTouchScroll should is to be called with two arguments: deltaX and deltaY in
    * this order
    */
   constructor(
-    /*function*/ onWheel,
+    /*function*/ onTouchScroll,
     /*boolean|function*/ handleScrollX,
     /*boolean|function*/ handleScrollY,
     /*?boolean|?function*/ stopPropagation
   ) {
     this._animationFrameID = null;
-    this._deltaX = 0;
-    this._deltaY = 0;
-    this._didWheel = this._didWheel.bind(this);
+    
+    this._startX = 0;
+    this._startY = 0;
+
+    this._didTouchMove = this._didTouchMove.bind(this);
+
     if (typeof handleScrollX !== 'function') {
       handleScrollX = handleScrollX ?
         emptyFunction.thatReturnsTrue :
@@ -57,22 +59,33 @@ class ReactWheelHandler {
     this._handleScrollX = handleScrollX;
     this._handleScrollY = handleScrollY;
     this._stopPropagation = stopPropagation;
-    this._onWheelCallback = onWheel;
-    this.onWheel = this.onWheel.bind(this);
+    this._onTouchScrollCallback = onTouchScroll;
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
   }
 
-  onWheel(/*object*/ event) {
-    var normalizedEvent = normalizeWheel(event);
-    var deltaX = this._deltaX + normalizedEvent.pixelX;
-    var deltaY = this._deltaY + normalizedEvent.pixelY;
-    var handleScrollX = this._handleScrollX(deltaX, deltaY);
-    var handleScrollY = this._handleScrollY(deltaY, deltaX);
+  onTouchStart(/*object*/ event) {
+    this._startX = event.touches[0].pageX;
+    this._startY = event.touches[0].pageY;
+  }
+
+  onTouchMove(/*object*/ event) {
+    var moveX = event.touches[0].pageX;
+    var moveY = event.touches[0].pageY;
+
+    //Mobile, scrolling is inverted
+    this._deltaX = this._startX - moveX;
+    this._deltaY = this._startY - moveY;
+
+    var handleScrollX = this._handleScrollX(this._deltaX, this._deltaY);
+    var handleScrollY = this._handleScrollY(this._deltaY, this._deltaX);
     if (!handleScrollX && !handleScrollY) {
       return;
     }
 
-    this._deltaX += handleScrollX ? normalizedEvent.pixelX : 0;
-    this._deltaY += handleScrollY ? normalizedEvent.pixelY : 0;
+    this._startX = handleScrollX ? moveX : this._startX;
+    this._startY = handleScrollY ? moveY : this._startY;
+
     event.preventDefault();
 
     var changed;
@@ -84,16 +97,16 @@ class ReactWheelHandler {
     }
 
     if (changed === true && this._animationFrameID === null) {
-      this._animationFrameID = requestAnimationFramePolyfill(this._didWheel);
+      this._animationFrameID = requestAnimationFramePolyfill(this._didTouchMove);
     }
   }
 
-  _didWheel() {
+  _didTouchMove() {
     this._animationFrameID = null;
-    this._onWheelCallback(this._deltaX, this._deltaY);
+    this._onTouchScrollCallback(this._deltaX, this._deltaY);
     this._deltaX = 0;
     this._deltaY = 0;
   }
 }
 
-module.exports = ReactWheelHandler;
+module.exports = ReactTouchHandler;
