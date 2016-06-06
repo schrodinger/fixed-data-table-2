@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.6.1 
+ * FixedDataTable v0.6.2 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -195,7 +195,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: FixedDataTable
 	};
 
-	FixedDataTableRoot.version = '0.6.1';
+	FixedDataTableRoot.version = '0.6.2';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -3431,12 +3431,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var rowPositionGetter = props.rowPositionGetter;
 
 	    var rowsToRender = this.state.rowsToRender;
+
+	    //Sort the rows, we slice first to avoid changing original
+	    var sortedRowsToRender = rowsToRender.slice().sort(function (a, b) {
+	      return a - b;
+	    });
+	    var rowPositions = {};
+
+	    //Row position calculation requires that rows are calculated in order
+	    sortedRowsToRender.forEach(function (rowIndex) {
+	      rowPositions[rowIndex] = rowPositionGetter(rowIndex);
+	    });
+
 	    this._staticRowArray.length = rowsToRender.length;
 
 	    for (var i = 0; i < rowsToRender.length; ++i) {
 	      var rowIndex = rowsToRender[i];
 	      var currentRowHeight = this._getRowHeight(rowIndex);
-	      var rowOffsetTop = rowPositionGetter(rowIndex);
+	      var rowOffsetTop = rowPositions[rowIndex];
 
 	      var hasBottomBorder = rowIndex === props.rowsCount - 1 && props.showLastRowBorder;
 
@@ -5394,11 +5406,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * This is to be used with the FixedDataTable. It is a read line
-	 * that when you click on a column that is resizable appears and allows
-	 * you to resize the corresponding column.
+	 * This is to be used with the FixedDataTable. It is a header icon
+	 * that allows you to reorder the corresponding column.
 	 *
-	 * @providesModule FixedDataTableColumnResizeHandle.react
+	 * @providesModule FixedDataTableColumnReorderHandle.react
 	 * @typechecks
 	 */
 
@@ -5427,7 +5438,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onColumnReorderEnd: PropTypes.func,
 
 	    /**
-	     * Column key for the column being resized.
+	     * Column key for the column being reordered.
 	     */
 	    columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 	  },
