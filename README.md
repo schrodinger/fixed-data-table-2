@@ -21,13 +21,15 @@ Things the FixedDataTable **doesn't** do:
 * FixedDataTable does not handle sorting of data. Instead it allows the developer to supply data getters that can be sort-, filter-, or tail-loading-aware.
 * FixedDataTable does not fetch the data (see above)
 
+This version of FixedDataTable is maintained by Schrödinger, Inc. It is a forked version of Facebook’s FixedDataTable Repository available [here](https://github.com/facebook/fixed-data-table) available under the BSD License. Contributions and modifications to FixedDataTable are also subject to the BSD License [(see here)](#contributions).
+
 Getting started
 ---------------
 
-Install `fixed-data-table` using npm.
+Install `fixed-data-table-2` using npm.
 
 ```shell
-npm install fixed-data-table
+npm install fixed-data-table-2
 ```
 Add the default stylesheet `dist/fixed-data-table.css`, then import it into any module.
 
@@ -36,7 +38,7 @@ Add the default stylesheet `dist/fixed-data-table.css`, then import it into any 
 ```javascript
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Table, Column, Cell} from 'fixed-data-table';
+import {Table, Column, Cell} from 'fixed-data-table-2';
 
 // Table data as a list of array.
 const rows = [
@@ -78,21 +80,23 @@ ReactDOM.render(
 );
 ```
 
+<a name="contributions"/>
 Contributions
 ------------
 
-Use [GitHub issues](https://github.com/facebook/fixed-data-table/issues) for requests.
+Use [GitHub issues](https://github.com/schrodinger/fixed-data-table-2/issues) for requests.
 
-We actively welcome pull requests; learn how to [contribute](https://github.com/facebook/fixed-data-table/blob/master/CONTRIBUTING.md).
+We actively welcome pull requests; learn how to [contribute](https://github.com/schrodinger/fixed-data-table-2/blob/master/CONTRIBUTING.md).
 
+**BY CONTRIBUTING TO FIXEDDATATABLE, YOU AGREE THAT YOUR CONTRIBUTIONS WILL BE LICENSED UNDER THE BSD LICENSE [(see here)](https://github.com/schrodinger/fixed-data-table-2/blob/master/LICENSE)**. Furthermore, by contributing to FixedDataTable, you hereby grant to Schrödinger and any recipients of your contributions, including but not limited to users of this site, a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable license to reproduce, prepare derivative works of, publicly display, publicly perform, sublicense, use, make and distribute your contributions and any derivative works under all intellectual property rights including but not limited to copyright and patent. **BY CONTRIBUTING TO FIXEDDATATABLE, YOU REPRESENT AND WARRANT THAT YOU ARE LEGALLY ENTITLED TO GRANT THE FOREGOING LICENSE**.
 
 Changelog
 ---------
 
-Changes are tracked as [GitHub releases](https://github.com/facebook/fixed-data-table/releases).
+Changes are tracked as [GitHub releases](https://github.com/schrodinger/fixed-data-table-2/releases).
 
 
 License
 -------
 
-`FixedDataTable` is [BSD-licensed](https://github.com/facebook/fixed-data-table/blob/master/LICENSE). We also provide an additional [patent grant](https://github.com/facebook/fixed-data-table/blob/master/PATENTS).
+`FixedDataTable` is [BSD-licensed](https://github.com/schrodinger/fixed-data-table-2/blob/master/LICENSE). We also provide an additional [patent grant](https://github.com/schrodinger/fixed-data-table-2/blob/master/PATENTS).

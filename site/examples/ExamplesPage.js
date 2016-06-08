@@ -1,29 +1,22 @@
 /**
- * This file provided by Facebook is for non-commercial testing and evaluation
- * purposes only. Facebook reserves all rights not expressly granted.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * Copyright Schrodinger, LLC
  */
 
 "use strict";
 
 // Require common FixedDataTable CSS.
-require('fixed-data-table/css/layout/ScrollbarLayout.css');
-require('fixed-data-table/css/layout/fixedDataTableLayout.css');
-require('fixed-data-table/css/layout/fixedDataTableCellLayout.css');
-require('fixed-data-table/css/layout/fixedDataTableCellGroupLayout.css');
-require('fixed-data-table/css/layout/fixedDataTableColumnResizerLineLayout.css');
-require('fixed-data-table/css/layout/fixedDataTableRowLayout.css');
-require('fixed-data-table/css/style/fixedDataTable.css');
-require('fixed-data-table/css/style/fixedDataTableCell.css');
-require('fixed-data-table/css/style/fixedDataTableColumnResizerLine.css');
-require('fixed-data-table/css/style/fixedDataTableRow.css');
-require('fixed-data-table/css/style/Scrollbar.css');
+require('fixed-data-table-2/css/layout/ScrollbarLayout.css');
+require('fixed-data-table-2/css/layout/fixedDataTableLayout.css');
+require('fixed-data-table-2/css/layout/fixedDataTableCellLayout.css');
+require('fixed-data-table-2/css/layout/fixedDataTableCellGroupLayout.css');
+require('fixed-data-table-2/css/layout/fixedDataTableColumnResizerLineLayout.css');
+require('fixed-data-table-2/css/layout/fixedDataTableRowLayout.css');
+require('fixed-data-table-2/css/style/fixedDataTable.css');
+require('fixed-data-table-2/css/style/fixedDataTableCell.css');
+require('fixed-data-table-2/css/style/fixedDataTableColumnResizerLine.css');
+require('fixed-data-table-2/css/style/fixedDataTableColumnReorder.css');
+require('fixed-data-table-2/css/style/fixedDataTableRow.css');
+require('fixed-data-table-2/css/style/Scrollbar.css');
 
 var ExampleHeader = require('./ExampleHeader');
 var ExamplesWrapper = require('./ExamplesWrapper');
@@ -36,8 +29,13 @@ var ExamplePages = Constants.ExamplePages;
 var EXAMPLE_COMPONENTS = {
   [ExamplePages.OBJECT_DATA_EXAMPLE.location]: require('../../examples/ObjectDataExample'),
   [ExamplePages.RESIZE_EXAMPLE.location]: require('../../examples/ResizeExample'),
+  [ExamplePages.REORDER_EXAMPLE.location]: require('../../examples/ReorderExample'),
+  [ExamplePages.HIDE_COLUMN_EXAMPLE.location]: require('../../examples/HideColumnExample'),
+  [ExamplePages.SCROLL_TO_EXAMPLE.location]: require('../../examples/ScrollToExample'),
+  [ExamplePages.COLLAPSE_EXAMPLE.location]: require('../../examples/CollapseExample'),
   [ExamplePages.FLEXGROW_EXAMPLE.location]: require('../../examples/FlexGrowExample'),
   [ExamplePages.COLUMN_GROUPS_EXAMPLE.location]: require('../../examples/ColumnGroupsExample'),
+  [ExamplePages.PAGINATION_EXAMPLE.location]: require('../../examples/PaginationExample'),
   [ExamplePages.FILTER_EXAMPLE.location]: require('../../examples/FilterExample'),
   [ExamplePages.SORT_EXAMPLE.location]: require('../../examples/SortExample'),
 };

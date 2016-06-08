@@ -1,6 +1,6 @@
 "use strict";
 
-var EXAMPLES_LOCATION_BASE = 'https://github.com/facebook/fixed-data-table/blob/master/examples/';
+var EXAMPLES_LOCATION_BASE = 'https://github.com/schrodinger/fixed-data-table-2/blob/master/examples/';
 
 exports.OtherPages = {
   HOME: {location: 'index.html', title: 'Home'},
@@ -46,11 +46,41 @@ exports.ExamplePages = {
     title: 'Resizable columns',
     description: 'Table with drag and drop column resizing and a dummy "store" for persistence. The Last Name column demonstrates the ability to constrain to both a min- and max-width.',
   },
+  REORDER_EXAMPLE: {
+    location: 'example-reorder.html',
+    file: EXAMPLES_LOCATION_BASE + 'ReorderExample.js',
+    title: 'Reorderable columns',
+    description: 'Table with drag and drop column reordering and a dummy "store" for persistence.',
+  },
+  SCROLL_TO_EXAMPLE: {
+    location: 'example-scroll-to.html',
+    file: EXAMPLES_LOCATION_BASE + 'ScollToExample.js',
+    title: 'Jump to row',
+    description: 'A table example that will list search matches and jump to specified row',
+  }, 
+  COLLAPSE_EXAMPLE: {
+    location: 'example-collapse-rows.html',
+    file: EXAMPLES_LOCATION_BASE + 'CollapseExample.js',
+    title: 'Collapsable rows',
+    description: 'A table example that will let the user collapse individual rows',
+  },
+  HIDE_COLUMN_EXAMPLE: {
+    location: 'example-collapse.html',
+    file: EXAMPLES_LOCATION_BASE + 'HideColumnExample.js',
+    title: 'Hide Columns',
+    description: 'A table example that is able to hide/show columns',
+  },
   COLUMN_GROUPS_EXAMPLE: {
     location: 'example-column-groups.html',
     file: EXAMPLES_LOCATION_BASE + 'ColumnGroupsExample.js',
     title: 'Column Groups',
     description: 'Table with column groupings.',
+  },
+  PAGINATION_EXAMPLE: {
+    location: 'example-pagination.html',
+    file: EXAMPLES_LOCATION_BASE + 'PaginationExample.js',
+    title: 'Pagination',
+    description: 'A table example that pages in data as the user scrolls. We fake this by having a promise that resolves after a few milliseconds',
   },
   FILTER_EXAMPLE: {
     location: 'example-filter.html',

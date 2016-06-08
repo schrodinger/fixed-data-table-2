@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015, Facebook, Inc.
+ * Copyright Schrodinger, LLC
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
@@ -84,6 +84,30 @@ var FixedDataTableRowImpl = React.createClass({
      * @param object event
      */
     onColumnResize: PropTypes.func,
+
+    isColumnReordering: PropTypes.bool,
+    /**
+     * Callback for when reorder handle (in FixedDataTableCell) is clicked
+     * to initialize reordering. Please note this is only on the cells
+     * in the header.
+     * @param number|string columnKey
+     * @param number cellWidth
+     * @param number leftOffset
+     * @param object event
+     */
+    onColumnReorder: PropTypes.func,
+
+    /**
+     * Callback for when a cell is moved while reordering.
+     * @param number distance
+     */
+    onColumnReorderMove: PropTypes.func,
+
+    /**
+     * Callback for when the mouse is released to complete reordering.
+     * @param number distance
+     */
+    onColumnReorderEnd: PropTypes.func,
   },
 
   render() /*object*/ {
@@ -99,7 +123,6 @@ var FixedDataTableRowImpl = React.createClass({
       'public/fixedDataTableRow/odd': (this.props.index % 2 === 1),
       'public/fixedDataTableRow/even': (this.props.index % 2 === 0),
     });
-
     var fixedColumnsWidth = this._getColumnsWidth(this.props.fixedColumns);
     var fixedColumns =
       <FixedDataTableCellGroup
@@ -111,6 +134,11 @@ var FixedDataTableRowImpl = React.createClass({
         zIndex={2}
         columns={this.props.fixedColumns}
         onColumnResize={this.props.onColumnResize}
+        onColumnReorder={this.props.onColumnReorder}
+        onColumnReorderMove={this.props.onColumnReorderMove}
+        onColumnReorderEnd={this.props.onColumnReorderEnd}
+        isColumnReordering={this.props.isColumnReordering}
+        columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
       />;
@@ -126,6 +154,11 @@ var FixedDataTableRowImpl = React.createClass({
         zIndex={0}
         columns={this.props.scrollableColumns}
         onColumnResize={this.props.onColumnResize}
+        onColumnReorder={this.props.onColumnReorder}
+        onColumnReorderMove={this.props.onColumnReorderMove}
+        onColumnReorderEnd={this.props.onColumnReorderEnd}
+        isColumnReordering={this.props.isColumnReordering}
+        columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
       />;

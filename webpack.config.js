@@ -9,7 +9,7 @@ var banner = (
   '/**\n' +
   ' * FixedDataTable v' + packageJSON.version + ' \n' +
   ' *\n' +
-  ' * Copyright (c) 2015, Facebook, Inc.\n' +
+  ' * Copyright Schrodinger, LLC\n' +
   ' * All rights reserved.\n' +
   ' *\n' +
   ' * This source code is licensed under the BSD-style license found in the\n' +
