@@ -17,7 +17,7 @@ var React = require('React');
 var FixedDataTableCell = require('FixedDataTableCell.react');
 
 var cx = require('cx');
-var translateDOMPositionXY = require('FixedDataTableTranslateDOMPosition');
+var FixedDataTableTranslateDOMPosition = require('FixedDataTableTranslateDOMPosition');
 
 var {PropTypes} = React;
 
@@ -100,7 +100,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
       width: contentWidth,
       zIndex: props.zIndex,
     };
-    translateDOMPositionXY(style, -1 * DIR_SIGN * props.left, 0, this._initialRender);
+    FixedDataTableTranslateDOMPosition(style, -1 * DIR_SIGN * props.left, 0, this._initialRender);
 
     return (
       <div

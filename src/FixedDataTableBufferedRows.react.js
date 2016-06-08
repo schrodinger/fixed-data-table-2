@@ -17,7 +17,7 @@ var FixedDataTableRow = require('FixedDataTableRow.react');
 var cx = require('cx');
 var emptyFunction = require('emptyFunction');
 var joinClasses = require('joinClasses');
-var translateDOMPositionXY = require('FixedDataTableTranslateDOMPosition');
+var FixedDataTableTranslateDOMPosition = require('FixedDataTableTranslateDOMPosition');
 
 var {PropTypes} = React;
 
@@ -173,7 +173,7 @@ var FixedDataTableBufferedRows = React.createClass({
       pointerEvents: props.isScrolling ? 'none' : 'auto',
     };
 
-    translateDOMPositionXY(
+    FixedDataTableTranslateDOMPosition(
       style,
       0,
       props.firstRowOffset - firstRowPosition + props.offsetTop,

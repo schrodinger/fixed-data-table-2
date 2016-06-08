@@ -29,7 +29,7 @@ var emptyFunction = require('emptyFunction');
 var invariant = require('invariant');
 var joinClasses = require('joinClasses');
 var shallowEqual = require('shallowEqual');
-var translateDOMPositionXY = require('FixedDataTableTranslateDOMPosition');
+var FixedDataTableTranslateDOMPosition = require('FixedDataTableTranslateDOMPosition');
 
 var {PropTypes} = React;
 var ReactChildren = React.Children;
@@ -1177,7 +1177,7 @@ var HorizontalScrollbar = React.createClass({
       overflow: 'hidden',
       width: this.props.size,
     };
-    translateDOMPositionXY(
+    FixedDataTableTranslateDOMPosition(
       innerContainerStyle,
       0,
       this.props.offset,
