@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.6.4 
+ * FixedDataTable v0.6.5 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -195,7 +195,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: FixedDataTable
 	};
 
-	FixedDataTableRoot.version = '0.6.4';
+	FixedDataTableRoot.version = '0.6.5';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -313,6 +313,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Either `height` or `maxHeight` must be specified.
 	     */
 	    height: PropTypes.number,
+
+	    /**
+	     * Class name to be passed into parent container
+	     */
+	    className: PropTypes.string,
 
 	    /**
 	     * Maximum pixel height of table. If all rows do not fit,
@@ -752,7 +757,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return React.createElement(
 	      'div',
 	      {
-	        className: joinClasses(cx('fixedDataTableLayout/main'), cx('public/fixedDataTable/main')),
+	        className: joinClasses(this.state.className, cx('fixedDataTableLayout/main'), cx('public/fixedDataTable/main')),
 	        onWheel: this._wheelHandler.onWheel,
 	        style: { height: state.height, width: state.width } },
 	      React.createElement(
