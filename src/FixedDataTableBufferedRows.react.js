@@ -17,7 +17,7 @@ var FixedDataTableRow = require('FixedDataTableRow.react');
 var cx = require('cx');
 var emptyFunction = require('emptyFunction');
 var joinClasses = require('joinClasses');
-var translateDOMPositionXY = require('translateDOMPositionXY');
+var FixedDataTableTranslateDOMPosition = require('FixedDataTableTranslateDOMPosition');
 
 var {PropTypes} = React;
 
@@ -64,10 +64,12 @@ var FixedDataTableBufferedRows = React.createClass({
 
   componentWillMount() {
     this._staticRowArray = [];
+    this._initialRender = true;
   },
 
   componentDidMount() {
     setTimeout(this._updateBuffer, 1000);
+    this._initialRender = false;
   },
 
   componentWillReceiveProps(/*object*/ nextProps) {
@@ -171,10 +173,11 @@ var FixedDataTableBufferedRows = React.createClass({
       pointerEvents: props.isScrolling ? 'none' : 'auto',
     };
 
-    translateDOMPositionXY(
+    FixedDataTableTranslateDOMPosition(
       style,
       0,
-      props.firstRowOffset - firstRowPosition + props.offsetTop
+      props.firstRowOffset - firstRowPosition + props.offsetTop,
+      this._initialRender,
     );
 
     return <div style={style}>{this._staticRowArray}</div>;
