@@ -105,6 +105,11 @@ var FixedDataTable = React.createClass({
     height: PropTypes.number,
 
     /**
+     * Class name to be passed into parent container
+     */
+    className: PropTypes.string,
+
+    /**
      * Maximum pixel height of table. If all rows do not fit,
      * a vertical scrollbar will appear.
      *
@@ -601,6 +606,7 @@ var FixedDataTable = React.createClass({
     return (
       <div
         className={joinClasses(
+          this.state.className, 
           cx('fixedDataTableLayout/main'),
           cx('public/fixedDataTable/main'),
         )}
