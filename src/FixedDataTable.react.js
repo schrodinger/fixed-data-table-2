@@ -629,12 +629,13 @@ var FixedDataTable = React.createClass({
     return (
       <div
         className={joinClasses(
-          this.state.className, 
+          this.state.className,
           cx('fixedDataTableLayout/main'),
           cx('public/fixedDataTable/main'),
         )}
         onWheel={this._wheelHandler.onWheel}
         onTouchStart={this._touchHandler.onTouchStart}
+        onTouchEnd={this._touchHandler.onTouchEnd}
         onTouchMove={this._touchHandler.onTouchMove}
         style={{height: state.height, width: state.width}}>
         <div
