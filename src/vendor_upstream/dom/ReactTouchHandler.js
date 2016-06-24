@@ -97,6 +97,7 @@ class ReactTouchHandler {
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchCancel = this.onTouchCancel.bind(this);
   }
 
   onTouchStart(/*object*/ event) {
@@ -129,6 +130,18 @@ class ReactTouchHandler {
 
     // Initialize decelerating autoscroll on drag stop
     requestAnimationFrame(this._startAutoScroll);
+
+    event.preventDefault();
+    if (this._stopPropagation()) {
+      event.stopPropagation();
+    }
+  }
+
+  onTouchCancel(/*object*/ event) {
+
+    // Stop tracking velocity
+    clearInterval(this._trackerId);
+    this._trackerId = null;
 
     event.preventDefault();
     if (this._stopPropagation()) {

@@ -637,6 +637,7 @@ var FixedDataTable = React.createClass({
         onTouchStart={this._touchHandler.onTouchStart}
         onTouchEnd={this._touchHandler.onTouchEnd}
         onTouchMove={this._touchHandler.onTouchMove}
+        onTouchCancel={this._touchHandler.onTouchCancel}
         style={{height: state.height, width: state.width}}>
         <div
           className={cx('fixedDataTableLayout/rowsContainer')}
