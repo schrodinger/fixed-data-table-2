@@ -77,8 +77,6 @@ var IndexPage = React.createClass({
           {this.state.renderPage && this._renderPage()}
 
           <script dangerouslySetInnerHTML={browserInitScriptObj} />
-          <script src="https://cdn.rawgit.com/zynga/scroller/master/src/Animate.js"></script>
-          <script src="https://cdn.rawgit.com/zynga/scroller/master/src/Scroller.js"></script>
           <script src={this.props.files['main.js']}></script>
         </body>
       </html>

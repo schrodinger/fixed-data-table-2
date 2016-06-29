@@ -20,7 +20,6 @@ require('fixed-data-table-2/css/style/Scrollbar.css');
 
 var ExampleHeader = require('./ExampleHeader');
 var ExamplesWrapper = require('./ExamplesWrapper');
-var TouchExampleWrapper = require('./TouchExampleWrapper');
 var React = require('react');
 var Constants = require('../Constants');
 
@@ -71,9 +70,10 @@ var ExamplesPage = React.createClass({
     var Example = EXAMPLE_COMPONENTS[this.props.page.location];
 
     return (
-      <TouchExampleWrapper {...this.state}>
-        <Example />
-      </TouchExampleWrapper>
+      <Example
+        height={this.state.tableHeight}
+        width={this.state.tableWidth}
+      />
     );
   },
 
