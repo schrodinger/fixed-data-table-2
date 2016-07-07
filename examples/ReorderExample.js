@@ -29,7 +29,10 @@ var columnTitles = {
   'firstName': 'First Name',
   'lastName': 'Last Name',
   'sentence': 'Sentence',
-  'companyName': 'Company'
+  'companyName': 'Company',
+  'city': 'City',
+  'street': 'Street',
+  'zipCode': 'Zip Code'
 };
 
 var columnWidths = {
@@ -37,6 +40,9 @@ var columnWidths = {
   lastName: 150,
   sentence: 240,
   companyName: 100,
+  city: 240,
+  street: 260,
+  zipCode: 240
 };
 
 class ReorderExample extends React.Component {
@@ -48,6 +54,9 @@ class ReorderExample extends React.Component {
       columnOrder: [
         'firstName',
         'lastName',
+        'city',
+        'street',
+        'zipCode',
         'sentence',
         'companyName'
       ],
