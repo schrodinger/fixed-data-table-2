@@ -40,6 +40,8 @@ var BORDER_HEIGHT = 1;
 var HEADER = 'header';
 var FOOTER = 'footer';
 var CELL = 'cell';
+var DRAG_SCROLL_SPEED = 15;
+var DRAG_SCROLL_BUFFER = 100;
 
 /**
  * Data grid component with fixed or scrollable header and columns.
@@ -727,6 +729,7 @@ var FixedDataTable = React.createClass({
       isColumnReordering: true,
       columnReorderingData: {
         dragDistance: 0,
+        scrollStart: this.state.scrollX,
         columnKey: columnKey,
         columnWidth: width,
         originalLeft: left,
@@ -744,7 +747,24 @@ var FixedDataTable = React.createClass({
     reorderingData.columnBefore = undefined;
     reorderingData.columnAfter = undefined;
 
+    var scrollX = this.state.scrollX;
+    //Relative dragX position on scroll
+    var dragX = reorderingData.originalLeft - reorderingData.scrollStart + reorderingData.dragDistance;
+
+    var fixedColumnsWidth = this.state.bodyFixedColumns.reduce((sum, column) => sum + column.props.width, 0);
+    var relativeWidth = this.props.width - fixedColumnsWidth;
+
+    //Scroll the table left or right if we drag near the edges of the table
+    if (dragX > relativeWidth - DRAG_SCROLL_BUFFER) {
+      scrollX = Math.min(scrollX + DRAG_SCROLL_SPEED, this.state.maxScrollX);
+    } else if (dragX <= DRAG_SCROLL_BUFFER) {
+      scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
+    }
+
+    reorderingData.dragDistance += this.state.scrollX - reorderingData.scrollStart;
+
     this.setState({
+      scrollX: scrollX,
       columnReorderingData: reorderingData
     });
   },
