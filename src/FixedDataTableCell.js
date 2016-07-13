@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule FixedDataTableCell.react
+ * @providesModule FixedDataTableCell
  * @typechecks
  */
 
-var FixedDataTableCellDefault = require('FixedDataTableCellDefault.react');
-var FixedDataTableColumnReorderHandle = require('./FixedDataTableColumnReorderHandle.react');
+var FixedDataTableCellDefault = require('FixedDataTableCellDefault');
+var FixedDataTableColumnReorderHandle = require('./FixedDataTableColumnReorderHandle');
 var FixedDataTableHelper = require('FixedDataTableHelper');
 var React = require('React');
 var cx = require('cx');

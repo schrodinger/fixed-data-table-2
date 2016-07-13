@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule FixedDataTableBufferedRows.react
+ * @providesModule FixedDataTableBufferedRows
  * @typechecks
  */
 
 var React = require('React');
 var FixedDataTableRowBuffer = require('FixedDataTableRowBuffer');
-var FixedDataTableRow = require('FixedDataTableRow.react');
+var FixedDataTableRow = require('FixedDataTableRow');
 
 var cx = require('cx');
 var emptyFunction = require('emptyFunction');

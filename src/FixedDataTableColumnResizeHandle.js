@@ -10,7 +10,7 @@
  * that when you click on a column that is resizable appears and allows
  * you to resize the corresponding column.
  *
- * @providesModule FixedDataTableColumnResizeHandle.react
+ * @providesModule FixedDataTableColumnResizeHandle
  * @typechecks
  */
 

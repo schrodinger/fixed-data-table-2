@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule FixedDataTable.react
+ * @providesModule FixedDataTable
  * @typechecks
  * @noflow
  */
@@ -17,10 +17,10 @@ var React = require('React');
 var ReactComponentWithPureRenderMixin = require('ReactComponentWithPureRenderMixin');
 var ReactWheelHandler = require('ReactWheelHandler');
 var ReactTouchHandler = require('ReactTouchHandler');
-var Scrollbar = require('Scrollbar.react');
-var FixedDataTableBufferedRows = require('FixedDataTableBufferedRows.react');
-var FixedDataTableColumnResizeHandle = require('FixedDataTableColumnResizeHandle.react');
-var FixedDataTableRow = require('FixedDataTableRow.react');
+var Scrollbar = require('Scrollbar');
+var FixedDataTableBufferedRows = require('FixedDataTableBufferedRows');
+var FixedDataTableColumnResizeHandle = require('FixedDataTableColumnResizeHandle');
+var FixedDataTableRow = require('FixedDataTableRow');
 var FixedDataTableScrollHelper = require('FixedDataTableScrollHelper');
 var FixedDataTableWidthHelper = require('FixedDataTableWidthHelper');
 

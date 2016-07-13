@@ -9,7 +9,7 @@
  * This is to be used with the FixedDataTable. It is a header icon
  * that allows you to reorder the corresponding column.
  *
- * @providesModule FixedDataTableColumnReorderHandle.react
+ * @providesModule FixedDataTableColumnReorderHandle
  * @typechecks
  */
 

@@ -14,8 +14,8 @@
 
 var Locale = require('Locale');
 var React = require('React');
-var FixedDataTableColumnGroup = require('FixedDataTableColumnGroup.react');
-var FixedDataTableColumn = require('FixedDataTableColumn.react');
+var FixedDataTableColumnGroup = require('FixedDataTableColumnGroup');
+var FixedDataTableColumn = require('FixedDataTableColumn');
 
 var DIR_SIGN = (Locale.isRTL() ? -1 : +1);
 // A cell up to 5px outside of the visible area will still be considered visible
