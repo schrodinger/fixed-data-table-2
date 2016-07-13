@@ -10,7 +10,7 @@
  * @typechecks
  */
 
-var React = require('React');
+import React from 'React';
 
 var {PropTypes} = React;
 

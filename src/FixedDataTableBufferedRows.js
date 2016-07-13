@@ -10,14 +10,14 @@
  * @typechecks
  */
 
-var React = require('React');
-var FixedDataTableRowBuffer = require('FixedDataTableRowBuffer');
-var FixedDataTableRow = require('FixedDataTableRow');
+import React from 'React';
+import FixedDataTableRowBuffer from 'FixedDataTableRowBuffer';
+import FixedDataTableRow from 'FixedDataTableRow';
 
-var cx = require('cx');
-var emptyFunction = require('emptyFunction');
-var joinClasses = require('joinClasses');
-var FixedDataTableTranslateDOMPosition = require('FixedDataTableTranslateDOMPosition');
+import cx from 'cx';
+import emptyFunction from 'emptyFunction';
+import joinClasses from 'joinClasses';
+import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
 var {PropTypes} = React;
 

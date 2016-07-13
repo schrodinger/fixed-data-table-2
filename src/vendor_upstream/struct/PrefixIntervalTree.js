@@ -13,7 +13,7 @@
 
 'use strict';
 
-var invariant = require('invariant');
+import invariant from 'invariant';
 
 var parent = node => Math.floor(node / 2);
 

@@ -12,12 +12,12 @@
 
 'use strict';
 
-var FixedDataTableHelper = require('FixedDataTableHelper');
-var React = require('React');
-var FixedDataTableCell = require('FixedDataTableCell');
+import FixedDataTableHelper from 'FixedDataTableHelper';
+import React from 'React';
+import FixedDataTableCell from 'FixedDataTableCell';
 
-var cx = require('cx');
-var FixedDataTableTranslateDOMPosition = require('FixedDataTableTranslateDOMPosition');
+import cx from 'cx';
+import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
 var {PropTypes} = React;
 

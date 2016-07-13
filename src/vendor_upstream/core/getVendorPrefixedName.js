@@ -10,10 +10,10 @@
  * @typechecks
  */
 
-var ExecutionEnvironment = require('ExecutionEnvironment');
+import ExecutionEnvironment from 'ExecutionEnvironment';
 
-var camelize = require('camelize');
-var invariant = require('invariant');
+import camelize from 'camelize';
+import invariant from 'invariant';
 
 var memoized = {};
 var prefixes = ['Webkit', 'ms', 'Moz', 'O'];

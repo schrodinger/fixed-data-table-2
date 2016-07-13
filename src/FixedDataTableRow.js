@@ -12,12 +12,12 @@
 
 'use strict';
 
-var React = require('React');
-var FixedDataTableCellGroup = require('FixedDataTableCellGroup');
+import React from 'React';
+import FixedDataTableCellGroup from 'FixedDataTableCellGroup';
 
-var cx = require('cx');
-var joinClasses = require('joinClasses');
-var FixedDataTableTranslateDOMPosition = require('FixedDataTableTranslateDOMPosition');
+import cx from 'cx';
+import joinClasses from 'joinClasses';
+import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
 var {PropTypes} = React;
 

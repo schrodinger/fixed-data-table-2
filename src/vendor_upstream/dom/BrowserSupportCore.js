@@ -10,7 +10,7 @@
  */
 
 
-var getVendorPrefixedName = require('getVendorPrefixedName');
+import getVendorPrefixedName from 'getVendorPrefixedName';
 
 var BrowserSupportCore = {
   /**

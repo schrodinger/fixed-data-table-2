@@ -10,12 +10,12 @@
  * @typechecks
  */
 
-var FixedDataTableCellDefault = require('FixedDataTableCellDefault');
-var FixedDataTableColumnReorderHandle = require('./FixedDataTableColumnReorderHandle');
-var FixedDataTableHelper = require('FixedDataTableHelper');
-var React = require('React');
-var cx = require('cx');
-var joinClasses = require('joinClasses');
+import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
+import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
+import FixedDataTableHelper from 'FixedDataTableHelper';
+import React from 'React';
+import cx from 'cx';
+import joinClasses from 'joinClasses';
 
 var DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 

@@ -13,24 +13,24 @@
 
 /*eslint no-bitwise:1*/
 
-var React = require('React');
-var ReactComponentWithPureRenderMixin = require('ReactComponentWithPureRenderMixin');
-var ReactWheelHandler = require('ReactWheelHandler');
-var ReactTouchHandler = require('ReactTouchHandler');
-var Scrollbar = require('Scrollbar');
-var FixedDataTableBufferedRows = require('FixedDataTableBufferedRows');
-var FixedDataTableColumnResizeHandle = require('FixedDataTableColumnResizeHandle');
-var FixedDataTableRow = require('FixedDataTableRow');
-var FixedDataTableScrollHelper = require('FixedDataTableScrollHelper');
-var FixedDataTableWidthHelper = require('FixedDataTableWidthHelper');
+import React from 'React';
+import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
+import ReactWheelHandler from 'ReactWheelHandler';
+import ReactTouchHandler from 'ReactTouchHandler';
+import Scrollbar from 'Scrollbar';
+import FixedDataTableBufferedRows from 'FixedDataTableBufferedRows';
+import FixedDataTableColumnResizeHandle from 'FixedDataTableColumnResizeHandle';
+import FixedDataTableRow from 'FixedDataTableRow';
+import FixedDataTableScrollHelper from 'FixedDataTableScrollHelper';
+import FixedDataTableWidthHelper from 'FixedDataTableWidthHelper';
 
-var cx = require('cx');
-var debounceCore = require('debounceCore');
-var emptyFunction = require('emptyFunction');
-var invariant = require('invariant');
-var joinClasses = require('joinClasses');
-var shallowEqual = require('shallowEqual');
-var FixedDataTableTranslateDOMPosition = require('FixedDataTableTranslateDOMPosition');
+import cx from 'cx';
+import debounceCore from 'debounceCore';
+import emptyFunction from 'emptyFunction';
+import invariant from 'invariant';
+import joinClasses from 'joinClasses';
+import shallowEqual from 'shallowEqual';
+import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
 var {PropTypes} = React;
 var ReactChildren = React.Children;

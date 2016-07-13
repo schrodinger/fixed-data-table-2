@@ -9,8 +9,8 @@
  * @providesModule requestAnimationFramePolyfill
  */
 
-var emptyFunction = require('emptyFunction');
-var nativeRequestAnimationFrame = require('nativeRequestAnimationFrame');
+import emptyFunction from 'emptyFunction';
+import nativeRequestAnimationFrame from 'nativeRequestAnimationFrame';
 
 var lastTime = 0;
 

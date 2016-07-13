@@ -12,8 +12,8 @@
 
 'use strict';
 
-var PrefixIntervalTree = require('PrefixIntervalTree');
-var clamp = require('clamp');
+import PrefixIntervalTree from 'PrefixIntervalTree';
+import clamp from 'clamp';
 
 var BUFFER_ROWS = 5;
 var NO_ROWS_SCROLL_RESULT = {

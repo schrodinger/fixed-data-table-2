@@ -12,7 +12,7 @@
 
 'use strict';
 
-var React = require('React');
+import React from 'React';
 
 function getTotalWidth(/*array*/ columns) /*number*/ {
   var totalWidth = 0;

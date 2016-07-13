@@ -11,10 +11,10 @@
 
 'use strict';
 
-var FixedDataTable = require('FixedDataTable');
-var FixedDataTableCellDefault = require('FixedDataTableCellDefault');
-var FixedDataTableColumn = require('FixedDataTableColumn');
-var FixedDataTableColumnGroup = require('FixedDataTableColumnGroup');
+import FixedDataTable from 'FixedDataTable';
+import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
+import FixedDataTableColumn from 'FixedDataTableColumn';
+import FixedDataTableColumnGroup from 'FixedDataTableColumnGroup';
 
 var FixedDataTableRoot = {
   Cell: FixedDataTableCellDefault,

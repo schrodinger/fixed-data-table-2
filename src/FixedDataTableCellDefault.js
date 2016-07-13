@@ -10,10 +10,10 @@
  * @typechecks
  */
 
-var React = require('React');
+import React from 'React';
 
-var cx = require('cx');
-var joinClasses = require('joinClasses');
+import cx from 'cx';
+import joinClasses from 'joinClasses';
 
 var {PropTypes} = React;
 
