@@ -17,6 +17,7 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.11.1",
     "bundle-loader": "^0.5.2",
+    "chai": "^3.5.0",
     "css-loader": "^0.9.1",
     "extract-text-webpack-plugin": "^0.3.8",
     "faker": "^2.1.2",
@@ -26,9 +27,12 @@
     "less": "^2.2.0",
     "less-loader": "^2.0.0",
     "marked": "^0.3.2",
+    "mocha": "^2.5.3",
     "null-loader": "^0.1.0",
     "postcss": "^4.0.2",
     "postcss-custom-properties": "3.0.1",
+    "react": "^15.2.1",
+    "react-addons-test-utils": "^15.2.1",
     "react-docgen": "^1.2.0",
     "react-tools": "^0.12.2",
     "style-loader": "^0.8.3",
@@ -44,7 +48,9 @@
     "build-docs": "./build_helpers/buildAPIDocs.sh",
     "publish-site": "./build_helpers/publishStaticSite.sh",
     "publish-package": "./build_helpers/publishPackage.sh",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha-webpack --webpack-config webpack.config-test.js \"src/**/*-test.js\"",
+    "test:watch": "mocha-webpack --webpack-config webpack.config-test.js --watch \"src/**/*-test.js\"",
+    "test:server": "webpack-dev-server --config webpack.config-test.js --hot --inline"
   },
   "repository": {
     "type": "git",
