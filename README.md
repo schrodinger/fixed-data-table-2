@@ -83,6 +83,15 @@ ReactDOM.render(
 );
 ```
 
+Browser Support
+------------
+
+| Chrome        | Firefox           | IE  | Safari 
+--- | --- | --- | --- |
+| Latest | Latest | 11+ | Unsupported* |
+
+###### * Safari may function correct, but we are not actively testing with it
+
 <a name="contributions"/>
 Contributions
 ------------
