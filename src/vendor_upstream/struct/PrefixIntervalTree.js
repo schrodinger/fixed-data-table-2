@@ -52,25 +52,31 @@ function ceilLog2(x: number): number {
  * entire array.
  */
 class PrefixIntervalTree {
-  /**
-   * Number of elements in the array
-   */
-  //_size: number;
-
-  /**
-   * Half the size of the heap. It is also the number of non-leaf nodes, and the
-   * index of the first element in the heap. Always a power of 2.
-   */
-  //_half: number;
-
-  /**
-   * Binary heap
-   */
-  //_heap: Array<number>;
-
   constructor(xs: Array<number>) {
+    /**
+     * Number of elements in the array
+     *
+     * @type {number}
+     * @private
+     */
     this._size = xs.length;
+
+    /**
+     * Half the size of the heap. It is also the number of non-leaf nodes, and the
+     * index of the first element in the heap. Always a power of 2.
+     *
+     * @type {number}
+     * @private
+     */
     this._half = ceilLog2(this._size);
+
+    /**
+     * Binary heap
+     *
+     * @type {!Array.<number>}
+     * @const
+     * @private
+     */
     this._heap = new Int32Array(2 * this._half);
 
     var i;
