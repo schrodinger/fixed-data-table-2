@@ -9,17 +9,17 @@
  * This is to be used with the FixedDataTable. It is a header icon
  * that allows you to reorder the corresponding column.
  *
- * @providesModule FixedDataTableColumnReorderHandle.react
+ * @providesModule FixedDataTableColumnReorderHandle
  * @typechecks
  */
 
-var DOMMouseMoveTracker = require('DOMMouseMoveTracker');
-var Locale = require('Locale');
-var React = require('React');
-var ReactComponentWithPureRenderMixin = require('ReactComponentWithPureRenderMixin');
+import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
+import Locale from 'Locale';
+import React from 'React';
+import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
 
-var clamp = require('clamp');
-var cx = require('cx');
+import clamp from 'clamp';
+import cx from 'cx';
 
 var {PropTypes} = React;
 

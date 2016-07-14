@@ -10,7 +10,7 @@
  * @typechecks
  */
 
-var translateDOMPositionXY = require('translateDOMPositionXY');
+import translateDOMPositionXY from 'translateDOMPositionXY';
 
 function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*number*/ y, /*boolean*/ initialRender = false) {
   if (initialRender) {

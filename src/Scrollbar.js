@@ -6,21 +6,21 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule Scrollbar.react
+ * @providesModule Scrollbar
  * @typechecks
  */
 
-var DOMMouseMoveTracker = require('DOMMouseMoveTracker');
-var Keys = require('Keys');
-var React = require('React');
-var ReactDOM = require('ReactDOM');
-var ReactComponentWithPureRenderMixin = require('ReactComponentWithPureRenderMixin');
-var ReactWheelHandler = require('ReactWheelHandler');
+import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
+import Keys from 'Keys';
+import React from 'React';
+import ReactDOM from 'ReactDOM';
+import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
+import ReactWheelHandler from 'ReactWheelHandler';
 
-var cssVar = require('cssVar');
-var cx = require('cx');
-var emptyFunction = require('emptyFunction');
-var FixedDataTableTranslateDOMPosition = require('FixedDataTableTranslateDOMPosition');
+import cssVar from 'cssVar';
+import cx from 'cx';
+import emptyFunction from 'emptyFunction';
+import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
 var {PropTypes} = React;
 
@@ -506,8 +506,5 @@ var Scrollbar = React.createClass({
     this.props.onScroll(this.state.position);
   },
 });
-
-Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;
-Scrollbar.SIZE = parseInt(cssVar('scrollbar-size'), 10);
 
 module.exports = Scrollbar;

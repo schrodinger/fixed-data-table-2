@@ -10,7 +10,7 @@
  * @typechecks
  */
 
-var emptyFunction = require('emptyFunction');
+import emptyFunction from 'emptyFunction';
 
 /**
  * Upstream version of event listener. Does not take into account specific

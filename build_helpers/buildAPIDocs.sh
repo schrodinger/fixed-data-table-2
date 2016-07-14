@@ -15,22 +15,22 @@ if (!fs.existsSync(docsPath)) {
 var PROJECT_ROOT = path.join(__dirname, '../');
 var FILES_TO_READ = [
   {
-    path: path.join(PROJECT_ROOT, 'src/FixedDataTable.react.js'),
+    path: path.join(PROJECT_ROOT, 'src/FixedDataTable.js'),
     name: 'Table',
     markdownFileName: 'TableAPI.md'
   },
   {
-    path: path.join(PROJECT_ROOT, 'src/FixedDataTableColumn.react.js'),
+    path: path.join(PROJECT_ROOT, 'src/FixedDataTableColumn.js'),
     name: 'Column',
     markdownFileName: 'ColumnAPI.md'
   },
   {
-    path: path.join(PROJECT_ROOT, 'src/FixedDataTableColumnGroup.react.js'),
+    path: path.join(PROJECT_ROOT, 'src/FixedDataTableColumnGroup.js'),
     name: 'ColumnGroup',
     markdownFileName: 'ColumnGroupAPI.md'
   },
   {
-    path: path.join(PROJECT_ROOT, 'src/FixedDataTableCellDefault.react.js'),
+    path: path.join(PROJECT_ROOT, 'src/FixedDataTableCellDefault.js'),
     name: 'Cell',
     markdownFileName: 'CellAPI.md'
   }

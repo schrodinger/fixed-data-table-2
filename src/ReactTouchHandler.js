@@ -16,8 +16,8 @@
 
 'use strict';
 
-var emptyFunction = require('emptyFunction');
-var requestAnimationFramePolyfill = require('requestAnimationFramePolyfill');
+import emptyFunction from 'emptyFunction';
+import requestAnimationFramePolyfill from 'requestAnimationFramePolyfill';
 
 var MOVE_AMPLITUDE = 1.6;
 var DECELERATION_AMPLITUDE = 1.6;

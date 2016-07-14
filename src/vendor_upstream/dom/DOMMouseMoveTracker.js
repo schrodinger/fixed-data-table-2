@@ -19,10 +19,10 @@
 
 'use strict';
 
-var EventListener = require('EventListener');
+import EventListener from 'EventListener';
 
-var cancelAnimationFramePolyfill = require('cancelAnimationFramePolyfill');
-var requestAnimationFramePolyfill = require('requestAnimationFramePolyfill');
+import cancelAnimationFramePolyfill from 'cancelAnimationFramePolyfill';
+import requestAnimationFramePolyfill from 'requestAnimationFramePolyfill';
 
 class DOMMouseMoveTracker {
   /**

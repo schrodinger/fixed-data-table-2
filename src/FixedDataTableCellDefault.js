@@ -6,14 +6,14 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule FixedDataTableCellDefault.react
+ * @providesModule FixedDataTableCellDefault
  * @typechecks
  */
 
-var React = require('React');
+import React from 'React';
 
-var cx = require('cx');
-var joinClasses = require('joinClasses');
+import cx from 'cx';
+import joinClasses from 'joinClasses';
 
 var {PropTypes} = React;
 

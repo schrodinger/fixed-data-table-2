@@ -11,10 +11,10 @@
 
 'use strict';
 
-var FixedDataTable = require('FixedDataTable.react');
-var FixedDataTableCellDefault = require('FixedDataTableCellDefault.react');
-var FixedDataTableColumn = require('FixedDataTableColumn.react');
-var FixedDataTableColumnGroup = require('FixedDataTableColumnGroup.react');
+import FixedDataTable from 'FixedDataTable';
+import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
+import FixedDataTableColumn from 'FixedDataTableColumn';
+import FixedDataTableColumnGroup from 'FixedDataTableColumnGroup';
 
 var FixedDataTableRoot = {
   Cell: FixedDataTableCellDefault,

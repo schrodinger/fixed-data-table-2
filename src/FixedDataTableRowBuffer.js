@@ -12,10 +12,10 @@
 
 'use strict';
 
-var IntegerBufferSet = require('IntegerBufferSet');
+import IntegerBufferSet from 'IntegerBufferSet';
 
-var clamp = require('clamp');
-var invariant = require('invariant');
+import clamp from 'clamp';
+import invariant from 'invariant';
 var MIN_BUFFER_ROWS = 3;
 var MAX_BUFFER_ROWS = 6;
 
