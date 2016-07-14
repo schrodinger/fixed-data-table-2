@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.0 
+ * FixedDataTable v0.7.1 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.0';
+	FixedDataTableRoot.version = '0.7.1';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -3067,6 +3067,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.props.onScroll(this.state.position);
 	  }
 	});
+
+	Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;
+	Scrollbar.SIZE = parseInt((0, _cssVar2.default)('scrollbar-size'), 10);
 
 	module.exports = Scrollbar;
 
