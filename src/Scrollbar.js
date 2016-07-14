@@ -507,4 +507,7 @@ var Scrollbar = React.createClass({
   },
 });
 
+Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;
+Scrollbar.SIZE = parseInt(cssVar('scrollbar-size'), 10);
+
 module.exports = Scrollbar;
