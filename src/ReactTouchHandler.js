@@ -128,7 +128,7 @@ class ReactTouchHandler {
     this._trackerId = null;
 
     // Initialize decelerating autoscroll on drag stop
-    requestAnimationFrame(this._startAutoScroll);
+    requestAnimationFramePolyfill(this._startAutoScroll);
 
     if (this._stopPropagation()) {
       event.stopPropagation();
@@ -274,7 +274,7 @@ class ReactTouchHandler {
 
     if (deltaX !== 0 || deltaY !== 0) {
       this._onTouchScrollCallback(deltaX, deltaY);
-      requestAnimationFrame(this._autoScroll);
+      requestAnimationFramePolyfill(this._autoScroll);
     }
   }
 }
