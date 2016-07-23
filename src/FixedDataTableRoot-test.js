@@ -1,3 +1,7 @@
+/**
+ * Copyright Schrodinger, LLC
+ */
+
 import { assert } from 'chai';
 import React from 'react';
 import FixedDataTable from './FixedDataTableRoot';

@@ -9,8 +9,9 @@
   },
   "devDependencies": {
     "autoprefixer": "^5.0.0",
-    "babel-core": "^6.10.4",
+    "babel-core": "^6.11.4",
     "babel-loader": "^6.2.4",
+    "babel-plugin-rewire": "^1.0.0-rc-4",
     "babel-plugin-syntax-trailing-function-commas": "^6.8.0",
     "babel-plugin-transform-object-assign": "^6.8.0",
     "babel-plugin-transform-object-rest-spread": "^6.8.0",
@@ -36,6 +37,7 @@
     "react-addons-test-utils": "^15.2.1",
     "react-docgen": "^1.2.0",
     "react-tools": "^0.12.2",
+    "sinon": "^2.0.0-pre.2",
     "style-loader": "^0.8.3",
     "url-loader": "^0.5.5",
     "webpack": "^1.8.3",
