@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.1 
+ * FixedDataTable v0.7.2 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.1';
+	FixedDataTableRoot.version = '0.7.2';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -975,6 +975,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.props.onColumnReorderEndCallback({
 	      columnBefore: columnBefore, columnAfter: columnAfter, reorderColumn: reorderColumn
 	    });
+
+	    var onHorizontalScroll = this.props.onHorizontalScroll;
+	    if (this.state.columnReorderingData.scrollStart !== this.state.scrollX && onHorizontalScroll) {
+	      onHorizontalScroll(this.state.scrollX);
+	    };
 	  },
 	  _areColumnSettingsIdentical: function _areColumnSettingsIdentical(oldColumns, newColumns) {
 	    if (oldColumns.length !== newColumns.length) {
@@ -2441,7 +2446,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._trackerId = null;
 
 	      // Initialize decelerating autoscroll on drag stop
-	      requestAnimationFrame(this._startAutoScroll);
+	      (0, _requestAnimationFramePolyfill2.default)(this._startAutoScroll);
 
 	      if (this._stopPropagation()) {
 	        event.stopPropagation();
@@ -2601,7 +2606,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (deltaX !== 0 || deltaY !== 0) {
 	        this._onTouchScrollCallback(deltaX, deltaY);
-	        requestAnimationFrame(this._autoScroll);
+	        (0, _requestAnimationFramePolyfill2.default)(this._autoScroll);
 	      }
 	    }
 	  }]);
@@ -4989,7 +4994,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var currentPosition = 0;
 	    for (var i = 0, j = columns.length; i < j; i++) {
 	      var columnProps = columns[i].props;
-	      if (!columnProps.allowCellsRecycling || currentPosition - props.left <= props.width && currentPosition - props.left + columnProps.width >= 0) {
+	      var recycable = columnProps.allowCellsRecycling && !isColumnReordering;
+	      if (!recycable || currentPosition - props.left <= props.width && currentPosition - props.left + columnProps.width >= 0) {
 	        var key = 'cell_' + i;
 	        cells[i] = this._renderCell(props.rowIndex, props.rowHeight, columnProps, currentPosition, key, contentWidth, isColumnReordering);
 	      }
@@ -5937,6 +5943,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  render: function render() {
+	    //Remove some props like columnKey and rowIndex so we don't pass it into the div
 	    var _props = this.props;
 	    var height = _props.height;
 	    var width = _props.width;
@@ -5944,8 +5951,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var className = _props.className;
 	    var children = _props.children;
 	    var columnKey = _props.columnKey;
+	    var rowIndex = _props.rowIndex;
 
-	    var props = _objectWithoutProperties(_props, ['height', 'width', 'style', 'className', 'children', 'columnKey']);
+	    var props = _objectWithoutProperties(_props, ['height', 'width', 'style', 'className', 'children', 'columnKey', 'rowIndex']);
 
 	    var innerStyle = _extends({
 	      height: height,
@@ -6099,6 +6107,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  componentWillReceiveProps: function componentWillReceiveProps( /*object*/newProps) {},
 	  componentWillUnmount: function componentWillUnmount() {
 	    if (this._mouseMoveTracker) {
+	      cancelAnimationFrame(this.frameId);
+	      this.frameId = null;
 	      this._mouseMoveTracker.releaseMouseMoves();
 	      this._mouseMoveTracker = null;
 	    }
@@ -6137,19 +6147,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this._distance = 0;
 	    this._animating = true;
-	    requestAnimationFrame(this._updateState);
+	    this.frameId = requestAnimationFrame(this._updateState);
 	  },
 	  _onMove: function _onMove( /*number*/deltaX) {
 	    this._distance = this.state.dragDistance + deltaX;
 	  },
 	  _onColumnReorderEnd: function _onColumnReorderEnd() {
 	    this._animating = false;
+	    cancelAnimationFrame(this.frameId);
+	    this.frameId = null;
 	    this._mouseMoveTracker.releaseMouseMoves();
 	    this.props.onColumnReorderEnd();
 	  },
 	  _updateState: function _updateState() {
 	    if (this._animating) {
-	      requestAnimationFrame(this._updateState);
+	      this.frameId = requestAnimationFrame(this._updateState);
 	    }
 	    this.setState({
 	      dragDistance: this._distance
