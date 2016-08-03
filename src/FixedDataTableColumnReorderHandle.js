@@ -54,6 +54,8 @@ var FixedDataTableColumnReorderHandle = React.createClass({
 
   componentWillUnmount() {
     if (this._mouseMoveTracker) {
+      cancelAnimationFrame(this.frameId);
+      this.frameId = null;
       this._mouseMoveTracker.releaseMouseMoves();
       this._mouseMoveTracker = null;
     }
@@ -101,7 +103,7 @@ var FixedDataTableColumnReorderHandle = React.createClass({
 
     this._distance = 0;
     this._animating = true;
-    requestAnimationFrame(this._updateState);
+    this.frameId = requestAnimationFrame(this._updateState);
   },
 
   _onMove(/*number*/ deltaX) {
@@ -110,13 +112,15 @@ var FixedDataTableColumnReorderHandle = React.createClass({
 
   _onColumnReorderEnd() {
     this._animating = false;
+    cancelAnimationFrame(this.frameId);
+    this.frameId = null;
     this._mouseMoveTracker.releaseMouseMoves();
     this.props.onColumnReorderEnd();
   },
 
   _updateState() {
     if (this._animating) {
-      requestAnimationFrame(this._updateState)
+      this.frameId = requestAnimationFrame(this._updateState)
     }
     this.setState({
       dragDistance: this._distance

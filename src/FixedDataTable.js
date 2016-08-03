@@ -785,6 +785,11 @@ var FixedDataTable = React.createClass({
     this.props.onColumnReorderEndCallback({
       columnBefore, columnAfter, reorderColumn
     });
+
+    var onHorizontalScroll = this.props.onHorizontalScroll;
+    if (this.state.columnReorderingData.scrollStart !== this.state.scrollX && onHorizontalScroll) {
+      onHorizontalScroll(this.state.scrollX)
+    };
   },
 
   _areColumnSettingsIdentical(
