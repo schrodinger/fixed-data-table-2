@@ -96,7 +96,6 @@ class ReorderExample extends React.Component {
         {...this.props}>
         {this.state.columnOrder.map(function (columnKey, i) {
           return <Column
-            allowCellsRecycling={true}
             columnKey={columnKey}
             key={i}
             isReorderable={true}
