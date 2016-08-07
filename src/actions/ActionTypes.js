@@ -13,7 +13,10 @@
 
 const ActionTypes = {
   PROP_CHANGE: 'PROP_CHANGE',
-  VERTICAL_SCROLL: 'VERTICAL_SCROLL',
+  SCROLL_BY: 'SCROLL_BY',
+  SCROLL_END: 'SCROLL_END',
+  SCROLL_START: 'SCROLL_START',
+  SCROLL_TO: 'SCROLL_TO',
 };
 
 module.exports = ActionTypes;

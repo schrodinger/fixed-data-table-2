@@ -40,36 +40,21 @@ function scroller(state = DEFAULT_STATE, action) {
         return state;
       }
 
-      var viewportHeight =
-        (props.height === undefined ? props.maxHeight : props.height) -
-        (props.headerHeight || 0) -
-        (props.footerHeight || 0) -
-        (props.groupHeaderHeight || 0);
-
-      let { rowsCount, rowHeight, rowHeightGetter, viewportHeight } = props;
-
-      let storedHeights = new Array(rowsCount);
-      for (var i = 0; i < rowsCount; i++) {
-        storedHeights[i] = rowHeight;
-      }
-
-      let newState = Object.assign({}, state, {
-        rowOffsets: PrefixIntervalTree.uniform(rowsCount, rowHeight),
-        storedHeights: storedHeights,
-        rowsCount: rowsCount,
-        position: 0,
-        scrollContentHeight: rowsCount * rowHeight,
-        rowHeight: rowHeight,
-        rowHeightGetter: rowHeightGetter ?  rowHeightGetter : () => rowHeight,
-        viewportHeight: viewportHeight,
-      });
-
-      scrollHelper.updateHeightsInViewport(newState, 0, 0);
-
-      return newState;
-    case ActionTypes.VERTICAL_SCROLL: 
+      //TODO (asif) reinitalize when viewheight changes
+      var a = scrollHelper.initailize(state, props);
+      return Object.assign({}, a);
+    case ActionTypes.SCROLL_BY: 
       let { deltaY } = action;
-      return scrollHelper.scrollBy(state, deltaY);
+      state = scrollHelper.scrollBy(state, deltaY);
+      return state;
+    case ActionTypes.SCROLL_END: 
+      return scrollHelper.scrollEnd(state);
+    case ActionTypes.SCROLL_START: 
+      return scrollHelper.scrollStart(state);
+    case ActionTypes.SCROLL_TO: 
+      let { scrollPosition } = action;
+      state = scrollHelper.scrollTo(state, scrollPosition);
+      return state;
     default:
       return state;
   }
