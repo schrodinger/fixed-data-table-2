@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.2 
+ * FixedDataTable v0.7.3 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.2';
+	FixedDataTableRoot.version = '0.7.3';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -584,31 +584,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	      touchScrollEnabled: false
 	    };
 	  },
-	  getInitialState: function getInitialState() /*object*/{
+	  componentWillMount: function componentWillMount() {
 	    var props = this.props;
+
+	    var scrollToRow = props.scrollToRow;
+	    if (scrollToRow !== undefined && scrollToRow !== null) {
+	      this._rowToScrollTo = scrollToRow;
+	    }
+	    var scrollToColumn = props.scrollToColumn;
+	    if (scrollToColumn !== undefined && scrollToColumn !== null) {
+	      this._columnToScrollTo = scrollToColumn;
+	    }
+
 	    var viewportHeight = (props.height === undefined ? props.maxHeight : props.height) - (props.headerHeight || 0) - (props.footerHeight || 0) - (props.groupHeaderHeight || 0);
 	    this._scrollHelper = new _FixedDataTableScrollHelper2.default(props.rowsCount, props.rowHeight, viewportHeight, props.rowHeightGetter);
+
 	    if (props.scrollTop) {
 	      this._scrollHelper.scrollTo(props.scrollTop);
 	    }
 	    this._didScrollStop = (0, _debounceCore2.default)(this._didScrollStop, 200, this);
 
-	    return this._calculateState(this.props);
-	  },
-	  componentWillMount: function componentWillMount() {
-	    var scrollToRow = this.props.scrollToRow;
-	    if (scrollToRow !== undefined && scrollToRow !== null) {
-	      this._rowToScrollTo = scrollToRow;
-	    }
-	    var scrollToColumn = this.props.scrollToColumn;
-	    if (scrollToColumn !== undefined && scrollToColumn !== null) {
-	      this._columnToScrollTo = scrollToColumn;
-	    }
-
-	    var touchEnabled = this.state.touchScrollEnabled === true;
+	    var touchEnabled = props.touchScrollEnabled === true;
 
 	    this._wheelHandler = new _ReactWheelHandler2.default(this._onScroll, this._shouldHandleWheelX, this._shouldHandleWheelY);
 	    this._touchHandler = new _ReactTouchHandler2.default(this._onScroll, touchEnabled && this._shouldHandleWheelX, touchEnabled && this._shouldHandleWheelY);
+
+	    this.setState(this._calculateState(props));
 	  },
 	  _shouldHandleWheelX: function _shouldHandleWheelX( /*number*/delta) /*boolean*/{
 	    if (this.props.overflowX === 'hidden') {
@@ -1514,7 +1515,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * onWheel should is to be called with two arguments: deltaX and deltaY in
 	   * this order
 	   */
-
 	  function ReactWheelHandler(
 	  /*function*/onWheel,
 	  /*boolean|function*/handleScrollX,
@@ -2351,7 +2351,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * onTouchScroll should is to be called with two arguments: deltaX and deltaY in
 	   * this order
 	   */
-
 	  function ReactTouchHandler(
 	  /*function*/onTouchScroll,
 	  /*boolean|function*/handleScrollX,
@@ -3126,7 +3125,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * onMove is the callback that will be called on every mouse move.
 	   * onMoveEnd is called on mouse up when movement has ended.
 	   */
-
 	  function DOMMouseMoveTracker(
 	  /*function*/onMove,
 	  /*function*/onMoveEnd,
@@ -4210,7 +4208,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	//   and get it's position back
 	// All operations take amortized log(n) time where n is number of elements in
 	// the set.
-
 	var IntegerBufferSet = function () {
 	  function IntegerBufferSet() {
 	    _classCallCheck(this, IntegerBufferSet);
