@@ -443,7 +443,8 @@ var FixedDataTable = React.createClass({
 
     // In the case of controlled scrolling, notify.
     if (this.props.ownerHeight !== nextProps.ownerHeight ||
-      this.props.scrollTop !== nextProps.scrollTop) {
+        this.props.scrollTop !== nextProps.scrollTop ||
+        this.props.scrollLeft !== nextProps.scrollLeft) {
       this._didScrollStart();
     }
     this._didScrollStop();
