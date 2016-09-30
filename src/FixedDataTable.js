@@ -323,6 +323,10 @@ var FixedDataTable = React.createClass({
     if (scrollToColumn !== undefined && scrollToColumn !== null) {
       this._columnToScrollTo = scrollToColumn;
     }
+    var scrollTop = props.scrollTop;
+    if (typeof scrollTop !== 'undefined' && scrollTop !== null) {
+      this._scrollTop = scrollTop;
+    }
 
     var viewportHeight =
       (props.height === undefined ? props.maxHeight : props.height) -
@@ -336,9 +340,6 @@ var FixedDataTable = React.createClass({
       props.rowHeightGetter
     );
 
-    if (props.scrollTop) {
-      this._scrollHelper.scrollTo(props.scrollTop);
-    }
     this._didScrollStop = debounceCore(this._didScrollStop, 200, this);
 
     var touchEnabled = props.touchScrollEnabled === true;
@@ -945,6 +946,15 @@ var FixedDataTable = React.createClass({
       firstRowOffset = scrollState.offset;
       scrollY = scrollState.position;
       delete this._rowToScrollTo;
+    }
+
+    // Check if scrollTop was provided as a prop on initial mount
+    if (typeof this._scrollTop !== 'undefined') {
+      scrollState = this._scrollHelper.scrollTo(this._scrollTop);
+      firstRowIndex = scrollState.index;
+      firstRowOffset = scrollState.offset;
+      scrollY = scrollState.position;
+      delete this._scrollTop;
     }
 
     var columnResizingData;
