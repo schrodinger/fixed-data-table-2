@@ -882,8 +882,8 @@ var FixedDataTable = React.createClass({
     var scrollY = oldState ? oldState.scrollY : 0;
     var scrollX = oldState ? oldState.scrollX : 0;
 
-    var lastScrollLeft = oldState ? oldState.scrollLeft : undefined;
-    if (props.scrollLeft !== lastScrollLeft) {
+    var lastScrollLeft = oldState ? oldState.scrollLeft : 0;
+    if (props.scrollLeft !== undefined && props.scrollLeft !== lastScrollLeft) {
       scrollX = props.scrollLeft;
     }
 
@@ -921,7 +921,7 @@ var FixedDataTable = React.createClass({
 
     var lastScrollTop = oldState ? oldState.scrollTop : undefined;
     if (props.scrollTop !== lastScrollTop) {
-      scrollState = this._scrollHelper.scrollRowIntoView(props.scrollTop);
+      scrollState = this._scrollHelper.scrollTo(props.scrollTop);
       firstRowIndex = scrollState.index;
       firstRowOffset = scrollState.offset;
       scrollY = scrollState.position;
@@ -959,7 +959,7 @@ var FixedDataTable = React.createClass({
     );
 
     var lastScrollToColumn = oldState ? oldState.scrollToColumn : undefined;
-    if (props.scrollToColumn !== lastScrollToColumn) {
+    if (props.scrollToColumn !== null && props.scrollToColumn !== lastScrollToColumn) {
       // If selected column is a fixed column, don't scroll
       var fixedColumnsCount = columnInfo.bodyFixedColumns.length;
       if (props.scrollToColumn >= fixedColumnsCount) {

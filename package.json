@@ -29,6 +29,7 @@
     "less-loader": "^2.0.0",
     "marked": "^0.3.2",
     "mocha": "^2.5.3",
+    "mocha-loader": "^1.0.0",
     "mocha-webpack": "^0.4.0",
     "null-loader": "^0.1.0",
     "postcss": "^4.0.2",
