@@ -26,7 +26,7 @@ describe('FixedDataTableRoot', function() {
         </Table>
       );
       let renderer = createRenderer();
-      return renderer.render(table);
+      renderer.render(table);
       let tableRender = renderer.getRenderOutput();
 
       assert.isTrue(isElement(tableRender));
