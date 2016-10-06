@@ -17,8 +17,9 @@ class TextCell extends React.Component {
   }
 
   render() {
+    var {data, rowIndex, ...props} = this.props;
     return (
-      <Cell {...this.props}>
+      <Cell {...props}>
         {this.props.data.getObjectAt(this.props.rowIndex)[this.props.columnKey]}
       </Cell>
     );

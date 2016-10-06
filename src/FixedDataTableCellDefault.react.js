@@ -61,11 +61,20 @@ var FixedDataTableCellDefault = React.createClass({
       PropTypes.string,
       PropTypes.number,
     ]),
+
+    /**
+     * Optional prop that represents the rows index in the table.
+     * For the 'cell' prop of a Column, this parameter will exist for any
+     * cell in a row with a positive index.
+     *
+     * Below that entry point the user is welcome to consume or
+     * pass the prop through at their discretion.
+     */
+    rowIndex: PropTypes.number
   },
 
   render() {
-    var {height, width, style, className, children, ...props} = this.props;
-
+    var {height, width, style, className, children, columnKey, rowIndex, ...props} = this.props;
     var innerStyle = {
       height,
       width,
