@@ -4,27 +4,10 @@
 
 "use strict";
 
-var FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-var FixedDataTable = require('fixed-data-table-2');
-var React = require('react');
-var ReactShallowCompare = require('react-addons-shallow-compare');
-
-const {Table, Column, Cell} = FixedDataTable;
-
-class TextCell extends React.Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return ReactShallowCompare(this, nextProps, nextState);
-  }
-
-  render() {
-    var {data, rowIndex, ...props} = this.props;
-    return (
-      <Cell {...props}>
-        {this.props.data.getObjectAt(this.props.rowIndex)[this.props.columnKey]}
-      </Cell>
-    );
-  }
-};
+const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
+const { TextCell } = require('./helpers/cells');
+const { Table, Column, Cell } = require('fixed-data-table-2');
+const React = require('react');
 
 var columnTitles = {
   'firstName': 'First Name',
@@ -45,7 +28,7 @@ class ReorderExample extends React.Component {
     super(props);
 
     this.state = {
-      dataList: new FakeObjectDataListStore(1000000),
+      dataList: new FakeObjectDataListStore(10000),
       columnOrder: [
         'firstName',
         'lastName',
