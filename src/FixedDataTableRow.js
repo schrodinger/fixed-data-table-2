@@ -195,9 +195,9 @@ var FixedDataTableRowImpl = React.createClass({
   _renderColumnsLeftShadow(/*number*/ left) /*?object*/ {
     var className = cx({
       'fixedDataTableRowLayout/fixedColumnsDivider': left > 0,
-       'fixedDataTableRowLayout/columnsShadow': this.props.scrollLeft > 0,
-       'public/fixedDataTableRow/fixedColumnsDivider': left > 0,
-       'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0,
+      'fixedDataTableRowLayout/columnsShadow': this.props.scrollLeft > 0,
+      'public/fixedDataTableRow/fixedColumnsDivider': left > 0,
+      'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0,
      });
      var style = {
        left: left,
@@ -207,13 +207,13 @@ var FixedDataTableRowImpl = React.createClass({
    },
 
   _renderColumnsRightShadow(/*number*/ totalWidth) /*?object*/ {
-    if (this.props.scrollLeft + this.props.width + 0.5 < totalWidth) {
-      var className = cx({
-        'fixedDataTableRowLayout/columnsShadow': true,
-        'fixedDataTableRowLayout/columnsRightShadow': true,
-        'public/fixedDataTableRow/columnsShadow': true,
-        'public/fixedDataTableRow/columnsRightShadow': true,
-      });
+    if (Math.ceil(this.props.scrollLeft + this.props.width) < totalWidth) {
+      var className = cx(
+        'fixedDataTableRowLayout/columnsShadow',
+        'fixedDataTableRowLayout/columnsRightShadow',
+        'public/fixedDataTableRow/columnsShadow',
+        'public/fixedDataTableRow/columnsRightShadow'
+      );
       var style = {
         height: this.props.height
       };
