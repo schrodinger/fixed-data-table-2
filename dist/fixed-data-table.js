@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.4 
+ * FixedDataTable v0.7.5 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.4';
+	FixedDataTableRoot.version = '0.7.5';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -587,21 +587,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  componentWillMount: function componentWillMount() {
 	    var props = this.props;
 
-	    var scrollToRow = props.scrollToRow;
-	    if (scrollToRow !== undefined && scrollToRow !== null) {
-	      this._rowToScrollTo = scrollToRow;
-	    }
-	    var scrollToColumn = props.scrollToColumn;
-	    if (scrollToColumn !== undefined && scrollToColumn !== null) {
-	      this._columnToScrollTo = scrollToColumn;
-	    }
-
 	    var viewportHeight = (props.height === undefined ? props.maxHeight : props.height) - (props.headerHeight || 0) - (props.footerHeight || 0) - (props.groupHeaderHeight || 0);
 	    this._scrollHelper = new _FixedDataTableScrollHelper2.default(props.rowsCount, props.rowHeight, viewportHeight, props.rowHeightGetter);
 
-	    if (props.scrollTop) {
-	      this._scrollHelper.scrollTo(props.scrollTop);
-	    }
 	    this._didScrollStop = (0, _debounceCore2.default)(this._didScrollStop, 200, this);
 
 	    var touchEnabled = props.touchScrollEnabled === true;
@@ -657,15 +645,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._reportContentHeight();
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps( /*object*/nextProps) {
-	    var scrollToRow = nextProps.scrollToRow;
-	    if (scrollToRow !== undefined && scrollToRow !== null) {
-	      this._rowToScrollTo = scrollToRow;
-	    }
-	    var scrollToColumn = nextProps.scrollToColumn;
-	    if (scrollToColumn !== undefined && scrollToColumn !== null) {
-	      this._columnToScrollTo = scrollToColumn;
-	    }
-
 	    var newOverflowX = nextProps.overflowX;
 	    var newOverflowY = nextProps.overflowY;
 	    var touchEnabled = nextProps.touchScrollEnabled === true;
@@ -1056,22 +1035,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      useGroupHeader = true;
 	    }
 
+	    var scrollState;
 	    var firstRowIndex = oldState && oldState.firstRowIndex || 0;
 	    var firstRowOffset = oldState && oldState.firstRowOffset || 0;
-	    var scrollX, scrollY, scrollState;
+	    var scrollY = oldState ? oldState.scrollY : 0;
+	    var scrollX = oldState ? oldState.scrollX : 0;
 
-	    scrollX = oldState ? oldState.scrollX : 0;
-	    if (props.scrollLeft !== this.props.scrollLeft) {
+	    var lastScrollLeft = oldState ? oldState.scrollLeft : 0;
+	    if (props.scrollLeft !== undefined && props.scrollLeft !== lastScrollLeft) {
 	      scrollX = props.scrollLeft;
 	    }
 
-	    scrollY = oldState ? oldState.scrollY : 0;
-	    if (props.scrollTop !== this.props.scrollTop) {
-	      scrollState = this._scrollHelper.scrollTo(props.scrollTop);
-	      firstRowIndex = scrollState.index;
-	      firstRowOffset = scrollState.offset;
-	      scrollY = scrollState.position;
-	    }
 	    var groupHeaderHeight = useGroupHeader ? props.groupHeaderHeight : 0;
 
 	    if (oldState && (props.rowsCount !== oldState.rowsCount || props.rowHeight !== oldState.rowHeight)) {
@@ -1087,12 +1061,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._scrollHelper.setRowHeightGetter(props.rowHeightGetter);
 	    }
 
-	    if (this._rowToScrollTo !== undefined) {
-	      scrollState = this._scrollHelper.scrollRowIntoView(this._rowToScrollTo);
+	    var lastScrollToRow = oldState ? oldState.scrollToRow : undefined;
+	    if (props.scrollToRow !== lastScrollToRow) {
+	      scrollState = this._scrollHelper.scrollRowIntoView(props.scrollToRow);
 	      firstRowIndex = scrollState.index;
 	      firstRowOffset = scrollState.offset;
 	      scrollY = scrollState.position;
-	      delete this._rowToScrollTo;
+	    }
+
+	    var lastScrollTop = oldState ? oldState.scrollTop : undefined;
+	    if (props.scrollTop !== lastScrollTop) {
+	      scrollState = this._scrollHelper.scrollTo(props.scrollTop);
+	      firstRowIndex = scrollState.index;
+	      firstRowOffset = scrollState.offset;
+	      scrollY = scrollState.position;
 	    }
 
 	    var columnResizingData;
@@ -1115,10 +1097,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var columnInfo = this._populateColumnsAndColumnData(columns, columnGroups, oldState);
 
-	    if (this._columnToScrollTo !== undefined) {
+	    var lastScrollToColumn = oldState ? oldState.scrollToColumn : undefined;
+	    if (props.scrollToColumn !== null && props.scrollToColumn !== lastScrollToColumn) {
 	      // If selected column is a fixed column, don't scroll
 	      var fixedColumnsCount = columnInfo.bodyFixedColumns.length;
-	      if (this._columnToScrollTo >= fixedColumnsCount) {
+	      if (props.scrollToColumn >= fixedColumnsCount) {
 	        var totalFixedColumnsWidth = 0;
 	        var i, column;
 	        for (i = 0; i < columnInfo.bodyFixedColumns.length; ++i) {
@@ -1126,7 +1109,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          totalFixedColumnsWidth += column.props.width;
 	        }
 
-	        var scrollableColumnIndex = Math.min(this._columnToScrollTo - fixedColumnsCount, columnInfo.bodyScrollableColumns.length - 1);
+	        var scrollableColumnIndex = Math.min(props.scrollToColumn - fixedColumnsCount, columnInfo.bodyScrollableColumns.length - 1);
 
 	        var previousColumnsWidth = 0;
 	        for (i = 0; i < scrollableColumnIndex; ++i) {
@@ -1146,7 +1129,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          scrollX = previousColumnsWidth;
 	        }
 	      }
-	      delete this._columnToScrollTo;
 	    }
 
 	    var useMaxHeight = props.height === undefined;
@@ -4750,7 +4732,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      rowHeight: this.props.height,
 	      rowIndex: this.props.index
 	    });
-	    var columnsShadow = this._renderColumnsShadow(fixedColumnsWidth);
+	    var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
 	    var scrollableColumns = _React2.default.createElement(_FixedDataTableCellGroup2.default, {
 	      key: 'scrollable_cells',
 	      isScrolling: this.props.isScrolling,
@@ -4769,6 +4751,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      rowHeight: this.props.height,
 	      rowIndex: this.props.index
 	    });
+	    var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
+	    var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
 
 	    return _React2.default.createElement(
 	      'div',
@@ -4785,8 +4769,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        { className: (0, _cx2.default)('fixedDataTableRowLayout/body') },
 	        fixedColumns,
 	        scrollableColumns,
-	        columnsShadow
-	      )
+	        columnsLeftShadow
+	      ),
+	      columnsRightShadow
 	    );
 	  },
 	  _getColumnsWidth: function _getColumnsWidth( /*array*/columns) /*number*/{
@@ -4796,16 +4781,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return width;
 	  },
-	  _renderColumnsShadow: function _renderColumnsShadow( /*number*/left) /*?object*/{
-	    if (left > 0) {
-	      var className = (0, _cx2.default)({
-	        'fixedDataTableRowLayout/fixedColumnsDivider': true,
-	        'fixedDataTableRowLayout/columnsShadow': this.props.scrollLeft > 0,
-	        'public/fixedDataTableRow/fixedColumnsDivider': true,
-	        'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0
-	      });
+	  _renderColumnsLeftShadow: function _renderColumnsLeftShadow( /*number*/left) /*?object*/{
+	    var className = (0, _cx2.default)({
+	      'fixedDataTableRowLayout/fixedColumnsDivider': left > 0,
+	      'fixedDataTableRowLayout/columnsShadow': this.props.scrollLeft > 0,
+	      'public/fixedDataTableRow/fixedColumnsDivider': left > 0,
+	      'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0
+	    });
+	    var style = {
+	      left: left,
+	      height: this.props.height
+	    };
+	    return _React2.default.createElement('div', { className: className, style: style });
+	  },
+	  _renderColumnsRightShadow: function _renderColumnsRightShadow( /*number*/totalWidth) /*?object*/{
+	    if (Math.ceil(this.props.scrollLeft + this.props.width) < totalWidth) {
+	      var className = (0, _cx2.default)('fixedDataTableRowLayout/columnsShadow', 'fixedDataTableRowLayout/columnsRightShadow', 'public/fixedDataTableRow/columnsShadow', 'public/fixedDataTableRow/columnsRightShadow');
 	      var style = {
-	        left: left,
 	        height: this.props.height
 	      };
 	      return _React2.default.createElement('div', { className: className, style: style });

@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.4 
+ * FixedDataTable v0.7.5 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -158,6 +158,11 @@
 
 .public_fixedDataTableRow_columnsShadow {
   background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==) repeat-y;
+}
+
+.public_fixedDataTableRow_columnsRightShadow {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
 }
 /**
  * Copyright Schrodinger, LLC
