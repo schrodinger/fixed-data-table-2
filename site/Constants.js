@@ -57,7 +57,7 @@ exports.ExamplePages = {
     file: EXAMPLES_LOCATION_BASE + 'ScollToExample.js',
     title: 'Jump to row',
     description: 'A table example that will list search matches and jump to specified row',
-  }, 
+  },
   TOUCH_SCROLL_EXAMPLE: {
     location: 'example-touch-scroll.html',
     file: EXAMPLES_LOCATION_BASE + 'TouchScrollExample.js',
@@ -99,6 +99,24 @@ exports.ExamplePages = {
     file: EXAMPLES_LOCATION_BASE + 'SortExample.js',
     title: 'Client-side Sort',
     description: 'A table example that is sortable by column.'
+  },
+  RESPONSIVE_EXAMPLE: {
+    location: 'example-responsive.html',
+    file: EXAMPLES_LOCATION_BASE + 'ResponsiveExample.js',
+    title: 'Responsive Resize',
+    description: 'A table example that resizes based on its parent\'s size.'
+  },
+  CSS_EXAMPLE: {
+    location: 'example-css.html',
+    file: EXAMPLES_LOCATION_BASE + 'CssExample.js',
+    title: 'Custom Styling',
+    description: 'A table example with custom styling.'
+  },
+  TOOLTIP_EXAMPLE: {
+    location: 'example-tooltip.html',
+    file: EXAMPLES_LOCATION_BASE + 'TooltipExample.js',
+    title: 'Tooltips',
+    description: 'A table example that displays additional information in a tooltip.'
   },
 };
 

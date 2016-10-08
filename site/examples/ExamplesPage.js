@@ -22,6 +22,7 @@ var ExampleHeader = require('./ExampleHeader');
 var ExamplesWrapper = require('./ExamplesWrapper');
 var React = require('react');
 var Constants = require('../Constants');
+const Dimensions = require('react-dimensions');
 
 var ExamplePages = Constants.ExamplePages;
 
@@ -38,17 +39,8 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.PAGINATION_EXAMPLE.location]: require('../../examples/PaginationExample'),
   [ExamplePages.FILTER_EXAMPLE.location]: require('../../examples/FilterExample'),
   [ExamplePages.SORT_EXAMPLE.location]: require('../../examples/SortExample'),
+  [ExamplePages.RESPONSIVE_EXAMPLE.location]: require('../../examples/ResponsiveExample'),
 };
-
-// Render old examples
-// var EXAMPLE_COMPONENTS_OLD = {
-//   [ExamplePages.OBJECT_DATA_EXAMPLE.location]: require('../../examples/old/ObjectDataExample'),
-//   [ExamplePages.RESIZE_EXAMPLE.location]: require('../../examples/old/ResizeExample'),
-//   [ExamplePages.FLEXGROW_EXAMPLE.location]: require('../../examples/old/FlexGrowExample'),
-//   [ExamplePages.COLUMN_GROUPS_EXAMPLE.location]: require('../../examples/old/ColumnGroupsExample'),
-//   [ExamplePages.FILTER_EXAMPLE.location]: require('../../examples/old/FilterExample'),
-//   [ExamplePages.SORT_EXAMPLE.location]: require('../../examples/old/SortExample'),
-// };
 
 var ExamplesPage = React.createClass({
   getInitialState() {
@@ -68,43 +60,27 @@ var ExamplesPage = React.createClass({
 
   _renderPage() {
     var Example = EXAMPLE_COMPONENTS[this.props.page.location];
-
     return (
       <Example
-        height={this.state.tableHeight}
-        width={this.state.tableWidth}
+        height={this.props.containerHeight}
+        width={this.props.containerWidth}
       />
     );
   },
 
   componentDidMount() {
-    this._update();
-    var win = window;
-    if (win.addEventListener) {
-      win.addEventListener('resize', this._onResize, false);
-    } else if (win.attachEvent) {
-      win.attachEvent('onresize', this._onResize);
-    } else {
-      win.onresize = this._onResize;
-    }
-  },
-
-  _onResize() {
-    clearTimeout(this._updateTimer);
-    this._updateTimer = setTimeout(this._update, 16);
-  },
-
-  _update() {
-    var win = window;
-
-    var widthOffset = win.innerWidth < 680 ? 0 : 240;
-
     this.setState({
-      renderPage: true,
-      tableWidth: win.innerWidth - widthOffset,
-      tableHeight: win.innerHeight - 200,
+      renderPage: true
     });
   }
 });
 
-module.exports = ExamplesPage;
+module.exports = Dimensions({
+  getHeight: function(element) {
+    return window.innerHeight - 200;
+  },
+  getWidth: function(element) {
+    var widthOffset = window.innerWidth < 680 ? 0 : 240;
+    return window.innerWidth - widthOffset;
+  }
+})(ExamplesPage);
