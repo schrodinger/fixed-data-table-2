@@ -106,9 +106,9 @@ exports.ExamplePages = {
     title: 'Responsive Resize',
     description: 'A table example that resizes based on its parent\'s size.'
   },
-  CSS_EXAMPLE: {
-    location: 'example-css.html',
-    file: EXAMPLES_LOCATION_BASE + 'CssExample.js',
+  STYLING_EXAMPLE: {
+    location: 'example-styling.html',
+    file: EXAMPLES_LOCATION_BASE + 'StylingExample.js',
     title: 'Custom Styling',
     description: 'A table example with custom styling.'
   },
