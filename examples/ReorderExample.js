@@ -34,7 +34,7 @@ class ReorderExample extends React.Component {
     super(props);
 
     this.state = {
-      dataList: new FakeObjectDataListStore(10000),
+      dataList: new FakeObjectDataListStore(1000000),
       columnOrder: [
         'firstName',
         'lastName',

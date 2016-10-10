@@ -80,17 +80,6 @@ class LinkCell extends React.PureComponent {
 };
 module.exports.LinkCell = LinkCell;
 
-module.exports.PagedCell = ({data, ...props}) => {
-  const dataVersion = data.getDataVersion();
-  return (
-    <PendingCell
-      data={data}
-      dataVersion={dataVersion}
-      {...props}>
-    </PendingCell>
-  );
-};
-
 class PendingCell extends React.PureComponent {
   render() {
     const {data, rowIndex, columnKey, dataVersion, ...props} = this.props;
@@ -102,6 +91,17 @@ class PendingCell extends React.PureComponent {
     );
   }
 };
+const PagedCell = ({data, ...props}) => {
+  const dataVersion = data.getDataVersion();
+  return (
+    <PendingCell
+      data={data}
+      dataVersion={dataVersion}
+      {...props}>
+    </PendingCell>
+  );
+};
+module.exports.PagedCell = PagedCell;
 
 class RemovableHeaderCell extends React.PureComponent {
   render() {
@@ -129,7 +129,6 @@ class TextCell extends React.PureComponent {
   }
 };
 module.exports.TextCell = TextCell;
-
 
 class TooltipCell extends React.PureComponent {
   render() {
