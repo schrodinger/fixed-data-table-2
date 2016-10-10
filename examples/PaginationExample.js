@@ -4,27 +4,22 @@
 
 "use strict";
 
-var FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-var FixedDataTable = require('fixed-data-table-2');
-var React = require('react');
-
-const {Table, Column, Cell} = FixedDataTable;
-
-const TextCell = ({rowIndex, data, col, ...props}) => {
-  var rowObject = data.getObjectAt(rowIndex);
-  return (
-    <Cell {...props}>
-      {rowObject ? rowObject[col] : 'pending'}
-    </Cell>
-  );
-};
+const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
+const { PagedCell } = require('./helpers/cells');
+const { Table, Column, Cell } = require('fixed-data-table-2');
+const React = require('react');
 
 class PagedData {
   constructor(callback) {
     this._dataList = new FakeObjectDataListStore(2000);
     this._end = 50;
     this._pending = false;
+    this._dataVersion = 0;
     this._callback = callback;
+  }
+
+  getDataVersion() {
+    return this._dataVersion;
   }
 
   getSize() {
@@ -41,6 +36,7 @@ class PagedData {
     .then(() => {
       this._pending = false;
       this._end = end;
+      this._dataVersion++;
       this._callback(end)
     });
   }
@@ -91,30 +87,35 @@ class PaginationExample extends React.Component {
             width={50}
           />
           <Column
+            columnKey="firstName"
             header={<Cell>First Name</Cell>}
-            cell={<TextCell data={pagedData} col="firstName" />}
+            cell={<PagedCell data={pagedData} />}
             fixed={true}
             width={100}
           />
           <Column
+            columnKey="lastName"
             header={<Cell>Last Name</Cell>}
-            cell={<TextCell data={pagedData} col="lastName" />}
+            cell={<PagedCell data={pagedData} />}
             fixed={true}
             width={100}
           />
           <Column
+            columnKey="city"
             header={<Cell>City</Cell>}
-            cell={<TextCell data={pagedData} col="city" />}
+            cell={<PagedCell data={pagedData} />}
             width={100}
           />
           <Column
+            columnKey="street"
             header={<Cell>Street</Cell>}
-            cell={<TextCell data={pagedData} col="street" />}
+            cell={<PagedCell data={pagedData} />}
             width={200}
           />
           <Column
+            columnKey="zipCode"
             header={<Cell>Zip Code</Cell>}
-            cell={<TextCell data={pagedData} col="zipCode" />}
+            cell={<PagedCell data={pagedData} />}
             width={200}
           />
         </Table>

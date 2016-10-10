@@ -4,26 +4,10 @@
 
 "use strict";
 
-let FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-let FixedDataTable = require('fixed-data-table-2');
-let React = require('react');
-
-const {Table, Column, Cell} = FixedDataTable;
-
-const HeaderCell = ({columnKey, callback, children, ...props}) => (
-  <Cell {...props}>
-    {children}
-    <a style={{float: 'right'}} onClick={() => callback(columnKey)}>
-      {'\u274C'}
-    </a>
-  </Cell>
-);
-
-const TextCell = ({rowIndex, data, columnKey, ...props}) => (
-  <Cell {...props}>
-    {data.getObjectAt(rowIndex)[columnKey]}
-  </Cell>
-);
+const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
+const { ColoredTextCell, RemovableHeaderCell, TextCell } = require('./helpers/cells');
+const { Table, Column, Cell } = require('fixed-data-table-2');
+const React = require('react');
 
 let columnTitles = {
   'firstName': 'First Name',
@@ -90,7 +74,7 @@ class HideColumnExample extends React.Component {
             return <Column
               columnKey={columnKey}
               key={i}
-              header={<HeaderCell callback={handleColumnHide}>{columnTitles[columnKey]}</HeaderCell>}
+              header={<RemovableHeaderCell callback={handleColumnHide}>{columnTitles[columnKey]}</RemovableHeaderCell>}
               cell={<TextCell data={dataList} />}
               fixed={i === 0}
               width={columnWidths[columnKey]}
