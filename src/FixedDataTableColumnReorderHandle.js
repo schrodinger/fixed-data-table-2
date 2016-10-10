@@ -9,17 +9,17 @@
  * This is to be used with the FixedDataTable. It is a header icon
  * that allows you to reorder the corresponding column.
  *
- * @providesModule FixedDataTableColumnReorderHandle.react
+ * @providesModule FixedDataTableColumnReorderHandle
  * @typechecks
  */
 
-var DOMMouseMoveTracker = require('DOMMouseMoveTracker');
-var Locale = require('Locale');
-var React = require('React');
-var ReactComponentWithPureRenderMixin = require('ReactComponentWithPureRenderMixin');
+import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
+import Locale from 'Locale';
+import React from 'React';
+import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
 
-var clamp = require('clamp');
-var cx = require('cx');
+import clamp from 'clamp';
+import cx from 'cx';
 
 var {PropTypes} = React;
 
@@ -54,6 +54,8 @@ var FixedDataTableColumnReorderHandle = React.createClass({
 
   componentWillUnmount() {
     if (this._mouseMoveTracker) {
+      cancelAnimationFrame(this.frameId);
+      this.frameId = null;
       this._mouseMoveTracker.releaseMouseMoves();
       this._mouseMoveTracker = null;
     }
@@ -101,7 +103,7 @@ var FixedDataTableColumnReorderHandle = React.createClass({
 
     this._distance = 0;
     this._animating = true;
-    requestAnimationFrame(this._updateState);
+    this.frameId = requestAnimationFrame(this._updateState);
   },
 
   _onMove(/*number*/ deltaX) {
@@ -110,13 +112,15 @@ var FixedDataTableColumnReorderHandle = React.createClass({
 
   _onColumnReorderEnd() {
     this._animating = false;
+    cancelAnimationFrame(this.frameId);
+    this.frameId = null;
     this._mouseMoveTracker.releaseMouseMoves();
     this.props.onColumnReorderEnd();
   },
 
   _updateState() {
     if (this._animating) {
-      requestAnimationFrame(this._updateState)
+      this.frameId = requestAnimationFrame(this._updateState)
     }
     this.setState({
       dragDistance: this._distance

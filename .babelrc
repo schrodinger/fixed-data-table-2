@@ -1,5 +1,8 @@
 {
-  "stage": 1,
-  "plugins": ["./build_helpers/objectAssignTransformer.js"],
-  "blacklist": ["validation.react"]
+  "plugins": [
+    "transform-object-rest-spread",
+    "transform-object-assign",
+    "syntax-trailing-function-commas"
+  ],
+  "presets": ["es2015", "react"]
 }

@@ -10,17 +10,17 @@
  * that when you click on a column that is resizable appears and allows
  * you to resize the corresponding column.
  *
- * @providesModule FixedDataTableColumnResizeHandle.react
+ * @providesModule FixedDataTableColumnResizeHandle
  * @typechecks
  */
 
-var DOMMouseMoveTracker = require('DOMMouseMoveTracker');
-var Locale = require('Locale');
-var React = require('React');
-var ReactComponentWithPureRenderMixin = require('ReactComponentWithPureRenderMixin');
+import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
+import Locale from 'Locale';
+import React from 'React';
+import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
 
-var clamp = require('clamp');
-var cx = require('cx');
+import clamp from 'clamp';
+import cx from 'cx';
 
 var {PropTypes} = React;
 

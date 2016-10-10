@@ -12,9 +12,9 @@
 
 'use strict';
 
-var BrowserSupportCore = require('BrowserSupportCore');
+import BrowserSupportCore from 'BrowserSupportCore';
 
-var getVendorPrefixedName = require('getVendorPrefixedName');
+import getVendorPrefixedName from 'getVendorPrefixedName';
 
 var TRANSFORM = getVendorPrefixedName('transform');
 var BACKFACE_VISIBILITY = getVendorPrefixedName('backfaceVisibility');

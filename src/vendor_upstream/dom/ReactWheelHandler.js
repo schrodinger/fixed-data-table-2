@@ -15,9 +15,9 @@
 
 'use strict';
 
-var emptyFunction = require('emptyFunction');
-var normalizeWheel = require('normalizeWheel');
-var requestAnimationFramePolyfill = require('requestAnimationFramePolyfill');
+import emptyFunction from 'emptyFunction';
+import normalizeWheel from 'normalizeWheel';
+import requestAnimationFramePolyfill from 'requestAnimationFramePolyfill';
 
 class ReactWheelHandler {
   /**

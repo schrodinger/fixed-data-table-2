@@ -13,7 +13,7 @@
 
 'use strict';
 
-var invariant = require('invariant');
+import invariant from 'invariant';
 
 var parent = node => Math.floor(node / 2);
 
@@ -52,25 +52,31 @@ function ceilLog2(x: number): number {
  * entire array.
  */
 class PrefixIntervalTree {
-  /**
-   * Number of elements in the array
-   */
-  _size: number;
-
-  /**
-   * Half the size of the heap. It is also the number of non-leaf nodes, and the
-   * index of the first element in the heap. Always a power of 2.
-   */
-  _half: number;
-
-  /**
-   * Binary heap
-   */
-  _heap: Array<number>;
-
   constructor(xs: Array<number>) {
+    /**
+     * Number of elements in the array
+     *
+     * @type {number}
+     * @private
+     */
     this._size = xs.length;
+
+    /**
+     * Half the size of the heap. It is also the number of non-leaf nodes, and the
+     * index of the first element in the heap. Always a power of 2.
+     *
+     * @type {number}
+     * @private
+     */
     this._half = ceilLog2(this._size);
+
+    /**
+     * Binary heap
+     *
+     * @type {!Array.<number>}
+     * @const
+     * @private
+     */
     this._heap = new Int32Array(2 * this._half);
 
     var i;
@@ -100,7 +106,7 @@ class PrefixIntervalTree {
     invariant(
       0 <= index && index < this._size,
       'Index out of range %s',
-      index,
+      index
     );
 
     var node = this._half + index;
@@ -117,7 +123,7 @@ class PrefixIntervalTree {
     invariant(
       0 <= index && index < this._size,
       'Index out of range %s',
-      index,
+      index
     );
 
     var node = this._half + index;
@@ -135,7 +141,7 @@ class PrefixIntervalTree {
     invariant(
       0 <= end && end < this._size + 1,
       'Index out of range %s',
-      end,
+      end
     );
 
     if (end === 0) {
@@ -160,7 +166,7 @@ class PrefixIntervalTree {
     invariant(
       0 <= inclusiveEnd && inclusiveEnd < this._size,
       'Index out of range %s',
-      inclusiveEnd,
+      inclusiveEnd
     );
     return this.sumUntil(inclusiveEnd + 1);
   }

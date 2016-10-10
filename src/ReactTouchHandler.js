@@ -16,8 +16,8 @@
 
 'use strict';
 
-var emptyFunction = require('emptyFunction');
-var requestAnimationFramePolyfill = require('requestAnimationFramePolyfill');
+import emptyFunction from 'emptyFunction';
+import requestAnimationFramePolyfill from 'requestAnimationFramePolyfill';
 
 var MOVE_AMPLITUDE = 1.6;
 var DECELERATION_AMPLITUDE = 1.6;
@@ -128,7 +128,7 @@ class ReactTouchHandler {
     this._trackerId = null;
 
     // Initialize decelerating autoscroll on drag stop
-    requestAnimationFrame(this._startAutoScroll);
+    requestAnimationFramePolyfill(this._startAutoScroll);
 
     if (this._stopPropagation()) {
       event.stopPropagation();
@@ -274,7 +274,7 @@ class ReactTouchHandler {
 
     if (deltaX !== 0 || deltaY !== 0) {
       this._onTouchScrollCallback(deltaX, deltaY);
-      requestAnimationFrame(this._autoScroll);
+      requestAnimationFramePolyfill(this._autoScroll);
     }
   }
 }

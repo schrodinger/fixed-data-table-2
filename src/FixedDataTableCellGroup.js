@@ -6,18 +6,18 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule FixedDataTableCellGroup.react
+ * @providesModule FixedDataTableCellGroup
  * @typechecks
  */
 
 'use strict';
 
-var FixedDataTableHelper = require('FixedDataTableHelper');
-var React = require('React');
-var FixedDataTableCell = require('FixedDataTableCell.react');
+import FixedDataTableHelper from 'FixedDataTableHelper';
+import React from 'React';
+import FixedDataTableCell from 'FixedDataTableCell';
 
-var cx = require('cx');
-var FixedDataTableTranslateDOMPosition = require('FixedDataTableTranslateDOMPosition');
+import cx from 'cx';
+import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
 var {PropTypes} = React;
 
@@ -78,7 +78,8 @@ var FixedDataTableCellGroupImpl = React.createClass({
     var currentPosition = 0;
     for (var i = 0, j = columns.length; i < j; i++) {
       var columnProps = columns[i].props;
-      if (!columnProps.allowCellsRecycling || (
+      var recycable = columnProps.allowCellsRecycling && !isColumnReordering;
+      if (!recycable || (
             currentPosition - props.left <= props.width &&
             currentPosition - props.left + columnProps.width >= 0)) {
         var key = 'cell_' + i;
