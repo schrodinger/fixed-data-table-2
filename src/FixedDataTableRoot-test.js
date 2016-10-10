@@ -5,7 +5,7 @@
 import { assert } from 'chai';
 import React from 'react';
 import FixedDataTable from './FixedDataTableRoot';
-import { createRenderer, isElement } from 'react-addons-test-utils';
+import { createRenderer, isElement, renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
 
 const { Table, Column } = FixedDataTable;
 
@@ -77,7 +77,54 @@ describe('FixedDataTableRoot', function() {
       assert.isBelow(table.state.scrollY, 30 * 100, 'should be below first row');
       assert.isAbove(table.state.scrollY, 30 * 100 - 300, 'should be above last row');
     });
-
   });
-});
 
+  describe('update render', function() {
+    let renderedTable;
+    beforeEach(function() {
+      class TableHOC extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            scrollToRow: 0,
+          };
+        }
+
+        render() {
+          return (
+            <Table
+              scrollToRow={this.state.scrollToRow}
+              {...this.props}
+            >
+              {this.props.children}
+            </Table>
+          );
+        }
+      }
+
+      const table = (
+        <TableHOC
+          width={600}
+          height={400}
+          rowsCount={50}
+          rowHeight={100}
+          headerHeight={50}
+          >
+          <Column width={300} />
+          <Column width={300} />
+          <Column width={300} />
+          <Column width={300} />
+          <Column width={300} />
+        </TableHOC>
+      );
+      const renderedTree = renderIntoDocument(table);
+      renderedTable = findRenderedComponentWithType(renderedTree, TableHOC)
+    })
+
+    it('should not blow up when unsetting the scrollToRow property', function() {
+      assert.doesNotThrow(function() {
+        renderedTable.setState({scrollToRow: undefined});
+      })
+    });
+  })
+});
