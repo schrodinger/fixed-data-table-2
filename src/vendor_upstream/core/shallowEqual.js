@@ -13,8 +13,6 @@
 
 'use strict';
 
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-
 /**
  * Performs equality by iterating through keys on an object and returning false
  * when any key has values which are not strictly equal between the arguments.
@@ -38,7 +36,7 @@ function shallowEqual(objA: mixed, objB: mixed): boolean {
   }
 
   // Test for A's keys different from B.
-  var bHasOwnProperty = hasOwnProperty.bind(objB);
+  var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
   for (var i = 0; i < keysA.length; i++) {
     if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
       return false;

@@ -912,7 +912,7 @@ var FixedDataTable = React.createClass({
     }
 
     var lastScrollToRow  = oldState ? oldState.scrollToRow : undefined;
-    if (props.scrollToRow !== lastScrollToRow) {
+    if (props.scrollToRow != null && props.scrollToRow !== lastScrollToRow) {
       scrollState = this._scrollHelper.scrollRowIntoView(props.scrollToRow);
       firstRowIndex = scrollState.index;
       firstRowOffset = scrollState.offset;
@@ -920,7 +920,7 @@ var FixedDataTable = React.createClass({
     }
 
     var lastScrollTop = oldState ? oldState.scrollTop : undefined;
-    if (props.scrollTop !== lastScrollTop) {
+    if (props.scrollTop != null && props.scrollTop !== lastScrollTop) {
       scrollState = this._scrollHelper.scrollTo(props.scrollTop);
       firstRowIndex = scrollState.index;
       firstRowOffset = scrollState.offset;

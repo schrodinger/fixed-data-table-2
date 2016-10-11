@@ -26,6 +26,7 @@
     "file-loader": "^0.8.1",
     "glob": "^4.3.5",
     "html-loader": "^0.2.3",
+    "jsdom": "^9.6.0",
     "less": "^2.2.0",
     "less-loader": "^2.0.0",
     "marked": "^0.3.2",
@@ -39,6 +40,7 @@
     "react-addons-test-utils": "^15.2.1",
     "react-dimensions": "^1.3.0",
     "react-docgen": "^1.2.0",
+    "react-dom": "^15.3.2",
     "react-tools": "^0.12.2",
     "react-tooltip": "^3.2.1",
     "sinon": "^2.0.0-pre.2",
@@ -55,8 +57,8 @@
     "build-docs": "./build_helpers/buildAPIDocs.sh",
     "publish-site": "./build_helpers/publishStaticSite.sh",
     "publish-package": "./build_helpers/publishPackage.sh",
-    "test": "mocha-webpack --webpack-config webpack.config-test.js \"src/**/*-test.js\"",
-    "test:watch": "mocha-webpack --webpack-config webpack.config-test.js --watch \"src/**/*-test.js\"",
+    "test": "mocha-webpack --webpack-config webpack.config-test.js \"src/**/*-test.js\" --require build_helpers/test-globals.js",
+    "test:watch": "mocha-webpack --webpack-config webpack.config-test.js --watch \"src/**/*-test.js\" --require build_helpers/test-globals.js",
     "test:server": "webpack-dev-server --config webpack.config-test.js --hot --inline"
   },
   "repository": {
