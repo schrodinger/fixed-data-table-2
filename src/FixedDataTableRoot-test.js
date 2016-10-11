@@ -41,7 +41,7 @@ describe('FixedDataTableRoot', function() {
     }
 
     /**
-     * Returns state from FDT.Table object
+     * Returns state from FDT.Table object for unit testing
      *
      * @return {!Object}
      */
@@ -108,14 +108,12 @@ describe('FixedDataTableRoot', function() {
       });
     });
 
-
     it('should not blow up when unsetting the scrollTop property', function() {
       let table = renderTable({scrollTop: 600});
       //assert.doesNotThrow(function() {
         table.setState({scrollTop: undefined});
       //});
     });
-
 
     it('should not blow up when unsetting the scrollToColumn property', function() {
       let table = renderTable({scrollToColumn: 3});
@@ -130,6 +128,5 @@ describe('FixedDataTableRoot', function() {
         table.setState({scrollToRow: undefined});
       });
     });
-
   });
 });
