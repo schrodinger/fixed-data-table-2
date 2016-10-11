@@ -33,16 +33,32 @@ describe('FixedDataTableRoot', function() {
     });
   });
 
-  describe('initial render', function() {
-    const renderTable = (optionalProps = {}) => {
-      let table = (
+  class TestTable extends React.Component {
+    constructor(props) {
+      super(props);
+
+      this.state = {...props}
+    }
+
+    /**
+     * Returns state from FDT.Table object
+     *
+     * @return {!Object}
+     */
+    getTableState() {
+      return this.refs['table'].state;
+    }
+    
+    render() {
+      return (
         <Table
+          ref="table"
           width={600}
           height={400}
           rowsCount={50}
           rowHeight={100}
           headerHeight={50}
-          {...optionalProps}
+          {...this.state}
         >
           <Column width={300} />
           <Column width={300} />
@@ -51,80 +67,69 @@ describe('FixedDataTableRoot', function() {
           <Column width={300} />
         </Table>
       );
-      let renderer = createRenderer();
-      renderer.render(table);
-      return renderer.getMountedInstance();
-    };
+    }
+  }
 
+  const renderTable = (optionalProps = {}) => {
+    let renderedTree = renderIntoDocument(<TestTable {...optionalProps} />);
+    return findRenderedComponentWithType(renderedTree, TestTable);
+  };
+
+  describe('initial render', function() {
     it('should set scrollLeft correctly', function() {
       let table = renderTable({scrollLeft: 300});
-      assert.equal(table.state.scrollX, 300, 'should set scrollX to 300');
+      assert.equal(table.getTableState().scrollX, 300, 'should set scrollX to 300');
     });
 
     it('should set scrollTop correctly', function() {
       let table = renderTable({scrollTop: 600});
-      assert.equal(table.state.scrollY, 600, 'should set scrollY to 600');
+      assert.equal(table.getTableState().scrollY, 600, 'should set scrollY to 600');
     });
 
     it('should set scrollToColumn correctly', function() {
       let table = renderTable({scrollToColumn: 3});
-      assert.equal(table.state.scrollX, 300 * 2, 'should be third visible column');
+      assert.equal(table.getTableState().scrollX, 300 * 2, 'should be third visible column');
     });
 
     it('should set scrollToRow correctly', function() {
       let table = renderTable({scrollToRow: 30, height: 300});
       //scrollToRow is considered valid if row is visible. Test to make sure that row is somewhere in between
-      assert.isBelow(table.state.scrollY, 30 * 100, 'should be below first row');
-      assert.isAbove(table.state.scrollY, 30 * 100 - 300, 'should be above last row');
+      assert.isBelow(table.getTableState().scrollY, 30 * 100, 'should be below first row');
+      assert.isAbove(table.getTableState().scrollY, 30 * 100 - 300, 'should be above last row');
     });
   });
 
   describe('update render', function() {
-    let renderedTable;
-    beforeEach(function() {
-      class TableHOC extends React.Component {
-        constructor(props) {
-          super(props);
-          this.state = {
-            scrollToRow: 0,
-          };
-        }
 
-        render() {
-          return (
-            <Table
-              scrollToRow={this.state.scrollToRow}
-              {...this.props}
-            >
-              {this.props.children}
-            </Table>
-          );
-        }
-      }
+    it('should not blow up when unsetting the scrollLeft property', function() {
+      let table = renderTable({scrollLeft: 300});
+      assert.doesNotThrow(function() {
+        table.setState({scrollLeft: undefined});
+      });
+    });
 
-      const table = (
-        <TableHOC
-          width={600}
-          height={400}
-          rowsCount={50}
-          rowHeight={100}
-          headerHeight={50}
-          >
-          <Column width={300} />
-          <Column width={300} />
-          <Column width={300} />
-          <Column width={300} />
-          <Column width={300} />
-        </TableHOC>
-      );
-      const renderedTree = renderIntoDocument(table);
-      renderedTable = findRenderedComponentWithType(renderedTree, TableHOC)
-    })
+
+    it('should not blow up when unsetting the scrollTop property', function() {
+      let table = renderTable({scrollTop: 600});
+      //assert.doesNotThrow(function() {
+        table.setState({scrollTop: undefined});
+      //});
+    });
+
+
+    it('should not blow up when unsetting the scrollToColumn property', function() {
+      let table = renderTable({scrollToColumn: 3});
+      assert.doesNotThrow(function() {
+        table.setState({scrollToColumn: undefined});
+      });
+    });
 
     it('should not blow up when unsetting the scrollToRow property', function() {
+      let table = renderTable({scrollToRow: 30});
       assert.doesNotThrow(function() {
-        renderedTable.setState({scrollToRow: undefined});
-      })
+        table.setState({scrollToRow: undefined});
+      });
     });
-  })
+
+  });
 });
