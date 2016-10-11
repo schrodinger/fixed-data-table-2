@@ -62,27 +62,43 @@ var ExamplesPage = React.createClass({
 
   _renderPage() {
     var Example = EXAMPLE_COMPONENTS[this.props.page.location];
+
     return (
       <Example
-        height={this.props.containerHeight}
-        width={this.props.containerWidth}
+        height={this.state.tableHeight}
+        width={this.state.tableWidth}
       />
     );
   },
 
   componentDidMount() {
+    this._update();
+    var win = window;
+    if (win.addEventListener) {
+      win.addEventListener('resize', this._onResize, false);
+    } else if (win.attachEvent) {
+      win.attachEvent('onresize', this._onResize);
+    } else {
+      win.onresize = this._onResize;
+    }
+  },
+
+  _onResize() {
+    clearTimeout(this._updateTimer);
+    this._updateTimer = setTimeout(this._update, 16);
+  },
+
+  _update() {
+    var win = window;
+
+    var widthOffset = win.innerWidth < 680 ? 0 : 240;
+
     this.setState({
-      renderPage: true
+      renderPage: true,
+      tableWidth: win.innerWidth - widthOffset,
+      tableHeight: win.innerHeight - 200,
     });
   }
 });
 
-module.exports = Dimensions({
-  getHeight: function(element) {
-    return window.innerHeight - 200;
-  },
-  getWidth: function(element) {
-    var widthOffset = window.innerWidth < 680 ? 0 : 240;
-    return window.innerWidth - widthOffset;
-  }
-})(ExamplesPage);
+module.exports = ExamplesPage;
