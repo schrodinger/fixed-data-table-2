@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.5 
+ * FixedDataTable v0.7.6 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.5';
+	FixedDataTableRoot.version = '0.7.6';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -1062,7 +1062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    var lastScrollToRow = oldState ? oldState.scrollToRow : undefined;
-	    if (props.scrollToRow !== lastScrollToRow) {
+	    if (props.scrollToRow != null && props.scrollToRow !== lastScrollToRow) {
 	      scrollState = this._scrollHelper.scrollRowIntoView(props.scrollToRow);
 	      firstRowIndex = scrollState.index;
 	      firstRowOffset = scrollState.offset;
@@ -1070,7 +1070,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    var lastScrollTop = oldState ? oldState.scrollTop : undefined;
-	    if (props.scrollTop !== lastScrollTop) {
+	    if (props.scrollTop != null && props.scrollTop !== lastScrollTop) {
 	      scrollState = this._scrollHelper.scrollTo(props.scrollTop);
 	      firstRowIndex = scrollState.index;
 	      firstRowOffset = scrollState.offset;
@@ -5928,7 +5928,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Optional prop that if specified on the `Column` will be passed to the
 	     * cell. It can be used to uniquely identify which column is the cell is in.
 	     */
-	    columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+	    columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
+	    /**
+	     * Optional prop that represents the rows index in the table.
+	     * For the 'cell' prop of a Column, this parameter will exist for any
+	     * cell in a row with a positive index.
+	     *
+	     * Below that entry point the user is welcome to consume or
+	     * pass the prop through at their discretion.
+	     */
+	    rowIndex: PropTypes.number
 	  },
 
 	  render: function render() {
@@ -7170,15 +7180,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-	var hasOwnProperty = Object.prototype.hasOwnProperty;
-
 	/**
 	 * Performs equality by iterating through keys on an object and returning false
 	 * when any key has values which are not strictly equal between the arguments.
 	 * Returns true when the values of all keys are strictly equal.
 	 */
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 	function shallowEqual(objA, objB) {
 	  if (objA === objB) {
 	    return true;
@@ -7196,7 +7205,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  // Test for A's keys different from B.
-	  var bHasOwnProperty = hasOwnProperty.bind(objB);
+	  var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
 	  for (var i = 0; i < keysA.length; i++) {
 	    if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
 	      return false;
