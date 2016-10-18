@@ -131,10 +131,12 @@ var FixedDataTableBufferedRows = React.createClass({
 
     this._staticRowArray.length = rowsToRender.length;
 
+    var baseOffsetTop = props.firstRowOffset - props.rowPositionGetter(props.firstRowIndex) + props.offsetTop;
+
     for (var i = 0; i < rowsToRender.length; ++i) {
       var rowIndex = rowsToRender[i];
       var currentRowHeight = this._getRowHeight(rowIndex);
-      var rowOffsetTop = rowPositions[rowIndex];
+      var rowOffsetTop = baseOffsetTop + rowPositions[rowIndex];
 
       var hasBottomBorder =
         rowIndex === props.rowsCount - 1 && props.showLastRowBorder;
@@ -176,7 +178,7 @@ var FixedDataTableBufferedRows = React.createClass({
     FixedDataTableTranslateDOMPosition(
       style,
       0,
-      props.firstRowOffset - firstRowPosition + props.offsetTop,
+      0,
       this._initialRender,
     );
 
