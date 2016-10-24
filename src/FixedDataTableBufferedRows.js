@@ -17,7 +17,6 @@ import FixedDataTableRow from 'FixedDataTableRow';
 import cx from 'cx';
 import emptyFunction from 'emptyFunction';
 import joinClasses from 'joinClasses';
-import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
 var {PropTypes} = React;
 
@@ -168,21 +167,7 @@ var FixedDataTableBufferedRows = React.createClass({
         />;
     }
 
-    var firstRowPosition = props.rowPositionGetter(props.firstRowIndex);
-
-    var style = {
-      position: 'absolute',
-      pointerEvents: props.isScrolling ? 'none' : 'auto',
-    };
-
-    FixedDataTableTranslateDOMPosition(
-      style,
-      0,
-      0,
-      this._initialRender,
-    );
-
-    return <div style={style}>{this._staticRowArray}</div>;
+    return <div>{this._staticRowArray}</div>;
   },
 
   _getRowHeight(/*number*/ index) /*number*/ {
