@@ -12,12 +12,11 @@
 
 'use strict';
 
-import React from 'React';
-import FixedDataTableCellGroup from 'FixedDataTableCellGroup';
-
-import cx from 'cx';
-import joinClasses from 'joinClasses';
-import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
+import React from "React";
+import FixedDataTableCellGroup from "FixedDataTableCellGroup";
+import cx from "cx";
+import joinClasses from "joinClasses";
+import FixedDataTableTranslateDOMPosition from "FixedDataTableTranslateDOMPosition";
 
 var {PropTypes} = React;
 
@@ -41,6 +40,16 @@ var FixedDataTableRowImpl = React.createClass({
      * Height of the row.
      */
     height: PropTypes.number.isRequired,
+
+    /**
+     * dropdown content of each row
+     */
+    dropdown: PropTypes.any,
+
+    /**
+     * Height of the dropdown.
+     */
+    dropdownHeight: PropTypes.number,
 
     /**
      * The row index.
@@ -113,7 +122,7 @@ var FixedDataTableRowImpl = React.createClass({
   render() /*object*/ {
     var style = {
       width: this.props.width,
-      height: this.props.height,
+      height: this.props.height + this.props.dropdownHeight,
     };
 
     var className = cx({
@@ -165,6 +174,22 @@ var FixedDataTableRowImpl = React.createClass({
     var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
 
+    var dropdownWrapper;
+    if (this.props.dropdownHeight) {
+      var dropdownStyle = {
+        position: 'relative',
+        top: this.props.height,
+        width: this.props.width,
+        height: this.props.dropdownHeight
+      };
+
+      dropdownWrapper = (
+        <div className={cx('fixedDataTableRowLayout/dropdown')} style={dropdownStyle}>
+          {this.props.dropdown}
+        </div>
+      );
+    }
+
     return (
       <div
         className={joinClasses(className, this.props.className)}
@@ -180,6 +205,7 @@ var FixedDataTableRowImpl = React.createClass({
           {columnsLeftShadow}
         </div>
         {columnsRightShadow}
+        {dropdownWrapper}
       </div>
     );
   },
@@ -198,13 +224,13 @@ var FixedDataTableRowImpl = React.createClass({
       'fixedDataTableRowLayout/columnsShadow': this.props.scrollLeft > 0,
       'public/fixedDataTableRow/fixedColumnsDivider': left > 0,
       'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0,
-     });
-     var style = {
-       left: left,
-       height: this.props.height
-     };
-     return <div className={className} style={style} />;
-   },
+    });
+    var style = {
+      left: left,
+      height: this.props.height
+    };
+    return <div className={className} style={style}/>;
+  },
 
   _renderColumnsRightShadow(/*number*/ totalWidth) /*?object*/ {
     if (Math.ceil(this.props.scrollLeft + this.props.width) < totalWidth) {
@@ -217,7 +243,7 @@ var FixedDataTableRowImpl = React.createClass({
       var style = {
         height: this.props.height
       };
-      return <div className={className} style={style} />;
+      return <div className={className} style={style}/>;
     }
   },
 
@@ -254,6 +280,16 @@ var FixedDataTableRow = React.createClass({
     height: PropTypes.number.isRequired,
 
     /**
+     * Dropdown content
+     */
+    dropdown: PropTypes.any,
+
+    /**
+     * Height of the dropdown.
+     */
+    dropdownHeight: PropTypes.number,
+
+    /**
      * Z-index on which the row will be displayed. Used e.g. for keeping
      * header and footer in front of other rows.
      */
@@ -279,11 +315,14 @@ var FixedDataTableRow = React.createClass({
   },
 
   render() /*object*/ {
+    var dropdownHeight = this.props.dropdownHeight || 0;
+
     var style = {
       width: this.props.width,
-      height: this.props.height,
+      height: this.props.height + dropdownHeight,
       zIndex: (this.props.zIndex ? this.props.zIndex : 0),
     };
+
     FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender);
 
     return (
@@ -292,6 +331,7 @@ var FixedDataTableRow = React.createClass({
         className={cx('fixedDataTableRowLayout/rowWrapper')}>
         <FixedDataTableRowImpl
           {...this.props}
+          dropdownHeight={dropdownHeight}
           offsetTop={undefined}
           zIndex={undefined}
         />

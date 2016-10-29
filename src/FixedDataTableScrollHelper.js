@@ -28,7 +28,8 @@ class FixedDataTableScrollHelper {
     /*number*/ rowCount,
     /*number*/ defaultRowHeight,
     /*number*/ viewportHeight,
-    /*?function*/ rowHeightGetter
+    /*?function*/ rowHeightGetter,
+    /*?function*/ rowDropdownHeightGetter
   ) {
     this._rowOffsets = PrefixIntervalTree.uniform(rowCount, defaultRowHeight);
     this._storedHeights = new Array(rowCount);
@@ -42,6 +43,9 @@ class FixedDataTableScrollHelper {
     this._rowHeightGetter = rowHeightGetter ?
       rowHeightGetter :
       () => defaultRowHeight;
+    this._rowDropdownHeightGetter = rowDropdownHeightGetter ?
+      rowDropdownHeightGetter :
+      () => 0;
     this._viewportHeight = viewportHeight;
     this.scrollRowIntoView = this.scrollRowIntoView.bind(this);
     this.setViewportHeight = this.setViewportHeight.bind(this);
@@ -49,6 +53,7 @@ class FixedDataTableScrollHelper {
     this.scrollTo = this.scrollTo.bind(this);
     this.scrollToRow = this.scrollToRow.bind(this);
     this.setRowHeightGetter = this.setRowHeightGetter.bind(this);
+    this.setRowDropdownHeightGetter = this.setRowDropdownHeightGetter.bind(this);
     this.getContentHeight = this.getContentHeight.bind(this);
     this.getRowPosition = this.getRowPosition.bind(this);
 
@@ -58,6 +63,11 @@ class FixedDataTableScrollHelper {
   setRowHeightGetter(/*function*/ rowHeightGetter) {
     this._rowHeightGetter = rowHeightGetter;
   }
+
+  setRowDropdownHeightGetter(/*function*/ rowDropdownHeightGetter) {
+    this._rowDropdownHeightGetter = rowDropdownHeightGetter;
+  }
+
 
   setViewportHeight(/*number*/ viewportHeight) {
     this._viewportHeight = viewportHeight;
@@ -93,7 +103,7 @@ class FixedDataTableScrollHelper {
     if (rowIndex < 0 || rowIndex >= this._rowCount) {
       return 0;
     }
-    var newHeight = this._rowHeightGetter(rowIndex);
+    var newHeight = this._rowHeightGetter(rowIndex) + this._rowDropdownHeightGetter(rowIndex);
     if (newHeight !== this._storedHeights[rowIndex]) {
       var change = newHeight - this._storedHeights[rowIndex];
       this._rowOffsets.set(rowIndex, newHeight);

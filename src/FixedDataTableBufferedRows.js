@@ -10,13 +10,12 @@
  * @typechecks
  */
 
-import React from 'React';
-import FixedDataTableRowBuffer from 'FixedDataTableRowBuffer';
-import FixedDataTableRow from 'FixedDataTableRow';
-
-import cx from 'cx';
-import emptyFunction from 'emptyFunction';
-import joinClasses from 'joinClasses';
+import React from "React";
+import FixedDataTableRowBuffer from "FixedDataTableRowBuffer";
+import FixedDataTableRow from "FixedDataTableRow";
+import cx from "cx";
+import emptyFunction from "emptyFunction";
+import joinClasses from "joinClasses";
 
 var {PropTypes} = React;
 
@@ -38,6 +37,8 @@ var FixedDataTableBufferedRows = React.createClass({
     rowClassNameGetter: PropTypes.func,
     rowsCount: PropTypes.number.isRequired,
     rowHeightGetter: PropTypes.func,
+    rowDropdownGetter: PropTypes.func,
+    rowDropdownHeightGetter: PropTypes.func,
     rowPositionGetter: PropTypes.func.isRequired,
     scrollLeft: PropTypes.number.isRequired,
     scrollableColumns: PropTypes.array.isRequired,
@@ -73,8 +74,8 @@ var FixedDataTableBufferedRows = React.createClass({
 
   componentWillReceiveProps(/*object*/ nextProps) {
     if (nextProps.rowsCount !== this.props.rowsCount ||
-        nextProps.defaultRowHeight !== this.props.defaultRowHeight ||
-        nextProps.height !== this.props.height) {
+      nextProps.defaultRowHeight !== this.props.defaultRowHeight ||
+      nextProps.height !== this.props.height) {
       this._rowBuffer =
         new FixedDataTableRowBuffer(
           nextProps.rowsCount,
@@ -135,6 +136,8 @@ var FixedDataTableBufferedRows = React.createClass({
     for (var i = 0; i < rowsToRender.length; ++i) {
       var rowIndex = rowsToRender[i];
       var currentRowHeight = this._getRowHeight(rowIndex);
+      var currentRowDropdownHeight = this._getRowDropdownHeight(rowIndex);
+      var currentRowDropdown = this._getRowDropdown(rowIndex);
       var rowOffsetTop = baseOffsetTop + rowPositions[rowIndex];
 
       var hasBottomBorder =
@@ -147,6 +150,8 @@ var FixedDataTableBufferedRows = React.createClass({
           index={rowIndex}
           width={props.width}
           height={currentRowHeight}
+          dropdown={currentRowDropdown}
+          dropdownHeight={currentRowDropdownHeight}
           scrollLeft={Math.round(props.scrollLeft)}
           offsetTop={Math.round(rowOffsetTop)}
           fixedColumns={props.fixedColumns}
@@ -175,6 +180,18 @@ var FixedDataTableBufferedRows = React.createClass({
       this.props.rowHeightGetter(index) :
       this.props.defaultRowHeight;
   },
+
+  _getRowDropdown(index) {
+    return this.props.rowDropdownGetter ?
+      this.props.rowDropdownGetter(index) :
+      null;
+  },
+
+  _getRowDropdownHeight(/*number*/ index) /*number*/ {
+    return this.props.rowDropdownHeightGetter ?
+      this.props.rowDropdownHeightGetter(index) :
+      0;
+  }
 });
 
 module.exports = FixedDataTableBufferedRows;
