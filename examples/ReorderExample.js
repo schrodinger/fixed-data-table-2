@@ -86,7 +86,7 @@ class ReorderExample extends React.Component {
             isReorderable={true}
             header={<Cell>{columnTitles[columnKey]}</Cell>}
             cell={<TextCell data={dataList} />}
-            fixed={i === 0}
+            fixed={i <= 1}
             width={columnWidths[columnKey]}
            />;
         })}
