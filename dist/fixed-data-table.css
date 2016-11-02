@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.6 
+ * FixedDataTable v0.7.7 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -439,6 +439,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   width: 12px;
   margin-right: -12px;
   float: left;
+  cursor: move;
 }
 .fixedDataTableCellLayout_columnReorderContainer:after {
 	content: '::';

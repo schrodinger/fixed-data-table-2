@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.6 
+ * FixedDataTable v0.7.7 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.6';
+	FixedDataTableRoot.version = '0.7.7';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -897,10 +897,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /*number*/width,
 	  /*number*/left,
 	  /*object*/event) {
+	    var isFixed = !!this.state.headFixedColumns.find(function (column) {
+	      return column.props.columnKey === columnKey;
+	    });
+
 	    this.setState({
 	      isColumnReordering: true,
 	      columnReorderingData: {
 	        dragDistance: 0,
+	        isFixed: isFixed,
 	        scrollStart: this.state.scrollX,
 	        columnKey: columnKey,
 	        columnWidth: width,
@@ -917,23 +922,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	    reorderingData.columnBefore = undefined;
 	    reorderingData.columnAfter = undefined;
 
+	    var isFixedColumn = this.state.columnReorderingData.isFixed;
 	    var scrollX = this.state.scrollX;
-	    //Relative dragX position on scroll
-	    var dragX = reorderingData.originalLeft - reorderingData.scrollStart + reorderingData.dragDistance;
 
-	    var fixedColumnsWidth = this.state.bodyFixedColumns.reduce(function (sum, column) {
-	      return sum + column.props.width;
-	    }, 0);
-	    var relativeWidth = this.props.width - fixedColumnsWidth;
+	    if (!isFixedColumn) {
+	      //Relative dragX position on scroll
+	      var dragX = reorderingData.originalLeft - reorderingData.scrollStart + reorderingData.dragDistance;
 
-	    //Scroll the table left or right if we drag near the edges of the table
-	    if (dragX > relativeWidth - DRAG_SCROLL_BUFFER) {
-	      scrollX = Math.min(scrollX + DRAG_SCROLL_SPEED, this.state.maxScrollX);
-	    } else if (dragX <= DRAG_SCROLL_BUFFER) {
-	      scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
+	      var fixedColumnsWidth = this.state.bodyFixedColumns.reduce(function (sum, column) {
+	        return sum + column.props.width;
+	      }, 0);
+	      var relativeWidth = this.props.width - fixedColumnsWidth;
+
+	      //Scroll the table left or right if we drag near the edges of the table
+	      if (dragX > relativeWidth - DRAG_SCROLL_BUFFER) {
+	        scrollX = Math.min(scrollX + DRAG_SCROLL_SPEED, this.state.maxScrollX);
+	      } else if (dragX <= DRAG_SCROLL_BUFFER) {
+	        scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
+	      }
+
+	      reorderingData.dragDistance += this.state.scrollX - reorderingData.scrollStart;
 	    }
-
-	    reorderingData.dragDistance += this.state.scrollX - reorderingData.scrollStart;
 
 	    this.setState({
 	      scrollX: scrollX,
@@ -3853,23 +3862,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _joinClasses2 = _interopRequireDefault(_joinClasses);
 
-	var _FixedDataTableTranslateDOMPosition = __webpack_require__(50);
-
-	var _FixedDataTableTranslateDOMPosition2 = _interopRequireDefault(_FixedDataTableTranslateDOMPosition);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var PropTypes = _React2.default.PropTypes; /**
-	                                            * Copyright Schrodinger, LLC
-	                                            * All rights reserved.
-	                                            *
-	                                            * This source code is licensed under the BSD-style license found in the
-	                                            * LICENSE file in the root directory of this source tree. An additional grant
-	                                            * of patent rights can be found in the PATENTS file in the same directory.
-	                                            *
-	                                            * @providesModule FixedDataTableBufferedRows
-	                                            * @typechecks
-	                                            */
+	/**
+	 * Copyright Schrodinger, LLC
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule FixedDataTableBufferedRows
+	 * @typechecks
+	 */
+
+	var PropTypes = _React2.default.PropTypes;
+
 
 	var FixedDataTableBufferedRows = _React2.default.createClass({
 	  displayName: 'FixedDataTableBufferedRows',
@@ -3958,10 +3966,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this._staticRowArray.length = rowsToRender.length;
 
+	    var baseOffsetTop = props.firstRowOffset - props.rowPositionGetter(props.firstRowIndex) + props.offsetTop;
+
 	    for (var i = 0; i < rowsToRender.length; ++i) {
 	      var rowIndex = rowsToRender[i];
 	      var currentRowHeight = this._getRowHeight(rowIndex);
-	      var rowOffsetTop = rowPositions[rowIndex];
+	      var rowOffsetTop = baseOffsetTop + rowPositions[rowIndex];
 
 	      var hasBottomBorder = rowIndex === props.rowsCount - 1 && props.showLastRowBorder;
 
@@ -3987,18 +3997,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	    }
 
-	    var firstRowPosition = props.rowPositionGetter(props.firstRowIndex);
-
-	    var style = {
-	      position: 'absolute',
-	      pointerEvents: props.isScrolling ? 'none' : 'auto'
-	    };
-
-	    (0, _FixedDataTableTranslateDOMPosition2.default)(style, 0, props.firstRowOffset - firstRowPosition + props.offsetTop, this._initialRender);
-
 	    return _React2.default.createElement(
 	      'div',
-	      { style: style },
+	      null,
 	      this._staticRowArray
 	    );
 	  },
