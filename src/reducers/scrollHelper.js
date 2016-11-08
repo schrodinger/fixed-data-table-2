@@ -87,7 +87,7 @@ function _updateHeightsAboveViewport(state, firstRowIndex) {
  * @return {number}
  * @private
  */
-function _caculateViewportHeight(props) {
+function _calculateViewportHeight(props) {
   return (props.height === undefined ? props.maxHeight : props.height) -
     (props.headerHeight || 0) -
     (props.footerHeight || 0) -
@@ -236,8 +236,8 @@ function _recalculateRowHeights(state) {
  * @param {!Object} props
  * @return {!Object}
  */
-function initailize(state, props) {
-  var viewportHeight = _caculateViewportHeight(props);
+function initialize(state, props) {
+  var viewportHeight = _calculateViewportHeight(props);
   let { rowsCount, rowHeight, rowHeightGetter } = props;
   let maxVisibleRowCount = Math.ceil(viewportHeight / rowHeight) + 1;
   let bufferRowsCount = clamp(
@@ -341,7 +341,7 @@ function scrollBy(state, deltaY) {
   firstRowPosition = rowOffsets.sumUntil(firstRowIndex);
   let firstRowOffset = firstRowPosition - scrollY;
 
-  updateHeightsInViewport(state, firstRowIndex, firstRowOffset);
+  _updateHeightsInViewport(state, firstRowIndex, firstRowOffset);
   _updateHeightsAboveViewport(firstRowIndex);
 
   //TODO (asif) Uncomment this line when bodyHeight is included in state
@@ -358,24 +358,6 @@ function scrollBy(state, deltaY) {
     scrollContentHeight,
     //maxScrollY,
   });
-}
-
-/**
- * Updates rowHeights for visible rows
- *
- * @param {!Object} state
- * @param {number} firstRowIndex
- * @param {number} firstRowOffset
- */
-function updateHeightsInViewport(state, firstRowIndex, firstRowOffset) {
-  let { rowsCount, viewportHeight, storedHeights } = state;
-  var top = firstRowOffset;
-  var index = firstRowIndex;
-  while (top <= viewportHeight && index < rowsCount) {
-    _updateRowHeight(state, index);
-    top += storedHeights[index];
-    index++;
-  }
 }
 
 /**
@@ -450,8 +432,7 @@ function scrollTo(state, scrollPosition) {
 };
 
 module.exports = {
-  initailize,
-  updateHeightsInViewport,
+  initialize,
   scrollBy,
   scrollEnd,
   scrollStart,
