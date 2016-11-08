@@ -1,6 +1,6 @@
 {
   "name": "fixed-data-table-2",
-  "version": "0.7.2",
+  "version": "0.7.5",
   "description": "A React table component designed to allow presenting thousands of rows of data.",
   "main": "main.js",
   "peerDependencies": {
@@ -8,6 +8,7 @@
     "react-dom": ">=0.14.0 || ^0.14.0-beta3"
   },
   "devDependencies": {
+    "aphrodite": "^0.5.0",
     "autoprefixer": "^5.0.0",
     "babel-core": "^6.11.4",
     "babel-loader": "^6.2.4",
@@ -25,18 +26,23 @@
     "file-loader": "^0.8.1",
     "glob": "^4.3.5",
     "html-loader": "^0.2.3",
+    "jsdom": "^9.6.0",
     "less": "^2.2.0",
     "less-loader": "^2.0.0",
     "marked": "^0.3.2",
     "mocha": "^2.5.3",
+    "mocha-loader": "^1.0.0",
     "mocha-webpack": "^0.4.0",
     "null-loader": "^0.1.0",
     "postcss": "^4.0.2",
     "postcss-custom-properties": "3.0.1",
     "react": "^15.2.1",
     "react-addons-test-utils": "^15.2.1",
+    "react-dimensions": "^1.3.0",
     "react-docgen": "^1.2.0",
+    "react-dom": "^15.3.2",
     "react-tools": "^0.12.2",
+    "react-tooltip": "^3.2.1",
     "redux": "^3.5.2",
     "sinon": "^2.0.0-pre.2",
     "style-loader": "^0.8.3",
@@ -52,8 +58,8 @@
     "build-docs": "./build_helpers/buildAPIDocs.sh",
     "publish-site": "./build_helpers/publishStaticSite.sh",
     "publish-package": "./build_helpers/publishPackage.sh",
-    "test": "mocha-webpack --webpack-config webpack.config-test.js \"src/**/*-test.js\"",
-    "test:watch": "mocha-webpack --webpack-config webpack.config-test.js --watch \"src/**/*-test.js\"",
+    "test": "mocha-webpack --webpack-config webpack.config-test.js \"src/**/*-test.js\" --require build_helpers/test-globals.js",
+    "test:watch": "mocha-webpack --webpack-config webpack.config-test.js --watch \"src/**/*-test.js\" --require build_helpers/test-globals.js",
     "test:server": "webpack-dev-server --config webpack.config-test.js --hot --inline"
   },
   "repository": {

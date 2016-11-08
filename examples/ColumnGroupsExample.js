@@ -4,18 +4,10 @@
 
 "use strict";
 
-var ExampleImage = require('./helpers/ExampleImage');
-var FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-var FixedDataTable = require('fixed-data-table-2');
-var React = require('react');
-
-const {Table, Column, ColumnGroup, Cell} = FixedDataTable;
-
-const TextCell = ({rowIndex, data, col, ...props}) => (
-  <Cell {...props}>
-    {data.getObjectAt(rowIndex)[col]}
-  </Cell>
-);
+const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
+const { TextCell } = require('./helpers/cells');
+const { Table, Column, ColumnGroup, Cell } = require('fixed-data-table-2');
+const React = require('react');
 
 class ColumnGroupsExample extends React.Component {
   constructor(props) {
@@ -42,29 +34,33 @@ class ColumnGroupsExample extends React.Component {
           fixed={true}
           header={<Cell>Name</Cell>}>
           <Column
+            columnKey="firstName"
             fixed={true}
             header={<Cell>First Name</Cell>}
-            cell={<TextCell data={dataList} col="firstName" />}
+            cell={<TextCell data={dataList} />}
             width={150}
           />
           <Column
+            columnKey="lastName"
             fixed={true}
             header={<Cell>Last Name</Cell>}
-            cell={<TextCell data={dataList} col="lastName" />}
+            cell={<TextCell data={dataList} />}
             width={150}
           />
         </ColumnGroup>
         <ColumnGroup
           header={<Cell>About</Cell>}>
           <Column
+            columnKey="companyName"
             header={<Cell>Company</Cell>}
-            cell={<TextCell data={dataList} col="companyName" />}
+            cell={<TextCell data={dataList} />}
             flexGrow={1}
             width={150}
           />
           <Column
+            columnKey="sentence"
             header={<Cell>Sentence</Cell>}
-            cell={<TextCell data={dataList} col="sentence" />}
+            cell={<TextCell data={dataList} />}
             flexGrow={1}
             width={150}
           />

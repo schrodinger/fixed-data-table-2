@@ -314,7 +314,7 @@ var FixedDataTable = React.createClass({
     };
   },
 
-  getInitialState() /*object*/ {
+  componentWillMount() {
     var props = this.props;
 
     FixedDataTableStore.dispatch({
@@ -364,7 +364,7 @@ var FixedDataTable = React.createClass({
       this._columnToScrollTo = scrollToColumn;
     }
 
-    var touchEnabled = this.state.touchScrollEnabled === true;
+    var touchEnabled = props.touchScrollEnabled === true;
 
     this._wheelHandler = new ReactWheelHandler(
       this._onScroll,
@@ -376,6 +376,8 @@ var FixedDataTable = React.createClass({
       touchEnabled && this._shouldHandleWheelX,
       touchEnabled && this._shouldHandleWheelY
     );
+
+    this.setState(this._calculateState(props));
   },
 
   _shouldHandleWheelX(/*number*/ delta) /*boolean*/ {
@@ -435,7 +437,6 @@ var FixedDataTable = React.createClass({
   },
 
   componentWillReceiveProps(/*object*/ nextProps) {
-
     FixedDataTableStore.dispatch({
       type: ActionTypes.PROP_CHANGE,
       props: nextProps,
@@ -470,7 +471,8 @@ var FixedDataTable = React.createClass({
 
     // In the case of controlled scrolling, notify.
     if (this.props.ownerHeight !== nextProps.ownerHeight ||
-      this.props.scrollTop !== nextProps.scrollTop) {
+        this.props.scrollTop !== nextProps.scrollTop ||
+        this.props.scrollLeft !== nextProps.scrollLeft) {
       this._didScrollStart();
     }
     this._didScrollStop();
@@ -936,6 +938,7 @@ var FixedDataTable = React.createClass({
     }
     */
     var groupHeaderHeight = useGroupHeader ? props.groupHeaderHeight : 0;
+
     var columnResizingData;
     if (props.isColumnResizing) {
       columnResizingData = oldState && oldState.columnResizingData;
@@ -967,10 +970,11 @@ var FixedDataTable = React.createClass({
       oldState
     );
 
-    if (this._columnToScrollTo !== undefined) {
+    var lastScrollToColumn = oldState ? oldState.scrollToColumn : undefined;
+    if (props.scrollToColumn !== null && props.scrollToColumn !== lastScrollToColumn) {
       // If selected column is a fixed column, don't scroll
       var fixedColumnsCount = columnInfo.bodyFixedColumns.length;
-      if (this._columnToScrollTo >= fixedColumnsCount) {
+      if (props.scrollToColumn >= fixedColumnsCount) {
         var totalFixedColumnsWidth = 0;
         var i, column;
         for (i = 0; i < columnInfo.bodyFixedColumns.length; ++i) {
@@ -979,7 +983,7 @@ var FixedDataTable = React.createClass({
         }
 
         var scrollableColumnIndex = Math.min(
-          this._columnToScrollTo - fixedColumnsCount,
+          props.scrollToColumn - fixedColumnsCount,
           columnInfo.bodyScrollableColumns.length - 1,
         );
 
@@ -1004,7 +1008,6 @@ var FixedDataTable = React.createClass({
           scrollX = previousColumnsWidth;
         }
       }
-      delete this._columnToScrollTo;
     }
 
     var useMaxHeight = props.height === undefined;

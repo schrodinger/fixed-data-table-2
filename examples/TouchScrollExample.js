@@ -4,17 +4,10 @@
 
 "use strict";
 
-let FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-let FixedDataTable = require('fixed-data-table-2');
-let React = require('react');
-
-const {Table, Column, Cell} = FixedDataTable;
-
-const TextCell = ({rowIndex, data, col, ...props}) => (
-  <Cell {...props}>
-    {data.getObjectAt(rowIndex)[col]}
-  </Cell>
-);
+const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
+const { TextCell } = require('./helpers/cells');
+const { Table, Column, Cell } = require('fixed-data-table-2');
+const React = require('react');
 
 class TouchScrollExample extends React.Component {
   constructor(props) {
@@ -38,30 +31,35 @@ class TouchScrollExample extends React.Component {
           height={500}
           {...this.props}>
           <Column
+            columnKey="firstName"
             header={<Cell>First Name</Cell>}
-            cell={<TextCell data={dataList} col="firstName" />}
+            cell={<TextCell data={dataList} />}
             fixed={true}
             width={100}
           />
           <Column
+            columnKey="lastName"
             header={<Cell>Last Name</Cell>}
-            cell={<TextCell data={dataList} col="lastName" />}
+            cell={<TextCell data={dataList} />}
             fixed={true}
             width={100}
           />
           <Column
+            columnKey="city"
             header={<Cell>City</Cell>}
-            cell={<TextCell data={dataList} col="city" />}
+            cell={<TextCell data={dataList} />}
             width={100}
           />
           <Column
+            columnKey="street"
             header={<Cell>Street</Cell>}
-            cell={<TextCell data={dataList} col="street" />}
+            cell={<TextCell data={dataList} />}
             width={200}
           />
           <Column
+            columnKey="zipCode"
             header={<Cell>Zip Code</Cell>}
-            cell={<TextCell data={dataList} col="zipCode" />}
+            cell={<TextCell data={dataList} />}
             width={200}
           />
         </Table>

@@ -4,36 +4,10 @@
 
 "use strict";
 
-var ExampleImage = require('./helpers/ExampleImage');
-var FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-var FixedDataTable = require('fixed-data-table-2');
-var React = require('react');
-
-const {Table, Column, Cell} = FixedDataTable;
-
-const DateCell = ({rowIndex, data, col, ...props}) => (
-  <Cell {...props}>
-    {data.getObjectAt(rowIndex)[col].toLocaleString()}
-  </Cell>
-);
-
-const ImageCell = ({rowIndex, data, col, ...props}) => (
-  <ExampleImage
-    src={data.getObjectAt(rowIndex)[col]}
-  />
-);
-
-const LinkCell = ({rowIndex, data, col, ...props}) => (
-  <Cell {...props}>
-    <a href="#">{data.getObjectAt(rowIndex)[col]}</a>
-  </Cell>
-);
-
-const TextCell = ({rowIndex, data, col, ...props}) => (
-  <Cell {...props}>
-    {data.getObjectAt(rowIndex)[col]}
-  </Cell>
-);
+const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
+const { DateCell, ImageCell, LinkCell, TextCell } = require('./helpers/cells');
+const { Table, Column, Cell } = require('fixed-data-table-2');
+const React = require('react');
 
 class ObjectDataExample extends React.Component {
   constructor(props) {
@@ -55,45 +29,53 @@ class ObjectDataExample extends React.Component {
         height={500}
         {...this.props}>
         <Column
-          cell={<ImageCell data={dataList} col="avatar" />}
+          columnKey="avatar"
+          cell={<ImageCell data={dataList} />}
           fixed={true}
           width={50}
         />
         <Column
+          columnKey="firstName"
           header={<Cell>First Name</Cell>}
-          cell={<LinkCell data={dataList} col="firstName" />}
+          cell={<LinkCell data={dataList} />}
           fixed={true}
           width={100}
         />
         <Column
+          columnKey="lastName"
           header={<Cell>Last Name</Cell>}
-          cell={<TextCell data={dataList} col="lastName" />}
+          cell={<TextCell data={dataList} />}
           fixed={true}
           width={100}
         />
         <Column
+          columnKey="city"
           header={<Cell>City</Cell>}
-          cell={<TextCell data={dataList} col="city" />}
+          cell={<TextCell data={dataList} />}
           width={100}
         />
         <Column
+          columnKey="street"
           header={<Cell>Street</Cell>}
-          cell={<TextCell data={dataList} col="street" />}
+          cell={<TextCell data={dataList} />}
           width={200}
         />
         <Column
+          columnKey="zipCode"
           header={<Cell>Zip Code</Cell>}
-          cell={<TextCell data={dataList} col="zipCode" />}
+          cell={<TextCell data={dataList} />}
           width={200}
         />
         <Column
+          columnKey="email"
           header={<Cell>Email</Cell>}
-          cell={<LinkCell data={dataList} col="email" />}
+          cell={<LinkCell data={dataList} />}
           width={200}
         />
         <Column
+          columnKey="date"
           header={<Cell>DOB</Cell>}
-          cell={<DateCell data={dataList} col="date" />}
+          cell={<DateCell data={dataList} />}
           width={200}
         />
       </Table>

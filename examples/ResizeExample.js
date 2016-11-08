@@ -4,17 +4,10 @@
 
 "use strict";
 
-var FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-var FixedDataTable = require('fixed-data-table-2');
-var React = require('react');
-
-const {Table, Column, Cell} = FixedDataTable;
-
-const TextCell = ({rowIndex, data, columnKey, ...props}) => (
-  <Cell {...props}>
-    {data.getObjectAt(rowIndex)[columnKey]}
-  </Cell>
-);
+const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
+const { TextCell } = require('./helpers/cells');
+const { Table, Column, Cell } = require('fixed-data-table-2');
+const React = require('react');
 
 class ResizeExample extends React.Component {
   constructor(props) {

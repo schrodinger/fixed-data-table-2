@@ -4,24 +4,10 @@
 
 "use strict";
 
-var ExampleImage = require('./helpers/ExampleImage');
-var FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-var FixedDataTable = require('fixed-data-table-2');
-var React = require('react');
-
-const {Table, Column, Cell} = FixedDataTable;
-
-const ImageCell = ({rowIndex, data, col, ...props}) => (
-  <ExampleImage
-    src={data.getObjectAt(rowIndex)[col]}
-  />
-);
-
-const TextCell = ({rowIndex, data, col, ...props}) => (
-  <Cell {...props}>
-    {data.getObjectAt(rowIndex)[col]}
-  </Cell>
-);
+const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
+const { ImageCell, TextCell } = require('./helpers/cells');
+const { Table, Column, Cell } = require('fixed-data-table-2');
+const React = require('react');
 
 class ScrollToExample extends React.Component {
   constructor(props) {
@@ -126,35 +112,41 @@ class ScrollToExample extends React.Component {
           height={500}
           {...this.props}>
           <Column
-            cell={<ImageCell data={filteredDataList} col="avartar" />}
+            columnKey="avatar"
+            cell={<ImageCell data={filteredDataList} />}
             fixed={true}
             width={50}
           />
           <Column
+            columnKey="firstName"
             header={<Cell>First Name</Cell>}
-            cell={<TextCell data={filteredDataList} col="firstName" />}
+            cell={<TextCell data={filteredDataList} />}
             fixed={true}
             width={100}
           />
           <Column
+            columnKey="lastName"
             header={<Cell>Last Name</Cell>}
-            cell={<TextCell data={filteredDataList} col="lastName" />}
+            cell={<TextCell data={filteredDataList} />}
             fixed={true}
             width={100}
           />
           <Column
+            columnKey="city"
             header={<Cell>City</Cell>}
-            cell={<TextCell data={filteredDataList} col="city" />}
+            cell={<TextCell data={filteredDataList} />}
             width={100}
           />
           <Column
+            columnKey="street"
             header={<Cell>Street</Cell>}
-            cell={<TextCell data={filteredDataList} col="street" />}
+            cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
+            columnKey="zipCode"
             header={<Cell>Zip Code</Cell>}
-            cell={<TextCell data={filteredDataList} col="zipCode" />}
+            cell={<TextCell data={filteredDataList} />}
             width={200}
           />
         </Table>
