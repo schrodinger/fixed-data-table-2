@@ -332,6 +332,19 @@ var FixedDataTable = React.createClass({
     //}
     this._didScrollStop = debounceCore(this._didScrollStop, 200, this);
 
+    var touchEnabled = props.touchScrollEnabled === true;
+
+    this._wheelHandler = new ReactWheelHandler(
+      this._onScroll,
+      this._shouldHandleWheelX,
+      this._shouldHandleWheelY
+    );
+    this._touchHandler = new ReactTouchHandler(
+      this._onScroll,
+      touchEnabled && this._shouldHandleWheelX,
+      touchEnabled && this._shouldHandleWheelY
+    );
+
     var update = () => {
       let state = FixedDataTableStore.getState();
 
@@ -349,33 +362,7 @@ var FixedDataTable = React.createClass({
     };
     FixedDataTableStore.subscribe(update);
     setTimeout(update);
-
-    return this._calculateState(this.props);
-  },
-
-  componentWillMount() {
-    var scrollToRow = this.props.scrollToRow;
-    if (scrollToRow !== undefined && scrollToRow !== null) {
-      this._rowToScrollTo = scrollToRow;
-    }
-    var scrollToColumn = this.props.scrollToColumn;
-    if (scrollToColumn !== undefined && scrollToColumn !== null) {
-      this._columnToScrollTo = scrollToColumn;
-    }
-
-    var touchEnabled = props.touchScrollEnabled === true;
-
-    this._wheelHandler = new ReactWheelHandler(
-      this._onScroll,
-      this._shouldHandleWheelX,
-      this._shouldHandleWheelY
-    );
-    this._touchHandler = new ReactTouchHandler(
-      this._onScroll,
-      touchEnabled && this._shouldHandleWheelX,
-      touchEnabled && this._shouldHandleWheelY
-    );
-
+    
     this.setState(this._calculateState(props));
   },
 
