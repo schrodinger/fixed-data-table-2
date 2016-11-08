@@ -21,7 +21,6 @@ import Scrollbar from 'Scrollbar';
 import FixedDataTableBufferedRows from 'FixedDataTableBufferedRows';
 import FixedDataTableColumnResizeHandle from 'FixedDataTableColumnResizeHandle';
 import FixedDataTableRow from 'FixedDataTableRow';
-import FixedDataTableScrollHelper from 'FixedDataTableScrollHelper';
 import FixedDataTableWidthHelper from 'FixedDataTableWidthHelper';
 import FixedDataTableStore from 'FixedDataTableStore';
 import ActionTypes from 'ActionTypes';
