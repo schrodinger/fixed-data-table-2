@@ -759,7 +759,7 @@ var FixedDataTable = React.createClass({
     var reorderColumn = this.state.columnReorderingData.columnKey;
 
     this.setState({
-      isReordering: false,
+      isColumnReordering: false,
       columnReorderingData: {}
     });
     this.props.onColumnReorderEndCallback({
