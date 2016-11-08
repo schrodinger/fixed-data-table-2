@@ -32,8 +32,7 @@ function scroller(state = DEFAULT_STATE, action) {
       }
 
       //TODO (asif) reinitalize when viewheight changes
-      var initialState = scrollHelper.initialize(state, props);
-      return Object.assign({}, initialState);
+      return scrollHelper.initialize(state, props);
     case ActionTypes.SCROLL_BY:
       let { deltaY } = action;
       state = scrollHelper.scrollBy(state, deltaY);

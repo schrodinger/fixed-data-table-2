@@ -11,10 +11,12 @@
 
 'use strict';
 
+import columnStateReducer from 'columnStateReducer';
 import { combineReducers } from 'redux';
 import scroller from 'scroller';
 
 const reducers = combineReducers({
+  columnState: columnStateReducer,
   scroller
 });
 
