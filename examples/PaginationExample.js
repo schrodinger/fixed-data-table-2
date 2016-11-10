@@ -5,7 +5,7 @@
 "use strict";
 
 const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { PagedCell } = require('./helpers/cells');
+// const { PagedCell } = require('./helpers/cells');
 const { Table, Column, Cell } = require('fixed-data-table-2');
 const React = require('react');
 
@@ -50,78 +50,125 @@ class PagedData {
   }
 }
 
-class PaginationExample extends React.Component {
-  constructor(props) {
-    super(props);
+const dataProp = React.PropTypes.instanceOf(PagedData).isRequired;
 
-    this._updateData = this._updateData.bind(this);
-    this.state = {
-      pagedData: new PagedData(this._updateData),
-      end: 50
-    };
-  }
+function ContextHOC(Wrapped) {
+  class ContextClass extends React.Component {
+    constructor(props) {
+      super(props);
 
-  //Just need to force a refresh
-  _updateData(end) {
-    this.setState({
-      end: end
-    });
-  }
+      this._updateData = this._updateData.bind(this);
+      this.state = {
+        data: new PagedData(this._updateData),
+        end: 50
+      };
+    }
 
-  render() {
-    var {pagedData} = this.state;
+    //Just need to force a refresh
+    _updateData(end) {
+      this.setState({
+        end: end
+      });
+    }
 
-    return (
-      <div>
-        <Table
-          rowHeight={50}
-          rowsCount={pagedData.getSize()}
-          headerHeight={50}
-          width={1000}
-          height={500}
-          {...this.props}>
-          <Column
-            header={<Cell></Cell>}
-            cell={({rowIndex}) => (<Cell>{rowIndex}</Cell>)}
-            fixed={true}
-            width={50}
-          />
-          <Column
-            columnKey="firstName"
-            header={<Cell>First Name</Cell>}
-            cell={<PagedCell data={pagedData} />}
-            fixed={true}
-            width={100}
-          />
-          <Column
-            columnKey="lastName"
-            header={<Cell>Last Name</Cell>}
-            cell={<PagedCell data={pagedData} />}
-            fixed={true}
-            width={100}
-          />
-          <Column
-            columnKey="city"
-            header={<Cell>City</Cell>}
-            cell={<PagedCell data={pagedData} />}
-            width={100}
-          />
-          <Column
-            columnKey="street"
-            header={<Cell>Street</Cell>}
-            cell={<PagedCell data={pagedData} />}
-            width={200}
-          />
-          <Column
-            columnKey="zipCode"
-            header={<Cell>Zip Code</Cell>}
-            cell={<PagedCell data={pagedData} />}
-            width={200}
-          />
-        </Table>
-      </div>
-    );
-  }
+    getChildContext() {
+      return {
+        data: this.state.data
+      };
+    }
+
+    render() {
+      return <Wrapped {... this.props}  />
+    }
+  };
+
+  ContextClass.childContextTypes = {
+    data: React.PropTypes.instanceOf(PagedData),
+  };
+
+  return ContextClass;
 }
 
-module.exports = PaginationExample;
+
+const PendingCell = ({rowIndex, columnKey, dataVersion, ...props}, {data}) => {
+  const rowObject = data.getObjectAt(rowIndex);
+  return (
+    <Cell {...props}>
+      {rowObject ? rowObject[columnKey] : 'pending'}
+    </Cell>
+  );
+};
+
+PendingCell.contextTypes = {
+  data: dataProp,
+};
+
+const PagedCell = (props, {data}) => {
+  const dataVersion = data.getDataVersion();
+  return (
+    <PendingCell
+      dataVersion={dataVersion}
+      {...props}>
+    </PendingCell>
+  );
+};
+
+PagedCell.contextTypes = {
+  data: dataProp,
+};
+
+const PaginationExample = (props, {data}) => (
+  <div>
+    <Table
+      rowHeight={50}
+      rowsCount={data.getSize()}
+      headerHeight={50}
+      width={1000}
+      height={500}
+      {...props}>
+      <Column
+        header={<Cell></Cell>}
+        cell={({rowIndex}) => (<Cell>{rowIndex}</Cell>)}
+        fixed={true}
+        width={50}
+        />
+      <Column
+        columnKey="firstName"
+        header={<Cell>First Name</Cell>}
+        cell={<PagedCell />}
+        fixed={true}
+        width={100}
+        />
+      <Column
+        columnKey="lastName"
+        header={<Cell>Last Name</Cell>}
+        cell={<PagedCell />}
+        fixed={true}
+        width={100}
+        />
+      <Column
+        columnKey="city"
+        header={<Cell>City</Cell>}
+        cell={<PagedCell />}
+        width={100}
+        />
+      <Column
+        columnKey="street"
+        header={<Cell>Street</Cell>}
+        cell={<PagedCell />}
+        width={200}
+        />
+      <Column
+        columnKey="zipCode"
+        header={<Cell>Zip Code</Cell>}
+        cell={<PagedCell />}
+        width={200}
+        />
+    </Table>
+  </div>);
+
+PaginationExample.contextTypes = {
+  data: dataProp,
+};
+
+module.exports = ContextHOC(PaginationExample);
