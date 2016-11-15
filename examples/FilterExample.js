@@ -4,6 +4,7 @@
 
 "use strict";
 
+const { DataCtxt } = require('./helpers/HOC');
 const ExampleImage = require('./helpers/ExampleImage');
 const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
 const { ImageCell, TextCell } = require('./helpers/cells');
@@ -11,19 +12,123 @@ const { Table, Column, Cell } = require('fixed-data-table-2');
 const React = require('react');
 
 class DataListWrapper {
-  constructor(indexMap, data) {
-    this._indexMap = indexMap;
+  constructor(data) {
     this._data = data;
+    this._indexMap = null;
+    this._callback = null;
+  }
+
+  // The callback is used for triggering re-rendering
+  setCallback(cb) {
+    this._callback = cb;
+  }
+
+  setIndexMap(index) {
+    this._indexMap = index;
+    this._callback();
   }
 
   getSize() {
+    if (this._indexMap === null) {
+      return this._data.getSize();
+    }
+
     return this._indexMap.length;
   }
 
   getObjectAt(index) {
+    if (this._indexMap === null) {
+      return this._data.getObjectAt(index);
+    }
+
     return this._data.getObjectAt(
-      this._indexMap[index],
+      this._indexMap[index]
     );
+  }
+}
+
+const DataTable = DataCtxt(Table);
+
+class FilterTable extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      rawData: props.data,
+      filteredData: DataListWrapper(props.data),
+      filters: props.filters
+    };
+
+    this.updateFilterState = this.updateFilterState.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+      if (JSON.stringify(nextProps.filters) !== JSON.stringify(state.filters)){
+        this.filter()
+      }
+  }
+
+  filter() {
+
+    // Get and prep filters
+    let filters = {};
+    for (let key in this.state.filters) {
+      if (this.state.filters.hasOwnProperty(key) &&
+          this.state.filters[key] !== ''){
+        filters[key] = this.state.filters[key];
+      }
+    }
+    Object.keys(filters).map((key) => {
+      filters[key] = filters[key].toLowerCase();
+      return (key);
+    });
+
+    const noMatch = (haystack, needle) => haystack.toLowerCase().indexOf(needle) !== -1;
+
+    if (Object.keys(filters).length > 0) {
+      const data = this.state.rawData;
+
+      const filteredIndexes = [];
+      for (let index = 0; index < data.getSize(); index += 1) {
+        const row = data.getObjectAt(index);
+
+        // Loop through all the filters and check if there's a match
+        const found = Object.keys(filters)
+          .map((varName) => {
+            const value = row.get(varName);
+            if (value instanceof List) {
+              if (value.map(x => noMatch(x, filters[varName])).filter(x => x === false).size > 0) {
+                return (false);
+              }
+            } else if (!noMatch(value, filters[varName])) {
+              return (false);
+            }
+            return (true);
+          })
+          .filter(x => x === false) // Select only those where no match was found
+          .length === 0; // If we didn't find any non-matching criteria then this was a success
+
+        if (found) {
+          filteredIndexes.push(index);
+        }
+      }
+
+      // Set the data filtering
+      this.state.filteredData.setIndexMap(filteredIndexes);
+    } else {
+      this.state.filteredData.setIndexMap(null);
+    }
+  }
+
+  render() {
+    return(
+      <DataTable
+        data={this.state.filteredData}
+        {...this.props}
+      >
+        {this.props.children}
+      </DataTable>
+    )
   }
 }
 
@@ -70,7 +175,7 @@ class FilterExample extends React.Component {
           placeholder="Filter by First Name"
         />
         <br />
-        <Table
+        <FilterTable
           rowHeight={50}
           rowsCount={filteredDataList.getSize()}
           headerHeight={50}
@@ -115,7 +220,7 @@ class FilterExample extends React.Component {
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
-        </Table>
+        </FilterTable>
       </div>
     );
   }
