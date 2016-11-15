@@ -21,13 +21,13 @@ function DataCtxt(Wrapped, data) {
     constructor(props) {
       super(props);
 
+      this.refresh = this.refresh.bind(this);
+      props.data.setCallback(this.refresh);
+
       this.state = {
-        data: data,
+        data: props.data,
         version: 0
       };
-
-      this.refresh = this.refresh.bind(this);
-      data.setCallback(this.refresh);
     }
 
     // Force a refresh or the page doesn't re-render

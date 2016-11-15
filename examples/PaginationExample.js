@@ -64,11 +64,15 @@ PagedCell.contextTypes = {
   data: dataProp,
 };
 
+const DataTable = DataCtxt(Table);
 
-const PaginationExample = (props, {data}) => (
-  <div>
-    <Table
+const PaginationExample = (props) => {
+  const data = new PagedData();
+
+  return (<div>
+    <DataTable
       rowHeight={50}
+      data={data}
       rowsCount={data.getSize()}
       headerHeight={50}
       width={1000}
@@ -112,12 +116,8 @@ const PaginationExample = (props, {data}) => (
         cell={<PagedCell />}
         width={200}
         />
-    </Table>
+    </DataTable>
   </div>);
+}
 
-PaginationExample.contextTypes = {
-  data: dataProp,
-};
-
-const data = new PagedData();
-module.exports = DataCtxt(PaginationExample, data);
+module.exports = PaginationExample;
