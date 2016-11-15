@@ -10,16 +10,15 @@ const { Table, Column, Cell } = require('fixed-data-table-2');
 const React = require('react');
 
 class PagedData {
-  constructor(callback) {
+  constructor() {
     this._dataList = new FakeObjectDataListStore(2000);
     this._end = 50;
     this._pending = false;
-    this._dataVersion = 0;
-    this._callback = callback;
   }
 
-  getDataVersion() {
-    return this._dataVersion;
+  // The callback is used for events when data has been loaded
+  setCallback(callback) {
+    this._callback = callback;
   }
 
   getSize() {
@@ -36,8 +35,7 @@ class PagedData {
     .then(() => {
       this._pending = false;
       this._end = end;
-      this._dataVersion++;
-      this._callback(end)
+      this._callback()
     });
   }
 
@@ -52,22 +50,27 @@ class PagedData {
 
 const dataProp = React.PropTypes.instanceOf(PagedData).isRequired;
 
-function ContextHOC(Wrapped) {
+function DataCtxt(Wrapped, data) {
   class ContextClass extends React.Component {
     constructor(props) {
       super(props);
 
-      this._updateData = this._updateData.bind(this);
       this.state = {
-        data: new PagedData(this._updateData),
-        end: 50
+        data: data,
+        version: 0
       };
+
+      this.refresh = this.refresh.bind(this);
+      data.setCallback(this.refresh);
     }
 
-    //Just need to force a refresh
-    _updateData(end) {
+    // Force a refresh or the page doesn't re-render
+    //
+    // The name of the state variable is irrelevant, it will simply trigger
+    // an update event that is propagated into the cells
+    refresh() {
       this.setState({
-        end: end
+        version: this.state.version + 1
       });
     }
 
@@ -83,14 +86,14 @@ function ContextHOC(Wrapped) {
   };
 
   ContextClass.childContextTypes = {
-    data: React.PropTypes.instanceOf(PagedData),
+    data: React.PropTypes.instanceOf(PagedData)
   };
 
   return ContextClass;
 }
 
 
-const PendingCell = ({rowIndex, columnKey, dataVersion, ...props}, {data}) => {
+const PendingCell = ({rowIndex, columnKey, ...props}, {data}) => {
   const rowObject = data.getObjectAt(rowIndex);
   return (
     <Cell {...props}>
@@ -104,10 +107,8 @@ PendingCell.contextTypes = {
 };
 
 const PagedCell = (props, {data}) => {
-  const dataVersion = data.getDataVersion();
   return (
     <PendingCell
-      dataVersion={dataVersion}
       {...props}>
     </PendingCell>
   );
@@ -171,4 +172,5 @@ PaginationExample.contextTypes = {
   data: dataProp,
 };
 
-module.exports = ContextHOC(PaginationExample);
+const data = new PagedData();
+module.exports = DataCtxt(PaginationExample, data);
