@@ -93,7 +93,7 @@ function DataCtxt(Wrapped, data) {
 }
 
 
-const PendingCell = ({rowIndex, columnKey, ...props}, {data}) => {
+const PagedCell = ({rowIndex, columnKey, ...props}, {data}) => {
   const rowObject = data.getObjectAt(rowIndex);
   return (
     <Cell {...props}>
@@ -102,21 +102,10 @@ const PendingCell = ({rowIndex, columnKey, ...props}, {data}) => {
   );
 };
 
-PendingCell.contextTypes = {
-  data: dataProp,
-};
-
-const PagedCell = (props, {data}) => {
-  return (
-    <PendingCell
-      {...props}>
-    </PendingCell>
-  );
-};
-
 PagedCell.contextTypes = {
   data: dataProp,
 };
+
 
 const PaginationExample = (props, {data}) => (
   <div>
