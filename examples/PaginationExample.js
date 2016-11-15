@@ -4,6 +4,7 @@
 
 "use strict";
 
+const { DataCtxt } = require('./helpers/HOC');
 const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
 // const { PagedCell } = require('./helpers/cells');
 const { Table, Column, Cell } = require('fixed-data-table-2');
@@ -49,49 +50,6 @@ class PagedData {
 }
 
 const dataProp = React.PropTypes.instanceOf(PagedData).isRequired;
-
-function DataCtxt(Wrapped, data) {
-  class ContextClass extends React.Component {
-    constructor(props) {
-      super(props);
-
-      this.state = {
-        data: data,
-        version: 0
-      };
-
-      this.refresh = this.refresh.bind(this);
-      data.setCallback(this.refresh);
-    }
-
-    // Force a refresh or the page doesn't re-render
-    //
-    // The name of the state variable is irrelevant, it will simply trigger
-    // an update event that is propagated into the cells
-    refresh() {
-      this.setState({
-        version: this.state.version + 1
-      });
-    }
-
-    getChildContext() {
-      return {
-        data: this.state.data
-      };
-    }
-
-    render() {
-      return <Wrapped {... this.props}  />
-    }
-  };
-
-  ContextClass.childContextTypes = {
-    data: React.PropTypes.instanceOf(PagedData)
-  };
-
-  return ContextClass;
-}
-
 
 const PagedCell = ({rowIndex, columnKey, ...props}, {data}) => {
   const rowObject = data.getObjectAt(rowIndex);
