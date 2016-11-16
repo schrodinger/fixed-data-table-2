@@ -52,27 +52,27 @@ class FilterTable extends React.Component {
   constructor(props) {
     super(props);
 
+    const { data, filters, ...other } = props;
     this.state = {
-      rawData: props.data,
+      rawData: data,
       filteredData: new DataListWrapper(props.data),
-      filters: props.filters
+      other
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (JSON.stringify(nextProps.filters) !== JSON.stringify(this.state.filters)){
+    if (JSON.stringify(nextProps.filters) !== JSON.stringify(this.props.filters)){
       this.filter();
     }
   }
 
   filter() {
-
     // Get and prep filters
     let filters = {};
-    for (let key in this.state.filters) {
-      if (this.state.filters.hasOwnProperty(key) &&
-          this.state.filters[key] !== ''){
-        filters[key] = this.state.filters[key];
+    for (let key in this.props.filters) {
+      if (this.props.filters.hasOwnProperty(key) &&
+          this.props.filters[key] !== ''){
+        filters[key] = this.props.filters[key];
       }
     }
     Object.keys(filters).map((key) => {
@@ -80,6 +80,7 @@ class FilterTable extends React.Component {
       return (key);
     });
 
+    console.log(filters)
     const match = (haystack, needle) =>
       haystack.toLowerCase().indexOf(needle) !== -1;
 
@@ -123,7 +124,7 @@ class FilterTable extends React.Component {
     return(
       <DataTable
         data={this.state.filteredData}
-        {...this.props}
+        {...this.state.other}
       >
         {this.props.children}
       </DataTable>
@@ -147,7 +148,7 @@ class FilterExample extends React.Component {
   }
 
   _onFilterChange(name, value) {
-    let filters = this.state.filters;
+    const filters = this.state.filters;
     filters[name] = value;
     this.setState({
       filters
@@ -155,7 +156,7 @@ class FilterExample extends React.Component {
   }
 
   render() {
-    var {data, filters} = this.state;
+    var {data, filters } = this.state;
     return (
       <div>
         <input
@@ -176,12 +177,6 @@ class FilterExample extends React.Component {
           width={1000}
           height={500}
           {...this.props}>
-          <Column
-            columnKey="avatar"
-            cell={<AvatarCell />}
-            fixed={true}
-            width={50}
-          />
           <Column
             columnKey="firstName"
             header={<Cell>First Name</Cell>}
@@ -220,4 +215,4 @@ class FilterExample extends React.Component {
   }
 }
 
-module.exports = FilterTable;
+module.exports = FilterExample;

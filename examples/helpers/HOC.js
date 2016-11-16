@@ -47,7 +47,7 @@ function DataCtxt(Wrapped, data) {
     }
 
     render() {
-      return <Wrapped {... this.props}  />
+      return <Wrapped {...this.props}  />
     }
   };
 
