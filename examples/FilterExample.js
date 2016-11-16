@@ -4,10 +4,9 @@
 
 "use strict";
 
+const { AvatarCell, TextCell } = require('./helpers/ctxt_cells');
 const { DataCtxt } = require('./helpers/HOC');
-const ExampleImage = require('./helpers/ExampleImage');
 const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { ImageCell, TextCell } = require('./helpers/cells');
 const { Table, Column, Cell } = require('fixed-data-table-2');
 const React = require('react');
 
@@ -55,17 +54,15 @@ class FilterTable extends React.Component {
 
     this.state = {
       rawData: props.data,
-      filteredData: DataListWrapper(props.data),
+      filteredData: new DataListWrapper(props.data),
       filters: props.filters
     };
-
-    this.updateFilterState = this.updateFilterState.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-      if (JSON.stringify(nextProps.filters) !== JSON.stringify(state.filters)){
-        this.filter()
-      }
+    if (JSON.stringify(nextProps.filters) !== JSON.stringify(this.state.filters)){
+      this.filter();
+    }
   }
 
   filter() {
@@ -83,30 +80,32 @@ class FilterTable extends React.Component {
       return (key);
     });
 
-    const noMatch = (haystack, needle) => haystack.toLowerCase().indexOf(needle) !== -1;
+    const match = (haystack, needle) =>
+      haystack.toLowerCase().indexOf(needle) !== -1;
 
     if (Object.keys(filters).length > 0) {
-      const data = this.state.rawData;
-
       const filteredIndexes = [];
-      for (let index = 0; index < data.getSize(); index += 1) {
-        const row = data.getObjectAt(index);
+      for (let index = 0; index < this.state.rawData.getSize(); index += 1) {
+        const row = this.state.rawData.getObjectAt(index);
 
         // Loop through all the filters and check if there's a match
         const found = Object.keys(filters)
           .map((varName) => {
-            const value = row.get(varName);
-            if (value instanceof List) {
-              if (value.map(x => noMatch(x, filters[varName])).filter(x => x === false).size > 0) {
-                return (false);
-              }
-            } else if (!noMatch(value, filters[varName])) {
-              return (false);
+            const value = row[varName];
+
+            // If we have a set of values e.g. an array
+            //  If you're using immutablejs then you can just use List
+            //  This can be useful when you have more complex matches
+            if (value instanceof Array) {
+              const matches = value.map(x => match(x, filters[varName])).filter(x => x === true);
+              // If all filters were identified then set this to true
+              return (matches.length === value.length);
             }
-            return (true);
+
+            return (match(value, filters[varName]));
           })
-          .filter(x => x === false) // Select only those where no match was found
-          .length === 0; // If we didn't find any non-matching criteria then this was a success
+          .filter(x => x === true)
+          .length === filters.length;
 
         if (found) {
           filteredIndexes.push(index);
@@ -128,7 +127,7 @@ class FilterTable extends React.Component {
       >
         {this.props.children}
       </DataTable>
-    )
+    );
   }
 }
 
@@ -136,88 +135,83 @@ class FilterExample extends React.Component {
   constructor(props) {
     super(props);
 
-    this._dataList = new FakeObjectDataListStore(2000);
     this.state = {
-      filteredDataList: this._dataList,
+      data: new FakeObjectDataListStore(2000),
+      filters: {
+        firstName: '',
+        lastName: ''
+      }
     };
 
     this._onFilterChange = this._onFilterChange.bind(this);
   }
 
-  _onFilterChange(e) {
-    if (!e.target.value) {
-      this.setState({
-        filteredDataList: this._dataList,
-      });
-    }
-
-    var filterBy = e.target.value.toLowerCase();
-    var size = this._dataList.getSize();
-    var filteredIndexes = [];
-    for (var index = 0; index < size; index++) {
-      var {firstName} = this._dataList.getObjectAt(index);
-      if (firstName.toLowerCase().indexOf(filterBy) !== -1) {
-        filteredIndexes.push(index);
-      }
-    }
-
+  _onFilterChange(name, value) {
+    let filters = this.state.filters;
+    filters[name] = value;
     this.setState({
-      filteredDataList: new DataListWrapper(filteredIndexes, this._dataList),
+      filters
     });
   }
 
   render() {
-    var {filteredDataList} = this.state;
+    var {data, filters} = this.state;
     return (
       <div>
         <input
-          onChange={this._onFilterChange}
+          onChange={(e) => this._onFilterChange('firstName', e.target.value)}
           placeholder="Filter by First Name"
+        />
+        <input
+          onChange={(e) => this._onFilterChange('lastName', e.target.value)}
+          placeholder="Filter by Last Name"
         />
         <br />
         <FilterTable
           rowHeight={50}
-          rowsCount={filteredDataList.getSize()}
+          data={data}
+          rowsCount={data.getSize()}
+          filters={filters}
           headerHeight={50}
           width={1000}
           height={500}
           {...this.props}>
           <Column
             columnKey="avatar"
-            cell={<ImageCell data={filteredDataList} />}
+            cell={<AvatarCell />}
             fixed={true}
             width={50}
           />
           <Column
             columnKey="firstName"
             header={<Cell>First Name</Cell>}
-            cell={<TextCell data={filteredDataList} />}
+            cell={<TextCell />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="lastName"
             header={<Cell>Last Name</Cell>}
-            cell={<TextCell data={filteredDataList} />}
+            cell={<TextCell />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="city"
             header={<Cell>City</Cell>}
-            cell={<TextCell data={filteredDataList} />}
+            cell={<TextCell />}
             width={100}
           />
           <Column
             columnKey="street"
             header={<Cell>Street</Cell>}
-            cell={<TextCell data={filteredDataList} />}
+            cell={<TextCell />}
             width={200}
           />
           <Column
             columnKey="zipCode"
             header={<Cell>Zip Code</Cell>}
-            cell={<TextCell data={filteredDataList} />}
+            cell={<TextCell />}
             width={200}
           />
         </FilterTable>
@@ -226,4 +220,4 @@ class FilterExample extends React.Component {
   }
 }
 
-module.exports = FilterExample;
+module.exports = FilterTable;
