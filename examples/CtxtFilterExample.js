@@ -88,23 +88,16 @@ class FilterTable extends React.Component {
         const row = this.state.rawData.getObjectAt(index);
 
         // Loop through all the filters and check if there's a match
-        const found = Object.keys(filters)
-          .map((varName) => {
-            const value = row[varName];
+        let found = true;
+        let keys = Object.keys(filters);
+        for (let key of keys) {
+          const value = row[key];
 
-            // If we have a set of values e.g. an array
-            //  If you're using immutablejs then you can just use List
-            //  This can be useful when you have more complex matches
-            if (value instanceof Array) {
-              const matches = value.map(x => match(x, filters[varName])).filter(x => x === true);
-              // If all filters were identified then set this to true
-              return (matches.length !== value.length);
-            }
-
-            return (!match(value, filters[varName]));
-          })
-          .filter(x => x === true)
-          .length === 0;
+          if (!match(value, filters[key])) {
+            found = false;
+            break;
+          }
+        }
 
         if (found) {
           filteredIndexes.push(index);
