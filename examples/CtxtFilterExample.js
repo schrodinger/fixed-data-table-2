@@ -11,20 +11,15 @@ const { Table, Column, Cell } = require('fixed-data-table-2');
 const React = require('react');
 
 class DataListWrapper {
-  constructor(data) {
+  constructor(data, index = null) {
     this._data = data;
-    this._indexMap = null;
+    this._indexMap = index;
     this._callback = null;
   }
 
   // The callback is used for triggering re-rendering
   setCallback(cb) {
     this._callback = cb;
-  }
-
-  setIndexMap(index) {
-    this._indexMap = index;
-    this._callback();
   }
 
   getSize() {
@@ -117,9 +112,13 @@ class FilterTable extends React.Component {
       }
 
       // Set the data filtering
-      this.state.filteredData.setIndexMap(filteredIndexes);
+      this.setState({
+        filteredData: new DataListWrapper(this.state.rawData, filteredIndexes)
+      })
     } else {
-      this.state.filteredData.setIndexMap(null);
+      this.setState({
+        filteredData: new DataListWrapper(this.state.rawData, null)
+      })
     }
   }
 
