@@ -4,7 +4,7 @@
 
 "use strict";
 
-const { AvatarCell, TextCell } = require('./helpers/ctxt_cells');
+const { AvatarCell, TextCell } = require('./helpers/CtxtCells');
 const { DataCtxt } = require('./helpers/HOC');
 const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
 const { Table, Column, Cell } = require('fixed-data-table-2');
@@ -56,12 +56,16 @@ class FilterTable extends React.Component {
     this.state = {
       rawData: data,
       filteredData: new DataListWrapper(props.data),
+      filters: Object.assign({}, filters),
       other
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (JSON.stringify(nextProps.filters) !== JSON.stringify(this.props.filters)){
+    if (JSON.stringify(nextProps.filters) !== JSON.stringify(this.state.filters)){
+      this.setState({
+        filters: Object.assign({}, nextProps.filters),
+      });
       this.filter();
     }
   }
@@ -80,7 +84,6 @@ class FilterTable extends React.Component {
       return (key);
     });
 
-    console.log(filters)
     const match = (haystack, needle) =>
       haystack.toLowerCase().indexOf(needle) !== -1;
 
@@ -100,13 +103,13 @@ class FilterTable extends React.Component {
             if (value instanceof Array) {
               const matches = value.map(x => match(x, filters[varName])).filter(x => x === true);
               // If all filters were identified then set this to true
-              return (matches.length === value.length);
+              return (matches.length !== value.length);
             }
 
-            return (match(value, filters[varName]));
+            return (!match(value, filters[varName]));
           })
           .filter(x => x === true)
-          .length === filters.length;
+          .length === 0;
 
         if (found) {
           filteredIndexes.push(index);
@@ -124,6 +127,7 @@ class FilterTable extends React.Component {
     return(
       <DataTable
         data={this.state.filteredData}
+        rowsCount={this.state.filteredData.getSize()}
         {...this.state.other}
       >
         {this.props.children}
@@ -132,12 +136,17 @@ class FilterTable extends React.Component {
   }
 }
 
+FilterTable.propTypes = {
+  filters: React.PropTypes.object,
+  data: React.PropTypes.instanceOf(FakeObjectDataListStore),
+}
+
 class FilterExample extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      data: new FakeObjectDataListStore(2000),
+      data: new FakeObjectDataListStore(20),
       filters: {
         firstName: '',
         lastName: ''
@@ -159,24 +168,30 @@ class FilterExample extends React.Component {
     var {data, filters } = this.state;
     return (
       <div>
+        <strong>Filter by:</strong>&nbsp;
         <input
           onChange={(e) => this._onFilterChange('firstName', e.target.value)}
-          placeholder="Filter by First Name"
-        />
+          placeholder="First Name"
+        />&nbsp;
         <input
           onChange={(e) => this._onFilterChange('lastName', e.target.value)}
-          placeholder="Filter by Last Name"
+          placeholder="Last Name"
         />
         <br />
         <FilterTable
           rowHeight={50}
           data={data}
-          rowsCount={data.getSize()}
           filters={filters}
           headerHeight={50}
           width={1000}
           height={500}
           {...this.props}>
+          <Column
+            columnKey="avatar"
+            cell={<AvatarCell />}
+            fixed={true}
+            width={50}
+          />
           <Column
             columnKey="firstName"
             header={<Cell>First Name</Cell>}
