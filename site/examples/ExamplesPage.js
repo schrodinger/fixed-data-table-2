@@ -44,6 +44,7 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.TOOLTIP_EXAMPLE.location]: require('../../examples/TooltipExample'),
   [ExamplePages.CONTEXT_PAGINATION_EXAMPLE.location]: require('../../examples/CtxtPaginationExample'),
   [ExamplePages.CONTEXT_FILTER_EXAMPLE.location]: require('../../examples/CtxtFilterExample'),
+  [ExamplePages.CONTEXT_ADVANCED_EXAMPLE.location]: require('../../examples/CtxtAdvExample'),
 };
 
 var ExamplesPage = React.createClass({
