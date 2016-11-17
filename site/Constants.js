@@ -134,6 +134,15 @@ exports.ExamplePages = {
     ' In this example, by first and last name.' +
     ' This implementation uses a data context in order to make the data available to all the cells.',
   },
+  CONTEXT_ADVANCED_EXAMPLE: {
+    location: 'example-ctxt_advanced.html',
+    fileName: 'CtxtAdvExample.js',
+    title: 'Advanced example with Context',
+    description: 'A table example that is filterable and sorteable by column.' +
+    ' In this example, by first and last name.' +
+    ' The table is further fully paginated.' +
+    ' This implementation uses a data context in order to make the data available to all the cells.',
+  },
 };
 
 Object.keys(exports.ExamplePages).forEach(
