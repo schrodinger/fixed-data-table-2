@@ -42,17 +42,19 @@ function DataCtxt(Wrapped, data) {
 
     getChildContext() {
       return {
-        data: this.state.data
+        data: this.state.data,
+        version: this.state.version,
       };
     }
 
     render() {
-      return <Wrapped {...this.props}  />
+      return <Wrapped {...this.props} />
     }
   };
 
   ContextClass.childContextTypes = {
-    data: PropTypeCtxtData
+    data: PropTypeCtxtData,
+    version: React.PropTypes.number,
   };
 
   return ContextClass;

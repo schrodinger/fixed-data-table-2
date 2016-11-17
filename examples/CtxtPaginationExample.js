@@ -51,17 +51,32 @@ class PagedData {
 
 const dataProp = React.PropTypes.instanceOf(PagedData).isRequired;
 
-const PagedCell = ({rowIndex, columnKey, ...props}, {data}) => {
-  const rowObject = data.getObjectAt(rowIndex);
+class PendingCell extends React.PureComponent {
+  render() {
+    const {data, rowIndex, columnKey, dataVersion, ...props} = this.props;
+    const rowObject = data.getObjectAt(rowIndex);
+    return (
+      <Cell {...props}>
+        {rowObject ? rowObject[columnKey] : 'pending'}
+      </Cell>
+    );
+  }
+}
+
+const PagedCell = (props, {data, version}) => {
   return (
-    <Cell {...props}>
-      {rowObject ? rowObject[columnKey] : 'pending'}
-    </Cell>
+    <PendingCell
+      data={data}
+      dataVersion={version}
+      {...props}
+    />
   );
 };
 
+
 PagedCell.contextTypes = {
   data: dataProp,
+  version: React.PropTypes.number
 };
 
 const DataTable = DataCtxt(Table);
