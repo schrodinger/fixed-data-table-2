@@ -4,130 +4,25 @@
 
 "use strict";
 
-const { AvatarCell, TextCell } = require('./helpers/ctxt_cells');
-const { DataCtxt } = require('./helpers/HOC');
+const ExampleImage = require('./helpers/ExampleImage');
 const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
+const { ImageCell, TextCell } = require('./helpers/cells');
 const { Table, Column, Cell } = require('fixed-data-table-2');
 const React = require('react');
 
 class DataListWrapper {
-  constructor(data) {
+  constructor(indexMap, data) {
+    this._indexMap = indexMap;
     this._data = data;
-    this._indexMap = null;
-    this._callback = null;
-  }
-
-  // The callback is used for triggering re-rendering
-  setCallback(cb) {
-    this._callback = cb;
-  }
-
-  setIndexMap(index) {
-    this._indexMap = index;
-    this._callback();
   }
 
   getSize() {
-    if (this._indexMap === null) {
-      return this._data.getSize();
-    }
-
     return this._indexMap.length;
   }
 
   getObjectAt(index) {
-    if (this._indexMap === null) {
-      return this._data.getObjectAt(index);
-    }
-
     return this._data.getObjectAt(
-      this._indexMap[index]
-    );
-  }
-}
-
-const DataTable = DataCtxt(Table);
-
-class FilterTable extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const { data, filters, ...other } = props;
-    this.state = {
-      rawData: data,
-      filteredData: new DataListWrapper(props.data),
-      other
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (JSON.stringify(nextProps.filters) !== JSON.stringify(this.props.filters)){
-      this.filter();
-    }
-  }
-
-  filter() {
-    // Get and prep filters
-    let filters = {};
-    for (let key in this.props.filters) {
-      if (this.props.filters.hasOwnProperty(key) &&
-          this.props.filters[key] !== ''){
-        filters[key] = this.props.filters[key];
-      }
-    }
-    Object.keys(filters).map((key) => {
-      filters[key] = filters[key].toLowerCase();
-      return (key);
-    });
-
-    console.log(filters)
-    const match = (haystack, needle) =>
-      haystack.toLowerCase().indexOf(needle) !== -1;
-
-    if (Object.keys(filters).length > 0) {
-      const filteredIndexes = [];
-      for (let index = 0; index < this.state.rawData.getSize(); index += 1) {
-        const row = this.state.rawData.getObjectAt(index);
-
-        // Loop through all the filters and check if there's a match
-        const found = Object.keys(filters)
-          .map((varName) => {
-            const value = row[varName];
-
-            // If we have a set of values e.g. an array
-            //  If you're using immutablejs then you can just use List
-            //  This can be useful when you have more complex matches
-            if (value instanceof Array) {
-              const matches = value.map(x => match(x, filters[varName])).filter(x => x === true);
-              // If all filters were identified then set this to true
-              return (matches.length === value.length);
-            }
-
-            return (match(value, filters[varName]));
-          })
-          .filter(x => x === true)
-          .length === filters.length;
-
-        if (found) {
-          filteredIndexes.push(index);
-        }
-      }
-
-      // Set the data filtering
-      this.state.filteredData.setIndexMap(filteredIndexes);
-    } else {
-      this.state.filteredData.setIndexMap(null);
-    }
-  }
-
-  render() {
-    return(
-      <DataTable
-        data={this.state.filteredData}
-        {...this.state.other}
-      >
-        {this.props.children}
-      </DataTable>
+      this._indexMap[index],
     );
   }
 }
@@ -136,80 +31,91 @@ class FilterExample extends React.Component {
   constructor(props) {
     super(props);
 
+    this._dataList = new FakeObjectDataListStore(2000);
     this.state = {
-      data: new FakeObjectDataListStore(2000),
-      filters: {
-        firstName: '',
-        lastName: ''
-      }
+      filteredDataList: this._dataList,
     };
 
     this._onFilterChange = this._onFilterChange.bind(this);
   }
 
-  _onFilterChange(name, value) {
-    const filters = this.state.filters;
-    filters[name] = value;
+  _onFilterChange(e) {
+    if (!e.target.value) {
+      this.setState({
+        filteredDataList: this._dataList,
+      });
+    }
+
+    var filterBy = e.target.value.toLowerCase();
+    var size = this._dataList.getSize();
+    var filteredIndexes = [];
+    for (var index = 0; index < size; index++) {
+      var {firstName} = this._dataList.getObjectAt(index);
+      if (firstName.toLowerCase().indexOf(filterBy) !== -1) {
+        filteredIndexes.push(index);
+      }
+    }
+
     this.setState({
-      filters
+      filteredDataList: new DataListWrapper(filteredIndexes, this._dataList),
     });
   }
 
   render() {
-    var {data, filters } = this.state;
+    var {filteredDataList} = this.state;
     return (
       <div>
         <input
-          onChange={(e) => this._onFilterChange('firstName', e.target.value)}
+          onChange={this._onFilterChange}
           placeholder="Filter by First Name"
         />
-        <input
-          onChange={(e) => this._onFilterChange('lastName', e.target.value)}
-          placeholder="Filter by Last Name"
-        />
         <br />
-        <FilterTable
+        <Table
           rowHeight={50}
-          data={data}
-          rowsCount={data.getSize()}
-          filters={filters}
+          rowsCount={filteredDataList.getSize()}
           headerHeight={50}
           width={1000}
           height={500}
           {...this.props}>
           <Column
+            columnKey="avatar"
+            cell={<ImageCell data={filteredDataList} />}
+            fixed={true}
+            width={50}
+          />
+          <Column
             columnKey="firstName"
             header={<Cell>First Name</Cell>}
-            cell={<TextCell />}
+            cell={<TextCell data={filteredDataList} />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="lastName"
             header={<Cell>Last Name</Cell>}
-            cell={<TextCell />}
+            cell={<TextCell data={filteredDataList} />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="city"
             header={<Cell>City</Cell>}
-            cell={<TextCell />}
+            cell={<TextCell data={filteredDataList} />}
             width={100}
           />
           <Column
             columnKey="street"
             header={<Cell>Street</Cell>}
-            cell={<TextCell />}
+            cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="zipCode"
             header={<Cell>Zip Code</Cell>}
-            cell={<TextCell />}
+            cell={<TextCell data={filteredDataList} />}
             width={200}
           />
-        </FilterTable>
+        </Table>
       </div>
     );
   }
