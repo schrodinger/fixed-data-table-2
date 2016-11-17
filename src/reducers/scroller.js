@@ -12,7 +12,6 @@
 'use strict';
 
 import ActionTypes from 'ActionTypes'
-import PrefixIntervalTree from 'PrefixIntervalTree';
 import scrollHelper from './scrollHelper';
 
 const DEFAULT_STATE = {
@@ -23,17 +22,9 @@ const DEFAULT_STATE = {
   maxScrollY: 0
 };
 
-const NO_ROWS_SCROLL_RESULT = {
-  rowIndex: 0,
-  firstRowOffset: 0,
-  scrollY: 0,
-  scrollContentHeight: 0,
-  maxScrollY: 0
-};
-
 function scroller(state = DEFAULT_STATE, action) {
   switch (action.type) {
-    case ActionTypes.PROP_CHANGE: 
+    case ActionTypes.PROP_CHANGE:
       let { props } = action;
 
       if (props.rowsCount === state.rowsCount && props.rowHeight === state.rowHeight) {
@@ -41,17 +32,17 @@ function scroller(state = DEFAULT_STATE, action) {
       }
 
       //TODO (asif) reinitalize when viewheight changes
-      var a = scrollHelper.initailize(state, props);
-      return Object.assign({}, a);
-    case ActionTypes.SCROLL_BY: 
+      var initialState = scrollHelper.initialize(state, props);
+      return Object.assign({}, initialState);
+    case ActionTypes.SCROLL_BY:
       let { deltaY } = action;
       state = scrollHelper.scrollBy(state, deltaY);
       return state;
-    case ActionTypes.SCROLL_END: 
+    case ActionTypes.SCROLL_END:
       return scrollHelper.scrollEnd(state);
-    case ActionTypes.SCROLL_START: 
+    case ActionTypes.SCROLL_START:
       return scrollHelper.scrollStart(state);
-    case ActionTypes.SCROLL_TO: 
+    case ActionTypes.SCROLL_TO:
       let { scrollPosition } = action;
       state = scrollHelper.scrollTo(state, scrollPosition);
       return state;
