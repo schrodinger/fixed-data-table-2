@@ -9,6 +9,8 @@ import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { Table, Column, Cell } from 'fixed-data-table-2';
 import React from 'react';
 
+// Note: Using sort with pagination is not recommended as this will
+//       force loading all the data.
 const AdvancedTable = AddFilter(AddSort(DataCtxt(Table)));
 
 const SortTypes = {
@@ -20,6 +22,10 @@ function reverseSortDirection(sortDir) {
   return sortDir === SortTypes.DESC ? SortTypes.ASC : SortTypes.DESC;
 }
 
+/**
+ * This React component adds to the header sort funcitonality decorating with
+ * arrow and adding a onClick to the header link.
+ */
 class SortHeaderCell extends React.Component {
   constructor(props) {
     super(props);
@@ -56,20 +62,80 @@ class SortHeaderCell extends React.Component {
   }
 }
 
+SortHeaderCell.propTypes = {
+  columnKey: React.PropTypes.string,
+  sortDir: React.PropTypes.string,
+  sortColumn: React.PropTypes.string,
+  onSortChange: React.PropTypes.func,
+  children: React.PropTypes.node,
+}
+
+/**
+ * The PagedData class simulates real paginated data where data is fetched
+ * as requested in chunks.
+ */
 class PagedData {
-  constructor() {
-    this._dataList = new FakeObjectDataListStore(2000);
+  constructor(size = 2000) {
+    this._dataList = new FakeObjectDataListStore(size);
+    // When fetching we need to fetch the index missing + additional x-elements.
+    //  This specifies that we add 10% of the total size when fetching, the
+    //  maximum number of data-requests will then be 10.
+    this._fetchSize = Math.ceil(size/10);
     this._end = 50;
     this._pending = false;
+    this._callbacks = [];
+    this.runCallbacks = this.runCallbacks.bind(this);
   }
 
-  // The callback is used for events when data has been loaded
-  setCallback(callback) {
-    this._callback = callback;
+  /**
+   * The callbacks are used to trigger events as new data arrives.
+   *
+   * In most cases the callback is a method that updates the state, e.g.
+   * updates a version number without direct impact on the component but that
+   * will trigger an component refresh/update.
+   *
+   * @param callback {function} The fallback function to be called
+   * @param id       {string}   The string that identifies the given callback.
+   *   This allows a callback to be overwritten when creating new objects that
+   *   use this data as reference.
+   * @return void
+   */
+  setCallback(callback, id = "base") {
+    const new_callback = {id: id, fun: callback};
+
+    let found = false;
+    const new_callbacks = [];
+    for (let cb of this._callbacks){
+      if (cb.id == id){
+        found = true;
+        new_callbacks.push(new_callback);
+      }else{
+        new_callbacks.push(cb);
+      }
+    }
+
+    if (!found) {
+      new_callbacks.push(new_callback);
+    }
+
+    this._callbacks = new_callbacks;
+  }
+
+  /**
+   * Runs callbacks in the order that they've been added.
+   *
+   * The function is triggered when the fetchRange() Promise resolves.
+   *
+   * @return {void}
+   */
+  runCallbacks() {
+    for (let cb of this._callbacks){
+      cb.fun();
+    }
   }
 
   getSize() {
-    return 2000;
+    return this._dataList.getSize();
   }
 
   fetchRange(end) {
@@ -82,19 +148,26 @@ class PagedData {
     .then(() => {
       this._pending = false;
       this._end = end;
-      this._callback()
+      this.runCallbacks();
     });
   }
 
   getObjectAt(index) {
     if (index >= this._end) {
-      this.fetchRange(Math.min(2000, index + 50));
+      this.fetchRange(Math.min(this._dataList.getSize(),
+                               index + this._fetchSize));
       return null;
     }
+
     return this._dataList.getObjectAt(index);
   }
 }
 
+/**
+ * The PendingCell allows shallow comparison and avoiding updating
+ * components that haven't changed, see Reacts performance post:
+ * https://facebook.github.io/react/docs/optimizing-performance.html
+ */
 class PendingCell extends React.PureComponent {
   render() {
     const {data, rowIndex, columnKey, dataVersion, ...props} = this.props;
@@ -107,6 +180,16 @@ class PendingCell extends React.PureComponent {
   }
 }
 
+/**
+ * A cell that is aware of its context
+ *
+ * This cell is aware of its context and retrieves the data and its version
+ * before passing it on to an ordinary cell.
+ *
+ * @param {object} props   Standard props
+ * @param {object} data    A data object with getObjectAt() defined
+ * @param {number} version A number indicating the current version of the displayed data
+ */
 const PagedCell = (props, {data, version}) => {
   return (
     <PendingCell
@@ -117,15 +200,25 @@ const PagedCell = (props, {data, version}) => {
   );
 };
 
+/**
+ * Data type validator
+ *
+ * Instead of having React.PropTypes.instanceOf(PagedData) the custom PropTypes
+ * allows any data structure as long as it provides a `getObjectAt` function.
+ *
+ * @param {object} props         The list of the props
+ * @param {string} propName      The prop that is to be validated
+ * @param {string} componentName The name of the component that the prop belongs to
+ */
 function PropTypeCtxtData(props, propName, componentName) {
   const dataObj = props[propName];
-  if (dataObj.setCallback === undefined){
+  if (dataObj.getObjectAt === undefined){
     return new Error(
       [
         componentName,
         'requires that',
         propName,
-        'has a setCallback() function'
+        'has a getObjectAt() function'
       ].join(' ')
     );
   }

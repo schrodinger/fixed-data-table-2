@@ -14,10 +14,32 @@ function PropTypeCtxtData(props, propName, componentName) {
       ].join(' ')
     );
   }
+
+  if (dataObj.getSize === undefined){
+    return new Error(
+      [
+        componentName,
+        'requires that',
+        propName,
+        'has a getSize() function that returns the number of rows'
+      ].join(' ')
+    );
+  }
 };
 
 function PropTypeCtxtDataAdvanced(props, propName, componentName) {
   const dataObj = props[propName];
+
+  if (dataObj.setCallback === undefined){
+    return new Error(
+      [
+        componentName,
+        'requires that',
+        propName,
+        'has a setCallback() function'
+      ].join(' ')
+    );
+  }
 
   if (dataObj.getObjectAt === undefined){
     return new Error(
@@ -48,7 +70,7 @@ function DataCtxt(Wrapped, data) {
       super(props);
 
       this.refresh = this.refresh.bind(this);
-      props.data.setCallback(this.refresh);
+      props.data.setCallback(this.refresh, "data");
 
       this.state = {
         data: props.data,
@@ -62,7 +84,7 @@ function DataCtxt(Wrapped, data) {
     // an update event that is propagated into the cells
     refresh() {
       this.setState({
-        version: this.state.version + 1
+        version: this.state.version + 1,
       });
     }
 
@@ -83,7 +105,11 @@ function DataCtxt(Wrapped, data) {
 
     render() {
       const {data, ...other} = this.props;
-      return <Wrapped {...other} />
+      return (
+      <Wrapped
+        rowsCount={data.getSize()}
+        {...other}
+      />);
     }
   };
 
@@ -103,14 +129,8 @@ class DataListWrapper {
   }
 
   // The callback is used for triggering re-rendering
-  setCallback(cb) {
-    this._callback = function() {
-      cb();
-
-      if (typeof(this._data._callback) === 'function') {
-        this._data._callback();
-      }
-    }
+  setCallback(cb, id = "wrapper") {
+    this._data.setCallback(cb, id);
   }
 
   getSize() {
@@ -138,40 +158,23 @@ function AddFilter(TableComponent) {
       super(props);
 
       const { data, filters } = props;
-      this._rawData = data;
-      const filteredData = new DataListWrapper(data)
-
       this.refresh = this.refresh.bind(this);
-      filteredData.setCallback(this.refresh);
 
       this.state = {
-        filteredData,
-        filters: Object.assign({}, filters),
         version: 0,
       };
     }
 
-    componentWillReceiveProps(nextProps) {
-      if (JSON.stringify(nextProps.data) !== JSON.stringify(this._rawData)){
-        this._rawData = nextProps.data;
-      }
-
-      if (JSON.stringify(nextProps.filters) !== JSON.stringify(this.state.filters)){
-        this.setState({
-          filters: Object.assign({}, nextProps.filters),
-        });
-        this.filter();
-      }
-    }
-
-    // Force a refresh or the page doesn't re-render
-    //
-    // The name of the state variable is irrelevant, it will simply trigger
-    // an update event that is propagated into the cells
     refresh() {
       this.setState({
         version: this.state.version + 1
-      });
+      })
+    }
+
+    _getDataWrapper(indexMap = null) {
+      const filteredData = new DataListWrapper(this.props.data, indexMap);
+      filteredData.setCallback(this.refresh, "filter");
+      return filteredData;
     }
 
     filter() {
@@ -180,21 +183,23 @@ function AddFilter(TableComponent) {
       for (let key in this.props.filters) {
         if (this.props.filters.hasOwnProperty(key) &&
             this.props.filters[key] !== ''){
-          filters[key] = this.props.filters[key];
+          filters[key] = this.props.filters[key].toLowerCase();
         }
       }
-      Object.keys(filters).map((key) => {
-        filters[key] = filters[key].toLowerCase();
-        return (key);
-      });
 
       const match = (haystack, needle) =>
         haystack.toLowerCase().indexOf(needle) !== -1;
 
+      let filteredIndexes = null;
       if (Object.keys(filters).length > 0) {
-        const filteredIndexes = [];
-        for (let index = 0; index < this._rawData.getSize(); index += 1) {
-          const row = this._rawData.getObjectAt(index);
+        filteredIndexes = [];
+        for (let index = 0; index < this.props.data.getSize(); index += 1) {
+          const row = this.props.data.getObjectAt(index);
+          // If the object is null it may be loading and should therefore be kept
+          if (row === null) {
+            filteredIndexes.push(index);
+            continue;
+          }
 
           // Loop through all the filters and check if there's a match
           let found = true;
@@ -212,25 +217,17 @@ function AddFilter(TableComponent) {
             filteredIndexes.push(index);
           }
         }
-
-        // Set the data filtering
-        this.setState({
-          filteredData: new DataListWrapper(this._rawData, filteredIndexes)
-        })
-      } else {
-        this.setState({
-          filteredData: new DataListWrapper(this._rawData, null)
-        })
       }
+
+      return (this._getDataWrapper(filteredIndexes))
     }
 
     render() {
       const { data, filters, ...other } = this.props;
-
+      const filteredData = this.filter();
       return(
         <TableComponent
-          data={this.state.filteredData}
-          rowsCount={this.state.filteredData.getSize()}
+          data={filteredData}
           {...other}
         >
           {this.props.children}
@@ -239,10 +236,35 @@ function AddFilter(TableComponent) {
     }
   }
 
-  // TODO: improve proptypes
   FilterTable.propTypes = {
-    filters: React.PropTypes.object.isRequired,
     data: PropTypeCtxtDataAdvanced,
+    filters: (props, propName, componentName) => {
+      const dataObj = props[propName];
+
+      if (typeof(dataObj) !== "object"){
+        return new Error(
+          [
+            componentName,
+            'requires that',
+            propName,
+            'is an object that can be used for filtering.',
+            'You have provided a:',
+            typeof(dataObj)
+          ].join(' ')
+        );
+      }
+
+      if (Object.keys(dataObj).length === 0){
+        return new Error(
+          [
+            componentName,
+            'requires that',
+            propName,
+            'isn\'t empty'
+          ].join(' ')
+        );
+      }
+    },
   }
 
   return FilterTable;
@@ -254,59 +276,44 @@ function AddSort(TableComponent) {
     constructor(props) {
       super(props);
 
-      const { data } = props;
-      this._rawData = data;
-      this._createIndexes();
-
-      const sortedData = new DataListWrapper(data);
-      this.refresh = this.refresh.bind(this);
-      sortedData.setCallback(this.refresh);
-
       this.state = {
-        sortedData,
         version: 0,
-      };
-    }
-
-    _createIndexes() {
-      this._defaultSortIndexes = [];
-      var size = this._rawData.getSize();
-      for (var index = 0; index < size; index++) {
-        this._defaultSortIndexes.push(index);
       }
-    }
-
-    componentWillReceiveProps(nextProps) {
-      let triggerSort = false;
-      if (JSON.stringify(nextProps.data) !== JSON.stringify()) {
-        this._rawData = nextProps.data;
-        triggerSort = true
-      }
-
-      if (nextProps.sortColumn !== this.props.sortColumn ||
-          nextProps.sortDir !== this.props.sortDir) {
-        triggerSort = true;
-      }
-
-      if (triggerSort) {
-        this.sort(nextProps.sortColumn, nextProps.sortDir);
-      }
+      this.refresh = this.refresh.bind(this);
     }
 
     refresh() {
       this.setState({
-        version: this.state.version + 1
-      });
+        version: this.state.version + 1,
+      })
     }
 
-    sort(columnKey, sortDir) {
-      if (columnKey.length > 0) {
-        this._createIndexes();
-        var sortIndexes = this._defaultSortIndexes;
+    _getDataWrapper(indexMap = null) {
+      const sortedData = new DataListWrapper(this.props.data, indexMap);
+      sortedData.setCallback(this.refresh, "sort");
+      return sortedData;
+    }
+
+    _getIndexes() {
+      const indexes = [];
+      var size = this.props.data.getSize();
+      for (var index = 0; index < size; index++) {
+        indexes.push(index);
+      }
+
+      return (indexes);
+    }
+
+    sort() {
+      const { sortColumn, sortDir } = this.props;
+      let sortIndexes = null;
+      if (sortColumn.length > 0) {
+
+        sortIndexes = this._getIndexes();
         sortIndexes.sort((indexA, indexB) => {
-          const objA = this._rawData.getObjectAt(indexA);
-          const objB = this._rawData.getObjectAt(indexB);
-          if (objA == null && objB == null) {
+          const objA = this.props.data.getObjectAt(indexA);
+          const objB = this.props.data.getObjectAt(indexB);
+          if (objA === null && objB === null) {
             return 0;
           }
 
@@ -316,8 +323,8 @@ function AddSort(TableComponent) {
           } else if (objB == null) {
             sortVal = -1;
           } else {
-            const valueA = objB[columnKey];
-            const valueB = objB[columnKey];
+            const valueA = objA[sortColumn];
+            const valueB = objB[sortColumn];
             if (valueA > valueB) {
               sortVal = 1;
             }
@@ -332,25 +339,18 @@ function AddSort(TableComponent) {
 
           return sortVal;
         });
-
-        const sortedData = new DataListWrapper(this._rawData, sortIndexes);
-        this.setState({
-          sortedData: sortedData,
-        });
-      } else {
-        this.setState({
-          sortedData: new DataListWrapper(this._rawData, null),
-        })
       }
+
+      return this._getDataWrapper(sortIndexes);
     }
 
     render() {
       const { data, onSortChange, sortDir, sortColumn, ...other } = this.props;
 
+      const sortedData = this.sort();
       return(
         <TableComponent
-          data={this.state.sortedData}
-          rowsCount={this.state.sortedData.getSize()}
+          data={sortedData}
           {...other}
         >
           {this.props.children}
