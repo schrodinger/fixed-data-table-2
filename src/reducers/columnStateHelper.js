@@ -310,7 +310,7 @@ function reorderColumn(oldState, reorderData) {
     width
   } = reorderData;
 
-  var isFixed = !!oldState.headFixedColumns.find(function(column) {
+  var isFixed = !!oldState.columnInfo.headFixedColumns.find(function(column) {
     return column.props.columnKey === columnKey;
   });
 
