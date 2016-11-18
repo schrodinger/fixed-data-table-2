@@ -7,6 +7,7 @@
   width: 12px;
   margin-right: -12px;
   float: left;
+  cursor: move;
 }
 .fixedDataTableCellLayout/columnReorderContainer:after {
 	content: '::';

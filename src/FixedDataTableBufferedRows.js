@@ -16,7 +16,6 @@ import FixedDataTableRow from 'FixedDataTableRow';
 import cx from 'cx';
 import emptyFunction from 'emptyFunction';
 import joinClasses from 'joinClasses';
-import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
 var {PropTypes} = React;
 
@@ -67,15 +66,15 @@ var FixedDataTableBufferedRows = React.createClass({
   render() /*object*/ {
     var props = this.props;
     var rowClassNameGetter = props.rowClassNameGetter || emptyFunction;
-
     var rowsToRender = this.props.rowsToRender || [];
 
     this._staticRowArray.length = rowsToRender.length;
+    var baseOffsetTop = props.firstRowOffset - props.rowHeights[props.firstRowIndex] + props.offsetTop;
 
     for (var i = 0; i < rowsToRender.length; ++i) {
       var rowIndex = rowsToRender[i];
       var currentRowHeight = this._getRowHeight(rowIndex);
-      var rowOffsetTop = props.rowHeights[rowIndex];
+      var rowOffsetTop = baseOffsetTop + props.rowHeights[rowIndex];
 
       var hasBottomBorder =
         rowIndex === props.rowsCount - 1 && props.showLastRowBorder;
@@ -107,21 +106,7 @@ var FixedDataTableBufferedRows = React.createClass({
         />;
     }
 
-    var firstRowPosition = props.rowHeights[props.firstRowIndex];
-
-    var style = {
-      position: 'absolute',
-      pointerEvents: props.isScrolling ? 'none' : 'auto',
-    };
-
-    FixedDataTableTranslateDOMPosition(
-      style,
-      0,
-      props.firstRowOffset - firstRowPosition + props.offsetTop,
-      this._initialRender,
-    );
-
-    return <div style={style}>{this._staticRowArray}</div>;
+    return <div>{this._staticRowArray}</div>;
   },
 
   _getRowHeight(/*number*/ index) /*number*/ {

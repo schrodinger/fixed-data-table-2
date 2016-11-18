@@ -309,10 +309,16 @@ function reorderColumn(oldState, reorderData) {
     scrollStart,
     width
   } = reorderData;
+
+  var isFixed = !!oldState.headFixedColumns.find(function(column) {
+    return column.props.columnKey === columnKey;
+  });
+
   return Object.assign({}, oldState, {
     isColumnReordering: true,
     columnReorderingData: {
       dragDistance: 0,
+      isFixed: isFixed,
       scrollStart: scrollStart,
       columnKey: columnKey,
       columnWidth: width,
@@ -329,22 +335,27 @@ function reorderColumnMove(oldState, deltaX) {
   reorderingData.columnBefore = undefined;
   reorderingData.columnAfter = undefined;
 
+  var isFixedColumn = oldState.columnReorderingData.isFixed;
   var scrollX = oldState.scrollX;
-  //Relative dragX position on scroll
-  var dragX = reorderingData.originalLeft - reorderingData.scrollStart + reorderingData.dragDistance;
 
-  var fixedColumnsWidth = oldState.columnInfo.bodyFixedColumns
-    .reduce((sum, column) => sum + column.props.width, 0);
-  var relativeWidth = oldState.width - fixedColumnsWidth;
+  if (!isFixedColumn) {
+    //Relative dragX position on scroll
+    var dragX = reorderingData.originalLeft - reorderingData.scrollStart + reorderingData.dragDistance;
 
-  //Scroll the table left or right if we drag near the edges of the table
-  if (dragX > relativeWidth - DRAG_SCROLL_BUFFER) {
-    scrollX = Math.min(scrollX + DRAG_SCROLL_SPEED, oldState.maxScrollX);
-  } else if (dragX <= DRAG_SCROLL_BUFFER) {
-    scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
+    var fixedColumnsWidth = oldState.columnInfo.bodyFixedColumns
+      .reduce((sum, column) => sum + column.props.width, 0);
+    var relativeWidth = oldState.width - fixedColumnsWidth;
+
+    //Scroll the table left or right if we drag near the edges of the table
+    if (dragX > relativeWidth - DRAG_SCROLL_BUFFER) {
+      scrollX = Math.min(scrollX + DRAG_SCROLL_SPEED, oldState.maxScrollX);
+    } else if (dragX <= DRAG_SCROLL_BUFFER) {
+      scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
+    }
+
+    reorderingData.dragDistance += oldState.scrollX - reorderingData.scrollStart;
   }
 
-  reorderingData.dragDistance += oldState.scrollX - reorderingData.scrollStart;
   return Object.assign({}, oldState, {
     scrollX: scrollX,
     columnReorderingData: reorderingData
