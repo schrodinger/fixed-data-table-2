@@ -104,13 +104,7 @@ class DataListWrapper {
 
   // The callback is used for triggering re-rendering
   setCallback(cb) {
-    this._callback = function() {
-      cb();
-
-      if (typeof(this._data._callback) === 'function') {
-        this._data._callback();
-      }
-    }
+    this._data.setCallback(cb);
   }
 
   getSize() {
@@ -140,14 +134,9 @@ function AddFilter(TableComponent) {
       const { data, filters } = props;
       this._rawData = data;
       const filteredData = new DataListWrapper(data)
-
-      this.refresh = this.refresh.bind(this);
-      filteredData.setCallback(this.refresh);
-
       this.state = {
         filteredData,
         filters: Object.assign({}, filters),
-        version: 0,
       };
     }
 
@@ -162,16 +151,6 @@ function AddFilter(TableComponent) {
         });
         this.filter();
       }
-    }
-
-    // Force a refresh or the page doesn't re-render
-    //
-    // The name of the state variable is irrelevant, it will simply trigger
-    // an update event that is propagated into the cells
-    refresh() {
-      this.setState({
-        version: this.state.version + 1
-      });
     }
 
     filter() {
@@ -195,6 +174,11 @@ function AddFilter(TableComponent) {
         const filteredIndexes = [];
         for (let index = 0; index < this._rawData.getSize(); index += 1) {
           const row = this._rawData.getObjectAt(index);
+          // If the object is null it may be loading and should therefore be kept
+          if (row === null) {
+            filteredIndexes.push(index);
+            continue;
+          }
 
           // Loop through all the filters and check if there's a match
           let found = true;
@@ -259,9 +243,6 @@ function AddSort(TableComponent) {
       this._createIndexes();
 
       const sortedData = new DataListWrapper(data);
-      this.refresh = this.refresh.bind(this);
-      sortedData.setCallback(this.refresh);
-
       this.state = {
         sortedData,
         version: 0,
@@ -291,12 +272,6 @@ function AddSort(TableComponent) {
       if (triggerSort) {
         this.sort(nextProps.sortColumn, nextProps.sortDir);
       }
-    }
-
-    refresh() {
-      this.setState({
-        version: this.state.version + 1
-      });
     }
 
     sort(columnKey, sortDir) {
