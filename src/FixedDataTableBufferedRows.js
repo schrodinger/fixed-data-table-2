@@ -11,7 +11,6 @@
  */
 
 import React from 'React';
-import FixedDataTableRowBuffer from 'FixedDataTableRowBuffer';
 import FixedDataTableRow from 'FixedDataTableRow';
 
 import cx from 'cx';
@@ -37,28 +36,12 @@ var FixedDataTableBufferedRows = React.createClass({
     onRowMouseLeave: PropTypes.func,
     rowClassNameGetter: PropTypes.func,
     rowsCount: PropTypes.number.isRequired,
-    rowHeightGetter: PropTypes.func,
-    rowPositionGetter: PropTypes.func.isRequired,
+    rowHeights: PropTypes.object.isRequired,
+    rowsToRender: PropTypes.array.isRequired,
     scrollLeft: PropTypes.number.isRequired,
     scrollableColumns: PropTypes.array.isRequired,
     showLastRowBorder: PropTypes.bool,
     width: PropTypes.number.isRequired,
-  },
-
-  getInitialState() /*object*/ {
-    this._rowBuffer =
-      new FixedDataTableRowBuffer(
-        this.props.rowsCount,
-        this.props.defaultRowHeight,
-        this.props.height,
-        this._getRowHeight
-      );
-    return ({
-      rowsToRender: this._rowBuffer.getRows(
-        this.props.firstRowIndex,
-        this.props.firstRowOffset
-      ),
-    });
   },
 
   componentWillMount() {
@@ -69,38 +52,6 @@ var FixedDataTableBufferedRows = React.createClass({
   componentDidMount() {
     setTimeout(this._updateBuffer, 1000);
     this._initialRender = false;
-  },
-
-  componentWillReceiveProps(/*object*/ nextProps) {
-    if (nextProps.rowsCount !== this.props.rowsCount ||
-        nextProps.defaultRowHeight !== this.props.defaultRowHeight ||
-        nextProps.height !== this.props.height) {
-      this._rowBuffer =
-        new FixedDataTableRowBuffer(
-          nextProps.rowsCount,
-          nextProps.defaultRowHeight,
-          nextProps.height,
-          this._getRowHeight
-        );
-    }
-    if (this.props.isScrolling && !nextProps.isScrolling) {
-      this._updateBuffer();
-    } else {
-      this.setState({
-        rowsToRender: this._rowBuffer.getRows(
-          nextProps.firstRowIndex,
-          nextProps.firstRowOffset
-        ),
-      });
-    }
-  },
-
-  _updateBuffer() {
-    if (this.isMounted()) {
-      this.setState({
-        rowsToRender: this._rowBuffer.getRowsWithUpdatedBuffer(),
-      });
-    }
   },
 
   shouldComponentUpdate() /*boolean*/ {
@@ -115,27 +66,15 @@ var FixedDataTableBufferedRows = React.createClass({
   render() /*object*/ {
     var props = this.props;
     var rowClassNameGetter = props.rowClassNameGetter || emptyFunction;
-    var rowPositionGetter = props.rowPositionGetter;
-
-    var rowsToRender = this.state.rowsToRender;
-
-    //Sort the rows, we slice first to avoid changing original
-    var sortedRowsToRender = rowsToRender.slice().sort((a, b) => a - b);
-    var rowPositions = {};
-
-    //Row position calculation requires that rows are calculated in order
-    sortedRowsToRender.forEach((rowIndex) => {
-      rowPositions[rowIndex] = rowPositionGetter(rowIndex);
-    });
+    var rowsToRender = this.props.rowsToRender || [];
 
     this._staticRowArray.length = rowsToRender.length;
-
-    var baseOffsetTop = props.firstRowOffset - props.rowPositionGetter(props.firstRowIndex) + props.offsetTop;
+    var baseOffsetTop = props.firstRowOffset - props.rowHeights[props.firstRowIndex] + props.offsetTop;
 
     for (var i = 0; i < rowsToRender.length; ++i) {
       var rowIndex = rowsToRender[i];
       var currentRowHeight = this._getRowHeight(rowIndex);
-      var rowOffsetTop = baseOffsetTop + rowPositions[rowIndex];
+      var rowOffsetTop = baseOffsetTop + props.rowHeights[rowIndex];
 
       var hasBottomBorder =
         rowIndex === props.rowsCount - 1 && props.showLastRowBorder;

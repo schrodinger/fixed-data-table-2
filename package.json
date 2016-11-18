@@ -43,6 +43,7 @@
     "react-dom": "^15.3.2",
     "react-tools": "^0.12.2",
     "react-tooltip": "^3.2.1",
+    "redux": "^3.5.2",
     "sinon": "^2.0.0-pre.2",
     "style-loader": "^0.8.3",
     "url-loader": "^0.5.5",
