@@ -1,81 +1,98 @@
 "use strict";
 
-const React = require('react');
+import React from 'react';
+import except from 'except';
 
 function PropTypeCtxtData(props, propName, componentName) {
   const dataObj = props[propName];
-  if (dataObj.setCallback === undefined){
+  if (dataObj.setCallback === undefined) {
     return new Error(
       [
         componentName,
         'requires that',
         propName,
-        'has a setCallback() function'
+        'has a setCallback() function',
       ].join(' ')
     );
   }
 
-  if (dataObj.getSize === undefined){
+  if (dataObj.getSize === undefined) {
     return new Error(
       [
         componentName,
         'requires that',
         propName,
-        'has a getSize() function that returns the number of rows'
+        'has a getSize() function that returns the number of rows',
       ].join(' ')
     );
   }
-};
+}
 
 function PropTypeCtxtDataAdvanced(props, propName, componentName) {
   const dataObj = props[propName];
 
-  if (dataObj.setCallback === undefined){
+  if (dataObj.setCallback === undefined) {
     return new Error(
       [
         componentName,
         'requires that',
         propName,
-        'has a setCallback() function'
+        'has a setCallback() function',
       ].join(' ')
     );
   }
 
-  if (dataObj.getObjectAt === undefined){
+  if (dataObj.getObjectAt === undefined) {
     return new Error(
       [
         componentName,
         'requires that',
         propName,
-        'has a getObjectAt() function that retrieves a row'
+        'has a getObjectAt() function that retrieves a row',
       ].join(' ')
     );
   }
 
-  if (dataObj.getSize === undefined){
+  if (dataObj.getSize === undefined) {
     return new Error(
       [
         componentName,
         'requires that',
         propName,
-        'has a getSize() function that returns the number of rows'
+        'has a getSize() function that returns the number of rows',
       ].join(' ')
     );
   }
-};
+}
 
-function DataCtxt(Wrapped, data) {
+function DataCtxt(Wrapped) {
   class ContextClass extends React.Component {
     constructor(props) {
       super(props);
 
       this.refresh = this.refresh.bind(this);
-      props.data.setCallback(this.refresh, "data");
+      const data = this.props.data;
+      data.setCallback(this.refresh, 'data');
 
       this.state = {
         data: props.data,
         version: 0,
       };
+    }
+
+    getChildContext() {
+      return {
+        data: this.state.data,
+        version: this.state.version,
+      };
+    }
+
+    componentWillReceiveProps(nextProps) {
+      if (JSON.stringify(nextProps.data) !== JSON.stringify(this.state.data)) {
+        this.setState({
+          data: nextProps.data,
+        });
+      }
     }
 
     // Force a refresh or the page doesn't re-render
@@ -88,34 +105,23 @@ function DataCtxt(Wrapped, data) {
       });
     }
 
-    getChildContext() {
-      return {
-        data: this.state.data,
-        version: this.state.version,
-      };
-    }
-
-    componentWillReceiveProps(nextProps) {
-      if (JSON.stringify(nextProps.data) !== JSON.stringify(this.state.data)){
-        this.setState({
-          data: nextProps.data,
-        });
-      }
-    }
-
     render() {
-      const {data, ...other} = this.props;
+      const other = except(this.props, Object.keys(ContextClass.propTypes));
       return (
-      <Wrapped
-        rowsCount={data.getSize()}
-        {...other}
-      />);
+        <Wrapped
+          rowsCount={this.state.data.getSize()}
+          {...other}
+        />);
     }
-  };
+  }
 
   ContextClass.childContextTypes = {
     data: PropTypeCtxtData,
     version: React.PropTypes.number,
+  };
+
+  ContextClass.propTypes = {
+    data: PropTypeCtxtData,
   };
 
   return ContextClass;
@@ -125,12 +131,13 @@ class DataListWrapper {
   constructor(data, index = null) {
     this._data = data;
     this._indexMap = index;
-    this._callback = null;
   }
 
   // The callback is used for triggering re-rendering
-  setCallback(cb, id = "wrapper") {
-    this._data.setCallback(cb, id);
+  setCallback(cb, id = 'wrapper') {
+    if (this._data.setCallback) {
+      this._data.setCallback(cb, id);
+    }
   }
 
   getSize() {
@@ -157,7 +164,6 @@ function AddFilter(TableComponent) {
     constructor(props) {
       super(props);
 
-      const { data, filters } = props;
       this.refresh = this.refresh.bind(this);
 
       this.state = {
@@ -167,25 +173,26 @@ function AddFilter(TableComponent) {
 
     refresh() {
       this.setState({
-        version: this.state.version + 1
-      })
+        version: this.state.version + 1,
+      });
     }
 
     _getDataWrapper(indexMap = null) {
       const filteredData = new DataListWrapper(this.props.data, indexMap);
-      filteredData.setCallback(this.refresh, "filter");
+      filteredData.setCallback(this.refresh, 'filter');
       return filteredData;
     }
 
     filter() {
       // Get and prep filters
-      let filters = {};
-      for (let key in this.props.filters) {
-        if (this.props.filters.hasOwnProperty(key) &&
-            this.props.filters[key] !== ''){
+      const filters = {};
+      Object
+        .keys(this.props.filters)
+        .filter(key => this.props.filters[key].length > 0)
+        .forEach((key) => {
           filters[key] = this.props.filters[key].toLowerCase();
-        }
-      }
+          return (null);
+        });
 
       const match = (haystack, needle) =>
         haystack.toLowerCase().indexOf(needle) !== -1;
@@ -203,8 +210,8 @@ function AddFilter(TableComponent) {
 
           // Loop through all the filters and check if there's a match
           let found = true;
-          let keys = Object.keys(filters);
-          for (let key of keys) {
+          const keys = Object.keys(filters);
+          for (const key of keys) {
             const value = row[key];
 
             if (!match(value, filters[key])) {
@@ -219,13 +226,13 @@ function AddFilter(TableComponent) {
         }
       }
 
-      return (this._getDataWrapper(filteredIndexes))
+      return (this._getDataWrapper(filteredIndexes));
     }
 
     render() {
-      const { data, filters, ...other } = this.props;
+      const other = except(this.props, Object.keys(FilterTable.propTypes));
       const filteredData = this.filter();
-      return(
+      return (
         <TableComponent
           data={filteredData}
           {...other}
@@ -238,10 +245,11 @@ function AddFilter(TableComponent) {
 
   FilterTable.propTypes = {
     data: PropTypeCtxtDataAdvanced,
+    children: React.PropTypes.node,
     filters: (props, propName, componentName) => {
       const dataObj = props[propName];
 
-      if (typeof(dataObj) !== "object"){
+      if (typeof (dataObj) !== 'object') {
         return new Error(
           [
             componentName,
@@ -249,23 +257,25 @@ function AddFilter(TableComponent) {
             propName,
             'is an object that can be used for filtering.',
             'You have provided a:',
-            typeof(dataObj)
+            typeof (dataObj),
           ].join(' ')
         );
       }
 
-      if (Object.keys(dataObj).length === 0){
+      if (Object.keys(dataObj).length === 0) {
         return new Error(
           [
             componentName,
             'requires that',
             propName,
-            'isn\'t empty'
+            'isn\'t empty',
           ].join(' ')
         );
       }
+
+      return (null);
     },
-  }
+  };
 
   return FilterTable;
 }
@@ -278,26 +288,27 @@ function AddSort(TableComponent) {
 
       this.state = {
         version: 0,
-      }
+      };
+
       this.refresh = this.refresh.bind(this);
     }
 
     refresh() {
       this.setState({
         version: this.state.version + 1,
-      })
+      });
     }
 
     _getDataWrapper(indexMap = null) {
       const sortedData = new DataListWrapper(this.props.data, indexMap);
-      sortedData.setCallback(this.refresh, "sort");
+      sortedData.setCallback(this.refresh, 'sort');
       return sortedData;
     }
 
     _getIndexes() {
       const indexes = [];
-      var size = this.props.data.getSize();
-      for (var index = 0; index < size; index++) {
+      const size = this.props.data.getSize();
+      for (let index = 0; index < size; index += 1) {
         indexes.push(index);
       }
 
@@ -307,8 +318,8 @@ function AddSort(TableComponent) {
     sort() {
       const { sortColumn, sortDir } = this.props;
       let sortIndexes = null;
-      if (sortColumn.length > 0) {
-
+      if (sortColumn &&
+          sortColumn.length > 0) {
         sortIndexes = this._getIndexes();
         sortIndexes.sort((indexA, indexB) => {
           const objA = this.props.data.getObjectAt(indexA);
@@ -333,8 +344,8 @@ function AddSort(TableComponent) {
             }
           }
 
-          if (sortVal !== 0 && sortDir === "ASC") {
-            sortVal = sortVal * -1;
+          if (sortVal !== 0 && sortDir === 'ASC') {
+            sortVal *= -1;
           }
 
           return sortVal;
@@ -345,10 +356,9 @@ function AddSort(TableComponent) {
     }
 
     render() {
-      const { data, onSortChange, sortDir, sortColumn, ...other } = this.props;
-
+      const other = except(this.props, Object.keys(SortTable.propTypes));
       const sortedData = this.sort();
-      return(
+      return (
         <TableComponent
           data={sortedData}
           {...other}
@@ -363,8 +373,8 @@ function AddSort(TableComponent) {
     data: PropTypeCtxtDataAdvanced,
     sortColumn: React.PropTypes.string,
     sortDir: React.PropTypes.string,
-    onSortChange: React.PropTypes.func.isRequired,
-  }
+    children: React.PropTypes.node,
+  };
 
   return SortTable;
 }
