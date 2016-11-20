@@ -13,6 +13,8 @@ var DocsPages = Constants.DocsPages;
 var DOCS_MARKDOWN_FILES = {
   [DocsPages.DOCS.GETTING_STARTED.location]: require('../../docs/README.md'),
   [DocsPages.DOCS.V6_MIGRATION.location]: require('../../docs/v6-migration.md'),
+  [DocsPages.DOCS.ROADMAP.location]: require('../../docs/roadmap.md'),
+  [DocsPages.DOCS.CODEBASE_OVERVIEW.location]: require('../../docs/codebase.md'),
 
   // API
   [DocsPages.API.TABLE_API.location]: require('../../docs/api/TableAPI.md'),
