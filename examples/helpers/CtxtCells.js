@@ -1,6 +1,6 @@
 import React from 'react';
-import ExampleImage from './ExampleImage';
 import { Cell } from 'fixed-data-table-2';
+import ExampleImage from './ExampleImage';
 
 function PropTypeCtxtData(props, propName, componentName) {
   const dataObj = props[propName];

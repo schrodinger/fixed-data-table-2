@@ -4,71 +4,12 @@
 
 "use strict";
 
-import { DataCtxt, AddFilter, AddSort } from './helpers/HOC';
-import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
-import { Table, Column, Cell } from 'fixed-data-table-2';
 import React from 'react';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import { DataCtxt, AddFilter } from './helpers/HOC';
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 
-// Note: Using sort with pagination is not recommended as this will
-//       force loading all the data.
-const AdvancedTable = AddFilter(AddSort(DataCtxt(Table)));
-
-const SortTypes = {
-  ASC: 'ASC',
-  DESC: 'DESC',
-};
-
-function reverseSortDirection(sortDir) {
-  return sortDir === SortTypes.DESC ? SortTypes.ASC : SortTypes.DESC;
-}
-
-/**
- * This React component adds to the header sort funcitonality decorating with
- * arrow and adding a onClick to the header link.
- */
-class SortHeaderCell extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this._onSortChange = this._onSortChange.bind(this);
-  }
-
-  render() {
-    const {columnKey, sortDir, sortColumn, onSortChange, children, ...props} = this.props;
-
-    return (
-      <Cell {...props}>
-        <a onClick={this._onSortChange}>
-          {children} {sortDir && columnKey === sortColumn ? (sortDir === SortTypes.DESC ? '↓' : '↑') : ''}
-        </a>
-      </Cell>
-    );
-  }
-
-  _onSortChange(e) {
-    e.preventDefault();
-
-    if (this.props.onSortChange) {
-      // TODO: Add indicator for handling large sort operations
-      return new Promise(() => {
-        this.props.onSortChange(
-          this.props.columnKey,
-          this.props.sortDir ?
-            reverseSortDirection(this.props.sortDir) :
-            SortTypes.DESC
-        )
-      })
-    }
-  }
-}
-
-SortHeaderCell.propTypes = {
-  columnKey: React.PropTypes.string,
-  sortDir: React.PropTypes.string,
-  sortColumn: React.PropTypes.string,
-  onSortChange: React.PropTypes.func,
-  children: React.PropTypes.node,
-}
+const AdvancedTable = AddFilter(DataCtxt(Table));
 
 /**
  * The PagedData class simulates real paginated data where data is fetched
@@ -80,7 +21,7 @@ class PagedData {
     // When fetching we need to fetch the index missing + additional x-elements.
     //  This specifies that we add 10% of the total size when fetching, the
     //  maximum number of data-requests will then be 10.
-    this._fetchSize = Math.ceil(size/10);
+    this._fetchSize = Math.ceil(size / 10);
     this._end = 50;
     this._pending = false;
     this._callbacks = [];
@@ -100,25 +41,25 @@ class PagedData {
    *   use this data as reference.
    * @return void
    */
-  setCallback(callback, id = "base") {
-    const new_callback = {id: id, fun: callback};
+  setCallback(callback, id = 'base') {
+    const newCallback = { id, fun: callback };
 
     let found = false;
-    const new_callbacks = [];
-    for (let cb of this._callbacks){
-      if (cb.id == id){
+    const newCallbacks = [];
+    for (const cb of this._callbacks) {
+      if (cb.id === id) {
         found = true;
-        new_callbacks.push(new_callback);
-      }else{
-        new_callbacks.push(cb);
+        newCallbacks.push(newCallback);
+      } else {
+        newCallbacks.push(cb);
       }
     }
 
     if (!found) {
-      new_callbacks.push(new_callback);
+      newCallbacks.push(newCallback);
     }
 
-    this._callbacks = new_callbacks;
+    this._callbacks = newCallbacks;
   }
 
   /**
@@ -129,7 +70,7 @@ class PagedData {
    * @return {void}
    */
   runCallbacks() {
-    for (let cb of this._callbacks){
+    for (const cb of this._callbacks) {
       cb.fun();
     }
   }
@@ -144,7 +85,7 @@ class PagedData {
     }
 
     this._pending = true;
-    return new Promise((resolve) => setTimeout(resolve, 1000))
+    new Promise(resolve => setTimeout(resolve, 1000))
     .then(() => {
       this._pending = false;
       this._end = end;
@@ -170,7 +111,7 @@ class PagedData {
  */
 class PendingCell extends React.PureComponent {
   render() {
-    const {data, rowIndex, columnKey, dataVersion, ...props} = this.props;
+    const { data, rowIndex, columnKey, dataVersion, ...props } = this.props;
     const rowObject = data.getObjectAt(rowIndex);
     return (
       <Cell {...props}>
@@ -190,15 +131,12 @@ class PendingCell extends React.PureComponent {
  * @param {object} data    A data object with getObjectAt() defined
  * @param {number} version A number indicating the current version of the displayed data
  */
-const PagedCell = (props, {data, version}) => {
-  return (
-    <PendingCell
-      data={data}
-      dataVersion={version}
-      {...props}
-    />
-  );
-};
+const PagedCell = (props, { data, version }) => (
+  <PendingCell
+    data={data}
+    dataVersion={version}
+    {...props}
+  />);
 
 /**
  * Data type validator
@@ -212,21 +150,21 @@ const PagedCell = (props, {data, version}) => {
  */
 function PropTypeCtxtData(props, propName, componentName) {
   const dataObj = props[propName];
-  if (dataObj.getObjectAt === undefined){
+  if (dataObj.getObjectAt === undefined) {
     return new Error(
       [
         componentName,
         'requires that',
         propName,
-        'has a getObjectAt() function'
+        'has a getObjectAt() function that returns a row object',
       ].join(' ')
     );
   }
-};
+}
 
 PagedCell.contextTypes = {
   data: PropTypeCtxtData,
-  version: React.PropTypes.number
+  version: React.PropTypes.number,
 };
 
 class AdvancedExample extends React.Component {
@@ -237,7 +175,7 @@ class AdvancedExample extends React.Component {
       data: new PagedData(2000),
       filters: {
         firstName: '',
-        lastName: ''
+        lastName: '',
       },
       sortColumn: '',
       sortDir: null,
@@ -251,29 +189,29 @@ class AdvancedExample extends React.Component {
     const filters = this.state.filters;
     filters[name] = value;
     this.setState({
-      filters
+      filters,
     });
   }
 
   _onSortChange(columnKey, sortDir) {
     this.setState({
       sortColumn: columnKey,
-      sortDir: sortDir,
+      sortDir,
     });
   }
 
   render() {
-    var { data, filters, sortColumn, sortDir } = this.state;
+    const { data, filters, sortColumn, sortDir } = this.state;
 
     return (
       <div>
         <strong>Filter by:</strong>&nbsp;
         <input
-          onChange={(e) => this._onFilterChange('firstName', e.target.value)}
+          onChange={e => this._onFilterChange('firstName', e.target.value)}
           placeholder="First Name"
         />&nbsp;
         <input
-          onChange={(e) => this._onFilterChange('lastName', e.target.value)}
+          onChange={e => this._onFilterChange('lastName', e.target.value)}
           placeholder="Last Name"
         />
         <br />
@@ -287,33 +225,18 @@ class AdvancedExample extends React.Component {
           headerHeight={50}
           width={1000}
           height={500}
-          {...this.props}>
+          {...this.props}
+        >
           <Column
             columnKey="firstName"
-            header={
-              <SortHeaderCell
-                onSortChange={this._onSortChange}
-                sortDir={sortDir}
-                sortColumn={sortColumn}
-              >
-                First Name
-              </SortHeaderCell>
-            }
+            header={<Cell>First</Cell>}
             cell={<PagedCell />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="lastName"
-            header={
-              <SortHeaderCell
-                onSortChange={this._onSortChange}
-                sortDir={sortDir}
-                sortColumn={sortColumn}
-              >
-                Last Name
-              </SortHeaderCell>
-            }
+            header={<Cell>Last Name</Cell>}
             cell={<PagedCell />}
             fixed={true}
             width={100}
