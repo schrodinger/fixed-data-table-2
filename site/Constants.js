@@ -118,28 +118,11 @@ exports.ExamplePages = {
     title: 'Tooltips',
     description: 'A table example that displays additional information in a tooltip.'
   },
-  CONTEXT_PAGINATION_EXAMPLE: {
-    location: 'example-ctxt_pagination.html',
-    fileName: 'CtxtPaginationExample.js',
-    title: 'Pagination with Context',
-    description: 'A table example that pages in data as the user scrolls.' +
-    ' We fake this by having a promise that resolves after a few milliseconds.' +
-    ' This implementation uses a data context in order to make the data available to all the cells.',
-  },
-  CONTEXT_FILTER_EXAMPLE: {
-    location: 'example-ctxt_filter.html',
-    fileName: 'CtxtFilterExample.js',
-    title: 'Client-side Filter with Context',
-    description: 'A table example that is filterable by column.' +
-    ' In this example, by first and last name.' +
-    ' This implementation uses a data context in order to make the data available to all the cells.',
-  },
   CONTEXT_ADVANCED_EXAMPLE: {
     location: 'example-ctxt_advanced.html',
     fileName: 'CtxtAdvExample.js',
     title: 'Advanced example with Context',
-    description: 'A table example that is filterable and sorteable by column.' +
-    ' In this example, by first and last name.' +
+    description: 'A table example that is filterable by first and last name.' +
     ' The table is further fully paginated.' +
     ' This implementation uses a data context in order to make the data available to all the cells.',
   },
