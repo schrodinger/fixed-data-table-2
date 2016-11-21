@@ -443,6 +443,12 @@ var FixedDataTable = React.createClass({
 
     var groupHeader;
     if (state.useGroupHeader) {
+      var allGroupsIndexes = [];
+      var columnGroupCount = state.groupHeaderFixedColumns.length + state.groupHeaderScrollableColumns.length;
+      for (var i = 0; i < columnGroupCount; i++) {
+        allGroupsIndexes.push(i);
+      }
+
       groupHeader = (
         <FixedDataTableRow
           key="group_header"
@@ -459,6 +465,7 @@ var FixedDataTable = React.createClass({
           scrollLeft={state.scrollX}
           fixedColumns={state.groupHeaderFixedColumns}
           scrollableColumns={state.groupHeaderScrollableColumns}
+          positionOfLastColumnInGroups={allGroupsIndexes}
           onColumnResize={this._onColumnResize}
           onColumnReorder={onColumnReorder}
           onColumnReorderMove={this._onColumnReorderMove}
@@ -549,6 +556,7 @@ var FixedDataTable = React.createClass({
           offsetTop={footOffsetTop}
           fixedColumns={state.footFixedColumns}
           scrollableColumns={state.footScrollableColumns}
+          positionOfLastColumnInGroups={state.positionOfLastColumnInGroups}
           scrollLeft={state.scrollX}
         />;
     }
@@ -571,6 +579,7 @@ var FixedDataTable = React.createClass({
         scrollLeft={state.scrollX}
         fixedColumns={state.headFixedColumns}
         scrollableColumns={state.headScrollableColumns}
+        positionOfLastColumnInGroups={state.positionOfLastColumnInGroups}
         onColumnResize={this._onColumnResize}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
@@ -655,6 +664,7 @@ var FixedDataTable = React.createClass({
         onRowMouseDown={state.onRowMouseDown}
         onRowMouseEnter={state.onRowMouseEnter}
         onRowMouseLeave={state.onRowMouseLeave}
+        positionOfLastColumnInGroups={state.positionOfLastColumnInGroups}
         rowClassNameGetter={state.rowClassNameGetter}
         rowsCount={state.rowsCount}
         rowGetter={state.rowGetter}
@@ -705,7 +715,7 @@ var FixedDataTable = React.createClass({
     /*number*/ left,
     /*object*/ event
   ) {
-    var isFixed = !!this.state.headFixedColumns.find(function(column) { 
+    var isFixed = !!this.state.headFixedColumns.find(function(column) {
       return column.props.columnKey === columnKey;
     });
 
@@ -854,6 +864,21 @@ var FixedDataTable = React.createClass({
         columnInfo.groupHeaderFixedColumns = groupHeaderColumnTypes.fixed;
         columnInfo.groupHeaderScrollableColumns =
           groupHeaderColumnTypes.scrollable;
+      }
+    }
+
+    // NOTE (jordan) This is a hacky fix for styling column group borders.  Cleanup with move to Redux
+    if (canReuseColumnGroupSettings && canReuseColumnSettings) {
+      columnInfo.positionOfLastColumnInGroups = oldState.positionOfLastColumnInGroups;
+    } else {
+      columnInfo.positionOfLastColumnInGroups = [];
+      if (columnGroups) {
+        var count = 0;
+        for (var i = 0; i < columnGroups.length; ++i) {
+          var columns = columnGroups[i].props.children;
+          count += columns.length;
+          columnInfo.positionOfLastColumnInGroups.push(count-1);
+        }
       }
     }
 

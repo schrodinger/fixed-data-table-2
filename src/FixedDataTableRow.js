@@ -108,6 +108,11 @@ var FixedDataTableRowImpl = React.createClass({
      * @param number distance
      */
     onColumnReorderEnd: PropTypes.func,
+
+    /**
+     * Used for adding a class to the first column in a column group
+     */
+    positionOfLastColumnInGroups: PropTypes.array.isRequired,
   },
 
   render() /*object*/ {
@@ -137,12 +142,26 @@ var FixedDataTableRowImpl = React.createClass({
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
+        positionOfLastColumnInGroups={this.props.positionOfLastColumnInGroups}
         isColumnReordering={this.props.isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
+
+    var scrollablepositionOfLastColumnInGroups = []
+    if (this.props.fixedColumns.length > 0) {
+      for (var idx = 0; idx < this.props.positionOfLastColumnInGroups.length; ++idx) {
+        var newPosition = this.props.positionOfLastColumnInGroups[idx] - this.props.fixedColumns.length;
+        if (newPosition >= 0) {
+          scrollablepositionOfLastColumnInGroups.push(newPosition);
+        }
+      }
+    } else {
+      scrollablepositionOfLastColumnInGroups = this.props.positionOfLastColumnInGroups;
+    }
+
     var scrollableColumns =
       <FixedDataTableCellGroup
         key="scrollable_cells"
@@ -157,6 +176,7 @@ var FixedDataTableRowImpl = React.createClass({
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
+        positionOfLastColumnInGroups={scrollablepositionOfLastColumnInGroups}
         isColumnReordering={this.props.isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
