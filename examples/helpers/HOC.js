@@ -2,68 +2,7 @@
 
 import React from 'react';
 import except from 'except';
-
-function PropTypeCtxtData(props, propName, componentName) {
-  const dataObj = props[propName];
-  if (dataObj.setCallback === undefined) {
-    return new Error(
-      [
-        componentName,
-        'requires that',
-        propName,
-        'has a setCallback() function',
-      ].join(' ')
-    );
-  }
-
-  if (dataObj.getSize === undefined) {
-    return new Error(
-      [
-        componentName,
-        'requires that',
-        propName,
-        'has a getSize() function that returns the number of rows',
-      ].join(' ')
-    );
-  }
-}
-
-function PropTypeCtxtDataAdvanced(props, propName, componentName) {
-  const dataObj = props[propName];
-
-  if (dataObj.setCallback === undefined) {
-    return new Error(
-      [
-        componentName,
-        'requires that',
-        propName,
-        'has a setCallback() function',
-      ].join(' ')
-    );
-  }
-
-  if (dataObj.getObjectAt === undefined) {
-    return new Error(
-      [
-        componentName,
-        'requires that',
-        propName,
-        'has a getObjectAt() function that retrieves a row',
-      ].join(' ')
-    );
-  }
-
-  if (dataObj.getSize === undefined) {
-    return new Error(
-      [
-        componentName,
-        'requires that',
-        propName,
-        'has a getSize() function that returns the number of rows',
-      ].join(' ')
-    );
-  }
-}
+import examplePropTypes from './examplePropTypes';
 
 function DataCtxt(Wrapped) {
   class ContextClass extends React.Component {
@@ -116,12 +55,12 @@ function DataCtxt(Wrapped) {
   }
 
   ContextClass.childContextTypes = {
-    data: PropTypeCtxtData,
+    data: examplePropTypes.CtxtDataListStore,
     version: React.PropTypes.number,
   };
 
   ContextClass.propTypes = {
-    data: PropTypeCtxtData,
+    data: examplePropTypes.CtxtDataListStore,
   };
 
   return ContextClass;
@@ -165,7 +104,6 @@ function AddFilter(TableComponent) {
       super(props);
 
       this.refresh = this.refresh.bind(this);
-
       this.state = {
         version: 0,
       };
@@ -244,37 +182,9 @@ function AddFilter(TableComponent) {
   }
 
   FilterTable.propTypes = {
-    data: PropTypeCtxtDataAdvanced,
+    data: examplePropTypes.CtxtDataListStore,
     children: React.PropTypes.node,
-    filters: (props, propName, componentName) => {
-      const dataObj = props[propName];
-
-      if (typeof (dataObj) !== 'object') {
-        return new Error(
-          [
-            componentName,
-            'requires that',
-            propName,
-            'is an object that can be used for filtering.',
-            'You have provided a:',
-            typeof (dataObj),
-          ].join(' ')
-        );
-      }
-
-      if (Object.keys(dataObj).length === 0) {
-        return new Error(
-          [
-            componentName,
-            'requires that',
-            propName,
-            'isn\'t empty',
-          ].join(' ')
-        );
-      }
-
-      return (null);
-    },
+    filters: examplePropTypes.FilterObject
   };
 
   return FilterTable;
@@ -284,5 +194,4 @@ function AddFilter(TableComponent) {
 export {
   DataCtxt,
   AddFilter,
-  PropTypeCtxtData,
 };
