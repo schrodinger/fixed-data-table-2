@@ -12,7 +12,7 @@ var ExampleHeader = React.createClass({
     const contextDisclamer = this.props.page.fileName === 'ContextExample.js' ? (
       <div>
         NOTE React discourages using context.  Prefer the other filtering and paging examples if possible. See
-        <a key='docs' href='https://facebook.github.io/react/docs/context.html'> React's Context documentation</a>
+        <a key='docs' href='https://facebook.github.io/react/docs/context.html'> React Context documentation</a>
       </div>
     ) : null;
 
