@@ -9,6 +9,13 @@ var Constants = require('../Constants');
 
 var ExampleHeader = React.createClass({
   render() {
+    const contextDisclamer = this.props.page.fileName === 'ContextExample.js' ? (
+      <div>
+        NOTE React discourages using context.  Prefer the other filtering and paging examples if possible. See
+        <a key='docs' href='https://facebook.github.io/react/docs/context.html'> React Context documentation</a>
+      </div>
+    ) : null;
+
     return (
       <div className="exampleHeader">
         <div className="exampleControls">
@@ -24,6 +31,7 @@ var ExampleHeader = React.createClass({
           <a className="exampleCode" href={this.props.page.file}>Example code</a>
           {this.props.page.description}
         </p>
+        {contextDisclamer}
       </div>
     );
   }
