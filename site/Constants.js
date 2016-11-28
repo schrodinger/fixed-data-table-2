@@ -118,13 +118,12 @@ exports.ExamplePages = {
     title: 'Tooltips',
     description: 'A table example that displays additional information in a tooltip.'
   },
-  CONTEXT_ADVANCED_EXAMPLE: {
-    location: 'example-ctxt_advanced.html',
-    fileName: 'CtxtAdvExample.js',
-    title: 'Advanced example with Context',
-    description: 'A table example that is filterable by first and last name.' +
-    ' The table is further fully paginated.' +
-    ' This implementation uses a data context in order to make the data available to all the cells.',
+  CONTEXT_EXAMPLE: {
+    location: 'example-context.html',
+    fileName: 'ContextExample.js',
+    title: 'Data Context (Advanced)',
+    description: 'A table example using a data context to pass data to the cells.' +
+    ' The table is paginated and filterable by first and last name.',
   },
 };
 

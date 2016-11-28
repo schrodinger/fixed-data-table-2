@@ -8,8 +8,9 @@ import React from 'react';
 import { Table, Column, Cell } from 'fixed-data-table-2';
 import { DataCtxt, AddFilter } from './helpers/HOC';
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import examplePropTypes from './helpers/examplePropTypes';
 
-const AdvancedTable = AddFilter(DataCtxt(Table));
+const FilterablePagingTable = AddFilter(DataCtxt(Table));
 
 /**
  * The PagedData class simulates real paginated data where data is fetched
@@ -138,36 +139,12 @@ const PagedCell = (props, { data, version }) => (
     {...props}
   />);
 
-/**
- * Data type validator
- *
- * Instead of having React.PropTypes.instanceOf(PagedData) the custom PropTypes
- * allows any data structure as long as it provides a `getObjectAt` function.
- *
- * @param {object} props         The list of the props
- * @param {string} propName      The prop that is to be validated
- * @param {string} componentName The name of the component that the prop belongs to
- */
-function PropTypeCtxtData(props, propName, componentName) {
-  const dataObj = props[propName];
-  if (dataObj.getObjectAt === undefined) {
-    return new Error(
-      [
-        componentName,
-        'requires that',
-        propName,
-        'has a getObjectAt() function that returns a row object',
-      ].join(' ')
-    );
-  }
-}
-
 PagedCell.contextTypes = {
-  data: PropTypeCtxtData,
+  data: examplePropTypes.CtxtDataListStore,
   version: React.PropTypes.number,
 };
 
-class AdvancedExample extends React.Component {
+class ContextExample extends React.Component {
   constructor(props) {
     super(props);
 
@@ -177,12 +154,9 @@ class AdvancedExample extends React.Component {
         firstName: '',
         lastName: '',
       },
-      sortColumn: '',
-      sortDir: null,
     };
 
     this._onFilterChange = this._onFilterChange.bind(this);
-    this._onSortChange = this._onSortChange.bind(this);
   }
 
   _onFilterChange(name, value) {
@@ -193,15 +167,8 @@ class AdvancedExample extends React.Component {
     });
   }
 
-  _onSortChange(columnKey, sortDir) {
-    this.setState({
-      sortColumn: columnKey,
-      sortDir,
-    });
-  }
-
   render() {
-    const { data, filters, sortColumn, sortDir } = this.state;
+    const { data, filters } = this.state;
 
     return (
       <div>
@@ -215,13 +182,10 @@ class AdvancedExample extends React.Component {
           placeholder="Last Name"
         />
         <br />
-        <AdvancedTable
+        <FilterablePagingTable
           rowHeight={50}
           data={data}
           filters={filters}
-          sortColumn={sortColumn}
-          sortDir={sortDir}
-          onSortChange={this._onSortChange}
           headerHeight={50}
           width={1000}
           height={500}
@@ -259,10 +223,10 @@ class AdvancedExample extends React.Component {
             cell={<PagedCell />}
             width={200}
           />
-        </AdvancedTable>
+        </FilterablePagingTable>
       </div>
     );
   }
 }
 
-module.exports = AdvancedExample;
+module.exports = ContextExample;
