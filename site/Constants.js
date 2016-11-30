@@ -11,6 +11,8 @@ exports.DocsPages = {
     groupTitle: 'Guides',
     GETTING_STARTED: {location: 'getting-started.html', title: 'Getting Started'},
     V6_MIGRATION: {location: 'v6-migration.html', title: 'v0.6 API Migration'},
+    ROADMAP: {location: 'roadmap.html', title: 'Roadmap'},
+    CODEBASE_OVERVIEW: {location: 'codebase.html', title: 'Codebase Overview'},
   },
   API: {
     groupTitle: 'API',
