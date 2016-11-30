@@ -60,6 +60,10 @@ class ResponsiveExample extends React.Component {
 // https://github.com/digidem/react-dimensions
 module.exports = Dimensions({
   getHeight: function(element) {
-    return element.clientHeight - 200;
+    return window.innerHeight - 200;
+  },
+  getWidth: function(element) {
+    var widthOffset = window.innerWidth < 680 ? 0 : 240;
+    return window.innerWidth - widthOffset;
   }
 })(ResponsiveExample);
