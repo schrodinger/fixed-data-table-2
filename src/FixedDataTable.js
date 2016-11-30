@@ -36,7 +36,7 @@ var {PropTypes} = React;
 var ReactChildren = React.Children;
 
 var EMPTY_OBJECT = {};
-var BORDER_HEIGHT = 1;
+var BORDER_HEIGHT = 0;
 var HEADER = 'header';
 var FOOTER = 'footer';
 var CELL = 'cell';
@@ -705,7 +705,7 @@ var FixedDataTable = React.createClass({
     /*number*/ left,
     /*object*/ event
   ) {
-    var isFixed = !!this.state.headFixedColumns.find(function(column) { 
+    var isFixed = !!this.state.headFixedColumns.find(function(column) {
       return column.props.columnKey === columnKey;
     });
 
