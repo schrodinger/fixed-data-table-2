@@ -341,7 +341,7 @@ var FixedDataTable = React.createClass({
         rowHeights,
         scrollContentHeight,
         scrollY,
-      } = state.scroller;
+      } = state.scrollState;
 
       let maxScrollY = Math.max(0, scrollContentHeight - this.state.bodyHeight);
 
@@ -798,7 +798,7 @@ var FixedDataTable = React.createClass({
       firstRowOffset,
       scrollY,
       scrollContentHeight
-    } = state.scroller;
+    } = state.scrollState;
     let {
       columns,
       columnGroups,
