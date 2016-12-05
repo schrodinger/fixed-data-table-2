@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule scroller
+ * @providesModule scrollStateReducer
  */
 
 'use strict';
 
 import ActionTypes from 'ActionTypes'
-import scrollHelper from './scrollHelper';
+import scrollStateHelper from 'scrollStateHelper';
 
 const DEFAULT_STATE = {
   firstRowIndex: 0,
@@ -22,7 +22,7 @@ const DEFAULT_STATE = {
   maxScrollY: 0
 };
 
-function scroller(state = DEFAULT_STATE, action) {
+function scrollStateReducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
     case ActionTypes.PROP_CHANGE:
       let { props } = action;
@@ -32,22 +32,22 @@ function scroller(state = DEFAULT_STATE, action) {
       }
 
       //TODO (asif) reinitalize when viewheight changes
-      return scrollHelper.initialize(state, props);
+      return scrollStateHelper.initialize(state, props);
     case ActionTypes.SCROLL_BY:
       let { deltaY } = action;
-      state = scrollHelper.scrollBy(state, deltaY);
+      state = scrollStateHelper.scrollBy(state, deltaY);
       return state;
     case ActionTypes.SCROLL_END:
-      return scrollHelper.scrollEnd(state);
+      return scrollStateHelper.scrollEnd(state);
     case ActionTypes.SCROLL_START:
-      return scrollHelper.scrollStart(state);
+      return scrollStateHelper.scrollStart(state);
     case ActionTypes.SCROLL_TO:
       let { scrollPosition } = action;
-      state = scrollHelper.scrollTo(state, scrollPosition);
+      state = scrollStateHelper.scrollTo(state, scrollPosition);
       return state;
     default:
       return state;
   }
 }
 
-module.exports = scroller;
+module.exports = scrollStateReducer;

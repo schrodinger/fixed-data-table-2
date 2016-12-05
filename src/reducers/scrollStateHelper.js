@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule scrollHelper
+ * @providesModule scrollStateHelper
  */
 
 'use strict';
@@ -256,7 +256,7 @@ function initialize(state, props) {
     rowsCount,
     storedHeights,
     viewportHeight,
-    rowHeightGetter: rowHeightGetter ?  rowHeightGetter : () => rowHeight,
+    rowHeightGetter: rowHeightGetter ? rowHeightGetter : () => rowHeight,
     rowOffsets: PrefixIntervalTree.uniform(rowsCount, rowHeight),
     scrollContentHeight: rowsCount * rowHeight,
     maxVisibleRowCount,
