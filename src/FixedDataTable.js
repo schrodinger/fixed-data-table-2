@@ -151,6 +151,11 @@ var FixedDataTable = React.createClass({
     showScrollbarY: PropTypes.bool,
 
     /**
+     * Disables the handling of wheel events.
+     */
+    disableWheelHandler: PropTypes.bool
+
+    /**
      * Callback when horizontally scrolling the grid
      *
      * Return false to stop propagation
@@ -346,7 +351,7 @@ var FixedDataTable = React.createClass({
   },
 
   _shouldHandleWheelX(/*number*/ delta) /*boolean*/ {
-    if (this.props.overflowX === 'hidden') {
+    if (this.props.overflowX === 'hidden' || this.props.disableWheelHandler) {
       return false;
     }
 
@@ -362,7 +367,7 @@ var FixedDataTable = React.createClass({
   },
 
   _shouldHandleWheelY(/*number*/ delta) /*boolean*/ {
-    if (this.props.overflowY === 'hidden'|| delta === 0) {
+    if (this.props.overflowY === 'hidden' || delta === 0 || this.props.disableWheelHandler) {
       return false;
     }
 
@@ -705,7 +710,7 @@ var FixedDataTable = React.createClass({
     /*number*/ left,
     /*object*/ event
   ) {
-    var isFixed = !!this.state.headFixedColumns.find(function(column) { 
+    var isFixed = !!this.state.headFixedColumns.find(function(column) {
       return column.props.columnKey === columnKey;
     });
 
