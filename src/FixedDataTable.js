@@ -153,7 +153,7 @@ var FixedDataTable = React.createClass({
     /**
      * Disables the handling of wheel events.
      */
-    disableWheelHandler: PropTypes.bool
+    disableWheelHandler: PropTypes.bool,
 
     /**
      * Callback when horizontally scrolling the grid
