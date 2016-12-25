@@ -323,8 +323,8 @@ function reorderColumn(oldState, reorderData) {
       columnKey: columnKey,
       columnWidth: width,
       originalLeft: left,
-      columnsBefore: [],
-      columnsAfter: []
+      columnBefore: undefined,
+      columnAfter: undefined
     }
   });
 };
