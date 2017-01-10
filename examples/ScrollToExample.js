@@ -31,6 +31,7 @@ class ScrollToExample extends React.Component {
   _onFilterChange(e) {
     if (!e.target.value) {
       this.setState({
+        currentIndex: 0,
         matchedRows: [],
       });
     }
@@ -46,6 +47,7 @@ class ScrollToExample extends React.Component {
     }
 
     this.setState({
+      currentIndex: 0,
       matchedRows: filteredIndexes,
     });
   }
