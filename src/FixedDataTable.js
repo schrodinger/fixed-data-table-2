@@ -773,14 +773,17 @@ var FixedDataTable = React.createClass({
     var columnBefore = this.state.columnReorderingData.columnBefore;
     var columnAfter = this.state.columnReorderingData.columnAfter;
     var reorderColumn = this.state.columnReorderingData.columnKey;
+    var cancelReorder = this.state.columnReorderingData.cancelReorder;
 
     this.setState({
       isColumnReordering: false,
       columnReorderingData: {}
     });
-    this.props.onColumnReorderEndCallback({
-      columnBefore, columnAfter, reorderColumn
-    });
+    if (!cancelReorder) {
+      this.props.onColumnReorderEndCallback({
+        columnBefore, columnAfter, reorderColumn
+      });
+    }
 
     var onHorizontalScroll = this.props.onHorizontalScroll;
     if (this.state.columnReorderingData.scrollStart !== this.state.scrollX && onHorizontalScroll) {
