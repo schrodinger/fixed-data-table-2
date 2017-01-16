@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.8 
+ * FixedDataTable v0.7.9 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.8';
+	FixedDataTableRoot.version = '0.7.9';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -424,11 +424,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    showScrollbarY: PropTypes.bool,
 
 	    /**
-	     * Callback when horizontally scrolling the grid
+	     * Callback when horizontally scrolling the grid.
 	     *
-	     * Return false to stop propagation
+	     * Return false to stop propagation.
 	     */
 	    onHorizontalScroll: PropTypes.func,
+
+	    /**
+	     * Callback when vertically scrolling the grid.
+	     *
+	     * Return false to stop propagation.
+	     */
+	    onVerticalScroll: PropTypes.func,
 
 	    /**
 	     * Number of rows in the table.
@@ -956,11 +963,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var columnBefore = this.state.columnReorderingData.columnBefore;
 	    var columnAfter = this.state.columnReorderingData.columnAfter;
 	    var reorderColumn = this.state.columnReorderingData.columnKey;
+	    var cancelReorder = this.state.columnReorderingData.cancelReorder;
 
 	    this.setState({
 	      isColumnReordering: false,
 	      columnReorderingData: {}
 	    });
+
+	    if (cancelReorder) {
+	      return;
+	    }
+
 	    this.props.onColumnReorderEndCallback({
 	      columnBefore: columnBefore, columnAfter: columnAfter, reorderColumn: reorderColumn
 	    });
@@ -1234,14 +1247,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var x = this.state.scrollX;
 	      if (Math.abs(deltaY) > Math.abs(deltaX) && this.props.overflowY !== 'hidden') {
 	        var scrollState = this._scrollHelper.scrollBy(Math.round(deltaY));
-	        var maxScrollY = Math.max(0, scrollState.contentHeight - this.state.bodyHeight);
-	        this.setState({
-	          firstRowIndex: scrollState.index,
-	          firstRowOffset: scrollState.offset,
-	          scrollY: scrollState.position,
-	          scrollContentHeight: scrollState.contentHeight,
-	          maxScrollY: maxScrollY
-	        });
+	        var onVerticalScroll = this.props.onVerticalScroll;
+	        if (onVerticalScroll ? onVerticalScroll(scrollState.position) : true) {
+	          var maxScrollY = Math.max(0, scrollState.contentHeight - this.state.bodyHeight);
+	          this.setState({
+	            firstRowIndex: scrollState.index,
+	            firstRowOffset: scrollState.offset,
+	            scrollY: scrollState.position,
+	            scrollContentHeight: scrollState.contentHeight,
+	            maxScrollY: maxScrollY
+	          });
+	        }
 	      } else if (deltaX && this.props.overflowX !== 'hidden') {
 	        x += deltaX;
 	        x = x < 0 ? 0 : x;
@@ -1279,13 +1295,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._didScrollStart();
 	      }
 	      var scrollState = this._scrollHelper.scrollTo(Math.round(scrollPos));
-	      this.setState({
-	        firstRowIndex: scrollState.index,
-	        firstRowOffset: scrollState.offset,
-	        scrollY: scrollState.position,
-	        scrollContentHeight: scrollState.contentHeight
-	      });
-	      this._didScrollStop();
+
+	      var onVerticalScroll = this.props.onVerticalScroll;
+	      if (onVerticalScroll ? onVerticalScroll(scrollState.position) : true) {
+	        this.setState({
+	          firstRowIndex: scrollState.index,
+	          firstRowOffset: scrollState.offset,
+	          scrollY: scrollState.position,
+	          scrollContentHeight: scrollState.contentHeight
+	        });
+	        this._didScrollStop();
+	      }
 	    }
 	  },
 	  _didScrollStart: function _didScrollStart() {
@@ -3127,6 +3147,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._domNode = domNode;
 	    this._onMove = onMove;
 	    this._onMoveEnd = onMoveEnd;
+	    this._onMouseEnd = this._onMouseEnd.bind(this);
 	    this._onMouseMove = this._onMouseMove.bind(this);
 	    this._onMouseUp = this._onMouseUp.bind(this);
 	    this._didMouseMove = this._didMouseMove.bind(this);
@@ -3143,9 +3164,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(DOMMouseMoveTracker, [{
 	    key: 'captureMouseMoves',
 	    value: function captureMouseMoves( /*object*/event) {
-	      if (!this._eventMoveToken && !this._eventUpToken) {
+	      if (!this._eventMoveToken && !this._eventUpToken && !this._eventLeaveToken && !this._eventOutToken) {
 	        this._eventMoveToken = _EventListener2.default.listen(this._domNode, 'mousemove', this._onMouseMove);
 	        this._eventUpToken = _EventListener2.default.listen(this._domNode, 'mouseup', this._onMouseUp);
+	        this._eventLeaveToken = _EventListener2.default.listen(this._domNode, 'mouseleave', this._onMouseEnd);
+	        this._eventOutToken = _EventListener2.default.listen(this._domNode, 'mouseout', this.onMouseEnd);
 	      }
 
 	      if (!this._isDragging) {
@@ -3165,11 +3188,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'releaseMouseMoves',
 	    value: function releaseMouseMoves() {
-	      if (this._eventMoveToken && this._eventUpToken) {
+	      if (this._eventMoveToken && this._eventUpToken && this._eventLeaveToken && this._eventOutToken) {
 	        this._eventMoveToken.remove();
 	        this._eventMoveToken = null;
 	        this._eventUpToken.remove();
 	        this._eventUpToken = null;
+	        this._eventLeaveToken.remove();
+	        this._eventLeaveToken = null;
+	        this._eventOutToken.remove();
+	        this._eventOutToken = null;
 	      }
 
 	      if (this._animationFrameID !== null) {
@@ -3236,7 +3263,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this._animationFrameID) {
 	        this._didMouseMove();
 	      }
-	      this._onMoveEnd();
+	      this._onMoveEnd(false);
+	    }
+
+	    /**
+	     * Calls onMoveEnd passed into the constructor, updates internal state, and cancels the move.
+	     */
+
+	  }, {
+	    key: '_onMouseEnd',
+	    value: function _onMouseEnd() {
+	      this._onMoveEnd(true);
 	    }
 	  }]);
 
@@ -6149,11 +6186,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _onMove: function _onMove( /*number*/deltaX) {
 	    this._distance = this.state.dragDistance + deltaX;
 	  },
-	  _onColumnReorderEnd: function _onColumnReorderEnd() {
+	  _onColumnReorderEnd: function _onColumnReorderEnd( /*boolean*/cancelReorder) {
 	    this._animating = false;
 	    cancelAnimationFrame(this.frameId);
 	    this.frameId = null;
 	    this._mouseMoveTracker.releaseMouseMoves();
+	    this.props.columnReorderingData.cancelReorder = cancelReorder;
 	    this.props.onColumnReorderEnd();
 	  },
 	  _updateState: function _updateState() {
