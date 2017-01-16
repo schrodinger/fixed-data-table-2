@@ -38,6 +38,7 @@ class DOMMouseMoveTracker {
     this._domNode = domNode;
     this._onMove = onMove;
     this._onMoveEnd = onMoveEnd;
+    this._onMouseEnd = this._onMouseEnd.bind(this);
     this._onMouseMove = this._onMouseMove.bind(this);
     this._onMouseUp = this._onMouseUp.bind(this);
     this._didMouseMove = this._didMouseMove.bind(this);
@@ -50,7 +51,7 @@ class DOMMouseMoveTracker {
    * in order to grab inital state.
    */
   captureMouseMoves(/*object*/ event) {
-    if (!this._eventMoveToken && !this._eventUpToken) {
+    if (!this._eventMoveToken && !this._eventUpToken && !this._eventLeaveToken && !this._eventOutToken) {
       this._eventMoveToken = EventListener.listen(
         this._domNode,
         'mousemove',
@@ -60,6 +61,16 @@ class DOMMouseMoveTracker {
         this._domNode,
         'mouseup',
         this._onMouseUp
+      );
+      this._eventLeaveToken = EventListener.listen(
+        this._domNode,
+        'mouseleave',
+        this._onMouseEnd
+      );
+      this._eventOutToken = EventListener.listen(
+        this._domNode,
+        'mouseout',
+        this.onMouseEnd
       );
     }
 
@@ -77,11 +88,15 @@ class DOMMouseMoveTracker {
    * These releases all of the listeners on document.body.
    */
   releaseMouseMoves() {
-    if (this._eventMoveToken && this._eventUpToken) {
+    if (this._eventMoveToken && this._eventUpToken && this._eventLeaveToken && this._eventOutToken) {
       this._eventMoveToken.remove();
       this._eventMoveToken = null;
       this._eventUpToken.remove();
       this._eventUpToken = null;
+      this._eventLeaveToken.remove();
+      this._eventLeaveToken = null;
+      this._eventOutToken.remove();
+      this._eventOutToken = null;
     }
 
     if (this._animationFrameID !== null) {
@@ -139,7 +154,14 @@ class DOMMouseMoveTracker {
     if (this._animationFrameID) {
       this._didMouseMove();
     }
-    this._onMoveEnd();
+    this._onMoveEnd(false);
+  }
+
+  /**
+   * Calls onMoveEnd passed into the constructor, updates internal state, and cancels the move.
+   */
+  _onMouseEnd() {
+    this._onMoveEnd(true);
   }
 }
 
