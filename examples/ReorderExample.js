@@ -29,6 +29,11 @@ var columnWidths = {
   zipCode: 240
 };
 
+var fixedColumns = [
+  'firstName',
+  'lastName'
+];
+
 class ReorderExample extends React.Component {
   constructor(props) {
     super(props);
@@ -54,11 +59,16 @@ class ReorderExample extends React.Component {
     var columnOrder = this.state.columnOrder.filter((columnKey) => {
       return columnKey !== event.reorderColumn;
     });
+
     if (event.columnAfter) {
       var index = columnOrder.indexOf(event.columnAfter);
       columnOrder.splice(index, 0, event.reorderColumn);
     } else {
-      columnOrder.push(event.reorderColumn);
+      if (fixedColumns.indexOf(event.reorderColumn) !== -1) {
+        columnOrder.splice(fixedColumns.length - 1, 0, event.reorderColumn)
+      } else {
+        columnOrder.push(event.reorderColumn);
+      }
     }
     this.setState({
       columnOrder: columnOrder
@@ -86,7 +96,7 @@ class ReorderExample extends React.Component {
             isReorderable={true}
             header={<Cell>{columnTitles[columnKey]}</Cell>}
             cell={<TextCell data={dataList} />}
-            fixed={i <= 1}
+            fixed={fixedColumns.indexOf(columnKey) !== -1}
             width={columnWidths[columnKey]}
            />;
         })}
