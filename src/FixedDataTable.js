@@ -307,7 +307,7 @@ var FixedDataTable = React.createClass({
     var props = this.props;
 
     FixedDataTableStore.dispatch({
-      type: ActionTypes.PROP_CHANGE,
+      type: ActionTypes.INITIALIZE,
       props: this.props
     });
 

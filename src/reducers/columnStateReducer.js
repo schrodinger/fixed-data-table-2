@@ -41,6 +41,7 @@ const DEFAULT_STATE = {
 function columnStateReducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
     case ActionTypes.PROP_CHANGE:
+    case ActionTypes.INITIALIZE:
       let { props } = action;
 
       // TODO (jordan) check if relevant props unchanged and
