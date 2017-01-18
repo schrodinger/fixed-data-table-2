@@ -78,6 +78,8 @@ var FixedDataTableCell = React.createClass({
      * The left offset in pixels of the cell.
      */
     left: PropTypes.number,
+
+    lastInGroup: PropTypes.bool.isRequired,
   },
 
   getInitialState() {
@@ -201,6 +203,7 @@ var FixedDataTableCell = React.createClass({
         'public/fixedDataTableCell/alignRight': props.align === 'right',
         'public/fixedDataTableCell/highlighted': props.highlighted,
         'public/fixedDataTableCell/main': true,
+        'public/fixedDataTableCell/lastInGroup': props.lastInGroup,
         'public/fixedDataTableCell/hasReorderHandle': !!props.onColumnReorder,
         'public/fixedDataTableCell/reordering': this.state.isReorderingThisColumn,
       }),

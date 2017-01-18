@@ -46,6 +46,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
     onColumnReorder: PropTypes.func,
     onColumnReorderMove: PropTypes.func,
     onColumnReorderEnd: PropTypes.func,
+    positionOfLastColumnInGroups: PropTypes.array.isRequired,
 
     rowHeight: PropTypes.number.isRequired,
 
@@ -54,6 +55,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
     width: PropTypes.number.isRequired,
 
     zIndex: PropTypes.number.isRequired,
+
   },
 
   componentWillMount() {
@@ -77,6 +79,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
 
     var currentPosition = 0;
     for (var i = 0, j = columns.length; i < j; i++) {
+      var lastInGroup = props.positionOfLastColumnInGroups.indexOf(i) > -1;
       var columnProps = columns[i].props;
       var recycable = columnProps.allowCellsRecycling && !isColumnReordering;
       if (!recycable || (
@@ -90,7 +93,8 @@ var FixedDataTableCellGroupImpl = React.createClass({
           currentPosition,
           key,
           contentWidth,
-          isColumnReordering
+          isColumnReordering,
+          lastInGroup
         );
       }
       currentPosition += columnProps.width;
@@ -120,6 +124,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
     /*string*/ key,
     /*number*/ columnGroupWidth,
     /*boolean*/ isColumnReordering,
+    /*boolean*/ lastInGroup,
   ) /*object*/ {
 
     var cellIsResizable = columnProps.isResizable &&
@@ -151,6 +156,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
         left={left}
         cell={columnProps.cell}
         columnGroupWidth={columnGroupWidth}
+        lastInGroup={lastInGroup}
       />
     );
   },
