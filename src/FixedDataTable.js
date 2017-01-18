@@ -712,9 +712,8 @@ var FixedDataTable = React.createClass({
     /*number*/ left,
     /*object*/ event
   ) {
-    // No native support in IE11 for find, findIndex, or includes, so using every.
-    var isFixed = !this.state.headFixedColumns.every(function(column) {
-      return column.props.columnKey !== columnKey;
+    var isFixed = this.state.headFixedColumns.some(function(column) {
+      return column.props.columnKey === columnKey;
     });
 
     this.setState({
