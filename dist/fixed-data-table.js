@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.9 
+ * FixedDataTable v0.7.10 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.9';
+	FixedDataTableRoot.version = '0.7.10';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -904,7 +904,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /*number*/width,
 	  /*number*/left,
 	  /*object*/event) {
-	    var isFixed = !!this.state.headFixedColumns.find(function (column) {
+	    // No native support in IE11 for find, findIndex, or includes, so using some.
+	    var isFixed = this.state.headFixedColumns.some(function (column) {
 	      return column.props.columnKey === columnKey;
 	    });
 
@@ -4833,7 +4834,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _React2.default.createElement('div', { className: className, style: style });
 	  },
 	  _renderColumnsRightShadow: function _renderColumnsRightShadow( /*number*/totalWidth) /*?object*/{
-	    if (Math.ceil(this.props.scrollLeft + this.props.width) < totalWidth) {
+	    if (Math.ceil(this.props.scrollLeft + this.props.width) < Math.floor(totalWidth)) {
 	      var className = (0, _cx2.default)('fixedDataTableRowLayout/columnsShadow', 'fixedDataTableRowLayout/columnsRightShadow', 'public/fixedDataTableRow/columnsShadow', 'public/fixedDataTableRow/columnsRightShadow');
 	      var style = {
 	        height: this.props.height
