@@ -29,6 +29,7 @@
     "jsdom": "^9.6.0",
     "less": "^2.2.0",
     "less-loader": "^2.0.0",
+    "lodash": "^4.17.4",
     "marked": "^0.3.2",
     "mocha": "^2.5.3",
     "mocha-loader": "^1.0.0",

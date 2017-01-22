@@ -11,10 +11,32 @@
 
 'use strict';
 
+import IntegerBufferSet from 'IntegerBufferSet';
 import ActionTypes from 'ActionTypes'
-import scrollStateHelper from 'scrollStateHelper';
+import isNil from 'lodash/isnil';
+import {
+  scrollBy,
+  scrollEnd,
+  scrollStart,
+  scrollTo,
+  updateRowCount,
+  updateRowHeights,
+  updateViewHeight,
+} from 'scrollStateHelper';
 
 const DEFAULT_STATE = {
+  rowsCount: 0,
+  rowHeightGetter: () => 0,
+  storedHeights: [],
+  viewportHeight: 0,
+  rowOffsets: null, //PrefixIntervalTree
+  scrollContentHeight: 0,
+  rowHeights: {},
+  rows: [], //rowsToRender
+  bufferSet: new IntegerBufferSet(),
+    
+  viewportRowsBegin: 0,
+  viewportRowsEnd: 0,
   firstRowIndex: 0,
   firstRowOffset: 0,
   scrollY: 0,
@@ -24,27 +46,36 @@ const DEFAULT_STATE = {
 
 function scrollStateReducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
-    case ActionTypes.PROP_CHANGE:
+    case ActionTypes.INITIALIZE:
       let { props } = action;
 
-      if (props.rowsCount === state.rowsCount && props.rowHeight === state.rowHeight) {
-        return state;
-      }
+      state = updateRowCount(state, props);
+      state = updateRowHeights(state, props);
+      state = updateViewHeight(state, props);
 
-      //TODO (asif) reinitalize when viewheight changes
-      return scrollStateHelper.initialize(state, props);
+      return state;
+
+    case ActionTypes.PROP_CHANGE:
+      //let { props } = action;
+      //TODO (asif)
+      return state;
+
     case ActionTypes.SCROLL_BY:
       let { deltaY } = action;
-      state = scrollStateHelper.scrollBy(state, deltaY);
+      state = scrollBy(state, deltaY);
       return state;
+
     case ActionTypes.SCROLL_END:
-      return scrollStateHelper.scrollEnd(state);
+      return scrollEnd(state);
+
     case ActionTypes.SCROLL_START:
-      return scrollStateHelper.scrollStart(state);
+      return scrollStart(state);
+
     case ActionTypes.SCROLL_TO:
       let { scrollPosition } = action;
-      state = scrollStateHelper.scrollTo(state, scrollPosition);
+      state = scrollTo(state, scrollPosition);
       return state;
+
     default:
       return state;
   }
