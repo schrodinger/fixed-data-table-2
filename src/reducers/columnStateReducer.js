@@ -40,9 +40,11 @@ const DEFAULT_STATE = {
 
 function columnStateReducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
-    case ActionTypes.PROP_CHANGE:
     case ActionTypes.INITIALIZE:
       let { props } = action;
+      return columnStateHelper.initialize(state, props);
+    case ActionTypes.PROP_CHANGE:
+      let { newProps } = action;
 
       // TODO (jordan) check if relevant props unchanged and
       // children column widths and flex widths are unchanged
@@ -50,7 +52,7 @@ function columnStateReducer(state = DEFAULT_STATE, action) {
       //   return state;
       // }
 
-      return columnStateHelper.initialize(state, props);
+      return columnStateHelper.initialize(state, newProps);
     case ActionTypes.COLUMN_RESIZE:
       let { resizeData } = action;
       return columnStateHelper.resizeColumn(state, resizeData);

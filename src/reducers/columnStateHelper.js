@@ -89,14 +89,16 @@ function _populateColumnsAndColumnData(
       _areColumnSettingsIdentical(columnGroups, oldState.columnGroups);
   }
 
+  var oldColumnInfo = oldState.columnInfo;
+
   var columnInfo = {};
   if (canReuseColumnSettings) {
-    columnInfo.bodyFixedColumns = oldState.bodyFixedColumns;
-    columnInfo.bodyScrollableColumns = oldState.bodyScrollableColumns;
-    columnInfo.headFixedColumns = oldState.headFixedColumns;
-    columnInfo.headScrollableColumns = oldState.headScrollableColumns;
-    columnInfo.footFixedColumns = oldState.footFixedColumns;
-    columnInfo.footScrollableColumns = oldState.footScrollableColumns;
+    columnInfo.bodyFixedColumns = oldColumnInfo.bodyFixedColumns;
+    columnInfo.bodyScrollableColumns = oldColumnInfo.bodyScrollableColumns;
+    columnInfo.headFixedColumns = oldColumnInfo.headFixedColumns;
+    columnInfo.headScrollableColumns = oldColumnInfo.headScrollableColumns;
+    columnInfo.footFixedColumns = oldColumnInfo.footFixedColumns;
+    columnInfo.footScrollableColumns = oldColumnInfo.footScrollableColumns;
   } else {
     var bodyColumnTypes = _splitColumnTypes(columns);
     columnInfo.bodyFixedColumns = bodyColumnTypes.fixed;

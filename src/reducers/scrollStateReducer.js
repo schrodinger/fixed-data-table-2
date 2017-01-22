@@ -19,6 +19,7 @@ import {
   scrollEnd,
   scrollStart,
   scrollTo,
+  scrollToRow,
   updateRowCount,
   updateRowHeights,
   updateViewHeight,
@@ -52,13 +53,33 @@ function scrollStateReducer(state = DEFAULT_STATE, action) {
       state = updateRowCount(state, props);
       state = updateRowHeights(state, props);
       state = updateViewHeight(state, props);
+
+      if (props.scrollTop) {
+        state = scrollTo(state, props.scrollTop);
+      }
+
+      if (props.scrollToRow) {
+        state = scrollToRow(state, props.scrollToRow);
+      }
+
+
       state = updateVisibleRows(state);
 
       return state;
 
     case ActionTypes.PROP_CHANGE:
-      //let { props } = action;
-      //TODO (asif)
+      let { newProps, oldProps } = action;
+
+      if (newProps.scrollTop && newProps.scrollTop !== oldProps.scrollTop) {
+        state = scrollTo(state, newProps.scrollTop);
+        state = updateVisibleRows(state);
+      }
+
+      if (newProps.scrollToRow && newProps.scrollToRow !== oldProps.scrollToRow) {
+        state = scrollToRow(state, newProps.scrollToRow);
+        state = updateVisibleRows(state);
+      }
+
       return state;
 
     case ActionTypes.SCROLL_BY:

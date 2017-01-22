@@ -55,15 +55,15 @@ function _updateRowHeight(state, rowIndex) {
  * @private
  */
 function _updateHeightsInViewport(state, firstRowIndex, firstRowOffset) {
-    let { rowsCount, storedHeights, viewportHeight } = state;
-    var top = firstRowOffset;
-    var index = firstRowIndex;
-    while (top <= viewportHeight && index < rowsCount) {
-      _updateRowHeight(state, index);
-      top += storedHeights[index];
-      index++;
-    }
+  let { rowsCount, storedHeights, viewportHeight } = state;
+  var top = firstRowOffset;
+  var index = firstRowIndex;
+  while (top <= viewportHeight && index < rowsCount) {
+    _updateRowHeight(state, index);
+    top += storedHeights[index];
+    index++;
   }
+}
 
 /**
  * Updates row heights for rows above current view port
@@ -405,6 +405,32 @@ export function scrollTo(state, scrollPosition) {
     scrollY: scrollY,
     scrollContentHeight: scrollContentHeight,
   });
+};
+
+/**
+ * @param {!Object} state
+ * @param {number} rowIndex
+ * @return {!Object}
+ */
+export function scrollToRow(state, rowIndex) {
+  let {
+    rowsCount,
+    rowOffsets,
+    storedHeights,
+    scrollY,
+    viewportHeight,
+  } = state;
+
+  rowIndex = clamp(rowIndex, 0, Math.max(rowsCount - 1, 0));
+  var rowBegin = rowOffsets.sumUntil(rowIndex);
+  var rowEnd = rowBegin + storedHeights[rowIndex];
+  if (rowBegin < scrollY) {
+    return scrollTo(state, rowBegin);
+  } else if (scrollY + viewportHeight < rowEnd) {
+    var position = _getRowAtEndPosition(state, rowIndex);
+    return scrollTo(state, position);
+  }
+  return scrollTo(state, scrollY);
 };
 
 /**

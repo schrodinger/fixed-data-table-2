@@ -4,6 +4,7 @@
 
 import { assert } from 'chai';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import FixedDataTable from './FixedDataTableRoot';
 import { createRenderer, isElement, renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
 
@@ -36,8 +37,6 @@ describe('FixedDataTableRoot', function() {
   class TestTable extends React.Component {
     constructor(props) {
       super(props);
-
-      this.state = {...props}
     }
 
     /**
@@ -58,7 +57,7 @@ describe('FixedDataTableRoot', function() {
           rowsCount={50}
           rowHeight={100}
           headerHeight={50}
-          {...this.state}
+          {...this.props}
         >
           <Column width={300} />
           <Column width={300} />
@@ -70,8 +69,14 @@ describe('FixedDataTableRoot', function() {
     }
   }
 
+  let node;
+
+  beforeEach(function() {
+    node = document.createElement('div');
+  });
+
   const renderTable = (optionalProps = {}) => {
-    let renderedTree = renderIntoDocument(<TestTable {...optionalProps} />);
+    let renderedTree = ReactDOM.render(<TestTable {...optionalProps} />, node);
     return findRenderedComponentWithType(renderedTree, TestTable);
   };
 
@@ -100,32 +105,65 @@ describe('FixedDataTableRoot', function() {
   });
 
   describe('update render', function() {
+    it('should update scrollLeft correctly', function() {
+      let table = renderTable({scrollLeft: 300});
+      assert.equal(table.getTableState().scrollX, 300, 'should set scrollX to 300');
+      table = renderTable({scrollLeft: 600});
+      assert.equal(table.getTableState().scrollX, 600, 'should set scrollX to 600');
+    });
 
+    it('should update scrollTop correctly', function() {
+      let table = renderTable({scrollTop: 600});
+      assert.equal(table.getTableState().scrollY, 600, 'should set scrollY to 600');
+
+      table = renderTable({scrollTop: 300});
+      assert.equal(table.getTableState().scrollY, 300, 'should set scrollY to 300');
+    });
+
+    it('should update scrollToColumn correctly', function() {
+      let table = renderTable({scrollToColumn: 3});
+      assert.equal(table.getTableState().scrollX, 300 * 2, 'should be third visible column');
+      table = renderTable({scrollToColumn: 1});
+      assert.equal(table.getTableState().scrollX, 300 * 1, 'should be first visible column');
+    });
+
+    it('should update scrollToRow correctly', function() {
+      let table = renderTable({scrollToRow: 30, height: 300});
+      //scrollToRow is considered valid if row is visible. Test to make sure that row is somewhere in between
+      assert.isAtMost(table.getTableState().scrollY, 30 * 100, 'should be below first row');
+      assert.isAtLeast(table.getTableState().scrollY, 30 * 100 - 300, 'should be above last row');
+      table = renderTable({scrollToRow: 20, height: 100});
+      assert.isAtMost(table.getTableState().scrollY, 20 * 100, 'should be below first row');
+      assert.isAtLeast(table.getTableState().scrollY, 20 * 100 - 100, 'should be above last row');
+    });
+  });
+
+  describe('unset props', function() {
     it('should not blow up when unsetting the scrollLeft property', function() {
       let table = renderTable({scrollLeft: 300});
       assert.doesNotThrow(function() {
-        table.setState({scrollLeft: undefined});
+        renderTable({scrollLeft: undefined});
       });
     });
 
     it('should not blow up when unsetting the scrollTop property', function() {
       let table = renderTable({scrollTop: 600});
-      //assert.doesNotThrow(function() {
-        table.setState({scrollTop: undefined});
-      //});
+      assert.doesNotThrow(function() {
+        renderTable({scrollTop: undefined});
+      });
     });
 
     it('should not blow up when unsetting the scrollToColumn property', function() {
       let table = renderTable({scrollToColumn: 3});
       assert.doesNotThrow(function() {
-        table.setState({scrollToColumn: undefined});
+        renderTable({scrollToColumn: undefined});
       });
     });
 
     it('should not blow up when unsetting the scrollToRow property', function() {
       let table = renderTable({scrollToRow: 30});
       assert.doesNotThrow(function() {
-        table.setState({scrollToRow: undefined});
+        renderTable({scrollToRow: undefined});
       });
     });
   });
