@@ -154,39 +154,6 @@ function _addRowToBuffer(state, rowIndex, firstViewportRowIndex, lastViewportRow
 };
 
 /**
- * combine with updateRows with additioona prop
- *
- * @param {!Object} state
- * @private
- */
-function _updateRowsWithBuffer(state) {
-  let { bufferRowsCount, viewportRowsBegin, viewportRowsEnd, rowsCount } = state;
-  let remainingBufferRows = 2 * bufferRowsCount;
-  let bufferRowIndex = Math.max(viewportRowsBegin - bufferRowsCount, 0);
-  while (bufferRowIndex < viewportRowsBegin) {
-    _addRowToBuffer(
-      state,
-      bufferRowIndex,
-      viewportRowsBegin,
-      viewportRowsEnd - 1
-    );
-    bufferRowIndex++;
-    remainingBufferRows--;
-  }
-  bufferRowIndex = viewportRowsEnd;
-  while (bufferRowIndex < rowsCount && remainingBufferRows > 0) {
-    _addRowToBuffer(
-      state,
-      bufferRowIndex,
-      viewportRowsBegin,
-      viewportRowsEnd - 1
-    );
-    bufferRowIndex++;
-    remainingBufferRows--;
-  }
-}
-
-/**
  * @param {!Object} state
  * @private
  */
@@ -197,13 +164,16 @@ function _updateRows(state) {
     maxVisibleRowCount,
     rowsCount,
     viewportHeight,
-    rowHeightGetter
+    rowHeightGetter,
+    bufferRowsCount,
+    viewportRowsBegin
   } = state;
 
   let top = firstRowOffset;
   let totalHeight = top;
-  let rowIndex = firstRowIndex;
-  let endIndex = Math.min(firstRowIndex + maxVisibleRowCount, rowsCount);
+  //let rowIndex = firstRowIndex;
+  let rowIndex = Math.max(firstRowIndex - bufferRowsCount, 0);
+  let endIndex = Math.min(firstRowIndex + maxVisibleRowCount + bufferRowsCount, rowsCount);
 
   state.viewportRowsBegin = firstRowIndex;
   while (rowIndex < endIndex || (totalHeight < viewportHeight && rowIndex < rowsCount)) {
@@ -219,6 +189,8 @@ function _updateRows(state) {
     // distinguish when there are no rows rendered in viewport
     state.viewportRowsEnd = rowIndex;
   }
+
+  return state;
 };
 
 /**
@@ -235,6 +207,8 @@ function _recalculateRowHeights(state) {
     _updateRowHeight(state, rowIndex);
     state.rowHeights[rowIndex] = rowOffsets.sumUntil(rowIndex);
   });
+
+  return state;
 }
 
 /**
@@ -265,9 +239,6 @@ export function updateRowHeights(state, {
     state.storedHeights[i] = rowHeight;
   }
 
-  _updateRows(state)
-  _recalculateRowHeights(state);
- 
   return state; 
 }
 
@@ -284,9 +255,6 @@ export function updateRowCount(state, { rowsCount }) {
   for (var i = 0; i < rowsCount; i++) {
     state.storedHeights[i] = state.rowHeight;
   }
-
-  _updateRows(state)
-  _recalculateRowHeights(state);
 
   return state; 
 }
@@ -306,9 +274,6 @@ export function updateViewHeight(state, {
     MAX_BUFFER_ROWS
   );
 
-  _updateRows(state)
-  _recalculateRowHeights(state);
-
   return state; 
 }
 
@@ -319,6 +284,7 @@ export function updateViewHeight(state, {
  * @param {number} firstRowIndex
  */
 export function scrollBy(state, deltaY) {
+  console.log('-----', deltaY);
   if (state.rowsCount === 0) {
     return { ...state, ...NO_ROWS_SCROLL_RESULT };
   }
@@ -385,9 +351,6 @@ export function scrollBy(state, deltaY) {
   //TODO (asif) Uncomment this line when bodyHeight is included in state
   //let maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
 
-  _updateRows(state);
-  _recalculateRowHeights(state);
-
   return Object.assign({}, state, {
     scrollY,
     firstRowIndex,
@@ -437,9 +400,6 @@ export function scrollTo(state, scrollPosition) {
   _updateHeightsInViewport(state, firstRowIndex, firstRowOffset);
   _updateHeightsAboveViewport(state, firstRowIndex);
 
-  _updateRows(state);
-  _recalculateRowHeights(state);
-
   return Object.assign({}, state, {
     firstRowIndex: firstRowIndex,
     firstRowOffset: firstRowOffset,
@@ -453,10 +413,6 @@ export function scrollTo(state, scrollPosition) {
  * @return {!Object}
  */
 export function scrollEnd(state) {
-
-  _updateRows(state);
-  _recalculateRowHeights(state);
-
   return Object.assign({}, state, {
     scrolling: false
   });
@@ -467,9 +423,17 @@ export function scrollEnd(state) {
  * @return {!Object}
  */
 export function scrollStart(state) {
-  _updateRows(state);
-  _recalculateRowHeights(state);
   return Object.assign({}, state, {
     scrolling: true
   });
 };
+
+/**
+ * @param {!Object} state
+ * @return {!Object}
+ */
+export function updateVisibleRows(state) {
+  state = _updateRows(state);
+  state = _recalculateRowHeights(state);
+  return state;
+}
