@@ -13,7 +13,7 @@
 
 import IntegerBufferSet from 'IntegerBufferSet';
 import ActionTypes from 'ActionTypes'
-import isNil from 'lodash.isnil';
+import isNil from 'lodash/isnil';
 import {
   scrollBy,
   scrollEnd,
