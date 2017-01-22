@@ -284,7 +284,6 @@ export function updateViewHeight(state, {
  * @param {number} firstRowIndex
  */
 export function scrollBy(state, deltaY) {
-  console.log('-----', deltaY);
   if (state.rowsCount === 0) {
     return { ...state, ...NO_ROWS_SCROLL_RESULT };
   }
