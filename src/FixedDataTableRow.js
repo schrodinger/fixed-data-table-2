@@ -12,12 +12,12 @@
 
 'use strict';
 
-import React from 'React';
 import FixedDataTableCellGroup from 'FixedDataTableCellGroup';
-
+import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
+import FixedDataTableWidthHelper from 'FixedDataTableWidthHelper';
+import React from 'React';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
-import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
 var {PropTypes} = React;
 
@@ -33,7 +33,7 @@ var FixedDataTableRowImpl = React.createClass({
     isScrolling: PropTypes.bool,
 
     /**
-     * Array of <FixedDataTableColumn /> for the fixed columns.
+     * Array of data for the fixed columns.
      */
     fixedColumns: PropTypes.array.isRequired,
 
@@ -48,7 +48,7 @@ var FixedDataTableRowImpl = React.createClass({
     index: PropTypes.number.isRequired,
 
     /**
-     * Array of <FixedDataTableColumn /> for the scrollable columns.
+     * Array of data for the scrollable columns.
      */
     scrollableColumns: PropTypes.array.isRequired,
 
@@ -123,7 +123,7 @@ var FixedDataTableRowImpl = React.createClass({
       'public/fixedDataTableRow/odd': (this.props.index % 2 === 1),
       'public/fixedDataTableRow/even': (this.props.index % 2 === 0),
     });
-    var fixedColumnsWidth = this._getColumnsWidth(this.props.fixedColumns);
+    var fixedColumnsWidth = FixedDataTableWidthHelper.sumPropWidths(this.props.fixedColumns);
     var fixedColumns =
       <FixedDataTableCellGroup
         key="fixed_cells"
@@ -162,7 +162,7 @@ var FixedDataTableRowImpl = React.createClass({
         rowHeight={this.props.height}
         rowIndex={this.props.index}
       />;
-    var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
+    var scrollableColumnsWidth = FixedDataTableWidthHelper.sumPropWidths(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
 
     return (
@@ -182,14 +182,6 @@ var FixedDataTableRowImpl = React.createClass({
         {columnsRightShadow}
       </div>
     );
-  },
-
-  _getColumnsWidth(/*array*/ columns) /*number*/ {
-    var width = 0;
-    for (var i = 0; i < columns.length; ++i) {
-      width += columns[i].props.width;
-    }
-    return width;
   },
 
   _renderColumnsLeftShadow(/*number*/ left) /*?object*/ {

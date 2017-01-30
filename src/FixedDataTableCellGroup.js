@@ -12,9 +12,10 @@
 
 'use strict';
 
-import FixedDataTableHelper from 'FixedDataTableHelper';
-import React from 'React';
 import FixedDataTableCell from 'FixedDataTableCell';
+import FixedDataTableHelper from 'FixedDataTableHelper';
+import FixedDataTableWidthHelper from 'FixedDataTableWidthHelper';
+import React from 'React';
 
 import cx from 'cx';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
@@ -33,7 +34,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
   propTypes_DISABLED_FOR_PERFORMANCE: {
 
     /**
-     * Array of <FixedDataTableColumn />.
+     * Array of per column configuration properties.
      */
     columns: PropTypes.array.isRequired,
 
@@ -69,7 +70,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
     var columns = props.columns;
     var cells = new Array(columns.length);
 
-    var contentWidth = this._getColumnsWidth(columns);
+    var contentWidth = FixedDataTableWidthHelper.sumPropWidths(columns);
 
     var isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
       return acc || props.columnReorderingData.columnKey === column.props.columnKey;
@@ -78,6 +79,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
     var currentPosition = 0;
     for (var i = 0, j = columns.length; i < j; i++) {
       var columnProps = columns[i].props;
+      var cellTemplate = columns[i].template;
       var recycable = columnProps.allowCellsRecycling && !isColumnReordering;
       if (!recycable || (
             currentPosition - props.left <= props.width &&
@@ -87,6 +89,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
           props.rowIndex,
           props.rowHeight,
           columnProps,
+          cellTemplate,
           currentPosition,
           key,
           contentWidth,
@@ -116,6 +119,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
     /*number*/ rowIndex,
     /*number*/ height,
     /*object*/ columnProps,
+    /*object*/ cellTemplate,
     /*number*/ left,
     /*string*/ key,
     /*number*/ columnGroupWidth,
@@ -149,18 +153,10 @@ var FixedDataTableCellGroupImpl = React.createClass({
         columnKey={columnProps.columnKey}
         width={columnProps.width}
         left={left}
-        cell={columnProps.cell}
+        cell={cellTemplate}
         columnGroupWidth={columnGroupWidth}
       />
     );
-  },
-
-  _getColumnsWidth(/*array*/ columns) /*number*/ {
-    var width = 0;
-    for (var i = 0; i < columns.length; ++i) {
-      width += columns[i].props.width;
-    }
-    return width;
   },
 });
 

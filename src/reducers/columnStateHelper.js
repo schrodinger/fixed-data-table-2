@@ -12,143 +12,12 @@
 'use strict';
 
 import FixedDataTableWidthHelper from 'FixedDataTableWidthHelper';
-import React from 'React';
 import emptyFunction from 'emptyFunction';
-import invariant from 'invariant';
-import shallowEqual from 'shallowEqual';
+import partition from 'lodash/partition';
 
 var EMPTY_OBJECT = {};
-var HEADER = 'header';
-var FOOTER = 'footer';
-var CELL = 'cell';
 var DRAG_SCROLL_SPEED = 15;
 var DRAG_SCROLL_BUFFER = 100;
-
-function _selectColumnElement(type: string, columns: Array): Array {
-  var newColumns = [];
-  for (var i = 0; i < columns.length; ++i) {
-    var column = columns[i];
-    newColumns.push(React.cloneElement(
-      column,
-      {
-        cell: type ?  column.props[type] : column.props[CELL]
-      }
-    ));
-  }
-  return newColumns;
-};
-
-function _splitColumnTypes(columns: Array): Object {
-  var fixedColumns = [];
-  var scrollableColumns = [];
-  for (var i = 0; i < columns.length; ++i) {
-    if (columns[i].props.fixed) {
-      fixedColumns.push(columns[i]);
-    } else {
-      scrollableColumns.push(columns[i]);
-    }
-  }
-  return {
-    fixed: fixedColumns,
-    scrollable: scrollableColumns,
-  };
-};
-
-function _areColumnSettingsIdentical(
-  oldColumns: Array,
-  newColumns: Array
-): boolean {
-  if (oldColumns.length !== newColumns.length) {
-    return false;
-  }
-  for (var index = 0; index < oldColumns.length; ++index) {
-    if (!shallowEqual(
-        oldColumns[index].props,
-        newColumns[index].props
-    )) {
-      return false;
-    }
-  }
-  return true;
-};
-
-function _populateColumnsAndColumnData(
-  columns: Array,
-  columnGroups: ?Array,
-  oldState: ?Object
-): Object {
-  var canReuseColumnSettings = false;
-  var canReuseColumnGroupSettings = false;
-
-  if (oldState && oldState.columns) {
-    canReuseColumnSettings =
-      _areColumnSettingsIdentical(columns, oldState.columns);
-  }
-  if (oldState && oldState.columnGroups && columnGroups) {
-    canReuseColumnGroupSettings =
-      _areColumnSettingsIdentical(columnGroups, oldState.columnGroups);
-  }
-
-  var columnInfo = {};
-  if (canReuseColumnSettings) {
-    columnInfo.bodyFixedColumns = oldState.bodyFixedColumns;
-    columnInfo.bodyScrollableColumns = oldState.bodyScrollableColumns;
-    columnInfo.headFixedColumns = oldState.headFixedColumns;
-    columnInfo.headScrollableColumns = oldState.headScrollableColumns;
-    columnInfo.footFixedColumns = oldState.footFixedColumns;
-    columnInfo.footScrollableColumns = oldState.footScrollableColumns;
-  } else {
-    var bodyColumnTypes = _splitColumnTypes(columns);
-    columnInfo.bodyFixedColumns = bodyColumnTypes.fixed;
-    columnInfo.bodyScrollableColumns = bodyColumnTypes.scrollable;
-
-    var headColumnTypes = _splitColumnTypes(
-      _selectColumnElement(HEADER, columns)
-    );
-    columnInfo.headFixedColumns = headColumnTypes.fixed;
-    columnInfo.headScrollableColumns = headColumnTypes.scrollable;
-
-    var footColumnTypes = _splitColumnTypes(
-      _selectColumnElement(FOOTER, columns)
-    );
-    columnInfo.footFixedColumns = footColumnTypes.fixed;
-    columnInfo.footScrollableColumns = footColumnTypes.scrollable;
-  }
-
-  if (canReuseColumnGroupSettings) {
-    columnInfo.groupHeaderFixedColumns = oldState.groupHeaderFixedColumns;
-    columnInfo.groupHeaderScrollableColumns =
-      oldState.groupHeaderScrollableColumns;
-  } else {
-    if (columnGroups) {
-      var groupHeaderColumnTypes = _splitColumnTypes(
-        _selectColumnElement(HEADER, columnGroups)
-      );
-      columnInfo.groupHeaderFixedColumns = groupHeaderColumnTypes.fixed;
-      columnInfo.groupHeaderScrollableColumns =
-        groupHeaderColumnTypes.scrollable;
-    }
-  }
-
-  return columnInfo;
-};
-
-function _getChildren(props) {
-  var children = [];
-  React.Children.forEach(props.children, (child, index) => {
-    if (child == null) {
-      return;
-    }
-    invariant(
-      child.type.__TableColumnGroup__ ||
-      child.type.__TableColumn__,
-      'child type should be <FixedDataTableColumn /> or ' +
-      '<FixedDataTableColumnGroup />'
-    );
-    children.push(child);
-  });
-  return children;
-};
 
 /**
  * Creates new state object when rowHeight or rowCount changes
@@ -156,80 +25,51 @@ function _getChildren(props) {
  *
  * @param {!Object} oldState
  * @param {!Object} props
+ * @param {!Object} columnGroups
+ * @param {boolean} useGroupHeader
  * @return {!Object}
  */
-function initialize(oldState, props) {
-  var children = _getChildren(props);
-  var useGroupHeader = false;
-  if (children.length && children[0].type.__TableColumnGroup__) {
-    useGroupHeader = true;
-  }
-
+function initialize(oldState, props, columnGroups, useGroupHeader) {
   scrollX = oldState ? oldState.scrollX : 0;
   if (props.scrollLeft !== undefined) {
     scrollX = props.scrollLeft;
   }
 
-  var groupHeaderHeight = useGroupHeader ? props.groupHeaderHeight : 0;
+  let groupHeaderHeight = useGroupHeader ? props.groupHeaderHeight : 0;
 
-  var columnResizingData;
+  let columnResizingData;
   if (props.isColumnResizing) {
     columnResizingData = oldState && oldState.columnResizingData;
   } else {
     columnResizingData = EMPTY_OBJECT;
   }
 
-  var columns;
-  var columnGroups;
-
-  if (useGroupHeader) {
-    var columnGroupSettings =
-      FixedDataTableWidthHelper.adjustColumnGroupWidths(
-        children,
-        props.width
-    );
-    columns = columnGroupSettings.columns;
-    columnGroups = columnGroupSettings.columnGroups;
-  } else {
-    columns = FixedDataTableWidthHelper.adjustColumnWidths(
-      children,
-      props.width
-    );
-  }
-
-  var columnInfo = _populateColumnsAndColumnData(
-    columns,
-    columnGroups,
-    oldState
-  );
+  const columns = FixedDataTableWidthHelper
+    .adjustColumnGroupWidths(columnGroups, props.width);
+  const [fixedColumns, scrollableColumns] = partition(columns, column => column.fixed);
 
   var lastScrollToColumn = oldState ? oldState.scrollToColumn : undefined;
   if (props.scrollToColumn !== null && props.scrollToColumn !== lastScrollToColumn) {
     // If selected column is a fixed column, don't scroll
-    var fixedColumnsCount = columnInfo.bodyFixedColumns.length;
+    var fixedColumnsCount = fixedColumns.length;
     if (props.scrollToColumn >= fixedColumnsCount) {
-      var totalFixedColumnsWidth = 0;
-      var i, column;
-      for (i = 0; i < columnInfo.bodyFixedColumns.length; ++i) {
-        column = columnInfo.bodyFixedColumns[i];
-        totalFixedColumnsWidth += column.props.width;
+      let totalFixedColumnsWidth = 0;
+      for (let i = 0; i < fixedColumns.length; ++i) {
+        totalFixedColumnsWidth += fixedColumns[i].width;
       }
 
-      var scrollableColumnIndex = Math.min(
+      let scrollableColumnIndex = Math.min(
         props.scrollToColumn - fixedColumnsCount,
-        columnInfo.bodyScrollableColumns.length - 1,
+        scrollableColumns.length - 1,
       );
 
       var previousColumnsWidth = 0;
-      for (i = 0; i < scrollableColumnIndex; ++i) {
-        column = columnInfo.bodyScrollableColumns[i];
-        previousColumnsWidth += column.props.width;
+      for (let i = 0; i < scrollableColumnIndex; ++i) {
+        previousColumnsWidth += scrollableColumns[i].width;
       }
 
       var availableScrollWidth = props.width - totalFixedColumnsWidth;
-      var selectedColumnWidth = columnInfo.bodyScrollableColumns[
-        scrollableColumnIndex
-      ].props.width;
+      var selectedColumnWidth = scrollableColumns[scrollableColumnIndex].width;
       var minAcceptableScrollPosition =
         previousColumnsWidth + selectedColumnWidth - availableScrollWidth;
 
@@ -255,16 +95,15 @@ function initialize(oldState, props) {
     props.isColumnResizing : oldState && oldState.isColumnResizing;
 
   return Object.assign({}, oldState, {
-    columns,
     columnGroups,
-    columnInfo,
     columnResizingData,
+    columns,
     groupHeaderHeight,
     isColumnResizing,
     maxScrollX,
     horizontalScrollbarVisible,
     scrollX,
-    useGroupHeader,
+    useGroupHeader: useGroupHeader,
     width: props.width
   });
 };
@@ -310,9 +149,10 @@ function reorderColumn(oldState, reorderData) {
     width
   } = reorderData;
 
-  var isFixed = !!oldState.columnInfo.headFixedColumns.find(function(column) {
-    return column.props.columnKey === columnKey;
+  const column = oldState.columns.find(function(column) {
+    return column.columnKey === columnKey;
   });
+  const isFixed = column !== undefined && column.fixed;
 
   return Object.assign({}, oldState, {
     isColumnReordering: true,
@@ -342,8 +182,13 @@ function reorderColumnMove(oldState, deltaX) {
     //Relative dragX position on scroll
     var dragX = reorderingData.originalLeft - reorderingData.scrollStart + reorderingData.dragDistance;
 
-    var fixedColumnsWidth = oldState.columnInfo.bodyFixedColumns
-      .reduce((sum, column) => sum + column.props.width, 0);
+    var fixedColumnsWidth = oldState.columns
+      .reduce((sum, column) => {
+        if (column.fixed) {
+          return sum + column.width;
+        }
+        return sum;
+      }, 0);
     var relativeWidth = oldState.width - fixedColumnsWidth;
 
     //Scroll the table left or right if we drag near the edges of the table

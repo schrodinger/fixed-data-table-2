@@ -13,142 +13,93 @@
 'use strict';
 
 import React from 'React';
+import forEach from 'lodash/forEach';
+import reduce from 'lodash/reduce';
 
-function getTotalWidth(/*array*/ columns) /*number*/ {
-  var totalWidth = 0;
-  for (var i = 0; i < columns.length; ++i) {
-    totalWidth += columns[i].props.width;
-  }
-  return totalWidth;
+function sumPropWidths(columns) {
+  return reduce(columns, (accum, column) => accum + column.props.width, 0);
 }
 
-function getTotalFlexGrow(/*array*/ columns) /*number*/ {
-  var totalFlexGrow = 0;
-  for (var i = 0; i < columns.length; ++i) {
-    totalFlexGrow += columns[i].props.flexGrow || 0;
-  }
-  return totalFlexGrow;
+function getTotalWidth(columns) {
+  return reduce(columns, (accum, column) => accum + column.width, 0);
 }
 
-function distributeFlexWidth(
-  /*array*/ columns,
-  /*number*/ flexWidth
-) /*object*/ {
+function getTotalFlexGrow(columns) {
+  return reduce(columns, (accum, column) => accum + (column.flexGrow || 0), 0);
+}
+
+function distributeFlexWidth(columns, flexWidth, flexGrow) {
   if (flexWidth <= 0) {
     return {
       columns: columns,
       width: getTotalWidth(columns),
     };
   }
-  var remainingFlexGrow = getTotalFlexGrow(columns);
-  var remainingFlexWidth = flexWidth;
-  var newColumns = [];
-  var totalWidth = 0;
-  for (var i = 0; i < columns.length; ++i) {
-    var column = columns[i];
-    if (!column.props.flexGrow) {
-      totalWidth += column.props.width;
-      newColumns.push(column);
-      continue;
+
+  let remainingFlexWidth = flexWidth;
+  let remainingFlexGrow = flexGrow;
+
+  const columnWidths = [];
+  let totalWidth = 0;
+  forEach(columns, column => {
+    if (!column.flexGrow) {
+      totalWidth += column.width;
+      columnWidths.push(column.width);
+      return;
     }
-    var columnFlexWidth = Math.floor(
-      column.props.flexGrow / remainingFlexGrow * remainingFlexWidth
-    );
-    var newColumnWidth = Math.floor(column.props.width + columnFlexWidth);
+
+    const columnFlexWidth = Math.floor(
+      column.flexGrow / remainingFlexGrow * remainingFlexWidth);
+    const newColumnWidth = Math.floor(column.width + columnFlexWidth);
     totalWidth += newColumnWidth;
 
-    remainingFlexGrow -= column.props.flexGrow;
+    remainingFlexGrow -= column.flexGrow;
     remainingFlexWidth -= columnFlexWidth;
 
-    newColumns.push(React.cloneElement(
-      column,
-      {width: newColumnWidth}
-    ));
-  }
+    columnWidths.push(newColumnWidth);
+  });
 
   return {
-    columns: newColumns,
+    columnWidths,
     width: totalWidth,
   };
 }
 
-function adjustColumnGroupWidths(
-  /*array*/ columnGroups,
-  /*number*/ expectedWidth
-) /*object*/ {
-  var allColumns = [];
-  var i;
-  for (i = 0; i < columnGroups.length; ++i) {
-    React.Children.forEach(
-      columnGroups[i].props.children,
-      (column) => {
-        allColumns.push(column);
-      }
-    );
-  }
-  var columnsWidth = getTotalWidth(allColumns);
+function adjustColumnGroupWidths(columnGroups, expectedWidth) {
+  const allColumns = [];
+  forEach(columnGroups, columnGroup => {
+    Array.prototype.push.apply(allColumns, columnGroup.columns)
+  });
+
   var remainingFlexGrow = getTotalFlexGrow(allColumns);
+  if (remainingFlexGrow === 0) {
+    return allColumns;
+  }
+
+  var columnsWidth = getTotalWidth(allColumns);
   var remainingFlexWidth = Math.max(expectedWidth - columnsWidth, 0);
-
-  var newAllColumns = [];
-  var newColumnGroups = [];
-
-  for (i = 0; i < columnGroups.length; ++i) {
-    var columnGroup = columnGroups[i];
-    var currentColumns = [];
-
-    React.Children.forEach(
-      columnGroup.props.children,
-      (column) => {
-        currentColumns.push(column);
-      }
-    );
-
-    var columnGroupFlexGrow = getTotalFlexGrow(currentColumns);
-    var columnGroupFlexWidth = Math.floor(
-      columnGroupFlexGrow / remainingFlexGrow * remainingFlexWidth
-    );
+  forEach(columnGroups, columnGroup => {
+    const currentColumns = columnGroup.columns;
+    const columnGroupFlexGrow = getTotalFlexGrow(currentColumns);
+    const columnGroupFlexWidth = Math.floor(
+      columnGroupFlexGrow / remainingFlexGrow * remainingFlexWidth);
 
     var newColumnSettings = distributeFlexWidth(
-      currentColumns,
-      columnGroupFlexWidth
-    );
-
+      currentColumns, columnGroupFlexWidth, columnGroupFlexGrow);
     remainingFlexGrow -= columnGroupFlexGrow;
     remainingFlexWidth -= columnGroupFlexWidth;
 
-    for (var j = 0; j < newColumnSettings.columns.length; ++j) {
-      newAllColumns.push(newColumnSettings.columns[j]);
-    }
-
-    newColumnGroups.push(React.cloneElement(
-      columnGroup,
-      {width: newColumnSettings.width}
-    ));
-  }
-
-  return {
-    columns: newAllColumns,
-    columnGroups: newColumnGroups,
-  };
-}
-
-function adjustColumnWidths(
-  /*array*/ columns,
-  /*number*/ expectedWidth
-) /*array*/ {
-  var columnsWidth = getTotalWidth(columns);
-  if (columnsWidth < expectedWidth) {
-    return distributeFlexWidth(columns, expectedWidth - columnsWidth).columns;
-  }
-  return columns;
+    columnGroup.width = newColumnSettings.width;
+    forEach(newColumnSettings.columnWidths, (newWidth, index) => {
+      currentColumns[index].width = newWidth;
+    });
+  });
+  return allColumns;
 }
 
 var FixedDataTableWidthHelper = {
+  sumPropWidths,
   getTotalWidth,
-  getTotalFlexGrow,
-  distributeFlexWidth,
-  adjustColumnWidths,
   adjustColumnGroupWidths,
 };
 
