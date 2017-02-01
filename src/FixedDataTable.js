@@ -1059,10 +1059,10 @@ var FixedDataTable = React.createClass({
     // This calculation is synonymous to Element.scrollTop
     var scrollTop = firstRowIndex && Math.abs(firstRowOffset - this._scrollHelper.getRowPosition(firstRowIndex));
     if (scrollTop >= 0) {
-      var maxScrollTop = scrollContentHeight - bodyHeight;
+      var maxScrollTop = maxScrollY ? scrollContentHeight - bodyHeight : 0;
       // Handle the case where the scrollTop is beyond the maxScrollTop, such as when the user is completely scrolled
       // down and resizes the viewport to be smaller vertically
-      if (scrollTop > maxScrollTop || scrollTop === 0) {
+      if (scrollTop > maxScrollTop || maxScrollTop === 0) {
         scrollTop = maxScrollTop;
         scrollState = this._scrollHelper.scrollTo(scrollTop);
         firstRowIndex = scrollState.index;
