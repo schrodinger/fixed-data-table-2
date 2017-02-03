@@ -1057,18 +1057,16 @@ var FixedDataTable = React.createClass({
     this._scrollHelper.setViewportHeight(bodyHeight);
 
     // This calculation is synonymous to Element.scrollTop
-    var scrollTop = firstRowIndex && Math.abs(firstRowOffset - this._scrollHelper.getRowPosition(firstRowIndex));
-    if (scrollTop >= 0) {
-      var maxScrollTop = maxScrollY ? scrollContentHeight - bodyHeight : 0;
-      // Handle the case where the scrollTop is beyond the maxScrollTop, such as when the user is completely scrolled
-      // down and resizes the viewport to be smaller vertically
-      if (scrollTop > maxScrollTop || maxScrollTop === 0) {
-        scrollTop = maxScrollTop;
-        scrollState = this._scrollHelper.scrollTo(scrollTop);
-        firstRowIndex = scrollState.index;
-        firstRowOffset = scrollState.offset;
-        scrollY = scrollState.position;
-      }
+    var scrollTop = firstRowIndex ? Math.abs(firstRowOffset - this._scrollHelper.getRowPosition(firstRowIndex)) : 0;
+    // Handle the case where the scrollTop is beyond the maxScrollY, such as when the user is completely scrolled
+    // down and resizes the viewport to be smaller vertically. The other case is when resizing the viewport large enough
+    // so that a scrollbar is not necessary anymore, to make sure we set the scrollTop back to 0.
+    if (scrollTop > maxScrollY || (oldState && oldState.scrollY !== 0 && maxScrollY === 0)) {
+      scrollTop = maxScrollY;
+      scrollState = this._scrollHelper.scrollTo(scrollTop);
+      firstRowIndex = scrollState.index;
+      firstRowOffset = scrollState.offset;
+      scrollY = scrollState.position;
     }
 
     // The order of elements in this object metters and bringing bodyHeight,
