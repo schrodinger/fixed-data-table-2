@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.10 
+ * FixedDataTable v0.7.11 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.10';
+	FixedDataTableRoot.version = '0.7.11';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -1186,6 +1186,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this._scrollHelper.setViewportHeight(bodyHeight);
 
+	    // This calculation is synonymous to Element.scrollTop
+	    var scrollTop = Math.abs(firstRowOffset - this._scrollHelper.getRowPosition(firstRowIndex));
+	    // This case can happen when the user is completely scrolled down and resizes the viewport to be taller vertically.
+	    // This is because we set the viewport height after having calculated the rows
+	    if (scrollTop !== scrollY) {
+	      scrollTop = maxScrollY;
+	      scrollState = this._scrollHelper.scrollTo(scrollTop);
+	      firstRowIndex = scrollState.index;
+	      firstRowOffset = scrollState.offset;
+	      scrollY = scrollState.position;
+	    }
+
 	    // The order of elements in this object metters and bringing bodyHeight,
 	    // height or useGroupHeader to the top can break various features
 	    var newState = _extends({
@@ -1204,7 +1216,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      scrollContentHeight: scrollContentHeight,
 	      scrollX: scrollX,
 	      scrollY: scrollY,
-
 	      // These properties may overwrite properties defined in
 	      // columnInfo and props
 	      bodyHeight: bodyHeight,
