@@ -182,6 +182,18 @@ var FixedDataTable = React.createClass({
     rowHeightGetter: PropTypes.func,
 
     /**
+     * If specified, `rowDropdownGetter(index)` is called for each row and the
+     * returned data is shown as a dropdown.
+     */
+    rowDropdownGetter: PropTypes.func,
+
+    /**
+     * If specified, `rowExpansionHeightGetter(index)` is called for each row and the
+     * returned value adds to `rowHeight` for particular row.
+     */
+    rowDropdownHeightGetter: PropTypes.func,
+
+    /**
      * To get any additional CSS classes that should be added to a row,
      * `rowClassNameGetter(index)` is called.
      */
@@ -313,6 +325,7 @@ var FixedDataTable = React.createClass({
       footerHeight: 0,
       groupHeaderHeight: 0,
       headerHeight: 0,
+
       showScrollbarX: true,
       showScrollbarY: true,
       touchScrollEnabled: false
@@ -331,7 +344,8 @@ var FixedDataTable = React.createClass({
       props.rowsCount,
       props.rowHeight,
       viewportHeight,
-      props.rowHeightGetter
+      props.rowHeightGetter,
+      props.rowDropdownHeightGetter
     );
 
     this._didScrollStop = debounceCore(this._didScrollStop, 200, this);
@@ -666,6 +680,8 @@ var FixedDataTable = React.createClass({
         rowsCount={state.rowsCount}
         rowGetter={state.rowGetter}
         rowHeightGetter={state.rowHeightGetter}
+        rowDropdownGetter={state.rowDropdownGetter}
+        rowDropdownHeightGetter={state.rowDropdownHeightGetter}
         scrollLeft={state.scrollX}
         scrollableColumns={state.bodyScrollableColumns}
         showLastRowBorder={true}
@@ -924,7 +940,8 @@ var FixedDataTable = React.createClass({
         props.rowsCount,
         props.rowHeight,
         viewportHeight,
-        props.rowHeightGetter
+        props.rowHeightGetter,
+        props.rowDropdownHeightGetter
       );
       scrollState = this._scrollHelper.scrollToRow(firstRowIndex, firstRowOffset);
       firstRowIndex = scrollState.index;
@@ -932,6 +949,8 @@ var FixedDataTable = React.createClass({
       scrollY = scrollState.position;
     } else if (oldState && props.rowHeightGetter !== oldState.rowHeightGetter) {
       this._scrollHelper.setRowHeightGetter(props.rowHeightGetter);
+    } else if (oldState && props.rowDropdownHeightGetter !== oldState.rowDropdownHeightGetter) {
+      this._scrollHelper.setRowDropdownHeightGetter(props.rowDropdownHeightGetter);
     }
 
     var lastScrollToRow  = oldState ? oldState.scrollToRow : undefined;
