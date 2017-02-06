@@ -1057,11 +1057,10 @@ var FixedDataTable = React.createClass({
     this._scrollHelper.setViewportHeight(bodyHeight);
 
     // This calculation is synonymous to Element.scrollTop
-    var scrollTop = firstRowIndex != null ? Math.abs(firstRowOffset - this._scrollHelper.getRowPosition(firstRowIndex)) : 0;
-    // Handle the case where the scrollTop is beyond the maxScrollY, such as when the user is completely scrolled
-    // down and resizes the viewport to be smaller vertically. The other case is when resizing the viewport large enough
-    // so that a scrollbar is not necessary anymore, to make sure we set the scrollTop back to 0.
-    if (scrollTop > maxScrollY || (oldState && oldState.scrollY !== 0 && maxScrollY === 0)) {
+    var scrollTop = Math.abs(firstRowOffset - this._scrollHelper.getRowPosition(firstRowIndex));
+    // This case can happen when the user is completely scrolled down and resizes the viewport to be taller vertically.
+    // This is because we set the viewport height after having calculated the rows
+    if (scrollTop !== scrollY) {
       scrollTop = maxScrollY;
       scrollState = this._scrollHelper.scrollTo(scrollTop);
       firstRowIndex = scrollState.index;
