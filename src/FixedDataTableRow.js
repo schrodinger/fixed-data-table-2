@@ -26,7 +26,7 @@ var {PropTypes} = React;
  * This component should not be used directly by developer. Instead,
  * only <FixedDataTable /> should use the component internally.
  */
-var FixedDataTableRowImpl = React.createClass({
+var FixedDataTableRow = React.createClass({
 
   propTypes: {
 
@@ -116,6 +116,8 @@ var FixedDataTableRowImpl = React.createClass({
       height: this.props.height,
     };
 
+    FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender);
+
     var className = cx({
       'fixedDataTableRowLayout/main': true,
       'public/fixedDataTableRow/main': true,
@@ -127,11 +129,11 @@ var FixedDataTableRowImpl = React.createClass({
     var fixedColumns =
       <FixedDataTableCellGroup
         key="fixed_cells"
+        className="fixedDataTable_fixed_cells"
         isScrolling={this.props.isScrolling}
         height={this.props.height}
         left={0}
         width={fixedColumnsWidth}
-        zIndex={2}
         columns={this.props.fixedColumns}
         onColumnResize={this.props.onColumnResize}
         onColumnReorder={this.props.onColumnReorder}
@@ -146,12 +148,12 @@ var FixedDataTableRowImpl = React.createClass({
     var scrollableColumns =
       <FixedDataTableCellGroup
         key="scrollable_cells"
+        className="fixedDataTable_scrollable_cells"
         isScrolling={this.props.isScrolling}
         height={this.props.height}
         left={this.props.scrollLeft}
         offsetLeft={fixedColumnsWidth}
         width={this.props.width - fixedColumnsWidth}
-        zIndex={0}
         columns={this.props.scrollableColumns}
         onColumnResize={this.props.onColumnResize}
         onColumnReorder={this.props.onColumnReorder}
@@ -241,64 +243,5 @@ var FixedDataTableRowImpl = React.createClass({
     this.props.onMouseLeave(event, this.props.index);
   },
 });
-
-var FixedDataTableRow = React.createClass({
-
-  propTypes: {
-
-    isScrolling: PropTypes.bool,
-
-    /**
-     * Height of the row.
-     */
-    height: PropTypes.number.isRequired,
-
-    /**
-     * Z-index on which the row will be displayed. Used e.g. for keeping
-     * header and footer in front of other rows.
-     */
-    zIndex: PropTypes.number,
-
-    /**
-     * The vertical position where the row should render itself
-     */
-    offsetTop: PropTypes.number.isRequired,
-
-    /**
-     * Width of the row.
-     */
-    width: PropTypes.number.isRequired,
-  },
-
-  componentWillMount() {
-    this._initialRender = true;
-  },
-
-  componentDidMount() {
-    this._initialRender = false;
-  },
-
-  render() /*object*/ {
-    var style = {
-      width: this.props.width,
-      height: this.props.height,
-      zIndex: (this.props.zIndex ? this.props.zIndex : 0),
-    };
-    FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender);
-
-    return (
-      <div
-        style={style}
-        className={cx('fixedDataTableRowLayout/rowWrapper')}>
-        <FixedDataTableRowImpl
-          {...this.props}
-          offsetTop={undefined}
-          zIndex={undefined}
-        />
-      </div>
-    );
-  },
-});
-
 
 module.exports = FixedDataTableRow;

@@ -52,8 +52,6 @@ var FixedDataTableCellGroupImpl = React.createClass({
     rowIndex: PropTypes.number.isRequired,
 
     width: PropTypes.number.isRequired,
-
-    zIndex: PropTypes.number.isRequired,
   },
 
   componentWillMount() {
@@ -99,13 +97,12 @@ var FixedDataTableCellGroupImpl = React.createClass({
       height: props.height,
       position: 'absolute',
       width: contentWidth,
-      zIndex: props.zIndex,
     };
     FixedDataTableTranslateDOMPosition(style, -1 * DIR_SIGN * props.left, 0, this._initialRender);
 
     return (
       <div
-        className={cx('fixedDataTableCellGroupLayout/cellGroup')}
+        className={cx('fixedDataTableCellGroupLayout/cellGroup', props.className)}
         style={style}>
         {cells}
       </div>
@@ -181,11 +178,6 @@ var FixedDataTableCellGroup = React.createClass({
     offsetLeft: PropTypes.number,
 
     left: PropTypes.number,
-    /**
-     * Z-index on which the row will be displayed. Used e.g. for keeping
-     * header and footer in front of other rows.
-     */
-    zIndex: PropTypes.number.isRequired,
   },
 
   shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
