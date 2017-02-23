@@ -108,12 +108,17 @@ var FixedDataTableRow = React.createClass({
      * @param number distance
      */
     onColumnReorderEnd: PropTypes.func,
+
+    /**
+     * Whether the row has a bottom borer accross it
+     */
+    hasBottomBorder: PropTypes.bool
   },
 
   render() /*object*/ {
     var style = {
       width: this.props.width,
-      height: this.props.height,
+      height: this.props.height + (this.props.hasBottomBorder ? 1 : 0),
     };
 
     FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender);
@@ -124,6 +129,8 @@ var FixedDataTableRow = React.createClass({
       'public/fixedDataTableRow/highlighted': (this.props.index % 2 === 1),
       'public/fixedDataTableRow/odd': (this.props.index % 2 === 1),
       'public/fixedDataTableRow/even': (this.props.index % 2 === 0),
+      'public/fixedDataTable/hasBottomBorder': this.props.hasBottomBorder,
+      'fixedDataTableLayout/hasBottomBorder': this.props.hasBottomBorder,
     });
     var fixedColumnsWidth = this._getColumnsWidth(this.props.fixedColumns);
     var fixedColumns =

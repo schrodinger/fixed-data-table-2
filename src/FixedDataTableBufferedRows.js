@@ -149,6 +149,7 @@ var FixedDataTableBufferedRows = React.createClass({
           index={rowIndex}
           width={props.width}
           height={currentRowHeight}
+          hasBottomBorder={hasBottomBorder}
           scrollLeft={Math.round(props.scrollLeft)}
           offsetTop={Math.round(rowOffsetTop)}
           fixedColumns={props.fixedColumns}
@@ -161,10 +162,6 @@ var FixedDataTableBufferedRows = React.createClass({
           className={joinClasses(
             rowClassNameGetter(rowIndex),
             cx('public/fixedDataTable/bodyRow'),
-            cx({
-              'fixedDataTableLayout/hasBottomBorder': hasBottomBorder,
-              'public/fixedDataTable/hasBottomBorder': hasBottomBorder,
-            })
           )}
         />;
     }

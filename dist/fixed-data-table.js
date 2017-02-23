@@ -4039,6 +4039,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        index: rowIndex,
 	        width: props.width,
 	        height: currentRowHeight,
+	        hasBottomBorder: hasBottomBorder,
 	        scrollLeft: Math.round(props.scrollLeft),
 	        offsetTop: Math.round(rowOffsetTop),
 	        fixedColumns: props.fixedColumns,
@@ -4048,10 +4049,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        onMouseDown: props.onRowMouseDown,
 	        onMouseEnter: props.onRowMouseEnter,
 	        onMouseLeave: props.onRowMouseLeave,
-	        className: (0, _joinClasses2.default)(rowClassNameGetter(rowIndex), (0, _cx2.default)('public/fixedDataTable/bodyRow'), (0, _cx2.default)({
-	          'fixedDataTableLayout/hasBottomBorder': hasBottomBorder,
-	          'public/fixedDataTable/hasBottomBorder': hasBottomBorder
-	        }))
+	        className: (0, _joinClasses2.default)(rowClassNameGetter(rowIndex), (0, _cx2.default)('public/fixedDataTable/bodyRow'))
 	      });
 	    }
 
@@ -4755,13 +4753,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Callback for when the mouse is released to complete reordering.
 	     * @param number distance
 	     */
-	    onColumnReorderEnd: PropTypes.func
+	    onColumnReorderEnd: PropTypes.func,
+
+	    /**
+	     * Whether the row has a bottom borer accross it
+	     */
+	    hasBottomBorder: PropTypes.bool
 	  },
 
 	  render: function render() /*object*/{
 	    var style = {
 	      width: this.props.width,
-	      height: this.props.height
+	      height: this.props.height + (this.props.hasBottomBorder ? 1 : 0)
 	    };
 
 	    (0, _FixedDataTableTranslateDOMPosition2.default)(style, 0, this.props.offsetTop, this._initialRender);
@@ -4771,7 +4774,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'public/fixedDataTableRow/main': true,
 	      'public/fixedDataTableRow/highlighted': this.props.index % 2 === 1,
 	      'public/fixedDataTableRow/odd': this.props.index % 2 === 1,
-	      'public/fixedDataTableRow/even': this.props.index % 2 === 0
+	      'public/fixedDataTableRow/even': this.props.index % 2 === 0,
+	      'public/fixedDataTable/hasBottomBorder': this.props.hasBottomBorder,
+	      'fixedDataTableLayout/hasBottomBorder': this.props.hasBottomBorder
 	    });
 	    var fixedColumnsWidth = this._getColumnsWidth(this.props.fixedColumns);
 	    var fixedColumns = _React2.default.createElement(_FixedDataTableCellGroup2.default, {
