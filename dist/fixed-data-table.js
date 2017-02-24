@@ -584,7 +584,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Whether columns are currently being reordered.
 	     */
-	    isColumnReordering: PropTypes.bool
+	    isColumnReordering: PropTypes.bool,
+
+	    /**
+	     * Whether table is displayed with borders below rows.
+	     */
+	    showBorderOnAllRows: PropTypes.bool
 	  },
 
 	  getDefaultProps: function getDefaultProps() /*object*/{
@@ -594,7 +599,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      headerHeight: 0,
 	      showScrollbarX: true,
 	      showScrollbarY: true,
-	      touchScrollEnabled: false
+	      touchScrollEnabled: false,
+	      showBorderOnAllRows: true
 	    };
 	  },
 	  componentWillMount: function componentWillMount() {
@@ -872,6 +878,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      scrollableColumns: state.bodyScrollableColumns,
 	      showLastRowBorder: true,
 	      width: state.width,
+	      showBorderOnAllRows: state.showBorderOnAllRows,
 	      rowPositionGetter: this._scrollHelper.getRowPosition
 	    });
 	  },
@@ -3960,6 +3967,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    scrollLeft: PropTypes.number.isRequired,
 	    scrollableColumns: PropTypes.array.isRequired,
 	    showLastRowBorder: PropTypes.bool,
+	    showBorderOnAllRows: PropTypes.bool,
 	    width: PropTypes.number.isRequired
 	  },
 
@@ -4031,7 +4039,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var rowOffsetTop = baseOffsetTop + rowPositions[rowIndex];
 	      var rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
 
-	      var hasBottomBorder = rowIndex === props.rowsCount - 1 && props.showLastRowBorder;
+	      var hasBottomBorder = props.showBorderOnAllRows || rowIndex === props.rowsCount - 1 && props.showLastRowBorder;
 
 	      this._staticRowArray[i] = _React2.default.createElement(_FixedDataTableRow2.default, {
 	        key: rowKey,
@@ -4764,8 +4772,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  render: function render() /*object*/{
 	    var style = {
 	      width: this.props.width,
-	      height: this.props.height + (this.props.hasBottomBorder ? 1 : 0)
+	      height: this.props.height
 	    };
+
+	    var innerHeight = this.props.height - (this.props.hasBottomBorder ? 1 : 0);
 
 	    (0, _FixedDataTableTranslateDOMPosition2.default)(style, 0, this.props.offsetTop, this._initialRender);
 
@@ -4783,7 +4793,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      key: 'fixed_cells',
 	      className: 'fixedDataTable_fixed_cells',
 	      isScrolling: this.props.isScrolling,
-	      height: this.props.height,
+	      height: innerHeight,
 	      left: 0,
 	      width: fixedColumnsWidth,
 	      columns: this.props.fixedColumns,
@@ -4793,7 +4803,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onColumnReorderEnd: this.props.onColumnReorderEnd,
 	      isColumnReordering: this.props.isColumnReordering,
 	      columnReorderingData: this.props.columnReorderingData,
-	      rowHeight: this.props.height,
+	      rowHeight: innerHeight,
 	      rowIndex: this.props.index
 	    });
 	    var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
@@ -4801,7 +4811,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      key: 'scrollable_cells',
 	      className: 'fixedDataTable_scrollable_cells',
 	      isScrolling: this.props.isScrolling,
-	      height: this.props.height,
+	      height: innerHeight,
 	      left: this.props.scrollLeft,
 	      offsetLeft: fixedColumnsWidth,
 	      width: this.props.width - fixedColumnsWidth,
@@ -4812,7 +4822,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      onColumnReorderEnd: this.props.onColumnReorderEnd,
 	      isColumnReordering: this.props.isColumnReordering,
 	      columnReorderingData: this.props.columnReorderingData,
-	      rowHeight: this.props.height,
+	      rowHeight: innerHeight,
 	      rowIndex: this.props.index
 	    });
 	    var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);

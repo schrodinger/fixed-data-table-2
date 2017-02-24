@@ -118,8 +118,10 @@ var FixedDataTableRow = React.createClass({
   render() /*object*/ {
     var style = {
       width: this.props.width,
-      height: this.props.height + (this.props.hasBottomBorder ? 1 : 0),
+      height: this.props.height,
     };
+
+    var innerHeight = this.props.height - (this.props.hasBottomBorder ? 1 : 0);
 
     FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender);
 
@@ -138,7 +140,7 @@ var FixedDataTableRow = React.createClass({
         key="fixed_cells"
         className="fixedDataTable_fixed_cells"
         isScrolling={this.props.isScrolling}
-        height={this.props.height}
+        height={innerHeight}
         left={0}
         width={fixedColumnsWidth}
         columns={this.props.fixedColumns}
@@ -148,7 +150,7 @@ var FixedDataTableRow = React.createClass({
         onColumnReorderEnd={this.props.onColumnReorderEnd}
         isColumnReordering={this.props.isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
-        rowHeight={this.props.height}
+        rowHeight={innerHeight}
         rowIndex={this.props.index}
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
@@ -157,7 +159,7 @@ var FixedDataTableRow = React.createClass({
         key="scrollable_cells"
         className="fixedDataTable_scrollable_cells"
         isScrolling={this.props.isScrolling}
-        height={this.props.height}
+        height={innerHeight}
         left={this.props.scrollLeft}
         offsetLeft={fixedColumnsWidth}
         width={this.props.width - fixedColumnsWidth}
@@ -168,7 +170,7 @@ var FixedDataTableRow = React.createClass({
         onColumnReorderEnd={this.props.onColumnReorderEnd}
         isColumnReordering={this.props.isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
-        rowHeight={this.props.height}
+        rowHeight={innerHeight}
         rowIndex={this.props.index}
       />;
     var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);

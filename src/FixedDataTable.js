@@ -312,6 +312,11 @@ var FixedDataTable = React.createClass({
      * Whether columns are currently being reordered.
      */
     isColumnReordering: PropTypes.bool,
+
+    /**
+     * Whether table is displayed with borders below rows.
+     */
+    showBorderOnAllRows: PropTypes.bool,
   },
 
   getDefaultProps() /*object*/ {
@@ -321,7 +326,8 @@ var FixedDataTable = React.createClass({
       headerHeight: 0,
       showScrollbarX: true,
       showScrollbarY: true,
-      touchScrollEnabled: false
+      touchScrollEnabled: false,
+      showBorderOnAllRows: true,
     };
   },
 
@@ -677,6 +683,7 @@ var FixedDataTable = React.createClass({
         scrollableColumns={state.bodyScrollableColumns}
         showLastRowBorder={true}
         width={state.width}
+        showBorderOnAllRows={state.showBorderOnAllRows}
         rowPositionGetter={this._scrollHelper.getRowPosition}
       />
     );
