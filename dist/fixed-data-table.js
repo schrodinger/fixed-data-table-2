@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.11 
+ * FixedDataTable v0.7.12 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.11';
+	FixedDataTableRoot.version = '0.7.12';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -459,6 +459,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * `rowClassNameGetter(index)` is called.
 	     */
 	    rowClassNameGetter: PropTypes.func,
+
+	    /**
+	     * If specified, `rowKeyGetter(index)` is called for each row and the
+	     * returned value overrides `key` for the particular row.
+	     */
+	    rowKeyGetter: PropTypes.func,
 
 	    /**
 	     * Pixel height of the column group header.
@@ -861,6 +867,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      rowsCount: state.rowsCount,
 	      rowGetter: state.rowGetter,
 	      rowHeightGetter: state.rowHeightGetter,
+	      rowKeyGetter: state.rowKeyGetter,
 	      scrollLeft: state.scrollX,
 	      scrollableColumns: state.bodyScrollableColumns,
 	      showLastRowBorder: true,
@@ -1071,10 +1078,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var groupHeaderHeight = useGroupHeader ? props.groupHeaderHeight : 0;
 
-	    if (oldState && (props.rowsCount !== oldState.rowsCount || props.rowHeight !== oldState.rowHeight)) {
+	    if (oldState && (props.rowsCount !== oldState.rowsCount || props.rowHeight !== oldState.rowHeight || props.height !== oldState.height)) {
 	      // Number of rows changed, try to scroll to the row from before the
 	      // change
 	      var viewportHeight = (props.height === undefined ? props.maxHeight : props.height) - (props.headerHeight || 0) - (props.footerHeight || 0) - (props.groupHeaderHeight || 0);
+
+	      var oldViewportHeight = this._scrollHelper._viewportHeight;
+
 	      this._scrollHelper = new _FixedDataTableScrollHelper2.default(props.rowsCount, props.rowHeight, viewportHeight, props.rowHeightGetter);
 	      scrollState = this._scrollHelper.scrollToRow(firstRowIndex, firstRowOffset);
 	      firstRowIndex = scrollState.index;
@@ -1085,7 +1095,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    var lastScrollToRow = oldState ? oldState.scrollToRow : undefined;
-	    if (props.scrollToRow != null && props.scrollToRow !== lastScrollToRow) {
+	    if (props.scrollToRow != null && (props.scrollToRow !== lastScrollToRow || viewportHeight !== oldViewportHeight)) {
 	      scrollState = this._scrollHelper.scrollRowIntoView(props.scrollToRow);
 	      firstRowIndex = scrollState.index;
 	      firstRowOffset = scrollState.offset;
@@ -3948,6 +3958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    rowClassNameGetter: PropTypes.func,
 	    rowsCount: PropTypes.number.isRequired,
 	    rowHeightGetter: PropTypes.func,
+	    rowKeyGetter: PropTypes.func,
 	    rowPositionGetter: PropTypes.func.isRequired,
 	    scrollLeft: PropTypes.number.isRequired,
 	    scrollableColumns: PropTypes.array.isRequired,
@@ -4021,11 +4032,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var rowIndex = rowsToRender[i];
 	      var currentRowHeight = this._getRowHeight(rowIndex);
 	      var rowOffsetTop = baseOffsetTop + rowPositions[rowIndex];
+	      var rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
 
 	      var hasBottomBorder = rowIndex === props.rowsCount - 1 && props.showLastRowBorder;
 
 	      this._staticRowArray[i] = _React2.default.createElement(_FixedDataTableRow2.default, {
-	        key: i,
+	        key: rowKey,
 	        isScrolling: props.isScrolling,
 	        index: rowIndex,
 	        width: props.width,
