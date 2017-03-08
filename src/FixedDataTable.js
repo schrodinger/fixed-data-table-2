@@ -928,7 +928,7 @@ var FixedDataTable = React.createClass({
         (props.footerHeight || 0) -
         (props.groupHeaderHeight || 0);
 
-    var oldViewportHeight = this._scrollHelper._viewportHeight;
+      var oldViewportHeight = this._scrollHelper._viewportHeight;
 
       this._scrollHelper = new FixedDataTableScrollHelper(
         props.rowsCount,
