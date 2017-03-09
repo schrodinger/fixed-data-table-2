@@ -15,18 +15,8 @@ import ActionTypes from 'ActionTypes'
 import columnStateHelper from 'columnStateHelper'
 
 const DEFAULT_STATE = {
+  columnGroups: [],
   columns: [],
-  columnGroups: undefined,
-  columnInfo: {
-    bodyFixedColumns: [],
-    bodyScrollableColumns: [],
-    headFixedColumns: [],
-    headScrollableColumns: [],
-    footFixedColumns: [],
-    footScrollableColumns: [],
-    groupHeaderFixedColumns: [],
-    groupHeaderScrollableColumns: [],
-  },
   isColumnReordering: false,
   columnReorderingData: {},
   isColumnResizing: false,
@@ -42,20 +32,17 @@ function columnStateReducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
     case ActionTypes.PROP_CHANGE:
     case ActionTypes.INITIALIZE:
-      let { props } = action;
+      const { props, columnData, useGroupHeader } = action;
 
       // TODO (jordan) check if relevant props unchanged and
       // children column widths and flex widths are unchanged
-      // if () {
-      //   return state;
-      // }
-
-      return columnStateHelper.initialize(state, props);
+      // alternatively shallow diff and reconcile props
+      return columnStateHelper.initialize(state, props, columnData, useGroupHeader);
     case ActionTypes.COLUMN_RESIZE:
-      let { resizeData } = action;
+      const { resizeData } = action;
       return columnStateHelper.resizeColumn(state, resizeData);
     case ActionTypes.COLUMN_REORDER:
-      let { reorderData } = action;
+      const { reorderData } = action;
       return columnStateHelper.reorderColumn(state, reorderData);
     case ActionTypes.COLUMN_REORDER_END:
       return Object.assign({}, state, {
@@ -63,10 +50,10 @@ function columnStateReducer(state = DEFAULT_STATE, action) {
         columnReorderingData: {}
       });
     case ActionTypes.COLUMN_REORDER_MOVE:
-      let { deltaX } = action;
+      const { deltaX } = action;
       return columnStateHelper.reorderColumnMove(state, deltaX);
     case ActionTypes.SCROLL_X:
-      let { scrollX } = action;
+      const { scrollX } = action;
       return Object.assign({}, state, {
         scrollX
       });

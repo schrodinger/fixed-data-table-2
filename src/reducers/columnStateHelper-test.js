@@ -2,9 +2,6 @@
  * Copyright Schrodinger, LLC
  */
 
-import FixedDataTableColumn from 'FixedDataTableColumn';
-import FixedDataTableColumnGroup from 'FixedDataTableColumnGroup';
-import React from 'React';
 import columnStateHelper from 'columnStateHelper'
 import emptyFunction from 'emptyFunction';
 import { assert } from 'chai';
@@ -12,12 +9,12 @@ import { assert } from 'chai';
 describe('columnStateHelper', function() {
   describe('resizeColumn', function() {
     it('should return a new object with column resizing data', function() {
-      var oldState = {
+      const oldState = {
         placeholder: true
       };
 
       // --- Run Test ---
-      var result = columnStateHelper.resizeColumn(oldState, {
+      const result = columnStateHelper.resizeColumn(oldState, {
         cellMinWidth: 10,
         cellMaxWidth: 200,
         cellWidth: 150,
@@ -50,19 +47,16 @@ describe('columnStateHelper', function() {
 
   describe('reorderColumn', function() {
     it('should return a new object with column reorder data', function() {
-      var oldState = {
+      const oldState = {
         placeholder: true,
-        columnInfo: {
-          headFixedColumns: [{
-            props: {
-              columnKey: 'col1'
-            }
-          }]
-        }
+        columns: [{
+          columnKey: 'col1',
+          fixed: true
+        }],
       };
 
       // --- Run Test ---
-      var result = columnStateHelper.reorderColumn(oldState, {
+      const result = columnStateHelper.reorderColumn(oldState, {
         columnKey: 'col1',
         left: 20,
         scrollStart: 50,
@@ -72,13 +66,10 @@ describe('columnStateHelper', function() {
       // --- Verify Expectations ---
       assert.deepEqual(result, {
         placeholder: true,
-        columnInfo: {
-          headFixedColumns: [{
-            props: {
-              columnKey: 'col1'
-            }
-          }]
-        },
+        columns: [{
+          columnKey: 'col1',
+          fixed: true
+        }],
         isColumnReordering: true,
         columnReorderingData: {
           dragDistance: 0,
@@ -96,14 +87,14 @@ describe('columnStateHelper', function() {
 
   describe('reorderColumnMove', function() {
     it('should update column reorder data based on new position', function() {
-      var oldState = {
-        columnInfo: {
-          bodyFixedColumns: [{
-            props: {
-              width: 250
-            }
-          }]
-        },
+      const oldState = {
+        columns: [{
+          width: 250,
+          fixed: true
+        }, {
+          width: 90,
+          fixed: false
+        }],
         scrollX: 30,
         maxScrollX: 50,
         width: 550,
@@ -121,17 +112,17 @@ describe('columnStateHelper', function() {
       };
 
       // --- Run Test ---
-      var result = columnStateHelper.reorderColumnMove(oldState, 277);
+      const result = columnStateHelper.reorderColumnMove(oldState, 277);
 
       // --- Verify Expectations ---
       assert.deepEqual(result, {
-        columnInfo: {
-          bodyFixedColumns: [{
-            props: {
-              width: 250
-            }
-          }]
-        },
+        columns: [{
+          width: 250,
+          fixed: true
+        }, {
+          width: 90,
+          fixed: false
+        }],
         scrollX: 45,
         maxScrollX: 50,
         width: 550,
@@ -152,7 +143,7 @@ describe('columnStateHelper', function() {
 
   describe('initialize', function() {
     it('should initialize column state as expected', function() {
-      var oldState = {
+      const oldState = {
         scrollX: 30,
         isColumnReordering: true,
         columnReorderingData: {
@@ -164,41 +155,40 @@ describe('columnStateHelper', function() {
         }
       };
 
-      var children = [
-        React.createElement(FixedDataTableColumn, {
+      const fakeColumnGroups = [{
+        columns: [{
           columnKey: 'fixed1',
           fixed: true,
-          width: 150
-        }),
-        React.createElement(FixedDataTableColumn, {
+          width: 150,
+        }, {
           columnKey: 'fixed2',
           fixed: true,
-          width: 75
-        }),
-        React.createElement(FixedDataTableColumn, {
+          width: 75,
+        }, {
           columnKey: 'scrollable1',
           fixed: false,
-          width: 12
-        }),
-        React.createElement(FixedDataTableColumn, {
+          width: 12,
+        }, {
           columnKey: 'scrollable2',
           fixed: false,
-          width: 200
-        })
-      ];
+          width: 200,
+        }],
+      }];
+
+      const fakeProps = {
+        width: 200,
+        isColumnResizing: true,
+      };
 
       // --- Run Test ---
-      var result = columnStateHelper.initialize(oldState, {
-        children: children,
-        width: 200,
-        isColumnResizing: true
-      });
+      const result = columnStateHelper.initialize(
+        oldState, fakeProps, fakeColumnGroups, false);
 
       // --- Verify Expectations ---
-      var { columns, columnInfo, ...otherResults } = result;
+      const { columns, ...otherResults } = result;
 
       assert.deepEqual(otherResults, {
-        columnGroups: undefined,
+        columnGroups: fakeColumnGroups,
         groupHeaderHeight: 0,
         maxScrollX: 237,
         horizontalScrollbarVisible: true,

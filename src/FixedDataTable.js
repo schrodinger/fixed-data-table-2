@@ -22,13 +22,15 @@ import FixedDataTableBufferedRows from 'FixedDataTableBufferedRows';
 import FixedDataTableColumnResizeHandle from 'FixedDataTableColumnResizeHandle';
 import FixedDataTableRow from 'FixedDataTableRow';
 import FixedDataTableStore from 'FixedDataTableStore';
+import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 import ActionTypes from 'ActionTypes';
+import convertColumnElementsToData from 'convertColumnElementsToData';
 
 import cx from 'cx';
 import debounceCore from 'debounceCore';
+import forEach from 'lodash/forEach';
 import invariant from 'invariant';
 import joinClasses from 'joinClasses';
-import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
 var {PropTypes} = React;
 
@@ -304,14 +306,22 @@ var FixedDataTable = React.createClass({
   },
 
   componentWillMount() {
-    var props = this.props;
+    const props = this.props;
+
+    const {
+      columnGroups,
+      elementTemplates,
+      useGroupHeader,
+    } = convertColumnElementsToData(props);
 
     FixedDataTableStore.dispatch({
       type: ActionTypes.INITIALIZE,
-      props: this.props
+      props: props,
+      columnData: columnGroups,
+      useGroupHeader: useGroupHeader,
     });
 
-    var viewportHeight =
+    const viewportHeight =
       (props.height === undefined ? props.maxHeight : props.height) -
       (props.headerHeight || 0) -
       (props.footerHeight || 0) -
@@ -319,7 +329,7 @@ var FixedDataTable = React.createClass({
 
     this._didScrollStop = debounceCore(this._didScrollStop, 200, this);
 
-    var touchEnabled = props.touchScrollEnabled === true;
+    const touchEnabled = props.touchScrollEnabled === true;
 
     this._wheelHandler = new ReactWheelHandler(
       this._onScroll,
@@ -332,9 +342,9 @@ var FixedDataTable = React.createClass({
       touchEnabled && this._shouldHandleWheelY
     );
 
-    var update = () => {
-      let state = FixedDataTableStore.getState();
-      let {
+    const update = () => {
+      const state = FixedDataTableStore.getState();
+      const {
         firstRowIndex,
         firstRowOffset,
         rows,
@@ -343,7 +353,7 @@ var FixedDataTable = React.createClass({
         scrollY,
       } = state.scrollState;
 
-      let maxScrollY = Math.max(0, scrollContentHeight - this.state.bodyHeight);
+      const maxScrollY = Math.max(0, scrollContentHeight - this.state.bodyHeight);
 
       this.setState({
         firstRowIndex,
@@ -359,7 +369,7 @@ var FixedDataTable = React.createClass({
     FixedDataTableStore.subscribe(update);
     setTimeout(update);
 
-    this.setState(this._calculateState(props));
+    this.setState(this._calculateState(props, undefined, elementTemplates));
   },
 
   _shouldHandleWheelX(/*number*/ delta) /*boolean*/ {
@@ -426,9 +436,17 @@ var FixedDataTable = React.createClass({
       delete nextProps.scrollLeft;
     }
 
+    const {
+      columnGroups,
+      elementTemplates,
+      useGroupHeader,
+    } = convertColumnElementsToData(nextProps);
+
     FixedDataTableStore.dispatch({
       type: ActionTypes.PROP_CHANGE,
-      props: nextProps
+      props: nextProps,
+      columnData: columnGroups,
+      useGroupHeader: useGroupHeader,
     });
 
     var scrollToRow = nextProps.scrollToRow;
@@ -466,7 +484,7 @@ var FixedDataTable = React.createClass({
     }
     this._didScrollStop();
 
-    this.setState(this._calculateState(nextProps, this.state));
+    this.setState(this._calculateState(nextProps, this.state, elementTemplates));
   },
 
   componentDidUpdate() {
@@ -495,8 +513,8 @@ var FixedDataTable = React.createClass({
           zIndex={1}
           offsetTop={0}
           scrollLeft={state.scrollX}
-          fixedColumns={state.groupHeaderFixedColumns}
-          scrollableColumns={state.groupHeaderScrollableColumns}
+          fixedColumns={state.fixedColumnGroups}
+          scrollableColumns={state.scrollableColumnGroups}
           onColumnResize={this._onColumnResize}
           onColumnReorder={onColumnReorder}
           onColumnReorderMove={this._onColumnReorderMove}
@@ -585,8 +603,8 @@ var FixedDataTable = React.createClass({
           index={-1}
           zIndex={1}
           offsetTop={footOffsetTop}
-          fixedColumns={state.footFixedColumns}
-          scrollableColumns={state.footScrollableColumns}
+          fixedColumns={state.fixedColumns.footer}
+          scrollableColumns={state.scrollableColumns.footer}
           scrollLeft={state.scrollX}
         />;
     }
@@ -607,8 +625,8 @@ var FixedDataTable = React.createClass({
         zIndex={1}
         offsetTop={headerOffsetTop}
         scrollLeft={state.scrollX}
-        fixedColumns={state.headFixedColumns}
-        scrollableColumns={state.headScrollableColumns}
+        fixedColumns={state.fixedColumns.header}
+        scrollableColumns={state.scrollableColumns.header}
         onColumnResize={this._onColumnResize}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
@@ -685,7 +703,7 @@ var FixedDataTable = React.createClass({
         defaultRowHeight={state.rowHeight}
         firstRowIndex={state.firstRowIndex}
         firstRowOffset={state.firstRowOffset}
-        fixedColumns={state.bodyFixedColumns}
+        fixedColumns={state.fixedColumns.cell}
         height={state.bodyHeight}
         offsetTop={offsetTop}
         onRowClick={state.onRowClick}
@@ -698,7 +716,7 @@ var FixedDataTable = React.createClass({
         rowGetter={state.rowGetter}
         rowHeightGetter={state.rowHeightGetter}
         scrollLeft={state.scrollX}
-        scrollableColumns={state.bodyScrollableColumns}
+        scrollableColumns={state.scrollableColumns.cell}
         showLastRowBorder={true}
         width={state.width}
         rowsToRender={state.rows}
@@ -786,7 +804,7 @@ var FixedDataTable = React.createClass({
     };
   },
 
-  _calculateState(/*object*/ props, /*?object*/ oldState) /*object*/ {
+  _calculateState(props, oldState, elementTemplates) {
     invariant(
       props.height !== undefined || props.maxHeight !== undefined,
       'You must set either a height or a maxHeight'
@@ -802,7 +820,6 @@ var FixedDataTable = React.createClass({
     let {
       columns,
       columnGroups,
-      columnInfo,
       columnReorderingData,
       columnResizingData,
       groupHeaderHeight,
@@ -847,17 +864,64 @@ var FixedDataTable = React.createClass({
       bodyHeight = totalHeightNeeded - totalHeightReserved;
     }
 
+    // Ugly transforms to extract data into a row consumable format.
+    // TODO (jordan) figure out if this can efficiently be merged with the result of convertColumnElementsToData.
+    // I think if I did that, I'd have to pass the elementTemplates into the reducer
+    const fixedColumnGroups = [];
+    const scrollableColumnGroups = [];
+    forEach(columnGroups, (columnGroup, index) => {
+      const groupData = {
+        props: columnGroup,
+        template: elementTemplates.groupHeader[index],
+      };
+      if (columnGroup.fixed) {
+        fixedColumnGroups.push(groupData);
+      } else {
+        scrollableColumnGroups.push(groupData);
+      }
+    });
+
+    const fixedColumns = {
+      cell: [],
+      header: [],
+      footer: [],
+    };
+    const scrollableColumns = {
+      cell: [],
+      header: [],
+      footer: [],
+    };
+    forEach(columns, (column, index) => {
+      let columnContainer = scrollableColumns;
+      if (column.fixed) {
+        columnContainer = fixedColumns;
+      }
+
+      columnContainer.cell.push({
+        props: column,
+        template: elementTemplates.cell[index],
+      });
+      columnContainer.header.push({
+        props: column,
+        template: elementTemplates.header[index],
+      });
+      columnContainer.footer.push({
+        props: column,
+        template: elementTemplates.footer[index],
+      });
+    });
+
     //TODO
     //this._scrollHelper.setViewportHeight(bodyHeight);
 
     // The order of elements in this object metters and bringing bodyHeight,
     // height or useGroupHeader to the top can break various features
-    var newState = {
-      ...columnInfo,
+    return {
       ...props,
-
-      columns,
-      columnGroups,
+      fixedColumnGroups,
+      scrollableColumnGroups,
+      fixedColumns,
+      scrollableColumns,
       columnResizingData,
       firstRowIndex,
       firstRowOffset,
@@ -870,8 +934,7 @@ var FixedDataTable = React.createClass({
       scrollX,
       scrollY,
 
-      // These properties may overwrite properties defined in
-      // columnInfo and props
+      // These properties may overwrite properties defined in props
       bodyHeight,
       height,
       groupHeaderHeight,
@@ -881,8 +944,6 @@ var FixedDataTable = React.createClass({
       rowHeights: {},
       rows: []
     };
-
-    return newState;
   },
 
   _onScroll(/*number*/ deltaX, /*number*/ deltaY) {
