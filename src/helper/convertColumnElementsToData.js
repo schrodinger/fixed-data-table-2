@@ -39,6 +39,9 @@ function _extractTemplates(elementTemplates, columnElement) {
   elementTemplates.header.push(columnElement.props.header);
 };
 
+/**
+ * Converts React column / column group elements into props and cell rendering templates
+ */
 function convertColumnElementsToData(props) {
   const children = [];
   React.Children.forEach(props.children, (child, index) => {

@@ -36,10 +36,7 @@ function columnStateReducer(state = DEFAULT_STATE, action) {
 
       // TODO (jordan) check if relevant props unchanged and
       // children column widths and flex widths are unchanged
-      // if () {
-      //   return state;
-      // }
-
+      // alternatively shallow diff and reconcile props
       return columnStateHelper.initialize(state, props, columnData, useGroupHeader);
     case ActionTypes.COLUMN_RESIZE:
       const { resizeData } = action;

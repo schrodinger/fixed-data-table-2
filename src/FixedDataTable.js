@@ -864,6 +864,9 @@ var FixedDataTable = React.createClass({
       bodyHeight = totalHeightNeeded - totalHeightReserved;
     }
 
+    // Ugly transforms to extract data into a row consumable format.
+    // TODO (jordan) figure out if this can efficiently be merged with the result of convertColumnElementsToData.
+    // I think if I did that, I'd have to pass the elementTemplates into the reducer
     const fixedColumnGroups = [];
     const scrollableColumnGroups = [];
     forEach(columnGroups, (columnGroup, index) => {
