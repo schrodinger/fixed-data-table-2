@@ -30,14 +30,17 @@ const DEFAULT_STATE = {
 
 function columnStateReducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
-    case ActionTypes.PROP_CHANGE:
     case ActionTypes.INITIALIZE:
-      const { props, columnData, useGroupHeader } = action;
+      let { props, columnData, useGroupHeader } = action;
+      return columnStateHelper.initialize(state, props, columnData, useGroupHeader);
+    case ActionTypes.PROP_CHANGE:
+      const { newProps, columnData, useGroupHeader } = action;
 
       // TODO (jordan) check if relevant props unchanged and
       // children column widths and flex widths are unchanged
       // alternatively shallow diff and reconcile props
-      return columnStateHelper.initialize(state, props, columnData, useGroupHeader);
+      return columnStateHelper.initialize(state, newProps, columnData, useGroupHeader);
+>>>>>>> upstream/v0.8.0-beta
     case ActionTypes.COLUMN_RESIZE:
       const { resizeData } = action;
       return columnStateHelper.resizeColumn(state, resizeData);

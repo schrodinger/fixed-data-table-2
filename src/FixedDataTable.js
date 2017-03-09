@@ -444,7 +444,8 @@ var FixedDataTable = React.createClass({
 
     FixedDataTableStore.dispatch({
       type: ActionTypes.PROP_CHANGE,
-      props: nextProps,
+      newProps: nextProps,
+      oldProps: this.props,
       columnData: columnGroups,
       useGroupHeader: useGroupHeader,
     });
