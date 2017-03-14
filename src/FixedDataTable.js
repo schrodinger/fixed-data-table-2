@@ -273,6 +273,11 @@ var FixedDataTable = React.createClass({
     onRowMouseLeave: PropTypes.func,
 
     /**
+     * Callback that is called when resizer is double clicked.
+     */
+    onColumnResizeDoubleClick: PropTypes.func,
+
+    /**
      * Callback that is called when resizer has been released
      * and column needs to be updated.
      *
@@ -547,7 +552,7 @@ var FixedDataTable = React.createClass({
         leftOffset={state.columnResizingData.left || 0}
         knobHeight={state.headerHeight}
         initialEvent={state.columnResizingData.initialEvent}
-        onColumnResizeEnd={props.onColumnResizeEndCallback}
+        onColumnResizeEnd={this._onColumnResizeEnd}
         columnKey={state.columnResizingData.key}
       />;
 
@@ -703,8 +708,15 @@ var FixedDataTable = React.createClass({
     /*number|string*/ columnKey,
     /*object*/ event
   ) {
+
+    var nowMs = Date.now();
+    if (this.state.lastColumnResizeStart && nowMs - this.state.lastColumnResizeStart < 500) {
+      (this.props.onColumnResizeDoubleClick || emptyFunction)(columnKey);
+    }
+
     this.setState({
       isColumnResizing: true,
+      lastColumnResizeStart: nowMs,
       columnResizingData: {
         left: leftOffset + combinedWidth - cellWidth,
         width: cellWidth,
@@ -718,6 +730,17 @@ var FixedDataTable = React.createClass({
         key: columnKey
       }
     });
+  },
+
+  _onColumnResizeEnd(columnKey, finalWidth, initialWidth) {
+      this.setState({
+        isColumnResizing: false,
+        columnResizingData: {}
+      });
+
+      if (finalWidth != initialWidth) {
+        (this.props.onColumnResizeEndCallback || emptyFunction)(columnKey, finalWidth);
+      }
   },
 
   _onColumnReorder(
@@ -1110,6 +1133,7 @@ var FixedDataTable = React.createClass({
       height,
       groupHeaderHeight,
       useGroupHeader,
+      lastColumnResizeStart: (oldState || {}).lastColumnResizeStart
     };
 
     return newState;

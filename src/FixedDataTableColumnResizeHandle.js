@@ -140,9 +140,15 @@ var FixedDataTableColumnResizeHandle = React.createClass({
   },
 
   _onMove(/*number*/ deltaX) {
+
+    if (deltaX === 0) {
+      return;
+    }
+
     if (Locale.isRTL()) {
       deltaX = -deltaX;
     }
+
     var newWidth = this.state.cursorDelta + deltaX;
     var newColumnWidth =
       clamp(newWidth, this.props.minWidth, this.props.maxWidth);
@@ -158,8 +164,9 @@ var FixedDataTableColumnResizeHandle = React.createClass({
   _onColumnResizeEnd() {
     this._mouseMoveTracker.releaseMouseMoves();
     this.props.onColumnResizeEnd(
+      this.props.columnKey,
       this.state.width,
-      this.props.columnKey
+      this.props.initialWidth
     );
   },
 });

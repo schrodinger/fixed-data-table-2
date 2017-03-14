@@ -546,6 +546,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onRowMouseLeave: PropTypes.func,
 
 	    /**
+	     * Callback that is called when resizer is double clicked.
+	     */
+	    onColumnResizeDoubleClick: PropTypes.func,
+
+	    /**
 	     * Callback that is called when resizer has been released
 	     * and column needs to be updated.
 	     *
@@ -767,7 +772,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      leftOffset: state.columnResizingData.left || 0,
 	      knobHeight: state.headerHeight,
 	      initialEvent: state.columnResizingData.initialEvent,
-	      onColumnResizeEnd: props.onColumnResizeEndCallback,
+	      onColumnResizeEnd: this._onColumnResizeEnd,
 	      columnKey: state.columnResizingData.key
 	    });
 
@@ -897,8 +902,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /*?number*/cellMaxWidth,
 	  /*number|string*/columnKey,
 	  /*object*/event) {
+
+	    var nowMs = Date.now();
+	    if (this.state.lastColumnResizeStart && nowMs - this.state.lastColumnResizeStart < 500) {
+	      (this.props.onColumnResizeDoubleClick || _emptyFunction2.default)(columnKey);
+	    }
+
 	    this.setState({
 	      isColumnResizing: true,
+	      lastColumnResizeStart: nowMs,
 	      columnResizingData: {
 	        left: leftOffset + combinedWidth - cellWidth,
 	        width: cellWidth,
@@ -912,6 +924,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: columnKey
 	      }
 	    });
+	  },
+	  _onColumnResizeEnd: function _onColumnResizeEnd(columnKey, finalWidth, initialWidth) {
+	    this.setState({
+	      isColumnResizing: false,
+	      columnResizingData: {}
+	    });
+
+	    if (finalWidth != initialWidth) {
+	      (this.props.onColumnResizeEndCallback || _emptyFunction2.default)(columnKey, finalWidth);
+	    }
 	  },
 	  _onColumnReorder: function _onColumnReorder(
 	  /*string*/columnKey,
@@ -1235,7 +1257,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      bodyHeight: bodyHeight,
 	      height: height,
 	      groupHeaderHeight: groupHeaderHeight,
-	      useGroupHeader: useGroupHeader
+	      useGroupHeader: useGroupHeader,
+	      lastColumnResizeStart: (oldState || {}).lastColumnResizeStart
 	    });
 
 	    return newState;
@@ -6335,9 +6358,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    );
 	  },
 	  _onMove: function _onMove( /*number*/deltaX) {
+
+	    if (deltaX === 0) {
+	      return;
+	    }
+
 	    if (_Locale2.default.isRTL()) {
 	      deltaX = -deltaX;
 	    }
+
 	    var newWidth = this.state.cursorDelta + deltaX;
 	    var newColumnWidth = (0, _clamp2.default)(newWidth, this.props.minWidth, this.props.maxWidth);
 
@@ -6350,7 +6379,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  _onColumnResizeEnd: function _onColumnResizeEnd() {
 	    this._mouseMoveTracker.releaseMouseMoves();
-	    this.props.onColumnResizeEnd(this.state.width, this.props.columnKey);
+	    this.props.onColumnResizeEnd(this.props.columnKey, this.state.width, this.props.initialWidth);
 	  }
 	});
 
