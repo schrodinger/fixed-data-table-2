@@ -16,6 +16,7 @@ import FixedDataTableHelper from 'FixedDataTableHelper';
 import React from 'React';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
+import shallowEqual from 'shallowEqual';
 
 var DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
@@ -89,10 +90,22 @@ var FixedDataTableCell = React.createClass({
   },
 
   shouldComponentUpdate(nextProps) {
-    return (
-      !nextProps.isScrolling ||
-      this.props.rowIndex !== nextProps.rowIndex
-    );
+    if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
+      return false;
+    }
+
+    let { cell: oldCell, isScrolling: ignore1, ...oldProps } = this.props;
+    let { cell: newCell, isScrolling: ignore2, ...newProps} = nextProps;
+
+    if (!shallowEqual(oldProps, newProps)) {
+      return true;
+    }
+
+    if (!shallowEqual(oldCell.props, newCell.props)) {
+      return true;
+    }
+
+    return false;
   },
 
   componentWillReceiveProps(props) {
