@@ -89,19 +89,16 @@ var FixedDataTableCell = React.createClass({
     };
   },
 
-  shouldComponentUpdate(nextProps) {
-    if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
+  shouldComponentUpdate(newProps) {
+    if (newProps.isScrolling && this.props.rowIndex === newProps.rowIndex) {
       return false;
     }
 
-    let { cell: oldCell, isScrolling: ignore1, ...oldProps } = this.props;
-    let { cell: newCell, isScrolling: ignore2, ...newProps} = nextProps;
-
-    if (!shallowEqual(oldProps, newProps)) {
+    if (!shallowEqual(this.props, newProps, ['cell', 'isScrolling'])) {
       return true;
     }
 
-    if (!shallowEqual(oldCell.props, newCell.props)) {
+    if (!shallowEqual(this.props.cell.props, newProps.cell.props)) {
       return true;
     }
 
