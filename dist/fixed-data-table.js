@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.12 
+ * FixedDataTable v0.7.13 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.12';
+	FixedDataTableRoot.version = '0.7.13';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -5155,7 +5155,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        props = _objectWithoutProperties(_props, ['offsetLeft']);
 
 	    var style = {
-	      height: props.height
+	      height: props.height,
+	      width: props.width
 	    };
 
 	    if (DIR_SIGN === 1) {
