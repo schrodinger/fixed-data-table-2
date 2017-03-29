@@ -83,7 +83,8 @@ var FixedDataTableBufferedRows = React.createClass({
           nextProps.rowsCount,
           nextProps.defaultRowHeight,
           nextProps.height,
-          this._getRowHeight
+          this._getRowHeight,
+          this.props.bufferRowCount
         );
     }
     if (this.props.isScrolling && !nextProps.isScrolling) {
