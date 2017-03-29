@@ -315,3 +315,10 @@ Whether a column is currently being resized.
 
 type: `bool`
 
+
+### `bufferRowCount`
+
+The number of rows outside the viewport to prerender. Defaults to roughly half
+of the number of visible rows.
+
+type: `number`
