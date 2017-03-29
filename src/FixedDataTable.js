@@ -312,6 +312,12 @@ var FixedDataTable = React.createClass({
      * Whether columns are currently being reordered.
      */
     isColumnReordering: PropTypes.bool,
+
+    /**
+     * The number of rows outside the viewport to prerender. Defaults to roughly
+     * half of the number of visible rows.
+     */
+    bufferRowCount: PropTypes.number,
   },
 
   getDefaultProps() /*object*/ {
@@ -678,6 +684,7 @@ var FixedDataTable = React.createClass({
         showLastRowBorder={true}
         width={state.width}
         rowPositionGetter={this._scrollHelper.getRowPosition}
+        bufferRowCount={this.state.bufferRowCount}
       />
     );
   },

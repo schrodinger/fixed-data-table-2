@@ -27,7 +27,8 @@ class FixedDataTableRowBuffer {
     /*number*/ rowsCount,
     /*number*/  defaultRowHeight,
     /*number*/ viewportHeight,
-    /*?function*/ rowHeightGetter
+    /*?function*/ rowHeightGetter,
+    /*?number*/ bufferRowCount
   ) {
     invariant(
       defaultRowHeight !== 0,
@@ -39,7 +40,9 @@ class FixedDataTableRowBuffer {
     this._viewportRowsBegin = 0;
     this._viewportRowsEnd = 0;
     this._maxVisibleRowCount = Math.ceil(viewportHeight / defaultRowHeight) + 1;
-    this._bufferRowsCount = clamp(
+    this._bufferRowsCount = bufferRowCount != null
+    ? bufferRowCount
+    : clamp(
       Math.floor(this._maxVisibleRowCount/2),
       MIN_BUFFER_ROWS,
       MAX_BUFFER_ROWS
