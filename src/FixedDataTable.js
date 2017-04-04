@@ -742,7 +742,8 @@ var FixedDataTable = React.createClass({
   _onColumnReorderMove(
     /*number*/ deltaX
   ) {
-    var reorderingData = this.state.columnReorderingData;
+    //NOTE Need to clone this object when use pureRendering
+    var reorderingData = Object.assign({}, this.state.columnReorderingData);
     reorderingData.dragDistance = deltaX;
     reorderingData.columnBefore = undefined;
     reorderingData.columnAfter = undefined;
