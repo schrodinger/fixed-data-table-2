@@ -94,6 +94,7 @@ class ReorderExample extends React.Component {
             columnKey={columnKey}
             key={i}
             isReorderable={true}
+            pureRendering={true}
             header={<Cell>{columnTitles[columnKey]}</Cell>}
             cell={<TextCell data={dataList} />}
             fixed={fixedColumns.indexOf(columnKey) !== -1}

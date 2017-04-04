@@ -5734,20 +5734,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	      reorderingDisplacement: 0
 	    };
 	  },
-	  shouldComponentUpdate: function shouldComponentUpdate(newProps) {
-	    if (newProps.isScrolling && this.props.rowIndex === newProps.rowIndex) {
+	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
+	    var _props = this.props,
+	        cell = _props.cell,
+	        props = _objectWithoutProperties(_props, ['cell']);
+
+	    var nextCell = nextProps.nextCell,
+	        newProps = _objectWithoutProperties(nextProps, ['nextCell']);
+
+	    if (this.props.rowIndex !== nextProps.rowIndex) {
+	      return true;
+	    }
+
+	    if (nextProps.isScrolling) {
 	      return false;
 	    }
 
-	    if (!(0, _shallowEqual2.default)(this.props, newProps, ['cell', 'isScrolling'])) {
-	      return true;
+	    if ((0, _shallowEqual2.default)(this.props.cell.props, nextProps.cell.props)) {
+	      return false;
 	    }
 
-	    if (!(0, _shallowEqual2.default)(this.props.cell.props, newProps.cell.props)) {
-	      return true;
-	    }
-
-	    return false;
+	    return true;
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps(props) {
 	    var left = props.left + this.state.displacement;
@@ -5822,11 +5829,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return DEFAULT_PROPS;
 	  },
 	  render: function render() /*object*/{
-	    var _props = this.props,
-	        height = _props.height,
-	        width = _props.width,
-	        columnKey = _props.columnKey,
-	        props = _objectWithoutProperties(_props, ['height', 'width', 'columnKey']);
+	    var _props2 = this.props,
+	        height = _props2.height,
+	        width = _props2.width,
+	        columnKey = _props2.columnKey,
+	        props = _objectWithoutProperties(_props2, ['height', 'width', 'columnKey']);
 
 	    var style = {
 	      height: height,
@@ -6274,7 +6281,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-	function shallowEqual(objA, objB, ignoredKeys) {
+	function shallowEqual(objA, objB) {
 	  if (objA === objB) {
 	    return true;
 	  }
@@ -6293,9 +6300,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // Test for A's keys different from B.
 	  var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
 	  for (var i = 0; i < keysA.length; i++) {
-	    if (ignoredKeys && ignoredKeys.indexOf(keysA[i]) !== -1) {
-	      continue;
-	    }
 	    if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
 	      return false;
 	    }

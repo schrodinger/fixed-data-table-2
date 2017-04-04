@@ -18,7 +18,7 @@
  * when any key has values which are not strictly equal between the arguments.
  * Returns true when the values of all keys are strictly equal.
  */
-function shallowEqual(objA: mixed, objB: mixed, ignoredKeys): boolean {
+function shallowEqual(objA: mixed, objB: mixed): boolean {
   if (objA === objB) {
     return true;
   }
@@ -38,9 +38,6 @@ function shallowEqual(objA: mixed, objB: mixed, ignoredKeys): boolean {
   // Test for A's keys different from B.
   var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
   for (var i = 0; i < keysA.length; i++) {
-    if (ignoredKeys && ignoredKeys.indexOf(keysA[i]) !== -1) {
-      continue;
-    }
     if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
       return false;
     }

@@ -79,6 +79,11 @@ var FixedDataTableCell = React.createClass({
      * The left offset in pixels of the cell.
      */
     left: PropTypes.number,
+
+    /**
+     * Flag for enhanced performance check
+     */
+    pureRendering: PropTypes.bool,
   },
 
   getInitialState() {
@@ -89,16 +94,28 @@ var FixedDataTableCell = React.createClass({
     };
   },
 
-  shouldComponentUpdate(newProps) {
-    if (newProps.isScrolling && this.props.rowIndex === newProps.rowIndex) {
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
       return false;
     }
 
-    if (!shallowEqual(this.props, newProps, ['cell', 'isScrolling'])) {
+    //Performance check not enabled
+    if (!nextProps.pureRendering) {
       return true;
     }
 
-    if (!shallowEqual(this.props.cell.props, newProps.cell.props)) {
+    const { cell: oldCell, isScrolling: oldIsScrolling, ...oldProps } = this.props;
+    const { cell: newCell, isScrolling: newIsScrolling, ...newProps } = nextProps;
+
+    if (!shallowEqual(oldProps, newProps)) {
+      return true;
+    }
+
+    if (!oldCell || !newCell || oldCell.type !== newCell.type) {
+      return true;
+    }
+
+    if (!shallowEqual(oldCell.props, newCell.props)) {
       return true;
     }
 
