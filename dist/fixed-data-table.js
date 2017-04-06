@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.13 
+ * FixedDataTable v0.7.14 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.13';
+	FixedDataTableRoot.version = '0.7.14';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -256,7 +256,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _FixedDataTableBufferedRows2 = _interopRequireDefault(_FixedDataTableBufferedRows);
 
-	var _FixedDataTableColumnResizeHandle = __webpack_require__(71);
+	var _FixedDataTableColumnResizeHandle = __webpack_require__(72);
 
 	var _FixedDataTableColumnResizeHandle2 = _interopRequireDefault(_FixedDataTableColumnResizeHandle);
 
@@ -264,11 +264,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _FixedDataTableRow2 = _interopRequireDefault(_FixedDataTableRow);
 
-	var _FixedDataTableScrollHelper = __webpack_require__(72);
+	var _FixedDataTableScrollHelper = __webpack_require__(73);
 
 	var _FixedDataTableScrollHelper2 = _interopRequireDefault(_FixedDataTableScrollHelper);
 
-	var _FixedDataTableWidthHelper = __webpack_require__(74);
+	var _FixedDataTableWidthHelper = __webpack_require__(75);
 
 	var _FixedDataTableWidthHelper2 = _interopRequireDefault(_FixedDataTableWidthHelper);
 
@@ -276,7 +276,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _cx2 = _interopRequireDefault(_cx);
 
-	var _debounceCore = __webpack_require__(75);
+	var _debounceCore = __webpack_require__(76);
 
 	var _debounceCore2 = _interopRequireDefault(_debounceCore);
 
@@ -292,7 +292,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _joinClasses2 = _interopRequireDefault(_joinClasses);
 
-	var _shallowEqual = __webpack_require__(76);
+	var _shallowEqual = __webpack_require__(71);
 
 	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
@@ -932,7 +932,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  _onColumnReorderMove: function _onColumnReorderMove(
 	  /*number*/deltaX) {
-	    var reorderingData = this.state.columnReorderingData;
+	    //NOTE Need to clone this object when use pureRendering
+	    var reorderingData = _extends({}, this.state.columnReorderingData);
 	    reorderingData.dragDistance = deltaX;
 	    reorderingData.columnBefore = undefined;
 	    reorderingData.columnAfter = undefined;
@@ -5084,6 +5085,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var onColumnReorder = cellIsReorderable ? this.props.onColumnReorder : null;
 
 	    var className = columnProps.cellClassName;
+	    var pureRendering = columnProps.pureRendering || false;
+
 	    return _React2.default.createElement(_FixedDataTableCell2.default, {
 	      isScrolling: this.props.isScrolling,
 	      align: columnProps.align,
@@ -5103,7 +5106,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      width: columnProps.width,
 	      left: left,
 	      cell: columnProps.cell,
-	      columnGroupWidth: columnGroupWidth
+	      columnGroupWidth: columnGroupWidth,
+	      pureRendering: pureRendering
 	    });
 	  },
 	  _getColumnsWidth: function _getColumnsWidth( /*array*/columns) /*number*/{
@@ -5600,7 +5604,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Setting the property to false will keep previous behaviour and keep
 	     * cell rendered if the row it belongs to is visible.
 	     */
-	    allowCellsRecycling: PropTypes.bool
+	    allowCellsRecycling: PropTypes.bool,
+
+	    /**
+	     * Flag to enable performance check when rendering. Stops the component from
+	     * rendering if none of it's passed in props have changed
+	     */
+	    pureRendering: PropTypes.bool
 	  },
 
 	  getDefaultProps: function getDefaultProps() /*object*/{
@@ -5650,6 +5660,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _joinClasses = __webpack_require__(69);
 
 	var _joinClasses2 = _interopRequireDefault(_joinClasses);
+
+	var _shallowEqual = __webpack_require__(71);
+
+	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5721,7 +5735,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * The left offset in pixels of the cell.
 	     */
-	    left: PropTypes.number
+	    left: PropTypes.number,
+
+	    /**
+	     * Flag for enhanced performance check
+	     */
+	    pureRendering: PropTypes.bool
 	  },
 
 	  getInitialState: function getInitialState() {
@@ -5732,7 +5751,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  },
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
-	    return !nextProps.isScrolling || this.props.rowIndex !== nextProps.rowIndex;
+	    if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
+	      return false;
+	    }
+
+	    //Performance check not enabled
+	    if (!nextProps.pureRendering) {
+	      return true;
+	    }
+
+	    var _props = this.props,
+	        oldCell = _props.cell,
+	        oldIsScrolling = _props.isScrolling,
+	        oldProps = _objectWithoutProperties(_props, ['cell', 'isScrolling']);
+
+	    var newCell = nextProps.cell,
+	        newIsScrolling = nextProps.isScrolling,
+	        newProps = _objectWithoutProperties(nextProps, ['cell', 'isScrolling']);
+
+	    if (!(0, _shallowEqual2.default)(oldProps, newProps)) {
+	      return true;
+	    }
+
+	    if (!oldCell || !newCell || oldCell.type !== newCell.type) {
+	      return true;
+	    }
+
+	    if (!(0, _shallowEqual2.default)(oldCell.props, newCell.props)) {
+	      return true;
+	    }
+
+	    return false;
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps(props) {
 	    var left = props.left + this.state.displacement;
@@ -5807,11 +5856,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return DEFAULT_PROPS;
 	  },
 	  render: function render() /*object*/{
-	    var _props = this.props,
-	        height = _props.height,
-	        width = _props.width,
-	        columnKey = _props.columnKey,
-	        props = _objectWithoutProperties(_props, ['height', 'width', 'columnKey']);
+	    var _props2 = this.props,
+	        height = _props2.height,
+	        width = _props2.width,
+	        columnKey = _props2.columnKey,
+	        props = _objectWithoutProperties(_props2, ['height', 'width', 'columnKey']);
 
 	    var style = {
 	      height: height,
@@ -6234,6 +6283,62 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 71 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright Schrodinger, LLC
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule shallowEqual
+	 * @typechecks
+	 * 
+	 */
+
+	'use strict';
+
+	/**
+	 * Performs equality by iterating through keys on an object and returning false
+	 * when any key has values which are not strictly equal between the arguments.
+	 * Returns true when the values of all keys are strictly equal.
+	 */
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	function shallowEqual(objA, objB) {
+	  if (objA === objB) {
+	    return true;
+	  }
+
+	  if ((typeof objA === 'undefined' ? 'undefined' : _typeof(objA)) !== 'object' || objA === null || (typeof objB === 'undefined' ? 'undefined' : _typeof(objB)) !== 'object' || objB === null) {
+	    return false;
+	  }
+
+	  var keysA = Object.keys(objA);
+	  var keysB = Object.keys(objB);
+
+	  if (keysA.length !== keysB.length) {
+	    return false;
+	  }
+
+	  // Test for A's keys different from B.
+	  var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
+	  for (var i = 0; i < keysA.length; i++) {
+	    if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
+	      return false;
+	    }
+	  }
+
+	  return true;
+	}
+
+	module.exports = shallowEqual;
+
+/***/ },
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -6411,7 +6516,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = FixedDataTableColumnResizeHandle;
 
 /***/ },
-/* 72 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -6430,7 +6535,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _PrefixIntervalTree = __webpack_require__(73);
+	var _PrefixIntervalTree = __webpack_require__(74);
 
 	var _PrefixIntervalTree2 = _interopRequireDefault(_PrefixIntervalTree);
 
@@ -6725,7 +6830,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = FixedDataTableScrollHelper;
 
 /***/ },
-/* 73 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -7009,7 +7114,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 74 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -7151,7 +7256,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = FixedDataTableWidthHelper;
 
 /***/ },
-/* 75 */
+/* 76 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -7221,62 +7326,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	module.exports = debounce;
-
-/***/ },
-/* 76 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright Schrodinger, LLC
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule shallowEqual
-	 * @typechecks
-	 * 
-	 */
-
-	'use strict';
-
-	/**
-	 * Performs equality by iterating through keys on an object and returning false
-	 * when any key has values which are not strictly equal between the arguments.
-	 * Returns true when the values of all keys are strictly equal.
-	 */
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-	function shallowEqual(objA, objB) {
-	  if (objA === objB) {
-	    return true;
-	  }
-
-	  if ((typeof objA === 'undefined' ? 'undefined' : _typeof(objA)) !== 'object' || objA === null || (typeof objB === 'undefined' ? 'undefined' : _typeof(objB)) !== 'object' || objB === null) {
-	    return false;
-	  }
-
-	  var keysA = Object.keys(objA);
-	  var keysB = Object.keys(objB);
-
-	  if (keysA.length !== keysB.length) {
-	    return false;
-	  }
-
-	  // Test for A's keys different from B.
-	  var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
-	  for (var i = 0; i < keysA.length; i++) {
-	    if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
-	      return false;
-	    }
-	  }
-
-	  return true;
-	}
-
-	module.exports = shallowEqual;
 
 /***/ }
 /******/ ])
