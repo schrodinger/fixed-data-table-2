@@ -314,4 +314,3 @@ type: `func`
 Whether a column is currently being resized.
 
 type: `bool`
-
