@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule scrollStateReducer
+ * @providesModule scrollState
  */
 
 'use strict';
 
 import IntegerBufferSet from 'IntegerBufferSet';
-import ActionTypes from 'ActionTypes'
+import * as ActionTypes from 'ActionTypes'
 import isNil from 'lodash/isnil';
 import {
   scrollBy,
@@ -46,7 +46,7 @@ const DEFAULT_STATE = {
   maxScrollY: 0
 };
 
-function scrollStateReducer(state = DEFAULT_STATE, action) {
+function scrollState(state = DEFAULT_STATE, action) {
   switch (action.type) {
     case ActionTypes.INITIALIZE:
       let { props } = action;
@@ -81,8 +81,7 @@ function scrollStateReducer(state = DEFAULT_STATE, action) {
       }
 
       return state;
-
-    case ActionTypes.SCROLL_BY:
+    case ActionTypes.SCROLL_DELTA_Y:
       let { deltaY } = action;
 
       var state = scrollBy(state, deltaY);
@@ -104,10 +103,10 @@ function scrollStateReducer(state = DEFAULT_STATE, action) {
 
       return state;
 
-    case ActionTypes.SCROLL_TO:
-      let { scrollPosition } = action;
+    case ActionTypes.SCROLL_TO_Y:
+      let { scrollY } = action;
 
-      var state = scrollTo(state, scrollPosition);
+      var state = scrollTo(state, scrollY);
       state = updateVisibleRows(state);
 
       return state;
@@ -117,4 +116,4 @@ function scrollStateReducer(state = DEFAULT_STATE, action) {
   }
 }
 
-module.exports = scrollStateReducer;
+module.exports = scrollState;

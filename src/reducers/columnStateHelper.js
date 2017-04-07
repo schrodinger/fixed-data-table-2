@@ -29,7 +29,7 @@ var DRAG_SCROLL_BUFFER = 100;
  * @param {boolean} useGroupHeader
  * @return {!Object}
  */
-function initialize(oldState, props, columnGroups, useGroupHeader) {
+function initialize(oldState, props, columnGroups, useGroupHeader, elementTemplates) {
   scrollX = oldState ? oldState.scrollX : 0;
   if (props.scrollLeft !== undefined) {
     scrollX = props.scrollLeft;
@@ -95,6 +95,7 @@ function initialize(oldState, props, columnGroups, useGroupHeader) {
     props.isColumnResizing : oldState && oldState.isColumnResizing;
 
   return Object.assign({}, oldState, {
+    elementTemplates,
     columnGroups,
     columnResizingData,
     columns,

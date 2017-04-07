@@ -12,8 +12,12 @@
 'use strict';
 
 import reducers from 'reducers'
-import { createStore } from 'redux'
+import thunk from 'redux-thunk';
+import { createStore, applyMiddleware } from 'redux'
 
-const store = createStore(reducers);
+const store = createStore(
+  reducers,
+  applyMiddleware(thunk)
+);
 
 module.exports = store;
