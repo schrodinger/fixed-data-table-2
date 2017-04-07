@@ -92,6 +92,11 @@ Browser Support
 
 ###### * Safari may function correct, but we are not actively testing with it
 
+Discussion
+------------
+
+Join our [discord server](https://discord.gg/bPSWD73)
+
 <a name="contributions"/> 
 
 Contributions
