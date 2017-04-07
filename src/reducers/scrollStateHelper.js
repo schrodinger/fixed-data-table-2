@@ -304,7 +304,7 @@ export function scrollBy(state, deltaY) {
   if (deltaY >= 0) {
     while (deltaY > 0 && rowIndex < rowsCount) {
       if (deltaY < visibleRowHeight) {
-        scrollY += deltaY;
+        scrollY += deltaY;https://img.memesuper.com/7429b20b3c2b541b91e22329268b3d80_http-iimgurcom-llxcowmjpg-ancient-aliens-giorgio-meme_1280-1120.jpeg
         deltaY = 0;
       } else {
         deltaY -= visibleRowHeight;
@@ -350,13 +350,13 @@ export function scrollBy(state, deltaY) {
   //TODO (asif) Uncomment this line when bodyHeight is included in state
   //let maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
 
-  return Object.assign({}, state, {
+  return  {
     scrollY,
     firstRowIndex,
     firstRowOffset,
     scrollContentHeight,
-    //maxScrollY,
-  });
+    //maxScrollY
+  };
 }
 
 

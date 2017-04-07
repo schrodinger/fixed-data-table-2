@@ -26,6 +26,11 @@ import {
   updateVisibleRows
 } from 'scrollStateHelper';
 
+import {
+  UPDATE_SCROLL_POSITION, 
+  UPDATE_VISIBLE_ROWS,
+} from 'scrollActions';
+
 const DEFAULT_STATE = {
   rowsCount: 0,
   rowHeightGetter: () => 0,
@@ -48,6 +53,30 @@ const DEFAULT_STATE = {
 
 function scrollState(state = DEFAULT_STATE, action) {
   switch (action.type) {
+    case UPDATE_SCROLL_POSITION: {
+      const {
+        firstRowIndex,
+        firstRowOffset,
+        scrollContentHeight,
+        scrollY,
+      } = action;
+
+      return {
+        ...state,
+        firstRowIndex,
+        firstRowOffset,
+        scrollContentHeight,
+        scrollY,
+      }
+    }
+    case UPDATE_VISIBLE_ROWS: {
+      const { rows } = action;
+    
+      return {
+        ...state,
+        rows,
+      }
+    }
     case ActionTypes.INITIALIZE:
       let { props } = action;
       state = updateRowCount(state, props);
@@ -81,27 +110,16 @@ function scrollState(state = DEFAULT_STATE, action) {
       }
 
       return state;
-    case ActionTypes.SCROLL_DELTA_Y:
-      let { deltaY } = action;
-
-      var state = scrollBy(state, deltaY);
-      state = updateVisibleRows(state);
-
-      return state;
-
     case ActionTypes.SCROLL_END:
-
-      var state = scrollEnd(state);
-      state = updateVisibleRows(state);
-
-      return state;
-
+      return {
+        ...state,
+        scrolling: false,
+      };
     case ActionTypes.SCROLL_START:
-
-      var state = scrollStart(state);
-      state = updateVisibleRows(state);
-
-      return state;
+      return {
+        ...state,
+        scrolling: true,
+      };
 
     case ActionTypes.SCROLL_TO_Y:
       let { scrollY } = action;
