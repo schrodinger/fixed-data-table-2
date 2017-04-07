@@ -304,7 +304,7 @@ export function scrollBy(state, deltaY) {
   if (deltaY >= 0) {
     while (deltaY > 0 && rowIndex < rowsCount) {
       if (deltaY < visibleRowHeight) {
-        scrollY += deltaY;https://img.memesuper.com/7429b20b3c2b541b91e22329268b3d80_http-iimgurcom-llxcowmjpg-ancient-aliens-giorgio-meme_1280-1120.jpeg
+        scrollY += deltaY;
         deltaY = 0;
       } else {
         deltaY -= visibleRowHeight;
@@ -431,26 +431,6 @@ export function scrollToRow(state, rowIndex) {
     return scrollTo(state, position);
   }
   return scrollTo(state, scrollY);
-};
-
-/**
- * @param {!Object} state
- * @return {!Object}
- */
-export function scrollEnd(state) {
-  return Object.assign({}, state, {
-    scrolling: false
-  });
-};
-
-/**
- * @param {!Object} state
- * @return {!Object}
- */
-export function scrollStart(state) {
-  return Object.assign({}, state, {
-    scrolling: true
-  });
 };
 
 /**
