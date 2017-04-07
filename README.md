@@ -92,7 +92,8 @@ Browser Support
 
 ###### * Safari may function correct, but we are not actively testing with it
 
-<a name="contributions"/>
+<a name="contributions"/> 
+
 Contributions
 ------------
 
