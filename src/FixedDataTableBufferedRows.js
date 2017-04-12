@@ -11,6 +11,8 @@
  */
 
 import React from 'React';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 import FixedDataTableRowBuffer from 'FixedDataTableRowBuffer';
 import FixedDataTableRow from 'FixedDataTableRow';
 
@@ -18,9 +20,8 @@ import cx from 'cx';
 import emptyFunction from 'emptyFunction';
 import joinClasses from 'joinClasses';
 
-var {PropTypes} = React;
-
-var FixedDataTableBufferedRows = React.createClass({
+var FixedDataTableBufferedRows = createReactClass({
+  displayName: 'FixedDataTableBufferedRows',
 
   propTypes: {
     bufferRowCount: PropTypes.number,

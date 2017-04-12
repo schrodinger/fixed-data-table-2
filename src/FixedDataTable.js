@@ -14,6 +14,8 @@
 /*eslint no-bitwise:1*/
 
 import React from 'React';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
 import ReactWheelHandler from 'ReactWheelHandler';
 import ReactTouchHandler from 'ReactTouchHandler';
@@ -32,7 +34,6 @@ import joinClasses from 'joinClasses';
 import shallowEqual from 'shallowEqual';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
-var {PropTypes} = React;
 var ReactChildren = React.Children;
 
 var EMPTY_OBJECT = {};
@@ -89,7 +90,8 @@ var DRAG_SCROLL_BUFFER = 100;
  * - Scrollable Body Columns: The body columns that move while scrolling
  *   vertically or horizontally.
  */
-var FixedDataTable = React.createClass({
+var FixedDataTable = createReactClass({
+  displayName: 'FixedDataTable',
 
   propTypes: {
 
@@ -1245,8 +1247,10 @@ var FixedDataTable = React.createClass({
   },
 });
 
-var HorizontalScrollbar = React.createClass({
+var HorizontalScrollbar = createReactClass({
+  displayName: 'HorizontalScrollbar',
   mixins: [ReactComponentWithPureRenderMixin],
+
   propTypes: {
     contentSize: PropTypes.number.isRequired,
     offset: PropTypes.number.isRequired,
