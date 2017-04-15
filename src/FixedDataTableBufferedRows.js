@@ -101,7 +101,7 @@ var FixedDataTableBufferedRows = createReactClass({
   },
 
   _updateBuffer() {
-    if (this.isMounted()) {
+    if (this._rowBuffer) {
       this.setState({
         rowsToRender: this._rowBuffer.getRowsWithUpdatedBuffer(),
       });
@@ -114,6 +114,7 @@ var FixedDataTableBufferedRows = createReactClass({
   },
 
   componentWillUnmount() {
+    this._rowBuffer = null;
     this._staticRowArray.length = 0;
   },
 

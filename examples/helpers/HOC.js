@@ -1,6 +1,7 @@
 "use strict";
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import except from 'except';
 import examplePropTypes from './examplePropTypes';
 
@@ -56,7 +57,7 @@ function DataCtxt(Wrapped) {
 
   ContextClass.childContextTypes = {
     data: examplePropTypes.CtxtDataListStore,
-    version: React.PropTypes.number,
+    version: PropTypes.number,
   };
 
   ContextClass.propTypes = {
@@ -183,7 +184,7 @@ function AddFilter(TableComponent) {
 
   FilterTable.propTypes = {
     data: examplePropTypes.CtxtDataListStore,
-    children: React.PropTypes.node,
+    children: PropTypes.node,
     filters: examplePropTypes.FilterObject
   };
 
