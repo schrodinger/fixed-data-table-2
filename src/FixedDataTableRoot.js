@@ -11,7 +11,7 @@
 
 'use strict';
 
-import FixedDataTable from 'FixedDataTable';
+import FixedDataTableContainer from 'FixedDataTableContainer';
 import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import FixedDataTableColumn from 'FixedDataTableColumn';
 import FixedDataTableColumnGroup from 'FixedDataTableColumnGroup';
@@ -20,7 +20,7 @@ var FixedDataTableRoot = {
   Cell: FixedDataTableCellDefault,
   Column: FixedDataTableColumn,
   ColumnGroup: FixedDataTableColumnGroup,
-  Table: FixedDataTable,
+  Table: FixedDataTableContainer,
 };
 
 FixedDataTableRoot.version = '0.7.7';

@@ -6,13 +6,14 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule columnStateReducer
+ * @providesModule columnState
  */
 
 'use strict';
 
-import ActionTypes from 'ActionTypes'
+import * as ActionTypes from 'ActionTypes'
 import columnStateHelper from 'columnStateHelper'
+import convertColumnElementsToData from 'convertColumnElementsToData';
 
 const DEFAULT_STATE = {
   columnGroups: [],
@@ -28,23 +29,35 @@ const DEFAULT_STATE = {
   useGroupHeader: false,
 };
 
-function columnStateReducer(state = DEFAULT_STATE, action) {
+function columnState(state = DEFAULT_STATE, action) {
   switch (action.type) {
-    case ActionTypes.INITIALIZE:
-      let { props, columnData, useGroupHeader } = action;
-      return columnStateHelper.initialize(state, props, columnData, useGroupHeader);
-    case ActionTypes.PROP_CHANGE:
-      const { newProps, columnData, useGroupHeader } = action;
+    case ActionTypes.INITIALIZE: {
+      const { props } = action;
+      const {
+        columnGroups,
+        elementTemplates,
+        useGroupHeader,
+      } = convertColumnElementsToData(props);
+
+      return columnStateHelper.initialize(state, props, columnGroups, useGroupHeader, elementTemplates);
+    }
+    case ActionTypes.PROP_CHANGE: {
+      const { newProps } = action;
+      const {
+        columnGroups,
+        elementTemplates,
+        useGroupHeader,
+      } = convertColumnElementsToData(newProps);
 
       // TODO (jordan) check if relevant props unchanged and
       // children column widths and flex widths are unchanged
       // alternatively shallow diff and reconcile props
-      return columnStateHelper.initialize(state, newProps, columnData, useGroupHeader);
->>>>>>> upstream/v0.8.0-beta
+      return columnStateHelper.initialize(state, newProps, columnGroups, useGroupHeader, elementTemplates);
+    }
     case ActionTypes.COLUMN_RESIZE:
       const { resizeData } = action;
       return columnStateHelper.resizeColumn(state, resizeData);
-    case ActionTypes.COLUMN_REORDER:
+    case ActionTypes.COLUMN_REORDER_START:
       const { reorderData } = action;
       return columnStateHelper.reorderColumn(state, reorderData);
     case ActionTypes.COLUMN_REORDER_END:
@@ -55,7 +68,7 @@ function columnStateReducer(state = DEFAULT_STATE, action) {
     case ActionTypes.COLUMN_REORDER_MOVE:
       const { deltaX } = action;
       return columnStateHelper.reorderColumnMove(state, deltaX);
-    case ActionTypes.SCROLL_X:
+    case ActionTypes.SCROLL_TO_X:
       const { scrollX } = action;
       return Object.assign({}, state, {
         scrollX
@@ -65,4 +78,4 @@ function columnStateReducer(state = DEFAULT_STATE, action) {
   }
 }
 
-module.exports = columnStateReducer;
+module.exports = columnState;
