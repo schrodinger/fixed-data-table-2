@@ -22,6 +22,33 @@ function getTotalWidth(/*array*/ columns) /*number*/ {
   return totalWidth;
 }
 
+function getMaxVisibleColumns(/*array*/ columns, /*number*/ width) /*number*/ {
+  var maxColumns = 0;
+  var currentWidth = 0;
+
+  var scrollableColumns = columns.filter(function(column) {
+    var fixed = column.props.fixed;
+    if (fixed) {
+      width -= column.props.width;
+    }
+    return !fixed;
+  });
+
+  var first = 0;
+  for (var i = 0; i < scrollableColumns.length; ++i) {
+    var columnWidth = scrollableColumns[i].props.width
+    var firstColumnWidth = scrollableColumns[first].props.width;
+    while (currentWidth - firstColumnWidth - 1 > width) {
+      currentWidth -= scrollableColumns[first++].props.width;
+    }
+    currentWidth += columnWidth;
+    maxColumns = Math.max(maxColumns, i - first + 1);
+  }
+
+  //Max columns that will fit on screen
+  return maxColumns;
+}
+
 function getTotalFlexGrow(/*array*/ columns) /*number*/ {
   var totalFlexGrow = 0;
   for (var i = 0; i < columns.length; ++i) {
@@ -146,6 +173,7 @@ function adjustColumnWidths(
 
 var FixedDataTableWidthHelper = {
   getTotalWidth,
+  getMaxVisibleColumns,
   getTotalFlexGrow,
   distributeFlexWidth,
   adjustColumnWidths,

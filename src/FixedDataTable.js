@@ -486,6 +486,7 @@ var FixedDataTable = React.createClass({
           scrollLeft={state.scrollX}
           fixedColumns={state.groupHeaderFixedColumns}
           scrollableColumns={state.groupHeaderScrollableColumns}
+          maxVisibleColumns={state.maxVisibleColumns}
           onColumnResize={this._onColumnResize}
           onColumnReorder={onColumnReorder}
           onColumnReorderMove={this._onColumnReorderMove}
@@ -573,6 +574,7 @@ var FixedDataTable = React.createClass({
           height={state.footerHeight}
           index={-1}
           zIndex={1}
+          maxVisibleColumns={state.maxVisibleColumns}
           offsetTop={footOffsetTop}
           fixedColumns={state.footFixedColumns}
           scrollableColumns={state.footScrollableColumns}
@@ -598,6 +600,7 @@ var FixedDataTable = React.createClass({
         scrollLeft={state.scrollX}
         fixedColumns={state.headFixedColumns}
         scrollableColumns={state.headScrollableColumns}
+        maxVisibleColumns={state.maxVisibleColumns}
         onColumnResize={this._onColumnResize}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
@@ -676,6 +679,7 @@ var FixedDataTable = React.createClass({
         firstRowOffset={state.firstRowOffset}
         fixedColumns={state.bodyFixedColumns}
         height={state.bodyHeight}
+        maxVisibleColumns={state.maxVisibleColumns}
         offsetTop={offsetTop}
         onRowClick={state.onRowClick}
         onRowDoubleClick={state.onRowDoubleClick}
@@ -1054,8 +1058,8 @@ var FixedDataTable = React.createClass({
     var bodyHeight = height - totalHeightReserved;
     var scrollContentHeight = this._scrollHelper.getContentHeight();
     var totalHeightNeeded = scrollContentHeight + totalHeightReserved;
-    var scrollContentWidth =
-      FixedDataTableWidthHelper.getTotalWidth(columns);
+    var scrollContentWidth = FixedDataTableWidthHelper.getTotalWidth(columns);
+    var maxVisibleColumns = FixedDataTableWidthHelper.getMaxVisibleColumns(columns, props.width);
 
     var horizontalScrollbarVisible = scrollContentWidth > props.width &&
       props.overflowX !== 'hidden' && props.showScrollbarX !== false;
@@ -1112,6 +1116,7 @@ var FixedDataTable = React.createClass({
       horizontalScrollbarVisible,
       maxScrollX,
       maxScrollY,
+      maxVisibleColumns,
       reservedHeight: totalHeightReserved,
       scrollContentHeight,
       scrollX,
