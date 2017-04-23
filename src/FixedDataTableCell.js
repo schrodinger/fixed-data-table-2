@@ -228,7 +228,7 @@ var FixedDataTableCell = React.createClass({
       style.zIndex = 1;
     }
 
-    FixedDataTableTranslateDOMPosition(style, DIR_SIGN * props.left, 0, false); //TODO
+    FixedDataTableTranslateDOMPosition(style, DIR_SIGN * props.left, 0, false);
 
     var className = joinClasses(
       cx({
