@@ -468,13 +468,16 @@ var Scrollbar = createReactClass({
   },
 
   _blur() {
-    if (this.isMounted()) {
-      try {
-        this._onBlur();
-        ReactDOM.findDOMNode(this).blur();
-      } catch (oops) {
-        // pass
-      }
+    var el = ReactDOM.findDOMNode(this);
+    if (!el) {
+      return;
+    }
+
+    try {
+      this._onBlur();
+      el.blur();
+    } catch (oops) {
+      // pass
     }
   },
 
