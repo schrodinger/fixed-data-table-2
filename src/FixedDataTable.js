@@ -367,7 +367,7 @@ var FixedDataTable = createReactClass({
     this._touchHandler = new ReactTouchHandler(
       this._onScroll,
       this._shouldHandleTouchX,
-      this._shouldHandleTouchY
+      this._shouldHandleTouchY,
       props.stopScrollPropagation
     );
 
