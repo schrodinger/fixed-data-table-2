@@ -14,20 +14,21 @@ import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
 import FixedDataTableHelper from 'FixedDataTableHelper';
 import React from 'React';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
 import shallowEqual from 'shallowEqual';
 
 var DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
-var {PropTypes} = React;
-
 var DEFAULT_PROPS = {
   align: 'left',
   highlighted: false,
 };
 
-var FixedDataTableCell = React.createClass({
+var FixedDataTableCell = createReactClass({
+  displayName: 'FixedDataTableCell',
 
   /**
    * PropTypes are disabled in this component, because having them on slows

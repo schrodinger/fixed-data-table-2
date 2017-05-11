@@ -36,23 +36,23 @@ function getPageForLocation(pages, location) {
   return null;
 }
 
-var IndexPage = React.createClass({
-  statics: {
-    getDoctype() {
-      return '<!doctype html>';
-    },
+class IndexPage extends React.Component {
+  static getDoctype() {
+    return '<!doctype html>';
+  }
 
-    renderToString(props) {
-      return IndexPage.getDoctype() +
-        ReactDOMServer.renderToString(<IndexPage {...props} />);
-    },
-  },
+  static renderToString(props) {
+    return IndexPage.getDoctype() +
+      ReactDOMServer.renderToString(<IndexPage {...props} />);
+  }
 
-  getInitialState() {
-    return {
+  constructor(props) {
+    super(props);
+
+    this.state = {
       renderPage: !this.props.devMode
     };
-  },
+  }
 
   render() {
     // Dump out our current props to a global object via a script tag so
@@ -81,7 +81,7 @@ var IndexPage = React.createClass({
         </body>
       </html>
     );
-  },
+  }
 
   _renderPage() {
     switch (this.props.location) {
@@ -114,7 +114,7 @@ var IndexPage = React.createClass({
         JSON.stringify(this.props.location) +
         ' not found.'
     );
-  },
+  }
 
   componentDidMount() {
     if (!this.state.renderPage) {
@@ -123,6 +123,6 @@ var IndexPage = React.createClass({
       });
     }
   }
-});
+};
 
 module.exports = IndexPage;

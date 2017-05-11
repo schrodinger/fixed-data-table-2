@@ -28,30 +28,30 @@ var DOCS_MARKDOWN_FILES = {
   [DocsPages.API_V5.COLUMNGROUP_API.location]: require('../../docs/api-v0.5/ColumnGroupAPI.md'),
 };
 
-var DocsPage = React.createClass({
+class DocsPage extends React.Component {
   render() {
     var HTML = DOCS_MARKDOWN_FILES[this.props.page.location];
 
     return (
       <div className="docsPage">
-        <MiniHeader />
+      <MiniHeader />
 
-        <div className="pageBody" id="body">
-          <div className="contents">
-            <SideBar
-              title="API"
-              pages={DocsPages}
-              page={this.props.page}
-            />
-            <StaticHTMLBlock
-              className="docContents"
-              html={HTML}
-            />
-          </div>
-        </div>
+      <div className="pageBody" id="body">
+      <div className="contents">
+      <SideBar
+      title="API"
+      pages={DocsPages}
+      page={this.props.page}
+      />
+      <StaticHTMLBlock
+      className="docContents"
+      html={HTML}
+      />
+      </div>
+      </div>
       </div>
     );
-  },
-});
+  }
+};
 
 module.exports = DocsPage;
