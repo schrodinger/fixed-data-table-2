@@ -26,6 +26,7 @@ function getMaxVisibleColumns(/*array*/ columns, /*number*/ width) /*number*/ {
   var maxColumns = 0;
   var currentWidth = 0;
 
+  //NOTE (asif) We use the filter loop to update the width
   var scrollableColumns = columns.filter(function(column) {
     var fixed = column.props.fixed;
     if (fixed) {
