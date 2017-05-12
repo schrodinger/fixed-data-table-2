@@ -80,76 +80,25 @@ var FixedDataTableCellGroupImpl = React.createClass({
     this._staticCellArray.length = props.maxVisibleColumns;
     this._columnsToRender.length = props.maxVisibleColumns;
 
-    var contentWidth = this._getColumnsWidth(columns);
-
     var isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
       return acc || props.columnReorderingData.columnKey === column.props.columnKey;
     }, false);
 
-    var currentPosition = 0;
-    var count = 0;
-
-    var newColumnsToRender = new Array(props.maxVisibleColumns);
-    var positions = new Array(props.maxVisibleColumns);
-
-    for (var i = 0; i < columns.length; i++) {
-      var columnProps = columns[i].props;
-      var recycable = columnProps.allowCellsRecycling && !isColumnReordering;
-      if (!recycable || (
-          currentPosition - props.left <= props.width &&
-          currentPosition - props.left + columnProps.width >= 0)) {
-        positions[i] = currentPosition;
-        newColumnsToRender[count++] = i;
-      }
-
-      currentPosition += columnProps.width;
-    }
-
     //TODO move this recycle logic into main state
-    const newColumnsSet = new Set(newColumnsToRender);
-    const oldColumnsSet = new Set(this._columnsToRender);
-    const indexes = [];
+    
+    // Calculates total width of all columns
+    var contentWidth = this._getColumnsWidth(columns);
+    //Offset of each column
+    var positions = this._getColumnPositions(columns);
 
-    for (var i = props.maxVisibleColumns; i >= 0; i--) {
-      var column = this._columnsToRender[i];
-      if (!column || !newColumnsSet.has(column)) {
-        indexes.push(i);
-      }
-    }
+    //Array of column indexes to render
+    var newColumns = this._getNewColumnsToRender(isColumnReordering, positions);
 
-    newColumnsToRender.forEach((column) => {
-      if (!oldColumnsSet.has(column)) {
-        this._columnsToRender[indexes.pop()] = column;
-      }
-    });
+    //Include new columns in _columnsToRender
+    this._updateColumnsToRender(this._columnsToRender, newColumns);
 
-    var cellCount = 0;
-    this._columnsToRender.forEach((i) => {
-      var columnProps = columns[i].props;
-      var currentPosition = positions[i];
-      var key = columnProps.columnKey || 'cell_' + i;
-      this._staticCellArray[cellCount++] = this._renderCell(
-        props.rowIndex,
-        props.rowHeight,
-        columnProps,
-        currentPosition,
-        key,
-        contentWidth,
-        isColumnReordering,
-      );
-    });
-
-    while (cellCount < props.maxVisibleColumns) {
-      if (!this._staticCellArray[cellCount]) {
-        break;
-      }
-
-      this._staticCellArray[cellCount] = React.cloneElement(this._staticCellArray[cellCount], {
-        visible: false,          
-      });
-
-      cellCount++;
-    }
+    //Populate _staticCellArray
+    this._populateCellArray(contentWidth, isColumnReordering, positions);
 
     var style = {
       height: props.height,
@@ -166,6 +115,106 @@ var FixedDataTableCellGroupImpl = React.createClass({
         {this._staticCellArray}
       </div>
     );
+  },
+
+  _getColumnPositions(columns) {
+    var positions = new Array(columns.length);
+    var currentPosition = 0;
+
+    for (var i = 0; i < columns.length; i++) {
+      var columnProps = columns[i].props;
+      positions[i] = currentPosition;
+      currentPosition += columnProps.width;
+    }
+
+    return positions;
+  },
+
+  _getNewColumnsToRender(isColumnReordering, positions) {
+    var props = this.props;
+    var columns = props.columns;
+
+    //Columns that need to be shown
+    var newColumnsToRender = new Array(props.maxVisibleColumns);
+    //Used to add items to newColumnsToRender
+    var arrayIndex = 0;
+
+    for (var i = 0; i < columns.length; i++) {
+      var currentPosition = positions[i];
+      var columnProps = columns[i].props;
+      var recycable = columnProps.allowCellsRecycling && !isColumnReordering;
+      var visible = currentPosition - props.left <= props.width &&
+                    currentPosition - props.left + columnProps.width >= 0;
+      
+      if (!recycable || visible) {
+        newColumnsToRender[arrayIndex++] = i;
+      }
+    }
+
+    return newColumnsToRender;
+  },
+
+  _updateColumnsToRender(oldColumns, newColumns) {
+    var props = this.props;
+
+    const newColumnsSet = new Set(newColumns);
+    const oldColumnsSet = new Set(oldColumns);
+
+    //Indexes that we can replace
+    const indexes = [];
+
+    //Find columns not longer being rendered
+    for (var i = props.maxVisibleColumns - 1; i >= 0; i--) {
+      var column = oldColumns[i];
+      if (column == null || !newColumnsSet.has(column)) {
+        indexes.push(i);
+      }
+    }
+
+    //Find missing columns and replace unused columns
+    newColumns.forEach((column) => {
+      if (!oldColumnsSet.has(column)) {
+        var index = indexes.pop();
+        oldColumns[index] = column;
+      }
+    });
+
+    //Clear out the unused columns
+    indexes.forEach((index) => oldColumns[index] = null);
+  },
+
+  _populateCellArray(contentWidth, isColumnReordering, positions) {
+    var props = this.props;
+    var columns = props.columns;
+
+    for (var i = 0; i < props.maxVisibleColumns; i++) {
+      var columnToRender = this._columnsToRender[i];
+      
+      //No column to render at this index
+      if (columnToRender == null) {
+        //If we had a column, reuse it by setting visible to false
+        if (this._staticCellArray[i]) {
+          this._staticCellArray[i] = React.cloneElement(this._staticCellArray[i], {
+            key: 'cell_' + i,
+            visible: false,          
+          });
+        }
+        continue;
+      }
+
+      var columnProps = columns[columnToRender].props;
+      var currentPosition = positions[columnToRender];
+      var key = 'cell_' + i;
+      this._staticCellArray[i] = this._renderCell(
+        props.rowIndex,
+        props.rowHeight,
+        columnProps,
+        currentPosition,
+        key,
+        contentWidth,
+        isColumnReordering,
+      );
+    }
   },
 
   _renderCell(

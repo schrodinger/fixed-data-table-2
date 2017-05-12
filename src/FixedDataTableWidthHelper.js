@@ -34,10 +34,21 @@ function getMaxVisibleColumns(/*array*/ columns, /*number*/ width) /*number*/ {
     return !fixed;
   });
 
+  //Columns that we can't recycle
+  var nonRecyclable = 0;
+
   var first = 0;
   for (var i = 0; i < scrollableColumns.length; ++i) {
-    var columnWidth = scrollableColumns[i].props.width
+    var columnProps = scrollableColumns[i].props;
+    var columnWidth = columnProps.width;
+    var recycable = columnProps.allowCellsRecycling;
+
+    if (recycable !== true) { 
+      nonRecyclable++;
+    }
+
     var firstColumnWidth = scrollableColumns[first].props.width;
+    //Subtract firstColumnWidth because its always on screen
     while (currentWidth - firstColumnWidth - 1 > width) {
       currentWidth -= scrollableColumns[first++].props.width;
     }
@@ -46,7 +57,7 @@ function getMaxVisibleColumns(/*array*/ columns, /*number*/ width) /*number*/ {
   }
 
   //Max columns that will fit on screen
-  return maxColumns;
+  return maxColumns + nonRecyclable;
 }
 
 function getTotalFlexGrow(/*array*/ columns) /*number*/ {
