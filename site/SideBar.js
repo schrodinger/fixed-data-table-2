@@ -3,7 +3,7 @@
 var React = require('react');
 var Constants = require('./Constants');
 
-var SideBar = React.createClass({
+class SideBar extends React.Component {
   render() {
     return (
       <div className="sideBar">
@@ -12,7 +12,7 @@ var SideBar = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
   _renderSections(pages) {
     return Object.keys(pages).map(pageKey => {
@@ -33,13 +33,13 @@ var SideBar = React.createClass({
         page.location
       );
     });
-  },
+  }
 
   _renderGroupTitle(title) {
     return (
       <h4 className="groupTitle">{title}</h4>
     );
-  },
+  }
 
   _renderLink(linkName, linkUrl) {
     var arrow = <span className="arrowBullet" />;
@@ -56,7 +56,7 @@ var SideBar = React.createClass({
         </a>
       </h2>
     );
-  },
-});
+  }
+};
 
 module.exports = SideBar;

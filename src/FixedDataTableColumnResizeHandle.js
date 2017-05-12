@@ -17,14 +17,15 @@
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import Locale from 'Locale';
 import React from 'React';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
 
 import clamp from 'clamp';
 import cx from 'cx';
 
-var {PropTypes} = React;
-
-var FixedDataTableColumnResizeHandle = React.createClass({
+var FixedDataTableColumnResizeHandle = createReactClass({
+  displayName: 'FixedDataTableColumnResizeHandle',
   mixins: [ReactComponentWithPureRenderMixin],
 
   propTypes: {

@@ -4,12 +4,19 @@
 
 var React = require('react');
 
+var PropTypes = require('prop-types');
+
+var createReactClass = require('create-react-class');
+
 var PendingPool = {};
 var ReadyPool = {};
+var imageIdCounter = 0;
 
-var ExampleImage = React.createClass({
+var ExampleImage = createReactClass({
+  displayName: 'ExampleImage',
+
   propTypes: {
-    src: React.PropTypes.string.isRequired,
+    src: PropTypes.string.isRequired,
   },
 
   getInitialState() {
@@ -19,6 +26,7 @@ var ExampleImage = React.createClass({
   },
 
   componentWillMount() {
+    this.componentId = imageIdCounter++;
     this._load(this.props.src);
   },
 
@@ -26,6 +34,13 @@ var ExampleImage = React.createClass({
     if (nextProps.src !== this.props.src) {
       this.setState({src: null});
       this._load(nextProps.src);
+    }
+  },
+
+  componentWillUnmount() {
+    var loadingPool = PendingPool[this.props.src];
+    if (loadingPool) {
+      delete loadingPool[this.componentId];
     }
   },
 
@@ -44,16 +59,18 @@ var ExampleImage = React.createClass({
     }
 
     if (PendingPool[src]) {
-      PendingPool[src].push(this._onLoad);
+      PendingPool[src][this.componentId] = this._onLoad;
       return;
     }
 
-    PendingPool[src] = [this._onLoad];
+    var callbackPool = {};
+    PendingPool[src] = callbackPool;
+    callbackPool[this.componentId] = this._onLoad;
 
     var img = new Image();
     img.onload = () => {
-      PendingPool[src].forEach(/*function*/ callback => {
-        callback(src);
+      Object.keys(callbackPool).forEach(componentId => {
+        callbackPool[componentId](src);
       });
       delete PendingPool[src];
       img.onload = null;
@@ -64,7 +81,7 @@ var ExampleImage = React.createClass({
 
   _onLoad(/*string*/ src) {
     ReadyPool[src] = true;
-    if (this.isMounted() && src === this.props.src) {
+    if (src === this.props.src) {
       this.setState({
         src: src,
       });

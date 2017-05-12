@@ -11,7 +11,7 @@ var SideBar = require('../SideBar');
 var React = require('react');
 var Constants = require('../Constants');
 
-var ExamplesWrapper = React.createClass({
+class ExamplesWrapper extends React.Component {
   render() {
     return (
       <div className="examplesPage">
@@ -32,6 +32,6 @@ var ExamplesWrapper = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = ExamplesWrapper;
