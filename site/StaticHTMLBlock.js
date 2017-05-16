@@ -2,14 +2,16 @@
 
 var React = require('react');
 
-var StaticHTMLBlock = React.createClass({
-  propTypes: {
-    html: React.PropTypes.string.isRequired
-  },
+var PropTypes = require('prop-types');
+
+class StaticHTMLBlock extends React.Component {
+  static propType = {
+    html: PropTypes.string.isRequired
+  };
 
   shouldComponentUpdate() {
     return false;
-  },
+  }
 
   render() {
     var {html, ...props} = this.props;
@@ -19,7 +21,7 @@ var StaticHTMLBlock = React.createClass({
         {...props}
       />
     );
-  },
-});
+  }
+};
 
 module.exports = StaticHTMLBlock;

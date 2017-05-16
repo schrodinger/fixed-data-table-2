@@ -5,6 +5,7 @@
 "use strict";
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Table, Column, Cell } from 'fixed-data-table-2';
 import { DataCtxt, AddFilter } from './helpers/HOC';
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
@@ -141,7 +142,7 @@ const PagedCell = (props, { data, version }) => (
 
 PagedCell.contextTypes = {
   data: examplePropTypes.CtxtDataListStore,
-  version: React.PropTypes.number,
+  version: PropTypes.number,
 };
 
 class ContextExample extends React.Component {

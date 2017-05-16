@@ -2,6 +2,7 @@
   "plugins": [
     "transform-object-rest-spread",
     "transform-object-assign",
+    "transform-class-properties",
     "syntax-trailing-function-commas"
   ],
   "presets": ["es2015", "react"]

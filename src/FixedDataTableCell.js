@@ -14,19 +14,21 @@ import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
 import FixedDataTableHelper from 'FixedDataTableHelper';
 import React from 'React';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
+import shallowEqual from 'shallowEqual';
 
 var DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
-
-var {PropTypes} = React;
 
 var DEFAULT_PROPS = {
   align: 'left',
   highlighted: false,
 };
 
-var FixedDataTableCell = React.createClass({
+var FixedDataTableCell = createReactClass({
+  displayName: 'FixedDataTableCell',
 
   /**
    * PropTypes are disabled in this component, because having them on slows
@@ -78,6 +80,11 @@ var FixedDataTableCell = React.createClass({
      * The left offset in pixels of the cell.
      */
     left: PropTypes.number,
+
+    /**
+     * Flag for enhanced performance check
+     */
+    pureRendering: PropTypes.bool,
   },
 
   getInitialState() {
@@ -89,10 +96,31 @@ var FixedDataTableCell = React.createClass({
   },
 
   shouldComponentUpdate(nextProps) {
-    return (
-      !nextProps.isScrolling ||
-      this.props.rowIndex !== nextProps.rowIndex
-    );
+    if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
+      return false;
+    }
+
+    //Performance check not enabled
+    if (!nextProps.pureRendering) {
+      return true;
+    }
+
+    const { cell: oldCell, isScrolling: oldIsScrolling, ...oldProps } = this.props;
+    const { cell: newCell, isScrolling: newIsScrolling, ...newProps } = nextProps;
+
+    if (!shallowEqual(oldProps, newProps)) {
+      return true;
+    }
+
+    if (!oldCell || !newCell || oldCell.type !== newCell.type) {
+      return true;
+    }
+
+    if (!shallowEqual(oldCell.props, newCell.props)) {
+      return true;
+    }
+
+    return false;
   },
 
   componentWillReceiveProps(props) {
