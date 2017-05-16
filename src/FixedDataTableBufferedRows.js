@@ -11,6 +11,8 @@
  */
 
 import React from 'React';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 import FixedDataTableRowBuffer from 'FixedDataTableRowBuffer';
 import FixedDataTableRow from 'FixedDataTableRow';
 
@@ -18,11 +20,11 @@ import cx from 'cx';
 import emptyFunction from 'emptyFunction';
 import joinClasses from 'joinClasses';
 
-var {PropTypes} = React;
-
-var FixedDataTableBufferedRows = React.createClass({
+var FixedDataTableBufferedRows = createReactClass({
+  displayName: 'FixedDataTableBufferedRows',
 
   propTypes: {
+    bufferRowCount: PropTypes.number,
     isScrolling: PropTypes.bool,
     defaultRowHeight: PropTypes.number.isRequired,
     firstRowIndex: PropTypes.number.isRequired,
@@ -53,7 +55,8 @@ var FixedDataTableBufferedRows = React.createClass({
         this.props.rowsCount,
         this.props.defaultRowHeight,
         this.props.height,
-        this._getRowHeight
+        this._getRowHeight,
+        this.props.bufferRowCount
       );
     return ({
       rowsToRender: this._rowBuffer.getRows(
@@ -82,7 +85,8 @@ var FixedDataTableBufferedRows = React.createClass({
           nextProps.rowsCount,
           nextProps.defaultRowHeight,
           nextProps.height,
-          this._getRowHeight
+          this._getRowHeight,
+          this.props.bufferRowCount
         );
     }
     if (this.props.isScrolling && !nextProps.isScrolling) {
@@ -98,7 +102,7 @@ var FixedDataTableBufferedRows = React.createClass({
   },
 
   _updateBuffer() {
-    if (this.isMounted()) {
+    if (this._rowBuffer) {
       this.setState({
         rowsToRender: this._rowBuffer.getRowsWithUpdatedBuffer(),
       });
@@ -111,6 +115,7 @@ var FixedDataTableBufferedRows = React.createClass({
   },
 
   componentWillUnmount() {
+    this._rowBuffer = null;
     this._staticRowArray.length = 0;
   },
 

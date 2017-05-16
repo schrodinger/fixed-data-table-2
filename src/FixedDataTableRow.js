@@ -13,22 +13,20 @@
 'use strict';
 
 import React from 'React';
+import PropTypes from 'prop-types';
 import FixedDataTableCellGroup from 'FixedDataTableCellGroup';
 
 import cx from 'cx';
 import joinClasses from 'joinClasses';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
-var {PropTypes} = React;
-
 /**
  * Component that renders the row for <FixedDataTable />.
  * This component should not be used directly by developer. Instead,
  * only <FixedDataTable /> should use the component internally.
  */
-var FixedDataTableRow = React.createClass({
-
-  propTypes: {
+class FixedDataTableRowImpl extends React.Component {
+  static propTypes = {
 
     isScrolling: PropTypes.bool,
 
@@ -113,7 +111,7 @@ var FixedDataTableRow = React.createClass({
      * Whether the row has a bottom borer accross it
      */
     hasBottomBorder: PropTypes.bool
-  },
+  };
 
   render() /*object*/ {
     var style = {
@@ -193,17 +191,17 @@ var FixedDataTableRow = React.createClass({
         {columnsRightShadow}
       </div>
     );
-  },
+  }
 
-  _getColumnsWidth(/*array*/ columns) /*number*/ {
+  _getColumnsWidth = (/*array*/ columns) => /*number*/ {
     var width = 0;
     for (var i = 0; i < columns.length; ++i) {
       width += columns[i].props.width;
     }
     return width;
-  },
+  };
 
-  _renderColumnsLeftShadow(/*number*/ left) /*?object*/ {
+  _renderColumnsLeftShadow = (/*number*/ left) => /*?object*/ {
     var className = cx({
       'fixedDataTableRowLayout/fixedColumnsDivider': left > 0,
       'fixedDataTableRowLayout/columnsShadow': this.props.scrollLeft > 0,
@@ -215,9 +213,9 @@ var FixedDataTableRow = React.createClass({
        height: this.props.height
      };
      return <div className={className} style={style} />;
-   },
+   };
 
-  _renderColumnsRightShadow(/*number*/ totalWidth) /*?object*/ {
+  _renderColumnsRightShadow = (/*number*/ totalWidth) => /*?object*/ {
     if (Math.ceil(this.props.scrollLeft + this.props.width) < Math.floor(totalWidth)) {
       var className = cx(
         'fixedDataTableRowLayout/columnsShadow',
@@ -230,27 +228,84 @@ var FixedDataTableRow = React.createClass({
       };
       return <div className={className} style={style} />;
     }
-  },
+  };
 
-  _onClick(/*object*/ event) {
+  _onClick = (/*object*/ event) => {
     this.props.onClick(event, this.props.index);
-  },
+  };
 
-  _onDoubleClick(/*object*/ event) {
+  _onDoubleClick = (/*object*/ event) => {
     this.props.onDoubleClick(event, this.props.index);
-  },
+  };
 
-  _onMouseDown(/*object*/ event) {
+  _onMouseDown = (/*object*/ event) => {
     this.props.onMouseDown(event, this.props.index);
-  },
+  };
 
-  _onMouseEnter(/*object*/ event) {
+  _onMouseEnter = (/*object*/ event) => {
     this.props.onMouseEnter(event, this.props.index);
-  },
+  };
 
-  _onMouseLeave(/*object*/ event) {
+  _onMouseLeave = (/*object*/ event) => {
     this.props.onMouseLeave(event, this.props.index);
-  },
-});
+  };
+}
+
+class FixedDataTableRow extends React.Component {
+  static propTypes = {
+
+    isScrolling: PropTypes.bool,
+
+    /**
+     * Height of the row.
+     */
+    height: PropTypes.number.isRequired,
+
+    /**
+     * Z-index on which the row will be displayed. Used e.g. for keeping
+     * header and footer in front of other rows.
+     */
+    zIndex: PropTypes.number,
+
+    /**
+     * The vertical position where the row should render itself
+     */
+    offsetTop: PropTypes.number.isRequired,
+
+    /**
+     * Width of the row.
+     */
+    width: PropTypes.number.isRequired,
+  };
+
+  componentWillMount() {
+    this._initialRender = true;
+  }
+
+  componentDidMount() {
+    this._initialRender = false;
+  }
+
+  render() /*object*/ {
+    var style = {
+      width: this.props.width,
+      height: this.props.height,
+      zIndex: (this.props.zIndex ? this.props.zIndex : 0),
+    };
+    FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender);
+
+    return (
+      <div
+        style={style}
+        className={cx('fixedDataTableRowLayout/rowWrapper')}>
+        <FixedDataTableRowImpl
+          {...this.props}
+          offsetTop={undefined}
+          zIndex={undefined}
+        />
+      </div>
+    );
+  }
+}
 
 module.exports = FixedDataTableRow;

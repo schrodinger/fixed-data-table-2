@@ -7,7 +7,7 @@ var React = require('react');
 var ReadMeHTML = require('../../README.md');
 var StaticHTMLBlock = require('../StaticHTMLBlock');
 
-var HomePage = React.createClass({
+class HomePage extends React.Component {
   render() {
     return (
       <div className="homePage">
@@ -21,6 +21,6 @@ var HomePage = React.createClass({
       </div>
     );
   }
-});
+};
 
 module.exports = HomePage;
