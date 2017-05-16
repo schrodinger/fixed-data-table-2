@@ -6667,8 +6667,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _React = __webpack_require__(29);
@@ -6708,21 +6706,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * This component should not be used directly by developer. Instead,
 	 * only <FixedDataTable /> should use the component internally.
 	 */
-	var FixedDataTableRowImpl = function (_React$Component) {
-	  _inherits(FixedDataTableRowImpl, _React$Component);
+	var FixedDataTableRow = function (_React$Component) {
+	  _inherits(FixedDataTableRow, _React$Component);
 
-	  function FixedDataTableRowImpl() {
+	  function FixedDataTableRow() {
 	    var _ref;
 
 	    var _temp, _this, _ret;
 
-	    _classCallCheck(this, FixedDataTableRowImpl);
+	    _classCallCheck(this, FixedDataTableRow);
 
 	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
 	      args[_key] = arguments[_key];
 	    }
 
-	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = FixedDataTableRowImpl.__proto__ || Object.getPrototypeOf(FixedDataTableRowImpl)).call.apply(_ref, [this].concat(args))), _this), _this._getColumnsWidth = function ( /*array*/columns) /*number*/{
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = FixedDataTableRow.__proto__ || Object.getPrototypeOf(FixedDataTableRow)).call.apply(_ref, [this].concat(args))), _this), _this._getColumnsWidth = function ( /*array*/columns) /*number*/{
 	      var width = 0;
 	      for (var i = 0; i < columns.length; ++i) {
 	        width += columns[i].props.width;
@@ -6761,7 +6759,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
 
-	  _createClass(FixedDataTableRowImpl, [{
+	  _createClass(FixedDataTableRow, [{
 	    key: 'render',
 	    value: function render() /*object*/{
 	      var style = {
@@ -6844,10 +6842,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }]);
 
-	  return FixedDataTableRowImpl;
+	  return FixedDataTableRow;
 	}(_React2.default.Component);
 
-	FixedDataTableRowImpl.propTypes = {
+	FixedDataTableRow.propTypes = {
 
 	  isScrolling: _propTypes2.default.bool,
 
@@ -6932,77 +6930,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Whether the row has a bottom borer accross it
 	   */
 	  hasBottomBorder: _propTypes2.default.bool
-	};
-
-	var FixedDataTableRow = function (_React$Component2) {
-	  _inherits(FixedDataTableRow, _React$Component2);
-
-	  function FixedDataTableRow() {
-	    _classCallCheck(this, FixedDataTableRow);
-
-	    return _possibleConstructorReturn(this, (FixedDataTableRow.__proto__ || Object.getPrototypeOf(FixedDataTableRow)).apply(this, arguments));
-	  }
-
-	  _createClass(FixedDataTableRow, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      this._initialRender = true;
-	    }
-	  }, {
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      this._initialRender = false;
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() /*object*/{
-	      var style = {
-	        width: this.props.width,
-	        height: this.props.height,
-	        zIndex: this.props.zIndex ? this.props.zIndex : 0
-	      };
-	      (0, _FixedDataTableTranslateDOMPosition2.default)(style, 0, this.props.offsetTop, this._initialRender);
-
-	      return _React2.default.createElement(
-	        'div',
-	        {
-	          style: style,
-	          className: (0, _cx2.default)('fixedDataTableRowLayout/rowWrapper') },
-	        _React2.default.createElement(FixedDataTableRowImpl, _extends({}, this.props, {
-	          offsetTop: undefined,
-	          zIndex: undefined
-	        }))
-	      );
-	    }
-	  }]);
-
-	  return FixedDataTableRow;
-	}(_React2.default.Component);
-
-	FixedDataTableRow.propTypes = {
-
-	  isScrolling: _propTypes2.default.bool,
-
-	  /**
-	   * Height of the row.
-	   */
-	  height: _propTypes2.default.number.isRequired,
-
-	  /**
-	   * Z-index on which the row will be displayed. Used e.g. for keeping
-	   * header and footer in front of other rows.
-	   */
-	  zIndex: _propTypes2.default.number,
-
-	  /**
-	   * The vertical position where the row should render itself
-	   */
-	  offsetTop: _propTypes2.default.number.isRequired,
-
-	  /**
-	   * Width of the row.
-	   */
-	  width: _propTypes2.default.number.isRequired
 	};
 
 

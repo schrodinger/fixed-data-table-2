@@ -25,7 +25,7 @@ import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPositi
  * This component should not be used directly by developer. Instead,
  * only <FixedDataTable /> should use the component internally.
  */
-class FixedDataTableRowImpl extends React.Component {
+class FixedDataTableRow extends React.Component {
   static propTypes = {
 
     isScrolling: PropTypes.bool,
@@ -249,63 +249,6 @@ class FixedDataTableRowImpl extends React.Component {
   _onMouseLeave = (/*object*/ event) => {
     this.props.onMouseLeave(event, this.props.index);
   };
-}
-
-class FixedDataTableRow extends React.Component {
-  static propTypes = {
-
-    isScrolling: PropTypes.bool,
-
-    /**
-     * Height of the row.
-     */
-    height: PropTypes.number.isRequired,
-
-    /**
-     * Z-index on which the row will be displayed. Used e.g. for keeping
-     * header and footer in front of other rows.
-     */
-    zIndex: PropTypes.number,
-
-    /**
-     * The vertical position where the row should render itself
-     */
-    offsetTop: PropTypes.number.isRequired,
-
-    /**
-     * Width of the row.
-     */
-    width: PropTypes.number.isRequired,
-  };
-
-  componentWillMount() {
-    this._initialRender = true;
-  }
-
-  componentDidMount() {
-    this._initialRender = false;
-  }
-
-  render() /*object*/ {
-    var style = {
-      width: this.props.width,
-      height: this.props.height,
-      zIndex: (this.props.zIndex ? this.props.zIndex : 0),
-    };
-    FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender);
-
-    return (
-      <div
-        style={style}
-        className={cx('fixedDataTableRowLayout/rowWrapper')}>
-        <FixedDataTableRowImpl
-          {...this.props}
-          offsetTop={undefined}
-          zIndex={undefined}
-        />
-      </div>
-    );
-  }
 }
 
 module.exports = FixedDataTableRow;
