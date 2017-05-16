@@ -356,8 +356,6 @@ var FixedDataTable = createReactClass({
 
     this._didScrollStop = debounceCore(this._didScrollStop, 200, this);
 
-    var touchEnabled = props.touchScrollEnabled === true;
-
     this._wheelHandler = new ReactWheelHandler(
       this._onScroll,
       this._shouldHandleWheelX,
@@ -380,11 +378,11 @@ var FixedDataTable = createReactClass({
   },
 
   _shouldHandleTouchX(/*number*/ delta) /*boolean*/ {
-    return this.props.touchEnabled && this._shouldHandleWheelX(delta);
+    return this.props.touchScrollEnabled && this._shouldHandleWheelX(delta);
   },
 
   _shouldHandleTouchY(/*number*/ delta) /*boolean*/ {
-    return this.props.touchEnabled && this._shouldHandleWheelY(delta);
+    return this.props.touchScrollEnabled && this._shouldHandleWheelY(delta);
   },
 
   _shouldHandleWheelX(/*number*/ delta) /*boolean*/ {
@@ -446,7 +444,6 @@ var FixedDataTable = createReactClass({
   componentWillReceiveProps(/*object*/ nextProps) {
     var newOverflowX = nextProps.overflowX;
     var newOverflowY = nextProps.overflowY;
-    var touchEnabled = nextProps.touchScrollEnabled === true;
 
     // In the case of controlled scrolling, notify.
     if (this.props.ownerHeight !== nextProps.ownerHeight ||
