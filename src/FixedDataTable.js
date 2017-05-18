@@ -22,6 +22,7 @@ import FixedDataTableBufferedRows from 'FixedDataTableBufferedRows';
 import FixedDataTableColumnResizeHandle from 'FixedDataTableColumnResizeHandle';
 import FixedDataTableRow from 'FixedDataTableRow';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
+import { updateVisibleRows, updateRowHeights } from 'scrollStateHelper';
 
 import cx from 'cx';
 import debounceCore from 'debounceCore';
@@ -639,7 +640,8 @@ var FixedDataTable = React.createClass({
   },
 
   _renderRows(/*number*/ offsetTop) /*object*/ {
-    var state = this.state;
+    let state = updateRowHeights(this.state, this.props);
+    state = updateVisibleRows(state);
 
     return (
       <FixedDataTableBufferedRows
