@@ -907,8 +907,7 @@ var FixedDataTable = React.createClass({
       if (!this._isScrolling) {
         this._didScrollStart();
       }
-
-      this.scrollActions.scrollToY(scrollPos);
+      this.props.scrollActions.scrollToY(scrollPos);
 
       this._didScrollStop();
     }
