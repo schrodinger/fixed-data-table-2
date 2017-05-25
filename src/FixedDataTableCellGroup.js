@@ -52,6 +52,8 @@ var FixedDataTableCellGroupImpl = createReactClass({
 
     rowIndex: PropTypes.number.isRequired,
 
+    rowData: PropTypes.object,
+
     width: PropTypes.number.isRequired,
 
     zIndex: PropTypes.number.isRequired,
@@ -86,6 +88,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
         var key = columnProps.columnKey || 'cell_' + i;
         cells[i] = this._renderCell(
           props.rowIndex,
+          props.rowData,
           props.rowHeight,
           columnProps,
           currentPosition,
@@ -115,6 +118,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
 
   _renderCell(
     /*number*/ rowIndex,
+    /*object*/ rowData,
     /*number*/ height,
     /*object*/ columnProps,
     /*number*/ left,
@@ -149,6 +153,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
         isColumnReordering={isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
         rowIndex={rowIndex}
+        rowData={rowData}
         columnKey={columnProps.columnKey}
         width={columnProps.width}
         left={left}
@@ -193,6 +198,7 @@ var FixedDataTableCellGroup = createReactClass({
     zIndex: PropTypes.number.isRequired,
   },
 
+  // NOTE: Should we check if rowData has changed?
   shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
     return (
       !nextProps.isScrolling ||

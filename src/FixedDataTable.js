@@ -196,6 +196,13 @@ var FixedDataTable = createReactClass({
     rowKeyGetter: PropTypes.func,
 
     /**
+     * If specified, `rowDataGetter(index)` is called for each row and the
+     * returned value will be accessible in each cell of that row through the
+     * `rowData` prop.
+     */
+    rowDataGetter: PropTypes.func,
+
+    /**
      * Pixel height of the column group header.
      */
     groupHeaderHeight: PropTypes.number,
@@ -685,6 +692,7 @@ var FixedDataTable = createReactClass({
         rowGetter={state.rowGetter}
         rowHeightGetter={state.rowHeightGetter}
         rowKeyGetter={state.rowKeyGetter}
+        rowDataGetter={state.rowDataGetter}
         scrollLeft={state.scrollX}
         scrollableColumns={state.bodyScrollableColumns}
         showLastRowBorder={true}
