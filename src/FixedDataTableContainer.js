@@ -53,8 +53,8 @@ export default class FixedDataTableContainer extends React.Component {
   render() {
     return (
       <FixedDataTable 
-        {...this.state} 
         {...this.props} 
+        {...this.state} 
         scrollActions={this.scrollActions}
         columnActions={this.columnActions}
       />
