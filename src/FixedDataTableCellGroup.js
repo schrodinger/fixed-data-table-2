@@ -198,7 +198,6 @@ var FixedDataTableCellGroup = createReactClass({
     zIndex: PropTypes.number.isRequired,
   },
 
-  // NOTE: Should we check if rowData has changed?
   shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
     return (
       !nextProps.isScrolling ||
