@@ -46,6 +46,11 @@ class FixedDataTableRowImpl extends React.Component {
     index: PropTypes.number.isRequired,
 
     /**
+     * Data associated with the row.
+     */
+    data: PropTypes.any,
+
+    /**
      * Array of <FixedDataTableColumn /> for the scrollable columns.
      */
     scrollableColumns: PropTypes.array.isRequired,
@@ -139,6 +144,7 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
+        rowData={this.props.data}
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
     var scrollableColumns =
@@ -159,6 +165,7 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
+        rowData={this.props.data}
       />;
     var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);

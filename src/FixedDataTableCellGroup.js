@@ -52,6 +52,8 @@ var FixedDataTableCellGroupImpl = createReactClass({
 
     rowIndex: PropTypes.number.isRequired,
 
+    rowData: PropTypes.any,
+
     width: PropTypes.number.isRequired,
 
     zIndex: PropTypes.number.isRequired,
@@ -86,6 +88,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
         var key = columnProps.columnKey || 'cell_' + i;
         cells[i] = this._renderCell(
           props.rowIndex,
+          props.rowData,
           props.rowHeight,
           columnProps,
           currentPosition,
@@ -115,6 +118,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
 
   _renderCell(
     /*number*/ rowIndex,
+    /*any*/ rowData,
     /*number*/ height,
     /*object*/ columnProps,
     /*number*/ left,
@@ -149,6 +153,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
         isColumnReordering={isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
         rowIndex={rowIndex}
+        rowData={rowData}
         columnKey={columnProps.columnKey}
         width={columnProps.width}
         left={left}

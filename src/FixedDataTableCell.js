@@ -62,6 +62,12 @@ var FixedDataTableCell = createReactClass({
     rowIndex: PropTypes.number.isRequired,
 
     /**
+     * The data associated with the current row that will be passed to
+     * `cellRenderer` to render.
+     */
+    rowData: PropTypes.any,
+
+    /**
      * Callback for when resizer knob (in FixedDataTableCell) is clicked
      * to initialize resizing. Please note this is only on the cells
      * in the header.
@@ -202,7 +208,7 @@ var FixedDataTableCell = createReactClass({
 
   render() /*object*/ {
 
-    var {height, width, columnKey, ...props} = this.props;
+    var {height, width, columnKey, rowData, ...props} = this.props;
 
     var style = {
       height,
@@ -271,7 +277,8 @@ var FixedDataTableCell = createReactClass({
     var cellProps = {
       columnKey,
       height,
-      width
+      width,
+      rowData
     };
 
     if (props.rowIndex >= 0) {
