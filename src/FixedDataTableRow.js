@@ -48,7 +48,7 @@ class FixedDataTableRowImpl extends React.Component {
     /**
      * Data associated with the row.
      */
-    data: PropTypes.object,
+    data: PropTypes.any,
 
     /**
      * Array of <FixedDataTableColumn /> for the scrollable columns.

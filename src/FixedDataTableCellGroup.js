@@ -52,7 +52,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
 
     rowIndex: PropTypes.number.isRequired,
 
-    rowData: PropTypes.object,
+    rowData: PropTypes.any,
 
     width: PropTypes.number.isRequired,
 
@@ -118,7 +118,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
 
   _renderCell(
     /*number*/ rowIndex,
-    /*object*/ rowData,
+    /*any*/ rowData,
     /*number*/ height,
     /*object*/ columnProps,
     /*number*/ left,

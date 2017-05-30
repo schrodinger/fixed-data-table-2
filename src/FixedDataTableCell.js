@@ -62,10 +62,10 @@ var FixedDataTableCell = createReactClass({
     rowIndex: PropTypes.number.isRequired,
 
     /**
-     * The data associated with the current row that will be passed to 
+     * The data associated with the current row that will be passed to
      * `cellRenderer` to render.
      */
-    rowData: PropTypes.object,
+    rowData: PropTypes.any,
 
     /**
      * Callback for when resizer knob (in FixedDataTableCell) is clicked
