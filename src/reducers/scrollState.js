@@ -13,7 +13,7 @@
 
 import IntegerBufferSet from 'IntegerBufferSet';
 import * as ActionTypes from 'ActionTypes'
-import isNil from 'lodash/isnil';
+import isNil from 'lodash/isNil';
 import {
   scrollBy,
   scrollEnd,
@@ -36,7 +36,7 @@ const DEFAULT_STATE = {
   rowHeights: {},
   rows: [], //rowsToRender
   bufferSet: new IntegerBufferSet(),
-    
+
   viewportRowsBegin: 0,
   viewportRowsEnd: 0,
   firstRowIndex: 0,
