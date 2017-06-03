@@ -62,7 +62,6 @@ function scrollState(state = DEFAULT_STATE, action) {
         state = scrollToRow(state, props.scrollToRow);
       }
 
-
       state = updateVisibleRows(state);
 
       return state;
@@ -76,6 +75,10 @@ function scrollState(state = DEFAULT_STATE, action) {
 
       if (newProps.scrollToRow && newProps.scrollToRow !== oldProps.scrollToRow) {
         state = scrollToRow(state, newProps.scrollToRow);
+      }
+
+      if (newProps.rowsCount !== state.rowsCount) {
+        state = updateRowCount(state, newProps);
       }
 
       state = updateVisibleRows(state);
