@@ -72,13 +72,13 @@ function scrollState(state = DEFAULT_STATE, action) {
 
       if (newProps.scrollTop && newProps.scrollTop !== oldProps.scrollTop) {
         state = scrollTo(state, newProps.scrollTop);
-        state = updateVisibleRows(state);
       }
 
       if (newProps.scrollToRow && newProps.scrollToRow !== oldProps.scrollToRow) {
         state = scrollToRow(state, newProps.scrollToRow);
-        state = updateVisibleRows(state);
       }
+
+      state = updateVisibleRows(state);
 
       return state;
     case ActionTypes.SCROLL_DELTA_Y:
