@@ -17,7 +17,7 @@ import {
 /**
  * Initiates column reordering
  *
- * @param {{scrollStart: number, columnKey: string, with: number, left: number}} deltaY
+ * @param {{scrollStart: number, columnKey: string, with: number, left: number}} reorderData
  */
 export const startColumnReorder = (reorderData) => ({
   type: COLUMN_REORDER_START,

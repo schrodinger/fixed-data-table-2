@@ -219,7 +219,7 @@ function _recalculateRowHeights(state) {
  */
 export function updateRowHeights(state, {
   rowHeight,
-  rowHeightGetter = () => rowHeight 
+  rowHeightGetter = () => rowHeight
 }) {
 
   state.rowHeight = rowHeight;
@@ -239,7 +239,7 @@ export function updateRowHeights(state, {
     state.storedHeights[i] = rowHeight;
   }
 
-  return state; 
+  return state;
 }
 
 /**
@@ -256,7 +256,7 @@ export function updateRowCount(state, { rowsCount }) {
     state.storedHeights[i] = state.rowHeight;
   }
 
-  return state; 
+  return state;
 }
 
 export function updateViewHeight(state, {
@@ -264,7 +264,7 @@ export function updateViewHeight(state, {
   maxHeight,
   headerHeight = 0,
   footerHeight = 0,
-  groupHeaderHeight = 0 
+  groupHeaderHeight = 0
 }) {
   state.viewportHeight = (height === undefined ? maxHeight : height) -
     headerHeight - footerHeight - groupHeaderHeight;
@@ -274,101 +274,19 @@ export function updateViewHeight(state, {
     MAX_BUFFER_ROWS
   );
 
-  return state; 
+  return state;
 }
 
 /**
- * Updates row heights for rows above current view port
- *
  * @param {!Object} state
- * @param {number} firstRowIndex
- */
-export function scrollBy(state, deltaY) {
-  if (state.rowsCount === 0) {
-    return { ...state, ...NO_ROWS_SCROLL_RESULT };
-  }
-
-  let { rowOffsets, scrollY, rowsCount, storedHeights, scrollContentHeight, viewportHeight } = state;
-  let firstRow = rowOffsets.greatestLowerBound(scrollY);
-  firstRow = clamp(firstRow, 0, Math.max(rowsCount - 1, 0));
-  let firstRowPosition = state.rowOffsets.sumUntil(firstRow);
-  let rowIndex = firstRow;
-
-  let rowHeightChange = _updateRowHeight(state, rowIndex);
-  if (firstRowPosition !== 0) {
-    scrollY += rowHeightChange;
-  }
-
-  let visibleRowHeight = storedHeights[rowIndex] - (scrollY - firstRowPosition);
-
-  if (deltaY >= 0) {
-    while (deltaY > 0 && rowIndex < rowsCount) {
-      if (deltaY < visibleRowHeight) {
-        scrollY += deltaY;
-        deltaY = 0;
-      } else {
-        deltaY -= visibleRowHeight;
-        scrollY += visibleRowHeight;
-        rowIndex++;
-      }
-      if (rowIndex < rowsCount) {
-        _updateRowHeight(state, rowIndex);
-        visibleRowHeight = storedHeights[rowIndex];
-      }
-    }
-  } else if (deltaY < 0) {
-    deltaY = -deltaY;
-    let invisibleRowHeight = storedHeights[rowIndex] - visibleRowHeight;
-
-    while (deltaY > 0 && rowIndex >= 0) {
-      if (deltaY < invisibleRowHeight) {
-        scrollY -= deltaY;
-        deltaY = 0;
-      } else {
-        scrollY -= invisibleRowHeight;
-        deltaY -= invisibleRowHeight;
-        rowIndex--;
-      }
-      if (rowIndex >= 0) {
-        let change = _updateRowHeight(state, rowIndex);
-        invisibleRowHeight = storedHeights[rowIndex];
-        scrollY += change;
-      }
-    }
-  }
-
-  let maxPosition = scrollContentHeight - viewportHeight;
-  scrollY = clamp(scrollY, 0, maxPosition);
-  let firstRowIndex = rowOffsets.greatestLowerBound(scrollY);
-  firstRowIndex = clamp(firstRowIndex, 0, Math.max(rowsCount - 1, 0));
-  firstRowPosition = rowOffsets.sumUntil(firstRowIndex);
-  let firstRowOffset = firstRowPosition - scrollY;
-
-  _updateHeightsInViewport(state, firstRowIndex, firstRowOffset);
-  _updateHeightsAboveViewport(state, firstRowIndex);
-
-  //TODO (asif) Uncomment this line when bodyHeight is included in state
-  //let maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
-
-  return Object.assign({}, state, {
-    scrollY,
-    firstRowIndex,
-    firstRowOffset,
-    scrollContentHeight,
-    //maxScrollY,
-  });
-}
-
-
-/**
- * @param {!Object} state
+ * @param {number} scrollPosition
  * @return {!Object}
  */
 export function scrollTo(state, scrollPosition) {
-  let { scrollContentHeight, rowsCount, scrollY, viewportHeight, rowOffsets } = state;
+  let { scrollContentHeight, rowsCount, viewportHeight, rowOffsets } = state;
 
   if (rowsCount === 0) {
-    return Object.assign({}, state, NO_ROWS_SCROLL_RESULT);
+    return { ...state, ...NO_ROWS_SCROLL_RESULT };
   }
 
   if (scrollPosition <= 0) {
@@ -389,21 +307,20 @@ export function scrollTo(state, scrollPosition) {
     var rowIndex = rowsCount - 1;
     scrollPosition = _getRowAtEndPosition(state, rowIndex);
   }
-  scrollY = scrollPosition;
 
-  var firstRowIndex = rowOffsets.greatestLowerBound(scrollPosition);
+  let firstRowIndex = rowOffsets.greatestLowerBound(scrollPosition);
   firstRowIndex = clamp(firstRowIndex, 0, Math.max(rowsCount - 1, 0));
-  var firstRowPosition = rowOffsets.sumUntil(firstRowIndex);
-  var firstRowOffset = firstRowPosition - scrollPosition;
+  const firstRowPosition = rowOffsets.sumUntil(firstRowIndex);
+  const firstRowOffset = firstRowPosition - scrollPosition;
 
   _updateHeightsInViewport(state, firstRowIndex, firstRowOffset);
   _updateHeightsAboveViewport(state, firstRowIndex);
 
   return Object.assign({}, state, {
-    firstRowIndex: firstRowIndex,
-    firstRowOffset: firstRowOffset,
-    scrollY: scrollY,
-    scrollContentHeight: scrollContentHeight,
+    firstRowIndex,
+    firstRowOffset,
+    scrollY: scrollPosition,
+    scrollContentHeight,
   });
 };
 
