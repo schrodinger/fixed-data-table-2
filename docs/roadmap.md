@@ -60,7 +60,7 @@ Targeted Items
 * Begin supporting dynamic row heights
 
 ### v3.0
-Targeted for Q1 2018
+Targeted for Q1 2018  
 Our major focus will be making FDT reusable through composability.  At Schrodinger we've had great success implementing frozen rows, more flexible column groups, and more performant column reordering on top of FDT.  We'd like to improve FDTs examples and demonstrate these capabilities.
 
 We'll also release a new API for specifying row heights and give a stronger commitment to supporting dynamic row heights.  Our top priority following this release will be patching any bugs found by users depending on rowHeightGetter.
