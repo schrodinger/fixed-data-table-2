@@ -10,7 +10,7 @@ Core Goals
 Here is a quick list of our goals and philosophy for FDT and how we'd like to grow the project moving forward.
 
 ### Philosophy
-We'd like FDT to remain focused on providing a simple grid for handling large amounts of data.  As such we intend to focus providing a good experience around basic functionality, and leaving it to our users to extend the library for specific use cases.
+We'd like FDT to remain focused on providing a simple grid for handling large amounts of data.  As such we intend to focus providing a good experience around basic functionality, and leaving it to our users to extend the library for specific use cases.  
 
 As requests for new functionality come in, we intend to address them by exposing the proper hooks in the API and allowing things to be built on top of FDT, rather than extending FDT directly.  To facilitate adoption, we will also create examples for implementing frequently requested features such as filtering and sorting, tooltips, or context menus.  In time we may enhance these examples into a plugin system or a more advanced library which uses FDT as it's core renderer.
 
@@ -45,11 +45,11 @@ We're exploring how to support these improvements
 Timeline and dependencies
 ---------------
 ### v1.0
-Targeted for Q2 2017
+Targeted for Q2 2017  
 This will be a new release targeted at performance and column recycling updates which will be riskier that our previous work.
 
 ### v2.0
-Targeted for Q3 2017
+Targeted for Q3 2017  
 Our major focus will be on using redux for state management and adding additional unit tests.  This will enable refactoring and code cleanup which will make it easier for the core team to maintain the library.
 
 Dynamic row heights will also be a focus.  rowHeightGetter already exists in the API, but is buggy and difficult to support.  With this release we'll start discussing an improved API which avoids many of these issues without sacrificing performance.
