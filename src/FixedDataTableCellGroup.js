@@ -84,7 +84,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
       if (!recyclable || (
             currentPosition - props.left <= props.width &&
             currentPosition - props.left + columnProps.width >= 0)) {
-        var key = 'cell_' + i;
+        var key = columnProps.columnKey || 'cell_' + i;
         cells[i] = this._renderCell(
           props.rowIndex,
           props.rowHeight,
