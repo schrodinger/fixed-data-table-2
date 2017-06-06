@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.7 
+ * FixedDataTable v0.7.8 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.7';
+	FixedDataTableRoot.version = '0.7.8';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -958,7 +958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var reorderColumn = this.state.columnReorderingData.columnKey;
 
 	    this.setState({
-	      isReordering: false,
+	      isColumnReordering: false,
 	      columnReorderingData: {}
 	    });
 	    this.props.onColumnReorderEndCallback({
@@ -3473,7 +3473,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	/**
 	 * Copyright Schrodinger, LLC
@@ -3541,7 +3541,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function FixedDataTableTranslateDOMPosition( /*object*/style, /*number*/x, /*number*/y) {
-	  var initialRender = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+	  var initialRender = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
 	  if (initialRender) {
 	    style.left = x + 'px';
@@ -4986,7 +4986,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var columnProps = columns[i].props;
 	      var recycable = columnProps.allowCellsRecycling && !isColumnReordering;
 	      if (!recycable || currentPosition - props.left <= props.width && currentPosition - props.left + columnProps.width >= 0) {
-	        var key = 'cell_' + i;
+	        var key = columnProps.columnKey || 'cell_' + i;
 	        cells[i] = this._renderCell(props.rowIndex, props.rowHeight, columnProps, currentPosition, key, contentWidth, isColumnReordering);
 	      }
 	      currentPosition += columnProps.width;
@@ -5089,10 +5089,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  },
 	  render: function render() /*object*/{
-	    var _props = this.props;
-	    var offsetLeft = _props.offsetLeft;
-
-	    var props = _objectWithoutProperties(_props, ['offsetLeft']);
+	    var _props = this.props,
+	        offsetLeft = _props.offsetLeft,
+	        props = _objectWithoutProperties(_props, ['offsetLeft']);
 
 	    var style = {
 	      height: props.height
@@ -5746,12 +5745,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return DEFAULT_PROPS;
 	  },
 	  render: function render() /*object*/{
-	    var _props = this.props;
-	    var height = _props.height;
-	    var width = _props.width;
-	    var columnKey = _props.columnKey;
-
-	    var props = _objectWithoutProperties(_props, ['height', 'width', 'columnKey']);
+	    var _props = this.props,
+	        height = _props.height,
+	        width = _props.width,
+	        columnKey = _props.columnKey,
+	        props = _objectWithoutProperties(_props, ['height', 'width', 'columnKey']);
 
 	    var style = {
 	      height: height,
@@ -5944,16 +5942,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  render: function render() {
 	    //Remove some props like columnKey and rowIndex so we don't pass it into the div
-	    var _props = this.props;
-	    var height = _props.height;
-	    var width = _props.width;
-	    var style = _props.style;
-	    var className = _props.className;
-	    var children = _props.children;
-	    var columnKey = _props.columnKey;
-	    var rowIndex = _props.rowIndex;
-
-	    var props = _objectWithoutProperties(_props, ['height', 'width', 'style', 'className', 'children', 'columnKey', 'rowIndex']);
+	    var _props = this.props,
+	        height = _props.height,
+	        width = _props.width,
+	        style = _props.style,
+	        className = _props.className,
+	        children = _props.children,
+	        columnKey = _props.columnKey,
+	        rowIndex = _props.rowIndex,
+	        props = _objectWithoutProperties(_props, ['height', 'width', 'style', 'className', 'children', 'columnKey', 'rowIndex']);
 
 	    var innerStyle = _extends({
 	      height: height,
@@ -7187,7 +7184,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Returns true when the values of all keys are strictly equal.
 	 */
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	function shallowEqual(objA, objB) {
 	  if (objA === objB) {
