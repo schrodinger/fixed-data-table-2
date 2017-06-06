@@ -40,7 +40,7 @@ Add the default stylesheet `dist/fixed-data-table.css` using a link tag or impor
 Note this example demonstrates typical FDT usage, but won't work out of the box.
 In particular it doesn't include a definition for MyCustomCell.  It also assumes it's run on a page with a div with an id example and link referencing the fixed-data-table.css stylesheet.
 Additionally it requires a toolchain for transpiling JSX similar to what [create-react-app](https://github.com/facebookincubator/create-react-app) provides.
-For more detailed examples, please see the [examples section](http://schrodinger.github.io/fixed-data-table-2/example-object-data.html) of the documentation.
+For more detailed examples, please see the [examples section](http://schrodinger.github.io/fixed-data-table-2/example-object-data.html) of the documentation.  
 ```javascript
 import React from 'react';
 import ReactDOM from 'react-dom';
