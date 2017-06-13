@@ -199,7 +199,7 @@ var FixedDataTableRowImpl = React.createClass({
    },
 
   _renderColumnsRightShadow(/*number*/ totalWidth) /*?object*/ {
-    if (Math.ceil(this.props.scrollLeft + this.props.width) < totalWidth) {
+    if (Math.ceil(this.props.scrollLeft + this.props.width) < Math.floor(totalWidth)) {
       var className = cx(
         'fixedDataTableRowLayout/columnsShadow',
         'fixedDataTableRowLayout/columnsRightShadow',
