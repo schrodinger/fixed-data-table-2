@@ -172,6 +172,12 @@ var FixedDataTableColumn = React.createClass({
      * cell rendered if the row it belongs to is visible.
      */
     allowCellsRecycling: PropTypes.bool,
+
+    /**
+     * Flag to enable performance check when rendering. Stops the component from
+     * rendering if none of it's passed in props have changed
+     */
+    pureRendering: PropTypes.bool,
   },
 
   getDefaultProps() /*object*/ {

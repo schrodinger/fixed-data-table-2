@@ -134,6 +134,8 @@ var FixedDataTableCellGroupImpl = React.createClass({
     var onColumnReorder = cellIsReorderable ? this.props.onColumnReorder : null;
 
     var className = columnProps.cellClassName;
+    var pureRendering = columnProps.pureRendering || false;
+
     return (
       <FixedDataTableCell
         isScrolling={this.props.isScrolling}
@@ -155,6 +157,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
         left={left}
         cell={cellTemplate}
         columnGroupWidth={columnGroupWidth}
+        pureRendering={pureRendering}
       />
     );
   },

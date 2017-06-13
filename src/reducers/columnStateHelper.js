@@ -171,7 +171,8 @@ function reorderColumn(oldState, reorderData) {
 };
 
 function reorderColumnMove(oldState, deltaX) {
-  var reorderingData = oldState.columnReorderingData;
+  //NOTE Need to clone this object when use pureRendering
+  var reorderingData = Object.assign({}, oldState.columnReorderingData);
   reorderingData.dragDistance = deltaX;
   reorderingData.columnBefore = undefined;
   reorderingData.columnAfter = undefined;
