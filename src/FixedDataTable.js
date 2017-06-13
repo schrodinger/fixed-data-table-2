@@ -870,6 +870,10 @@ var FixedDataTable = React.createClass({
     }
     */
 
+   // TODO REDUX_MIGRATION
+   // https://github.com/schrodinger/fixed-data-table-2/commit/c981cc0e377016217fd069a03d741119b8793d8e
+   // Need to update viewportHeight when heigh changes
+
     // The order of elements in this object metters and bringing bodyHeight,
     // height or useGroupHeader to the top can break various features
     return {
