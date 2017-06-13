@@ -158,6 +158,7 @@ function reorderColumn(oldState, reorderData) {
   return Object.assign({}, oldState, {
     isColumnReordering: true,
     columnReorderingData: {
+      cancelReorder: false,
       dragDistance: 0,
       isFixed: isFixed,
       scrollStart: scrollStart,

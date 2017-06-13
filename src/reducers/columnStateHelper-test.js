@@ -72,6 +72,7 @@ describe('columnStateHelper', function() {
         }],
         isColumnReordering: true,
         columnReorderingData: {
+          cancelReorder: false,
           dragDistance: 0,
           isFixed: true,
           scrollStart: 50,
@@ -100,6 +101,7 @@ describe('columnStateHelper', function() {
         width: 550,
         isColumnReordering: true,
         columnReorderingData: {
+          cancelReorder: false,
           dragDistance: 0,
           isFixed: false,
           scrollStart: 50,
@@ -128,6 +130,7 @@ describe('columnStateHelper', function() {
         width: 550,
         isColumnReordering: true,
         columnReorderingData: {
+          cancelReorder: false,
           dragDistance: 257,
           isFixed: false,
           scrollStart: 50,

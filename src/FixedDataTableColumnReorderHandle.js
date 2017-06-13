@@ -110,11 +110,12 @@ var FixedDataTableColumnReorderHandle = React.createClass({
     this._distance = this.state.dragDistance + deltaX;
   },
 
-  _onColumnReorderEnd() {
+  _onColumnReorderEnd(/*boolean*/ cancelReorder) {
     this._animating = false;
     cancelAnimationFrame(this.frameId);
     this.frameId = null;
     this._mouseMoveTracker.releaseMouseMoves();
+    this.props.columnReorderingData.cancelReorder = cancelReorder;
     this.props.onColumnReorderEnd();
   },
 
