@@ -762,7 +762,7 @@ var FixedDataTable = React.createClass({
       scrollY,
       useGroupHeader,
     } = props;
-    /* TODO
+    /* TODO REDUX_MIGRATION
     if (props.scrollTop !== this.props.scrollTop) {
       scrollState = this._scrollHelper.scrollTo(props.scrollTop);
       firstRowIndex = scrollState.index;
@@ -843,8 +843,25 @@ var FixedDataTable = React.createClass({
       });
     });
 
-    //TODO
+    // TODO REDUX_MIGRATION
     //this._scrollHelper.setViewportHeight(bodyHeight);
+
+    /* TODO REDUX_MIGRATION
+    Scroll doesn't reset to top
+    https://github.com/schrodinger/fixed-data-table-2/commit/b2c4e2c7a9ecf5e9b93314751b77ed1c5c0c4f73
+
+    // This calculation is synonymous to Element.scrollTop
+    var scrollTop = Math.abs(firstRowOffset - this._scrollHelper.getRowPosition(firstRowIndex));
+    // This case can happen when the user is completely scrolled down and resizes the viewport to be taller vertically.
+    // This is because we set the viewport height after having calculated the rows
+    if (scrollTop !== scrollY) {
+      scrollTop = maxScrollY;
+      scrollState = this._scrollHelper.scrollTo(scrollTop);
+      firstRowIndex = scrollState.index;
+      firstRowOffset = scrollState.offset;
+      scrollY = scrollState.position;
+    }
+    */
 
     // The order of elements in this object metters and bringing bodyHeight,
     // height or useGroupHeader to the top can break various features
@@ -865,7 +882,6 @@ var FixedDataTable = React.createClass({
       scrollContentHeight,
       scrollX,
       scrollY,
-
       // These properties may overwrite properties defined in props
       bodyHeight,
       height,
