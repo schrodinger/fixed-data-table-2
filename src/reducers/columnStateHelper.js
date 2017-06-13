@@ -150,10 +150,9 @@ function reorderColumn(oldState, reorderData) {
     width
   } = reorderData;
 
-  const column = oldState.columns.find(function(column) {
-    return column.columnKey === columnKey;
+  const isFixed = oldState.columns.some(function(column) {
+    return column.columnKey === columnKey && column.fixed;
   });
-  const isFixed = column !== undefined && column.fixed;
 
   return Object.assign({}, oldState, {
     isColumnReordering: true,
