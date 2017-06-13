@@ -178,6 +178,12 @@ var FixedDataTable = React.createClass({
     rowClassNameGetter: PropTypes.func,
 
     /**
+     * If specified, `rowKeyGetter(index)` is called for each row and the
+     * returned value overrides `key` for the particular row.
+     */
+    rowKeyGetter: PropTypes.func,
+
+    /**
      * Pixel height of the column group header.
      */
     groupHeaderHeight: PropTypes.number,
@@ -666,6 +672,7 @@ var FixedDataTable = React.createClass({
         rowsCount={state.rowsCount}
         rowGetter={state.rowGetter}
         rowHeightGetter={state.rowHeightGetter}
+        rowKeyGetter={state.rowKeyGetter}
         scrollLeft={state.scrollX}
         scrollableColumns={state.scrollableColumns.cell}
         showLastRowBorder={true}
