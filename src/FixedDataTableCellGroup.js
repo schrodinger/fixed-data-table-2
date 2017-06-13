@@ -203,6 +203,7 @@ var FixedDataTableCellGroup = React.createClass({
 
     var style = {
       height: props.height,
+      width: props.width
     };
 
     if (DIR_SIGN === 1) {
