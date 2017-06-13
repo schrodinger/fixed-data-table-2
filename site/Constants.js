@@ -56,7 +56,7 @@ exports.ExamplePages = {
   },
   SCROLL_TO_EXAMPLE: {
     location: 'example-scroll-to.html',
-    fileName: 'ScollToExample.js',
+    fileName: 'ScrollToExample.js',
     title: 'Jump to row',
     description: 'A table example that will list search matches and jump to specified row',
   },
