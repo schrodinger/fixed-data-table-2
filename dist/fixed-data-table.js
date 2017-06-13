@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.13 
+ * FixedDataTable v0.7.14 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.13';
+	FixedDataTableRoot.version = '0.7.14';
 	module.exports = FixedDataTableRoot;
 
 /***/ },
@@ -932,7 +932,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  _onColumnReorderMove: function _onColumnReorderMove(
 	  /*number*/deltaX) {
-	    var reorderingData = this.state.columnReorderingData;
+	    //NOTE Need to clone this object when use pureRendering
+	    var reorderingData = _extends({}, this.state.columnReorderingData);
 	    reorderingData.dragDistance = deltaX;
 	    reorderingData.columnBefore = undefined;
 	    reorderingData.columnAfter = undefined;
@@ -5084,6 +5085,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var onColumnReorder = cellIsReorderable ? this.props.onColumnReorder : null;
 
 	    var className = columnProps.cellClassName;
+	    var pureRendering = columnProps.pureRendering || false;
+
 	    return _React2.default.createElement(_FixedDataTableCell2.default, {
 	      isScrolling: this.props.isScrolling,
 	      align: columnProps.align,
@@ -5103,7 +5106,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      width: columnProps.width,
 	      left: left,
 	      cell: columnProps.cell,
-	      columnGroupWidth: columnGroupWidth
+	      columnGroupWidth: columnGroupWidth,
+	      pureRendering: pureRendering
 	    });
 	  },
 	  _getColumnsWidth: function _getColumnsWidth( /*array*/columns) /*number*/{
@@ -5600,7 +5604,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Setting the property to false will keep previous behaviour and keep
 	     * cell rendered if the row it belongs to is visible.
 	     */
-	    allowCellsRecycling: PropTypes.bool
+	    allowCellsRecycling: PropTypes.bool,
+
+	    /**
+	     * Flag to enable performance check when rendering. Stops the component from
+	     * rendering if none of it's passed in props have changed
+	     */
+	    pureRendering: PropTypes.bool
 	  },
 
 	  getDefaultProps: function getDefaultProps() /*object*/{
@@ -5725,7 +5735,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * The left offset in pixels of the cell.
 	     */
-	    left: PropTypes.number
+	    left: PropTypes.number,
+
+	    /**
+	     * Flag for enhanced performance check
+	     */
+	    pureRendering: PropTypes.bool
 	  },
 
 	  getInitialState: function getInitialState() {
@@ -5736,26 +5751,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  },
 	  shouldComponentUpdate: function shouldComponentUpdate(nextProps) {
-	    var _props = this.props,
-	        cell = _props.cell,
-	        props = _objectWithoutProperties(_props, ['cell']);
+	    if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
+	      return false;
+	    }
 
-	    var nextCell = nextProps.nextCell,
-	        newProps = _objectWithoutProperties(nextProps, ['nextCell']);
-
-	    if (this.props.rowIndex !== nextProps.rowIndex) {
+	    //Performance check not enabled
+	    if (!nextProps.pureRendering) {
 	      return true;
 	    }
 
-	    if (nextProps.isScrolling) {
-	      return false;
+	    var _props = this.props,
+	        oldCell = _props.cell,
+	        oldIsScrolling = _props.isScrolling,
+	        oldProps = _objectWithoutProperties(_props, ['cell', 'isScrolling']);
+
+	    var newCell = nextProps.cell,
+	        newIsScrolling = nextProps.isScrolling,
+	        newProps = _objectWithoutProperties(nextProps, ['cell', 'isScrolling']);
+
+	    if (!(0, _shallowEqual2.default)(oldProps, newProps)) {
+	      return true;
 	    }
 
-	    if ((0, _shallowEqual2.default)(this.props.cell.props, nextProps.cell.props)) {
-	      return false;
+	    if (!oldCell || !newCell || oldCell.type !== newCell.type) {
+	      return true;
 	    }
 
-	    return true;
+	    if (!(0, _shallowEqual2.default)(oldCell.props, newCell.props)) {
+	      return true;
+	    }
+
+	    return false;
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps(props) {
 	    var left = props.left + this.state.displacement;
