@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import ReactTouchHandler from './ReactTouchHandler';
+import ReactTouchHandler from '../src/ReactTouchHandler';
 import sinon from 'sinon';
 import { assert } from 'chai';
 import { createRenderer, isElement } from 'react-addons-test-utils';

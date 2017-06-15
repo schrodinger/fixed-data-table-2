@@ -219,7 +219,7 @@ function _recalculateRowHeights(state) {
  */
 export function updateRowHeights(state, {
   rowHeight,
-  rowHeightGetter = () => rowHeight 
+  rowHeightGetter = () => rowHeight
 }) {
 
   state.rowHeight = rowHeight;
@@ -239,7 +239,7 @@ export function updateRowHeights(state, {
     state.storedHeights[i] = rowHeight;
   }
 
-  return state; 
+  return state;
 }
 
 /**
@@ -256,7 +256,7 @@ export function updateRowCount(state, { rowsCount }) {
     state.storedHeights[i] = state.rowHeight;
   }
 
-  return state; 
+  return state;
 }
 
 export function updateViewHeight(state, {
@@ -264,7 +264,7 @@ export function updateViewHeight(state, {
   maxHeight,
   headerHeight = 0,
   footerHeight = 0,
-  groupHeaderHeight = 0 
+  groupHeaderHeight = 0
 }) {
   state.viewportHeight = (height === undefined ? maxHeight : height) -
     headerHeight - footerHeight - groupHeaderHeight;
@@ -274,14 +274,12 @@ export function updateViewHeight(state, {
     MAX_BUFFER_ROWS
   );
 
-  return state; 
+  return state;
 }
 
 /**
- * Updates row heights for rows above current view port
- *
  * @param {!Object} state
- * @param {number} firstRowIndex
+ * @param {number} deltaY
  */
 export function scrollBy(state, deltaY) {
   if (state.rowsCount === 0) {
