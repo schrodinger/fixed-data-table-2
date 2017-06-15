@@ -916,7 +916,7 @@ var FixedDataTable = createReactClass({
     });
 
     // Allow room for the scrollbar, less 1px for the last column's border
-    var adjustedWidth = props.width - Scrollbar.SIZE - Scrollbar.FACE_MARGIN/2 + 1;
+    var adjustedWidth = props.width - Scrollbar.SIZE - Scrollbar.OFFSET;
 
     var useGroupHeader = false;
     if (children.length && children[0].type.__TableColumnGroup__) {
@@ -1026,25 +1026,12 @@ var FixedDataTable = createReactClass({
         );
 
         var previousColumnsWidth = 0;
-        for (i = 0; i < scrollableColumnIndex; ++i) {
+        for (i = 0; i < scrollableColumnIndex - 1; ++i) {
           column = columnInfo.bodyScrollableColumns[i];
           previousColumnsWidth += column.props.width;
         }
 
-        var availableScrollWidth = adjustedWidth - totalFixedColumnsWidth;
-        var selectedColumnWidth = columnInfo.bodyScrollableColumns[
-          scrollableColumnIndex
-        ].props.width;
-        var minAcceptableScrollPosition =
-          previousColumnsWidth + selectedColumnWidth - availableScrollWidth;
-
-        if (scrollX < minAcceptableScrollPosition) {
-          scrollX = minAcceptableScrollPosition;
-        }
-
-        if (scrollX > previousColumnsWidth) {
-          scrollX = previousColumnsWidth;
-        }
+        scrollX = previousColumnsWidth;
       }
     }
 
