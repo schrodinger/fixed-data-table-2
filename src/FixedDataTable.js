@@ -770,6 +770,7 @@ var FixedDataTable = React.createClass({
       useGroupHeader,
     } = props;
     /* TODO REDUX_MIGRATION
+    // Handle scrolling to a new scroll top when prop set
     if (props.scrollTop !== this.props.scrollTop) {
       scrollState = this._scrollHelper.scrollTo(props.scrollTop);
       firstRowIndex = scrollState.index;
@@ -874,8 +875,9 @@ var FixedDataTable = React.createClass({
    // https://github.com/schrodinger/fixed-data-table-2/commit/c981cc0e377016217fd069a03d741119b8793d8e
    // Need to update viewportHeight when heigh changes
 
-    // The order of elements in this object metters and bringing bodyHeight,
-    // height or useGroupHeader to the top can break various features
+    // The order of elements in this object matters and bringing bodyHeight,
+    // height, or useGroupHeader to the top can break various features due to conflicts
+    // with the spread operator over props.
     return {
       ...props,
       fixedColumnGroups,
