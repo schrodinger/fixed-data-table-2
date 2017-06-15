@@ -34,7 +34,16 @@ Install `fixed-data-table-2` using npm.
 ```shell
 npm install fixed-data-table-2
 ```
+
 Add the default stylesheet `dist/fixed-data-table.css`, then import it into any module.
+
+Run the demo server to see examples and documentation:
+
+```shell
+npm run site-dev-server [port-number]
+```
+
+Open your browser to localhost:8080 or other port number, if specified above.
 
 ### Basic Example
 

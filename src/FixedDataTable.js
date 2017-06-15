@@ -916,7 +916,7 @@ var FixedDataTable = createReactClass({
     });
 
     // Allow room for the scrollbar, less 1px for the last column's border
-    var width = props.width - Scrollbar.SIZE - Scrollbar.FACE_MARGIN/2 + 1;
+    var adjustedWidth = props.width - Scrollbar.SIZE - Scrollbar.FACE_MARGIN/2 + 1;
 
     var useGroupHeader = false;
     if (children.length && children[0].type.__TableColumnGroup__) {
@@ -991,14 +991,14 @@ var FixedDataTable = createReactClass({
       var columnGroupSettings =
         FixedDataTableWidthHelper.adjustColumnGroupWidths(
           children,
-          width
+          adjustedWidth
       );
       columns = columnGroupSettings.columns;
       columnGroups = columnGroupSettings.columnGroups;
     } else {
       columns = FixedDataTableWidthHelper.adjustColumnWidths(
         children,
-        width
+        adjustedWidth
       );
     }
 
@@ -1031,7 +1031,7 @@ var FixedDataTable = createReactClass({
           previousColumnsWidth += column.props.width;
         }
 
-        var availableScrollWidth = width - totalFixedColumnsWidth;
+        var availableScrollWidth = adjustedWidth - totalFixedColumnsWidth;
         var selectedColumnWidth = columnInfo.bodyScrollableColumns[
           scrollableColumnIndex
         ].props.width;
@@ -1058,7 +1058,7 @@ var FixedDataTable = createReactClass({
     var scrollContentWidth =
       FixedDataTableWidthHelper.getTotalWidth(columns);
 
-    var horizontalScrollbarVisible = scrollContentWidth > width &&
+    var horizontalScrollbarVisible = scrollContentWidth > adjustedWidth &&
       props.overflowX !== 'hidden' && props.showScrollbarX !== false;
 
     if (horizontalScrollbarVisible) {
@@ -1067,7 +1067,7 @@ var FixedDataTable = createReactClass({
       totalHeightReserved += Scrollbar.SIZE;
     }
 
-    var maxScrollX = Math.max(0, scrollContentWidth - width);
+    var maxScrollX = Math.max(0, scrollContentWidth - adjustedWidth);
     var maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
     scrollX = Math.min(scrollX, maxScrollX);
     scrollY = Math.min(scrollY, maxScrollY);
