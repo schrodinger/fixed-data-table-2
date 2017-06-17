@@ -183,15 +183,23 @@ describe('columnStateHelper', function() {
         isColumnResizing: true,
       };
 
+      const fakeElementTemplates = {
+        cell: [],
+        footer: [],
+        groupHeader: [],
+        header: []
+      };
+
       // --- Run Test ---
       const result = columnStateHelper.initialize(
-        oldState, fakeProps, fakeColumnGroups, false);
+        oldState, fakeProps, fakeColumnGroups, false, fakeElementTemplates);
 
       // --- Verify Expectations ---
       const { columns, ...otherResults } = result;
 
       assert.deepEqual(otherResults, {
         columnGroups: fakeColumnGroups,
+        elementTemplates: fakeElementTemplates,
         groupHeaderHeight: 0,
         maxScrollX: 237,
         horizontalScrollbarVisible: true,
