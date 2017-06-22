@@ -5,7 +5,7 @@
 import { assert } from 'chai';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import FixedDataTable from './FixedDataTableRoot';
+import FixedDataTable from '../src/FixedDataTableRoot';
 import { createRenderer, isElement, renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
 
 const { Table, Column } = FixedDataTable;
@@ -21,7 +21,7 @@ describe('FixedDataTableRoot', function() {
           rowHeight={100}
           headerHeight={50}
         >
-          <Column 
+          <Column
             width={300}
           />
         </Table>
@@ -47,7 +47,7 @@ describe('FixedDataTableRoot', function() {
     getTableState() {
       return this.refs['table'].state;
     }
-    
+
     render() {
       return (
         <Table

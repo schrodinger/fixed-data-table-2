@@ -60,8 +60,8 @@
     "build-docs": "./build_helpers/buildAPIDocs.sh",
     "publish-site": "./build_helpers/publishStaticSite.sh",
     "publish-package": "./build_helpers/publishPackage.sh",
-    "test": "mocha-webpack --webpack-config webpack.config-test.js \"src/**/*-test.js\" --require build_helpers/test-globals.js",
-    "test:watch": "mocha-webpack --webpack-config webpack.config-test.js --watch \"src/**/*-test.js\" --require build_helpers/test-globals.js",
+    "test": "mocha-webpack --webpack-config webpack.config-test.js \"test/**/*-test.js\" --require build_helpers/test-globals.js",
+    "test:watch": "mocha-webpack --webpack-config webpack.config-test.js --watch \"test/**/*-test.js\" --require build_helpers/test-globals.js",
     "test:server": "webpack-dev-server --config webpack.config-test.js --hot --inline"
   },
   "repository": {

@@ -27,6 +27,7 @@ var DRAG_SCROLL_BUFFER = 100;
  * @param {!Object} props
  * @param {!Object} columnGroups
  * @param {boolean} useGroupHeader
+ * @param {!Object} elementTemplates
  * @return {!Object}
  */
 function initialize(oldState, props, columnGroups, useGroupHeader, elementTemplates) {
