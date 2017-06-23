@@ -14,8 +14,6 @@
 import reducers from 'reducers'
 import { createStore } from 'redux'
 
-const store = createStore(
-  reducers
-);
-
-module.exports = store;
+module.exports = {
+  get: () => createStore(reducers),
+};

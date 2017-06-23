@@ -56,6 +56,8 @@ function _updateRowHeight(state, rowIndex) {
  */
 function _updateHeightsInViewport(state, firstRowIndex, firstRowOffset) {
   let { rowsCount, storedHeights, viewportHeight } = state;
+
+  // NOTE (jordan) firstRowOffset is a negative value representing how much of the first row is off screen
   var top = firstRowOffset;
   var index = firstRowIndex;
   while (top <= viewportHeight && index < rowsCount) {
@@ -104,6 +106,8 @@ function _getRowAtEndPosition(state, rowIndex) {
   // We need to update enough rows above the selected one to be sure that when
   // we scroll to selected position all rows between first shown and selected
   // one have most recent heights computed and will not resize
+  // NOTE (jordan) We don't need to update leading buffered rows here because
+  // _updateHeightsAboveViewport updates scrollY accordingly
   _updateRowHeight(state, rowIndex);
   var currentRowIndex = rowIndex;
   var top = storedHeights[currentRowIndex];
@@ -165,12 +169,10 @@ function _updateRows(state) {
     rowsCount,
     viewportHeight,
     rowHeightGetter,
-    bufferRowsCount,
-    viewportRowsBegin
+    bufferRowsCount
   } = state;
 
-  let top = firstRowOffset;
-  let totalHeight = top;
+  let totalHeight = firstRowOffset;
   //let rowIndex = firstRowIndex;
   let rowIndex = Math.max(firstRowIndex - bufferRowsCount, 0);
   let endIndex = Math.min(firstRowIndex + maxVisibleRowCount + bufferRowsCount, rowsCount);
@@ -299,6 +301,8 @@ export function scrollTo(state, scrollPosition) {
       firstRowIndex: 0,
       firstRowOffset: 0,
       scrollY: scrollY,
+      // TODO (jordan) This overrides the scrollContentHeight changes made by _updateRowHeight
+      // Try removing
       scrollContentHeight: scrollContentHeight,
     });
   } else if (scrollPosition >= scrollContentHeight - viewportHeight) {
@@ -320,6 +324,8 @@ export function scrollTo(state, scrollPosition) {
     firstRowIndex,
     firstRowOffset,
     scrollY: scrollPosition,
+    // TODO (jordan) This overrides the scrollContentHeight changes made by _updateRowHeight
+    // Try removing
     scrollContentHeight,
   });
 };
@@ -347,6 +353,7 @@ export function scrollToRow(state, rowIndex) {
     var position = _getRowAtEndPosition(state, rowIndex);
     return scrollTo(state, position);
   }
+  // TODO (jordan) Should this be a no-op?
   return scrollTo(state, scrollY);
 };
 

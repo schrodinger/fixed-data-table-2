@@ -23,18 +23,19 @@ import * as columnActions from 'columnActions';
 export default class FixedDataTableContainer extends React.Component {
   constructor(props) {
     super(props);
-    
-    this.update = this.update.bind(this);
-    FixedDataTableStore.subscribe(this.update);
 
-    this.scrollActions = bindActionCreators(scrollActions, FixedDataTableStore.dispatch);
-    this.columnActions = bindActionCreators(columnActions, FixedDataTableStore.dispatch);
+    this.update = this.update.bind(this);
+    this.reduxStore = FixedDataTableStore.get();
+    this.reduxStore.subscribe(this.update);
+
+    this.scrollActions = bindActionCreators(scrollActions, this.reduxStore.dispatch);
+    this.columnActions = bindActionCreators(columnActions, this.reduxStore.dispatch);
   }
 
   componentWillMount() {
     const props = this.props;
 
-    FixedDataTableStore.dispatch({
+    this.reduxStore.dispatch({
       type: ActionTypes.INITIALIZE,
       props: props
     });
@@ -43,7 +44,7 @@ export default class FixedDataTableContainer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    FixedDataTableStore.dispatch({
+    this.reduxStore.dispatch({
       type: ActionTypes.PROP_CHANGE,
       newProps: nextProps,
       oldProps: this.props,
@@ -52,9 +53,9 @@ export default class FixedDataTableContainer extends React.Component {
 
   render() {
     return (
-      <FixedDataTable 
-        {...this.props} 
-        {...this.state} 
+      <FixedDataTable
+        {...this.props}
+        {...this.state}
         scrollActions={this.scrollActions}
         columnActions={this.columnActions}
       />
@@ -62,7 +63,7 @@ export default class FixedDataTableContainer extends React.Component {
   }
 
   update() {
-    const state = FixedDataTableStore.getState();
+    const state = this.reduxStore.getState();
     const {
       firstRowIndex,
       firstRowOffset,
@@ -72,6 +73,7 @@ export default class FixedDataTableContainer extends React.Component {
       scrollY,
     } = state.scrollState;
 
+    // TODO REDUX_MIGRATION
     //const maxScrollY = Math.max(0, scrollContentHeight - this.state.bodyHeight);
 
     this.setState({
