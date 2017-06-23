@@ -252,8 +252,10 @@ export function updateRowCount(state, { rowsCount }) {
   state.scrollContentHeight = rowsCount * state.rowHeight;
   state.rowOffsets = PrefixIntervalTree.uniform(rowsCount, state.rowHeight);
   state.storedHeights = new Array(rowsCount);
+  state.rows = new Array(rowsCount);
   for (var i = 0; i < rowsCount; i++) {
     state.storedHeights[i] = state.rowHeight;
+    state.rows[i] = i;
   }
 
   return state;
