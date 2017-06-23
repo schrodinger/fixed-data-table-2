@@ -84,7 +84,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
       if (!recyclable || (
             currentPosition - props.left <= props.width &&
             currentPosition - props.left + columnProps.width >= 0)) {
-        var key = 'cell_' + i;
+        var key = columnProps.columnKey || 'cell_' + i;
         cells[i] = this._renderCell(
           props.rowIndex,
           props.rowHeight,
@@ -134,6 +134,8 @@ var FixedDataTableCellGroupImpl = React.createClass({
     var onColumnReorder = cellIsReorderable ? this.props.onColumnReorder : null;
 
     var className = columnProps.cellClassName;
+    var pureRendering = columnProps.pureRendering || false;
+
     return (
       <FixedDataTableCell
         isScrolling={this.props.isScrolling}
@@ -155,6 +157,7 @@ var FixedDataTableCellGroupImpl = React.createClass({
         left={left}
         cell={cellTemplate}
         columnGroupWidth={columnGroupWidth}
+        pureRendering={pureRendering}
       />
     );
   },
@@ -203,6 +206,7 @@ var FixedDataTableCellGroup = React.createClass({
 
     var style = {
       height: props.height,
+      width: props.width
     };
 
     if (DIR_SIGN === 1) {

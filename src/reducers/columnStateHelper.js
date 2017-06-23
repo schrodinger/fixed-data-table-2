@@ -151,14 +151,14 @@ function reorderColumn(oldState, reorderData) {
     width
   } = reorderData;
 
-  const column = oldState.columns.find(function(column) {
-    return column.columnKey === columnKey;
+  const isFixed = oldState.columns.some(function(column) {
+    return column.columnKey === columnKey && column.fixed;
   });
-  const isFixed = column !== undefined && column.fixed;
 
   return Object.assign({}, oldState, {
     isColumnReordering: true,
     columnReorderingData: {
+      cancelReorder: false,
       dragDistance: 0,
       isFixed: isFixed,
       scrollStart: scrollStart,
@@ -172,7 +172,8 @@ function reorderColumn(oldState, reorderData) {
 };
 
 function reorderColumnMove(oldState, deltaX) {
-  var reorderingData = oldState.columnReorderingData;
+  //NOTE Need to clone this object when use pureRendering
+  var reorderingData = Object.assign({}, oldState.columnReorderingData);
   reorderingData.dragDistance = deltaX;
   reorderingData.columnBefore = undefined;
   reorderingData.columnAfter = undefined;

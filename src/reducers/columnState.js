@@ -49,6 +49,7 @@ function columnState(state = DEFAULT_STATE, action) {
         useGroupHeader,
       } = convertColumnElementsToData(newProps);
 
+      // TODO REDUX_MIGRATION solve w/ evil-diff
       // TODO (jordan) check if relevant props unchanged and
       // children column widths and flex widths are unchanged
       // alternatively shallow diff and reconcile props

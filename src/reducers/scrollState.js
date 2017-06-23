@@ -81,14 +81,6 @@ function scrollState(state = DEFAULT_STATE, action) {
       }
 
       return state;
-    case ActionTypes.SCROLL_DELTA_Y:
-      let { deltaY } = action;
-
-      var state = scrollBy(state, deltaY);
-      state = updateVisibleRows(state);
-
-      return state;
-
     case ActionTypes.SCROLL_END:
 
       var state = scrollEnd(state);

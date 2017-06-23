@@ -1,6 +1,6 @@
 {
   "name": "fixed-data-table-2",
-  "version": "0.7.7",
+  "version": "0.7.14",
   "description": "A React table component designed to allow presenting thousands of rows of data.",
   "main": "main.js",
   "peerDependencies": {
@@ -21,6 +21,7 @@
     "bundle-loader": "^0.5.2",
     "chai": "^3.5.0",
     "css-loader": "^0.9.1",
+    "except": "^0.1.3",
     "extract-text-webpack-plugin": "^0.3.8",
     "faker": "^2.1.2",
     "file-loader": "^0.8.1",

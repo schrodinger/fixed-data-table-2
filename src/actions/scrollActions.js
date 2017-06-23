@@ -12,23 +12,12 @@ import {
   SCROLL_START,
   SCROLL_TO_X,
   SCROLL_TO_Y,
-  SCROLL_DELTA_Y,
 } from './ActionTypes';
-
-/**
- * Scrolls the table vertically by delta
- *
- * @param {number} deltaY
- */
-export const scrollDeltaY = (deltaY) => ({
-  type: SCROLL_DELTA_Y,
-  deltaY,
-});
 
 /**
  * Scrolls the table horizontally to position
  *
- * @param {number} deltaY
+ * @param {number} scrollX
  */
 export const scrollToX = (scrollX) => ({
   type: SCROLL_TO_X,
@@ -38,7 +27,7 @@ export const scrollToX = (scrollX) => ({
 /**
  * Scrolls the table vertically to position
  *
- * @param {number} deltaY
+ * @param {number} scrollY
  */
 export const scrollToY = (scrollY) => ({
   type: SCROLL_TO_Y,
