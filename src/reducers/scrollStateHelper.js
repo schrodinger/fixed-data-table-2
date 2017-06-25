@@ -85,18 +85,6 @@ function _updateHeightsAboveViewport(state, firstRowIndex) {
 }
 
 /**
- * @param {!Object} props
- * @return {number}
- * @private
- */
-function _calculateViewportHeight(props) {
-  return (props.height === undefined ? props.maxHeight : props.height) -
-    (props.headerHeight || 0) -
-    (props.footerHeight || 0) -
-    (props.groupHeaderHeight || 0);
-};
-
-/**
  * @param {!Object} state
  * @param {number}
  * @return {number}

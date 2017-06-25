@@ -318,12 +318,6 @@ var FixedDataTable = React.createClass({
   componentWillMount() {
     const props = this.props;
 
-    const viewportHeight =
-      (props.height === undefined ? props.maxHeight : props.height) -
-      (props.headerHeight || 0) -
-      (props.footerHeight || 0) -
-      (props.groupHeaderHeight || 0);
-
     this._didScrollStop = debounceCore(this._didScrollStop, 200, this);
 
     const touchEnabled = props.touchScrollEnabled === true;
