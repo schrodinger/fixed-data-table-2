@@ -25,6 +25,8 @@ export default class FixedDataTableContainer extends React.Component {
     super(props);
 
     this.update = this.update.bind(this);
+
+    // TODO (jordan) destroy on unmount
     this.reduxStore = FixedDataTableStore.get();
     this.reduxStore.subscribe(this.update);
 

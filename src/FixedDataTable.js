@@ -759,7 +759,6 @@ var FixedDataTable = React.createClass({
       elementTemplates,
       firstRowIndex,
       firstRowOffset,
-      groupHeaderHeight,
       horizontalScrollbarVisible,
       isColumnReordering,
       isColumnResizing,
@@ -782,7 +781,7 @@ var FixedDataTable = React.createClass({
     var useMaxHeight = props.height === undefined;
     var height = Math.round(useMaxHeight ? props.maxHeight : props.height);
     var totalHeightReserved = props.footerHeight + props.headerHeight +
-      groupHeaderHeight + 2 * BORDER_HEIGHT;
+      props.groupHeaderHeight + 2 * BORDER_HEIGHT;
     var bodyHeight = height - totalHeightReserved;
     var totalHeightNeeded = scrollContentHeight + totalHeightReserved;
 
@@ -898,7 +897,6 @@ var FixedDataTable = React.createClass({
       // These properties may overwrite properties defined in props
       bodyHeight,
       height,
-      groupHeaderHeight,
       useGroupHeader,
     };
   },

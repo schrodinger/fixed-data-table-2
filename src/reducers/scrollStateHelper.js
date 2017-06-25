@@ -11,6 +11,7 @@
 
 'use strict';
 
+import IntegerBufferSet from 'IntegerBufferSet';
 import PrefixIntervalTree from 'PrefixIntervalTree';
 import clamp from 'clamp';
 
@@ -258,6 +259,9 @@ export function updateRowCount(state, { rowsCount }) {
     state.storedHeights[i] = state.rowHeight;
   }
 
+  state.rows = [];
+  state.bufferSet = new IntegerBufferSet();
+
   return state;
 }
 
@@ -301,9 +305,6 @@ export function scrollTo(state, scrollPosition) {
       firstRowIndex: 0,
       firstRowOffset: 0,
       scrollY: scrollY,
-      // TODO (jordan) This overrides the scrollContentHeight changes made by _updateRowHeight
-      // Try removing
-      scrollContentHeight: scrollContentHeight,
     });
   } else if (scrollPosition >= scrollContentHeight - viewportHeight) {
     // If scrollPosition is equal to or greater than max scroll value, we need
@@ -324,9 +325,6 @@ export function scrollTo(state, scrollPosition) {
     firstRowIndex,
     firstRowOffset,
     scrollY: scrollPosition,
-    // TODO (jordan) This overrides the scrollContentHeight changes made by _updateRowHeight
-    // Try removing
-    scrollContentHeight,
   });
 };
 
@@ -353,8 +351,6 @@ export function scrollToRow(state, rowIndex) {
     var position = _getRowAtEndPosition(state, rowIndex);
     return scrollTo(state, position);
   }
-  // TODO (jordan) Should this be a no-op?
-  return scrollTo(state, scrollY);
 };
 
 /**

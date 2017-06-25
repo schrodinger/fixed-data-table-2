@@ -70,9 +70,23 @@ function scrollState(state = DEFAULT_STATE, action) {
       let { newProps, oldProps } = action;
       let needsVisibleRowsUpdate = false;
 
-      // TODO (jordan) Handle changes to default row height & viewport height
       if (newProps.rowsCount !== oldProps.rowsCount) {
         state = updateRowCount(state, newProps);
+        needsVisibleRowsUpdate = true;
+      }
+
+      if (newProps.rowHeight !== oldProps.rowHeight ||
+          newProps.rowHeightGetter !== oldProps.rowHeightGetter) {
+        state = updateRowHeights(state, newProps);
+        needsVisibleRowsUpdate = true;
+      }
+
+      if (newProps.height !== oldProps.height ||
+          newProps.maxHeight !== oldProps.maxHeight ||
+          newProps.headerHeight !== oldProps.headerHeight ||
+          newProps.footerHeight !== oldProps.footerHeight ||
+          newProps.groupHeaderHeight !== oldProps.groupHeaderHeight) {
+        state = updateViewHeight(state, newProps);
         needsVisibleRowsUpdate = true;
       }
 
