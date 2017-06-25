@@ -339,6 +339,7 @@ export function scrollToRow(state, rowIndex) {
     var position = _getRowAtEndPosition(state, rowIndex);
     return scrollTo(state, position);
   }
+  return state;
 };
 
 /**
