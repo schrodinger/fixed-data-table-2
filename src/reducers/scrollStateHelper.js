@@ -11,6 +11,7 @@
 
 'use strict';
 
+import IntegerBufferSet from 'IntegerBufferSet';
 import PrefixIntervalTree from 'PrefixIntervalTree';
 import clamp from 'clamp';
 
@@ -56,6 +57,8 @@ function _updateRowHeight(state, rowIndex) {
  */
 function _updateHeightsInViewport(state, firstRowIndex, firstRowOffset) {
   let { rowsCount, storedHeights, viewportHeight } = state;
+
+  // NOTE (jordan) firstRowOffset is a negative value representing how much of the first row is off screen
   var top = firstRowOffset;
   var index = firstRowIndex;
   while (top <= viewportHeight && index < rowsCount) {
@@ -82,18 +85,6 @@ function _updateHeightsAboveViewport(state, firstRowIndex) {
 }
 
 /**
- * @param {!Object} props
- * @return {number}
- * @private
- */
-function _calculateViewportHeight(props) {
-  return (props.height === undefined ? props.maxHeight : props.height) -
-    (props.headerHeight || 0) -
-    (props.footerHeight || 0) -
-    (props.groupHeaderHeight || 0);
-};
-
-/**
  * @param {!Object} state
  * @param {number}
  * @return {number}
@@ -104,6 +95,8 @@ function _getRowAtEndPosition(state, rowIndex) {
   // We need to update enough rows above the selected one to be sure that when
   // we scroll to selected position all rows between first shown and selected
   // one have most recent heights computed and will not resize
+  // NOTE (jordan) We don't need to update leading buffered rows here because
+  // _updateHeightsAboveViewport updates scrollY accordingly
   _updateRowHeight(state, rowIndex);
   var currentRowIndex = rowIndex;
   var top = storedHeights[currentRowIndex];
@@ -165,12 +158,10 @@ function _updateRows(state) {
     rowsCount,
     viewportHeight,
     rowHeightGetter,
-    bufferRowsCount,
-    viewportRowsBegin
+    bufferRowsCount
   } = state;
 
-  let top = firstRowOffset;
-  let totalHeight = top;
+  let totalHeight = firstRowOffset;
   //let rowIndex = firstRowIndex;
   let rowIndex = Math.max(firstRowIndex - bufferRowsCount, 0);
   let endIndex = Math.min(firstRowIndex + maxVisibleRowCount + bufferRowsCount, rowsCount);
@@ -256,6 +247,9 @@ export function updateRowCount(state, { rowsCount }) {
     state.storedHeights[i] = state.rowHeight;
   }
 
+  state.rows = [];
+  state.bufferSet = new IntegerBufferSet();
+
   return state;
 }
 
@@ -299,7 +293,6 @@ export function scrollTo(state, scrollPosition) {
       firstRowIndex: 0,
       firstRowOffset: 0,
       scrollY: scrollY,
-      scrollContentHeight: scrollContentHeight,
     });
   } else if (scrollPosition >= scrollContentHeight - viewportHeight) {
     // If scrollPosition is equal to or greater than max scroll value, we need
@@ -320,7 +313,6 @@ export function scrollTo(state, scrollPosition) {
     firstRowIndex,
     firstRowOffset,
     scrollY: scrollPosition,
-    scrollContentHeight,
   });
 };
 
@@ -347,7 +339,7 @@ export function scrollToRow(state, rowIndex) {
     var position = _getRowAtEndPosition(state, rowIndex);
     return scrollTo(state, position);
   }
-  return scrollTo(state, scrollY);
+  return state;
 };
 
 /**

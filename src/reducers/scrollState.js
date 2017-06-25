@@ -62,21 +62,45 @@ function scrollState(state = DEFAULT_STATE, action) {
         state = scrollToRow(state, props.scrollToRow);
       }
 
-
       state = updateVisibleRows(state);
 
       return state;
 
     case ActionTypes.PROP_CHANGE:
       let { newProps, oldProps } = action;
+      let needsVisibleRowsUpdate = false;
+
+      if (newProps.rowsCount !== oldProps.rowsCount) {
+        state = updateRowCount(state, newProps);
+        needsVisibleRowsUpdate = true;
+      }
+
+      if (newProps.rowHeight !== oldProps.rowHeight ||
+          newProps.rowHeightGetter !== oldProps.rowHeightGetter) {
+        state = updateRowHeights(state, newProps);
+        needsVisibleRowsUpdate = true;
+      }
+
+      if (newProps.height !== oldProps.height ||
+          newProps.maxHeight !== oldProps.maxHeight ||
+          newProps.headerHeight !== oldProps.headerHeight ||
+          newProps.footerHeight !== oldProps.footerHeight ||
+          newProps.groupHeaderHeight !== oldProps.groupHeaderHeight) {
+        state = updateViewHeight(state, newProps);
+        needsVisibleRowsUpdate = true;
+      }
 
       if (newProps.scrollTop && newProps.scrollTop !== oldProps.scrollTop) {
         state = scrollTo(state, newProps.scrollTop);
-        state = updateVisibleRows(state);
+        needsVisibleRowsUpdate = true;
       }
 
       if (newProps.scrollToRow && newProps.scrollToRow !== oldProps.scrollToRow) {
         state = scrollToRow(state, newProps.scrollToRow);
+        needsVisibleRowsUpdate = true;
+      }
+
+      if (needsVisibleRowsUpdate) {
         state = updateVisibleRows(state);
       }
 
