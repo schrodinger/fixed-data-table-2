@@ -184,6 +184,24 @@ var FixedDataTable = createReactClass({
     rowHeightGetter: PropTypes.func,
 
     /**
+     * Pixel height of cells unless `cellHeightGetter` is specified and returns
+     * different value.
+     */
+    cellHeight: PropTypes.number,
+
+    /**
+     * If specified, `cellHeightGetter(index)` is called for each row and the
+     * returned value overrides `cellHeight` for particular row.
+     */
+    cellHeightGetter: PropTypes.func,
+
+    /**
+     * If specified, `rowExpandGetter(index)` is called for each row and the
+     * returned value should be an element.
+     */
+    rowExpandGetter: PropTypes.func,
+
+    /**
      * To get any additional CSS classes that should be added to a row,
      * `rowClassNameGetter(index)` is called.
      */
@@ -684,6 +702,9 @@ var FixedDataTable = createReactClass({
         rowsCount={state.rowsCount}
         rowGetter={state.rowGetter}
         rowHeightGetter={state.rowHeightGetter}
+        cellHeight={state.cellHeight}
+        cellHeightGetter={state.cellHeightGetter}
+        rowExpandGetter={state.rowExpandGetter}
         rowKeyGetter={state.rowKeyGetter}
         scrollLeft={state.scrollX}
         scrollableColumns={state.bodyScrollableColumns}

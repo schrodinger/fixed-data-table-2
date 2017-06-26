@@ -72,6 +72,12 @@ exports.ExamplePages = {
     title: 'Collapsable rows',
     description: 'A table example that will let the user collapse individual rows',
   },
+  EXPAND_EXAMPLE: {
+    location: 'example-expand-rows.html',
+    fileName: 'ExpandExample.js',
+    title: 'Expand rows',
+    description: 'A table example that will let the user expand individual rows',
+  },
   HIDE_COLUMN_EXAMPLE: {
     location: 'example-collapse.html',
     fileName: 'HideColumnExample.js',

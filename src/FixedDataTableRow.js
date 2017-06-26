@@ -41,6 +41,16 @@ class FixedDataTableRowImpl extends React.Component {
     height: PropTypes.number.isRequired,
 
     /**
+     * Height of the row cell.
+     */
+    cellHeight: PropTypes.number,
+
+    /**
+     * the row expand element.
+     */
+    rowExpand: PropTypes.node,
+
+    /**
      * The row index.
      */
     index: PropTypes.number.isRequired,
@@ -113,7 +123,7 @@ class FixedDataTableRowImpl extends React.Component {
       width: this.props.width,
       height: this.props.height,
     };
-
+    var cellHeight = this.props.cellHeight || this.props.height
     var className = cx({
       'fixedDataTableRowLayout/main': true,
       'public/fixedDataTableRow/main': true,
@@ -126,7 +136,7 @@ class FixedDataTableRowImpl extends React.Component {
       <FixedDataTableCellGroup
         key="fixed_cells"
         isScrolling={this.props.isScrolling}
-        height={this.props.height}
+        height={cellHeight}
         left={0}
         width={fixedColumnsWidth}
         zIndex={2}
@@ -137,7 +147,7 @@ class FixedDataTableRowImpl extends React.Component {
         onColumnReorderEnd={this.props.onColumnReorderEnd}
         isColumnReordering={this.props.isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
-        rowHeight={this.props.height}
+        rowHeight={cellHeight}
         rowIndex={this.props.index}
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
@@ -145,7 +155,7 @@ class FixedDataTableRowImpl extends React.Component {
       <FixedDataTableCellGroup
         key="scrollable_cells"
         isScrolling={this.props.isScrolling}
-        height={this.props.height}
+        height={cellHeight}
         left={this.props.scrollLeft}
         offsetLeft={fixedColumnsWidth}
         width={this.props.width - fixedColumnsWidth}
@@ -157,11 +167,12 @@ class FixedDataTableRowImpl extends React.Component {
         onColumnReorderEnd={this.props.onColumnReorderEnd}
         isColumnReordering={this.props.isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
-        rowHeight={this.props.height}
+        rowHeight={cellHeight}
         rowIndex={this.props.index}
       />;
     var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
+	var rowExpand = this._renderRowExpand(cellHeight)
 
     return (
       <div
@@ -177,6 +188,7 @@ class FixedDataTableRowImpl extends React.Component {
           {scrollableColumns}
           {columnsLeftShadow}
         </div>
+		{rowExpand}
         {columnsRightShadow}
       </div>
     );
@@ -189,6 +201,20 @@ class FixedDataTableRowImpl extends React.Component {
     }
     return width;
   };
+
+  _renderRowExpand = (/*number*/ cellHeight) => /*?object*/ {
+    if (this.props.rowExpand) {
+      var className = cx(
+        'fixedDataTableRowLayout/rowExpand'
+      );
+      var style = {
+        top: cellHeight,
+		width: this.props.width - 2,
+		height: this.props.height - this.props.cellHeight
+      };
+      return <div className={className} style={style} >{this.props.rowExpand}</div>;
+    }
+  }
 
   _renderColumnsLeftShadow = (/*number*/ left) => /*?object*/ {
     var className = cx({
