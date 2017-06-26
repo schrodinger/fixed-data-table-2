@@ -188,7 +188,7 @@ class FixedDataTableRowImpl extends React.Component {
           {scrollableColumns}
           {columnsLeftShadow}
         </div>
-		{rowExpand}
+        {rowExpand}
         {columnsRightShadow}
       </div>
     );
@@ -209,8 +209,8 @@ class FixedDataTableRowImpl extends React.Component {
       );
       var style = {
         top: cellHeight,
-		width: this.props.width - 2,
-		height: this.props.height - this.props.cellHeight
+        width: this.props.width - 2,
+        height: this.props.height - this.props.cellHeight
       };
       return <div className={className} style={style} >{this.props.rowExpand}</div>;
     }
