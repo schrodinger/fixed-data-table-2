@@ -896,11 +896,6 @@ var FixedDataTable = createReactClass({
   },
 
   _calculateState(/*object*/ props, /*?object*/ oldState) /*object*/ {
-    // update row heights
-    [...Array(props.rowsCount).keys()].forEach((index) => {
-      this._scrollHelper._updateRowHeight(index);
-    });
-
     invariant(
       props.height !== undefined || props.maxHeight !== undefined,
       'You must set either a height or a maxHeight'
@@ -978,6 +973,11 @@ var FixedDataTable = createReactClass({
       firstRowOffset = scrollState.offset;
       scrollY = scrollState.position;
     }
+
+    // update row heights
+    [...Array(props.rowsCount).keys()].forEach((index) => {
+      this._scrollHelper._updateRowHeight(index);
+    });
 
     var columnResizingData;
     if (props.isColumnResizing) {
