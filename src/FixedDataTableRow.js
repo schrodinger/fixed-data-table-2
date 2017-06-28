@@ -172,7 +172,7 @@ class FixedDataTableRowImpl extends React.Component {
       />;
     var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
-	var rowExpand = this._renderRowExpand(cellHeight)
+    var rowExpand = this._renderRowExpand(cellHeight)
 
     return (
       <div
@@ -207,9 +207,10 @@ class FixedDataTableRowImpl extends React.Component {
       var className = cx(
         'fixedDataTableRowLayout/rowExpand'
       );
+	  var borderWidth = 2;
       var style = {
         top: cellHeight,
-        width: this.props.width - 2,
+        width: this.props.width - borderWidth,
         height: this.props.height - this.props.cellHeight
       };
       return <div className={className} style={style} >{this.props.rowExpand}</div>;
