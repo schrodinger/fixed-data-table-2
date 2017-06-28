@@ -10,7 +10,7 @@ const { Table, Column, Cell } = require('fixed-data-table-2');
 const React = require('react');
 const {StyleSheet, css} = require('aphrodite');
 
-class ExpandExample extends React.Component {
+class ExpandedExample extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -116,4 +116,4 @@ const styles = StyleSheet.create({
   }
 });
 
-module.exports = ExpandExample;
+module.exports = ExpandedExample;
