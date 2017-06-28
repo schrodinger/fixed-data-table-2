@@ -207,7 +207,7 @@ class FixedDataTableRowImpl extends React.Component {
       var className = cx(
         'fixedDataTableRowLayout/rowExpand'
       );
-	  var borderWidth = 2;
+      var borderWidth = 2;
       var style = {
         top: cellHeight,
         width: this.props.width - borderWidth,
