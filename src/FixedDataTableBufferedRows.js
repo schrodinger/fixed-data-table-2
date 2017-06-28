@@ -42,7 +42,7 @@ var FixedDataTableBufferedRows = createReactClass({
     rowHeightGetter: PropTypes.func,
     cellHeight: PropTypes.number,
     cellHeightGetter: PropTypes.func,
-    rowExpandGetter: PropTypes.func,
+    rowExpandedGetter: PropTypes.func,
     rowKeyGetter: PropTypes.func,
     rowPositionGetter: PropTypes.func.isRequired,
     scrollLeft: PropTypes.number.isRequired,
@@ -145,7 +145,7 @@ var FixedDataTableBufferedRows = createReactClass({
       var rowIndex = rowsToRender[i];
       var currentRowHeight = this._getRowHeight(rowIndex);
       var currentRowCellHeight = this._getCellHeight(rowIndex);
-      var currentRowExpand = this._getRowExpand(rowIndex);
+      var currentRowExpanded = this._getRowExpanded(rowIndex);
       var rowOffsetTop = baseOffsetTop + rowPositions[rowIndex];
       var rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
 
@@ -160,7 +160,7 @@ var FixedDataTableBufferedRows = createReactClass({
           width={props.width}
           height={currentRowHeight}
 		  cellHeight={currentRowCellHeight || currentRowHeight}
-		  rowExpand={currentRowExpand}
+		  rowExpanded={currentRowExpanded}
           scrollLeft={Math.round(props.scrollLeft)}
           offsetTop={Math.round(rowOffsetTop)}
           fixedColumns={props.fixedColumns}
@@ -196,9 +196,9 @@ var FixedDataTableBufferedRows = createReactClass({
       this.props.cellHeight;
   },
 
-  _getRowExpand(/*number*/ index) /*number*/ {
-    return this.props.rowExpandGetter ?
-      this.props.rowExpandGetter(index) :
+  _getRowExpanded(/*number*/ index) /*number*/ {
+    return this.props.rowExpandedGetter ?
+      this.props.rowExpandedGetter(index) :
       null;
   },
 });

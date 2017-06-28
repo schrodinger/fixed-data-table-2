@@ -22,7 +22,7 @@
   top: 0;
 }
 
-.fixedDataTableRowLayout/rowExpand {
+.fixedDataTableRowLayout/rowExpanded {
   box-sizing: border-box;
   left: 0;
   position: absolute;

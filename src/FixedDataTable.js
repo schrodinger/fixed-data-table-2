@@ -196,10 +196,10 @@ var FixedDataTable = createReactClass({
     cellHeightGetter: PropTypes.func,
 
     /**
-     * If specified, `rowExpandGetter(index)` is called for each row and the
+     * If specified, `rowExpandedGetter(index)` is called for each row and the
      * returned value should be an element.
      */
-    rowExpandGetter: PropTypes.func,
+    rowExpandedGetter: PropTypes.func,
 
     /**
      * To get any additional CSS classes that should be added to a row,
@@ -704,7 +704,7 @@ var FixedDataTable = createReactClass({
         rowHeightGetter={state.rowHeightGetter}
         cellHeight={state.cellHeight}
         cellHeightGetter={state.cellHeightGetter}
-        rowExpandGetter={state.rowExpandGetter}
+        rowExpandedGetter={state.rowExpandedGetter}
         rowKeyGetter={state.rowKeyGetter}
         scrollLeft={state.scrollX}
         scrollableColumns={state.bodyScrollableColumns}

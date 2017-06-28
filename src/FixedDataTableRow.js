@@ -46,9 +46,9 @@ class FixedDataTableRowImpl extends React.Component {
     cellHeight: PropTypes.number,
 
     /**
-     * the row expand element.
+     * the row expanded element.
      */
-    rowExpand: PropTypes.node,
+    rowExpanded: PropTypes.node,
 
     /**
      * The row index.
@@ -172,7 +172,7 @@ class FixedDataTableRowImpl extends React.Component {
       />;
     var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
-    var rowExpand = this._renderRowExpand(cellHeight)
+    var rowExpanded = this._renderRowExpanded(cellHeight)
 
     return (
       <div
@@ -188,7 +188,7 @@ class FixedDataTableRowImpl extends React.Component {
           {scrollableColumns}
           {columnsLeftShadow}
         </div>
-        {rowExpand}
+        {rowExpanded}
         {columnsRightShadow}
       </div>
     );
@@ -202,10 +202,10 @@ class FixedDataTableRowImpl extends React.Component {
     return width;
   };
 
-  _renderRowExpand = (/*number*/ cellHeight) => /*?object*/ {
-    if (this.props.rowExpand) {
+  _renderRowExpanded = (/*number*/ cellHeight) => /*?object*/ {
+    if (this.props.rowExpanded) {
       var className = cx(
-        'fixedDataTableRowLayout/rowExpand'
+        'fixedDataTableRowLayout/rowExpanded'
       );
       var borderWidth = 2;
       var style = {
@@ -213,7 +213,7 @@ class FixedDataTableRowImpl extends React.Component {
         width: this.props.width - borderWidth,
         height: this.props.height - this.props.cellHeight
       };
-      return <div className={className} style={style} >{this.props.rowExpand}</div>;
+      return <div className={className} style={style} >{this.props.rowExpanded}</div>;
     }
   }
 
