@@ -33,7 +33,7 @@ class ExpandedExample extends React.Component {
   }
 
   _rowHeightGetter(index) {
-    var cellHeight = this._cellHeightGetter(index)
+    let cellHeight = this._cellHeightGetter(index)
     return this.state.collapsedRows.has(index) ? cellHeight + 80 : cellHeight;
   }
 
