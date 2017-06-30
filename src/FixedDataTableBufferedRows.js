@@ -159,8 +159,8 @@ var FixedDataTableBufferedRows = createReactClass({
           index={rowIndex}
           width={props.width}
           height={currentRowHeight}
-		  cellHeight={currentRowCellHeight || currentRowHeight}
-		  rowExpanded={currentRowExpanded}
+          cellHeight={currentRowCellHeight || currentRowHeight}
+          rowExpanded={currentRowExpanded}
           scrollLeft={Math.round(props.scrollLeft)}
           offsetTop={Math.round(rowOffsetTop)}
           fixedColumns={props.fixedColumns}
@@ -196,7 +196,7 @@ var FixedDataTableBufferedRows = createReactClass({
       this.props.cellHeight;
   },
 
-  _getRowExpanded(/*number*/ index) /*number*/ {
+  _getRowExpanded(/*number*/ index) /*Node*/ {
     return this.props.rowExpandedGetter ?
       this.props.rowExpandedGetter(index) :
       null;
