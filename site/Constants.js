@@ -66,12 +66,6 @@ exports.ExamplePages = {
     title: 'Touch scroll',
     description: 'A table example that will let users scrolls with touch screens. This feature is currently in beta.',
   },
-  COLLAPSE_EXAMPLE: {
-    location: 'example-collapse-rows.html',
-    fileName: 'CollapseExample.js',
-    title: 'Collapsable rows',
-    description: 'A table example that will let the user collapse individual rows',
-  },
   EXPANDED_EXAMPLE: {
     location: 'example-expanded-rows.html',
     fileName: 'ExpandedExample.js',
