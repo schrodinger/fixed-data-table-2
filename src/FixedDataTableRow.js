@@ -217,7 +217,6 @@ class FixedDataTableRowImpl extends React.Component {
 
   _getRowExpanded = (/*object*/ rowExpandedStyle) => /*?object*/ {
     if (this.props.rowExpanded) {
-      var borderWidth = 2;
       var rowExpandedProps = {
         rowIndex: this.props.index,
         height: rowExpandedStyle.width,

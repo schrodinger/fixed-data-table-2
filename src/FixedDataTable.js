@@ -203,7 +203,7 @@ var FixedDataTable = createReactClass({
     *
     * ```
     * props: {
-    *   rowIndex; number // (the row index of the cell)
+    *   rowIndex; number // (the row index)
     *   height: number // (supplied from the Table or rowHeightGetter)
     *   width: number // (supplied from the Table)
     * }
