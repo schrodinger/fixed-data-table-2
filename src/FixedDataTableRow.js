@@ -46,9 +46,12 @@ class FixedDataTableRowImpl extends React.Component {
     cellHeight: PropTypes.number,
 
     /**
-     * the row expanded element.
+     * the row expanded.
      */
-    rowExpanded: PropTypes.node,
+    rowExpanded: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.func,
+    ]),
 
     /**
      * The row index.
@@ -172,7 +175,13 @@ class FixedDataTableRowImpl extends React.Component {
       />;
     var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
-    var rowExpanded = this._renderRowExpanded(cellHeight)
+    var rowExpandedStyle = {
+      top: cellHeight,
+      width: this.props.width - /* borderWidth */ 2,
+      height: this.props.height - this.props.cellHeight,
+      zIndex: 2
+    }
+    var rowExpanded = this._getRowExpanded(rowExpandedStyle)
 
     return (
       <div
@@ -188,7 +197,11 @@ class FixedDataTableRowImpl extends React.Component {
           {scrollableColumns}
           {columnsLeftShadow}
         </div>
-        {rowExpanded}
+        {rowExpanded && <div
+          className={cx('fixedDataTableRowLayout/rowExpanded')}
+          style={rowExpandedStyle}>
+          {rowExpanded}
+        </div>}
         {columnsRightShadow}
       </div>
     );
@@ -202,18 +215,23 @@ class FixedDataTableRowImpl extends React.Component {
     return width;
   };
 
-  _renderRowExpanded = (/*number*/ cellHeight) => /*?object*/ {
+  _getRowExpanded = (/*object*/ rowExpandedStyle) => /*?object*/ {
     if (this.props.rowExpanded) {
-      var className = cx(
-        'fixedDataTableRowLayout/rowExpanded'
-      );
       var borderWidth = 2;
-      var style = {
-        top: cellHeight,
-        width: this.props.width - borderWidth,
-        height: this.props.height - this.props.cellHeight
+      var rowExpandedProps = {
+        rowIndex: this.props.index,
+        height: rowExpandedStyle.width,
+        width: rowExpandedStyle.height
       };
-      return <div className={className} style={style} >{this.props.rowExpanded}</div>;
+
+      var rowExpanded;
+      if (React.isValidElement(this.props.rowExpanded)) {
+        rowExpanded = React.cloneElement(this.props.rowExpanded, rowExpandedProps);
+      } else if (typeof this.props.rowExpanded === 'function') {
+        rowExpanded = this.props.rowExpanded(rowExpandedProps);
+      }
+
+      return rowExpanded;
     }
   }
 

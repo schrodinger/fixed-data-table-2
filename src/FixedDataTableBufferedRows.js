@@ -42,7 +42,10 @@ var FixedDataTableBufferedRows = createReactClass({
     rowHeightGetter: PropTypes.func,
     cellHeight: PropTypes.number,
     cellHeightGetter: PropTypes.func,
-    rowExpandedGetter: PropTypes.func,
+    rowExpanded: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.func,
+    ]),
     rowKeyGetter: PropTypes.func,
     rowPositionGetter: PropTypes.func.isRequired,
     scrollLeft: PropTypes.number.isRequired,
@@ -145,7 +148,6 @@ var FixedDataTableBufferedRows = createReactClass({
       var rowIndex = rowsToRender[i];
       var currentRowHeight = this._getRowHeight(rowIndex);
       var currentRowCellHeight = this._getCellHeight(rowIndex);
-      var currentRowExpanded = this._getRowExpanded(rowIndex);
       var rowOffsetTop = baseOffsetTop + rowPositions[rowIndex];
       var rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
 
@@ -160,7 +162,7 @@ var FixedDataTableBufferedRows = createReactClass({
           width={props.width}
           height={currentRowHeight}
           cellHeight={currentRowCellHeight || currentRowHeight}
-          rowExpanded={currentRowExpanded}
+          rowExpanded={props.rowExpanded}
           scrollLeft={Math.round(props.scrollLeft)}
           offsetTop={Math.round(rowOffsetTop)}
           fixedColumns={props.fixedColumns}
@@ -194,12 +196,6 @@ var FixedDataTableBufferedRows = createReactClass({
     return this.props.cellHeightGetter ?
       this.props.cellHeightGetter(index) :
       this.props.cellHeight;
-  },
-
-  _getRowExpanded(/*number*/ index) /*Node*/ {
-    return this.props.rowExpandedGetter ?
-      this.props.rowExpandedGetter(index) :
-      null;
   },
 });
 

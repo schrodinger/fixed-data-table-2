@@ -14,6 +14,7 @@ class ExpandedExample extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      scrollToRow: null,
       collapsedRows: new Set(),
       dataList: new FakeObjectDataListStore(2000)
     }
@@ -28,6 +29,7 @@ class ExpandedExample extends React.Component {
     let {collapsedRows} = this.state;
     collapsedRows.has(rowIndex) ? collapsedRows.delete(rowIndex) : collapsedRows.add(rowIndex);
     this.setState({
+      scrollToRow: rowIndex,
       collapsedRows: collapsedRows
     });
   }
@@ -41,22 +43,23 @@ class ExpandedExample extends React.Component {
     return this.state.collapsedRows.has(index) ? 51 : 50;
   }
 
-  _rowExpandedGetter(index) {
-    if (!this.state.collapsedRows.has(index)) return null
+  _rowExpandedGetter({rowIndex}) {
+    if (!this.state.collapsedRows.has(rowIndex)) return null
     return <div className={css(styles.expandStyles)}>expanded content</div>
   }
 
   render() {
-    let {dataList, collapsedRows} = this.state;
+    let {dataList, collapsedRows, scrollToRow} = this.state;
 
     return (
       <div>
         <Table
+          scrollToRow={scrollToRow}
           rowHeight={50}
           rowsCount={dataList.getSize()}
           rowHeightGetter={this._rowHeightGetter}
           cellHeightGetter={this._cellHeightGetter}
-          rowExpandedGetter={this._rowExpandedGetter}
+          rowExpanded={this._rowExpandedGetter}
           headerHeight={50}
           width={1000}
           height={500}
@@ -109,7 +112,7 @@ const styles = StyleSheet.create({
     'background-color': 'white',
     border: '1px solid #d3d3d3',
     'box-sizing': 'border-box',
-	padding: '20px',
+    padding: '20px',
     overflow:'hidden',
     width: '100%',
     height: '100%'

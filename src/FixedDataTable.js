@@ -195,11 +195,30 @@ var FixedDataTable = createReactClass({
      */
     cellHeightGetter: PropTypes.func,
 
-    /**
-     * If specified, `rowExpandedGetter(index)` is called for each row and the
-     * returned value should be an element.
-     */
-    rowExpandedGetter: PropTypes.func,
+   /**
+    * The row expanded for table row.
+    * This can either be a React element, or a function that generates
+    * a React Element. By default, the React element passed in can expect to
+    * receive the following props:
+    *
+    * ```
+    * props: {
+    *   rowIndex; number // (the row index of the cell)
+    *   height: number // (supplied from the Table or rowHeightGetter)
+    *   width: number // (supplied from the Table)
+    * }
+    * ```
+    *
+    * Because you are passing in your own React element, you can feel free to
+    * pass in whatever props you may want or need.
+    *
+    * If you pass in a function, you will receive the same props object as the
+    * first argument.
+    */
+   rowExpanded: PropTypes.oneOfType([
+     PropTypes.element,
+     PropTypes.func,
+   ]),
 
     /**
      * To get any additional CSS classes that should be added to a row,
@@ -704,7 +723,7 @@ var FixedDataTable = createReactClass({
         rowHeightGetter={state.rowHeightGetter}
         cellHeight={state.cellHeight}
         cellHeightGetter={state.cellHeightGetter}
-        rowExpandedGetter={state.rowExpandedGetter}
+        rowExpanded={state.rowExpanded}
         rowKeyGetter={state.rowKeyGetter}
         scrollLeft={state.scrollX}
         scrollableColumns={state.bodyScrollableColumns}
@@ -980,7 +999,8 @@ var FixedDataTable = createReactClass({
     }
 
     var lastScrollToRow  = oldState ? oldState.scrollToRow : undefined;
-    if (props.scrollToRow != null && (props.scrollToRow !== lastScrollToRow || viewportHeight !== oldViewportHeight)) {
+    var rowHeightChanged = props.scrollToRow != null ? this._scrollHelper.getRowHeightChanged(props.scrollToRow) : 0
+    if (props.scrollToRow != null && (props.scrollToRow !== lastScrollToRow || rowHeightChanged !== 0 || viewportHeight !== oldViewportHeight)) {
       scrollState = this._scrollHelper.scrollRowIntoView(props.scrollToRow);
       firstRowIndex = scrollState.index;
       firstRowOffset = scrollState.offset;
