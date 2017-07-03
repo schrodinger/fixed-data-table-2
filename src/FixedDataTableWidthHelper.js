@@ -14,57 +14,104 @@
 
 import React from 'React';
 
-function getTotalWidth(/*array*/ columns) /*number*/ {
-  var totalWidth = 0;
-  for (var i = 0; i < columns.length; ++i) {
-    totalWidth += columns[i].props.width;
-  }
-  return totalWidth;
+/**
+ * Flatten nested columns 
+ */
+function getNestedColumns(/*array*/ columns, /*array*/ initial)/*array*/ {
+  return columns.reduce((prev, column) => {
+    if (!column.type.__TableColumn__) {
+      return getNestedColumns(
+        React.Children.toArray(column.props.children),
+        prev
+      );
+    }
+
+    return prev.concat(column);
+  }, initial || []);
 }
 
+/** 
+ * Summ all column widths
+ */
+function getTotalWidth(/*array*/ columns) /*number*/ {
+  return columns.reduce((totalWidth, column) => {
+    return totalWidth + column.props.width;
+  }, 0);
+}
+
+/** 
+ * Summ all column flexGrows
+ */
 function getTotalFlexGrow(/*array*/ columns) /*number*/ {
-  var totalFlexGrow = 0;
-  for (var i = 0; i < columns.length; ++i) {
-    totalFlexGrow += columns[i].props.flexGrow || 0;
-  }
-  return totalFlexGrow;
+  return columns.reduce((totalFlexGrow, column) => {
+    if (column.props.flexGrow > 0) {
+      return totalFlexGrow + column.props.flexGrow;
+    }
+
+    return totalFlexGrow;
+  }, 0);
+}
+
+/**
+ * Divide total available flexWidth by total number of flexGrow
+ */
+function getSingleColumnFlexWidth(
+  /*array*/ columns,
+  /*number*/ totalFlexWidth
+) /*number*/ {
+  const totalFlexGrow = getTotalFlexGrow(columns);
+
+  return (totalFlexGrow !== 0) ? (totalFlexWidth / totalFlexGrow) : 0;
+}
+
+/** 
+ * Calculate new width including flexWidth
+ */
+function addFlexWidth(
+  /*number*/ width,
+  /*number*/ columnFlexGrow = 0,
+  /*number*/ singleColumnFlexWidth
+) /*number*/ {
+  const columnFlexWidth = columnFlexGrow * singleColumnFlexWidth;
+  return width + columnFlexWidth;
 }
 
 function distributeFlexWidth(
   /*array*/ columns,
-  /*number*/ flexWidth
+  /*number*/ totalFlexWidth
 ) /*object*/ {
-  if (flexWidth <= 0) {
+  if (totalFlexWidth <= 0) {
     return {
       columns: columns,
       width: getTotalWidth(columns),
     };
   }
-  var remainingFlexGrow = getTotalFlexGrow(columns);
-  var remainingFlexWidth = flexWidth;
-  var newColumns = [];
-  var totalWidth = 0;
-  for (var i = 0; i < columns.length; ++i) {
-    var column = columns[i];
+
+  let totalWidth = 0;
+  const newColumns = columns.map((column) => {
     if (!column.props.flexGrow) {
       totalWidth += column.props.width;
-      newColumns.push(column);
-      continue;
+      return column;
     }
-    var columnFlexWidth = Math.floor(
+    const columnFlexWidth = Math.floor(
       column.props.flexGrow / remainingFlexGrow * remainingFlexWidth
     );
-    var newColumnWidth = Math.floor(column.props.width + columnFlexWidth);
+
+    const newColumnWidth = addFlexWidth(
+      column.props.width,
+      column.props.flexGrow,
+      getSingleColumnFlexWidth(columns, totalFlexWidth)
+    );
     totalWidth += newColumnWidth;
 
     remainingFlexGrow -= column.props.flexGrow;
     remainingFlexWidth -= columnFlexWidth;
 
-    newColumns.push(React.cloneElement(
+    return React.cloneElement(
       column,
-      {width: newColumnWidth}
-    ));
-  }
+      { width: newColumnWidth }
+    );
+  });
 
   return {
     columns: newColumns,
@@ -72,64 +119,76 @@ function distributeFlexWidth(
   };
 }
 
+/**
+ * Build rekursive tree and calculate group values from descendants
+ */
+function iterateNestedColumns(
+  /*array*/ columns,
+  /*number*/ singleColumnFlexWidth,
+  /*function*/ callback = () => { }
+) /*array*/ {
+  return columns.map((column) => {
+    let newProps;
+
+    if (!column.type.__TableColumn__) {
+      let width = 0;
+
+      function getWidth(passedWidth, passedFlexGrow) {
+        width += passedWidth;
+      }
+
+      const children = React.Children.toArray(column.props.children);
+      const innerColumns = iterateNestedColumns(
+        children,
+        singleColumnFlexWidth,
+        getWidth
+      );
+
+      newProps = {
+        width,
+        children: innerColumns,
+      };
+    } else {
+      newProps = {
+        width: addFlexWidth(
+          column.props.width,
+          column.props.flexGrow,
+          singleColumnFlexWidth
+        ),
+      };
+    }
+
+    callback(newProps.width);
+
+    return React.cloneElement(
+      column,
+      newProps
+    );
+  });
+}
+
 function adjustColumnGroupWidths(
   /*array*/ columnGroups,
   /*number*/ expectedWidth
 ) /*object*/ {
-  var allColumns = [];
-  var i;
-  for (i = 0; i < columnGroups.length; ++i) {
-    React.Children.forEach(
-      columnGroups[i].props.children,
-      (column) => {
-        allColumns.push(column);
-      }
-    );
-  }
-  var columnsWidth = getTotalWidth(allColumns);
-  var remainingFlexGrow = getTotalFlexGrow(allColumns);
-  var remainingFlexWidth = Math.max(expectedWidth - columnsWidth, 0);
+  const allColumns = getNestedColumns(columnGroups);
+  const totalCollumnsWidth = getTotalWidth(allColumns);
+  const totalFlexWidth = Math.max(expectedWidth - totalCollumnsWidth, 0);
 
-  var newAllColumns = [];
-  var newColumnGroups = [];
+  const singleColumnFlexWidth = getSingleColumnFlexWidth(
+    allColumns,
+    totalFlexWidth
+  );
 
-  for (i = 0; i < columnGroups.length; ++i) {
-    var columnGroup = columnGroups[i];
-    var currentColumns = [];
-
-    React.Children.forEach(
-      columnGroup.props.children,
-      (column) => {
-        currentColumns.push(column);
-      }
-    );
-
-    var columnGroupFlexGrow = getTotalFlexGrow(currentColumns);
-    var columnGroupFlexWidth = Math.floor(
-      columnGroupFlexGrow / remainingFlexGrow * remainingFlexWidth
-    );
-
-    var newColumnSettings = distributeFlexWidth(
-      currentColumns,
-      columnGroupFlexWidth
-    );
-
-    remainingFlexGrow -= columnGroupFlexGrow;
-    remainingFlexWidth -= columnGroupFlexWidth;
-
-    for (var j = 0; j < newColumnSettings.columns.length; ++j) {
-      newAllColumns.push(newColumnSettings.columns[j]);
-    }
-
-    newColumnGroups.push(React.cloneElement(
-      columnGroup,
-      {width: newColumnSettings.width}
-    ));
-  }
+  const newColumnGroups = iterateNestedColumns(
+    columnGroups,
+    singleColumnFlexWidth
+  );
+  const newColumns = getNestedColumns(newColumnGroups);
 
   return {
-    columns: newAllColumns,
     columnGroups: newColumnGroups,
+    columns: newColumns,
   };
 }
 
@@ -137,14 +196,16 @@ function adjustColumnWidths(
   /*array*/ columns,
   /*number*/ expectedWidth
 ) /*array*/ {
-  var columnsWidth = getTotalWidth(columns);
+  const columnsWidth = getTotalWidth(columns);
+
   if (columnsWidth < expectedWidth) {
     return distributeFlexWidth(columns, expectedWidth - columnsWidth).columns;
   }
+
   return columns;
 }
 
-var FixedDataTableWidthHelper = {
+const FixedDataTableWidthHelper = {
   getTotalWidth,
   getTotalFlexGrow,
   distributeFlexWidth,
