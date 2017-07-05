@@ -71,13 +71,21 @@ var FixedDataTableBufferedRows = React.createClass({
     this._staticRowArray.length = rowsToRender.length;
     var baseOffsetTop = props.firstRowOffset - props.rowHeights[props.firstRowIndex] + props.offsetTop;
 
-    for (var i = 0; i < rowsToRender.length; ++i) {
-      var rowIndex = rowsToRender[i];
-      var currentRowHeight = this._getRowHeight(rowIndex);
-      var rowOffsetTop = baseOffsetTop + props.rowHeights[rowIndex];
-      var rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
+    for (let i = 0; i < rowsToRender.length; ++i) {
+      const rowIndex = rowsToRender[i];
+      if (rowIndex === undefined) {
+        this._staticRowArray[i] = React.cloneElement(this._staticRowArray[i], {
+          key: i,
+          visible: false,
+        });
+        continue;
+      }
 
-      var hasBottomBorder =
+      const currentRowHeight = this._getRowHeight(rowIndex);
+      const rowOffsetTop = baseOffsetTop + props.rowHeights[rowIndex];
+      const rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
+
+      const hasBottomBorder =
         rowIndex === props.rowsCount - 1 && props.showLastRowBorder;
 
       this._staticRowArray[i] =
@@ -89,6 +97,7 @@ var FixedDataTableBufferedRows = React.createClass({
           height={currentRowHeight}
           scrollLeft={Math.round(props.scrollLeft)}
           offsetTop={Math.round(rowOffsetTop)}
+          visible={true}
           fixedColumns={props.fixedColumns}
           scrollableColumns={props.scrollableColumns}
           onClick={props.onRowClick}

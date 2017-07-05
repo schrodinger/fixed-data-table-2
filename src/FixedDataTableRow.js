@@ -59,6 +59,11 @@ var FixedDataTableRowImpl = React.createClass({
     scrollLeft: PropTypes.number.isRequired,
 
     /**
+     * Pass false to hide the row.  This is used internally for buffering rows
+     */
+    visible: PropTypes.bool.isRequired,
+
+    /**
      * Width of the row.
      */
     width: PropTypes.number.isRequired,
@@ -111,6 +116,10 @@ var FixedDataTableRowImpl = React.createClass({
   },
 
   render() /*object*/ {
+    if (!this.props.visible) {
+      return null;
+    }
+
     var style = {
       width: this.props.width,
       height: this.props.height,
