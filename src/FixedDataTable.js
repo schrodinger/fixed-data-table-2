@@ -184,16 +184,16 @@ var FixedDataTable = createReactClass({
     rowHeightGetter: PropTypes.func,
 
     /**
-     * Pixel height of cells unless `cellHeightGetter` is specified and returns
-     * different value.
+     * Pixel height of sub-row unless `subRowHeightGetter` is specified and returns
+     * different value.  Defaults to 0 and no sub-row being displayed.
      */
-    cellHeight: PropTypes.number,
+    subRowHeight: PropTypes.number,
 
     /**
-     * If specified, `cellHeightGetter(index)` is called for each row and the
-     * returned value overrides `cellHeight` for particular row.
+     * If specified, `subRowHeightGetter(index)` is called for each row and the
+     * returned value overrides `subRowHeight` for particular row.
      */
-    cellHeightGetter: PropTypes.func,
+    subRowHeightGetter: PropTypes.func,
 
    /**
     * The row expanded for table row.
@@ -388,7 +388,9 @@ var FixedDataTable = createReactClass({
       props.rowsCount,
       props.rowHeight,
       viewportHeight,
-      props.rowHeightGetter
+      props.rowHeightGetter,
+      props.subRowHeight,
+      props.subRowHeightGetter,
     );
 
     this._didScrollStop = debounceCore(this._didScrollStop, 200, this);
@@ -721,8 +723,8 @@ var FixedDataTable = createReactClass({
         rowsCount={state.rowsCount}
         rowGetter={state.rowGetter}
         rowHeightGetter={state.rowHeightGetter}
-        cellHeight={state.cellHeight}
-        cellHeightGetter={state.cellHeightGetter}
+        subRowHeight={state.subRowHeight}
+        subRowHeightGetter={state.subRowHeightGetter}
         rowExpanded={state.rowExpanded}
         rowKeyGetter={state.rowKeyGetter}
         scrollLeft={state.scrollX}
@@ -988,14 +990,21 @@ var FixedDataTable = createReactClass({
         props.rowsCount,
         props.rowHeight,
         viewportHeight,
-        props.rowHeightGetter
+        props.rowHeightGetter,
+        props.subRowHeight,
+        props.subRowHeightGetter,
       );
       scrollState = this._scrollHelper.scrollToRow(firstRowIndex, firstRowOffset);
       firstRowIndex = scrollState.index;
       firstRowOffset = scrollState.offset;
       scrollY = scrollState.position;
-    } else if (oldState && props.rowHeightGetter !== oldState.rowHeightGetter) {
-      this._scrollHelper.setRowHeightGetter(props.rowHeightGetter);
+    } else if (oldState) {
+      if (props.rowHeightGetter !== oldState.rowHeightGetter) {
+        this._scrollHelper.setRowHeightGetter(props.rowHeightGetter);
+      }
+      if (props.subRowHeightGetter !== oldState.subRowHeightGetter) {
+        this._scrollHelper.setSubRowHeightGetter(props.subRowHeightGetter);
+      }
     }
 
     var lastScrollToRow  = oldState ? oldState.scrollToRow : undefined;

@@ -41,9 +41,9 @@ class FixedDataTableRowImpl extends React.Component {
     height: PropTypes.number.isRequired,
 
     /**
-     * Height of the row cell.
+     * Height of the content to be displayed below the row.
      */
-    cellHeight: PropTypes.number,
+    subRowHeight: PropTypes.number,
 
     /**
      * the row expanded.
@@ -122,11 +122,11 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   render() /*object*/ {
+    var subRowHeight = this.props.subRowHeight || 0;
     var style = {
       width: this.props.width,
-      height: this.props.height,
+      height: this.props.height + subRowHeight,
     };
-    var cellHeight = this.props.cellHeight || this.props.height
     var className = cx({
       'fixedDataTableRowLayout/main': true,
       'public/fixedDataTableRow/main': true,
@@ -139,7 +139,7 @@ class FixedDataTableRowImpl extends React.Component {
       <FixedDataTableCellGroup
         key="fixed_cells"
         isScrolling={this.props.isScrolling}
-        height={cellHeight}
+        height={this.props.height}
         left={0}
         width={fixedColumnsWidth}
         zIndex={2}
@@ -150,7 +150,7 @@ class FixedDataTableRowImpl extends React.Component {
         onColumnReorderEnd={this.props.onColumnReorderEnd}
         isColumnReordering={this.props.isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
-        rowHeight={cellHeight}
+        rowHeight={this.props.height}
         rowIndex={this.props.index}
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
@@ -158,7 +158,7 @@ class FixedDataTableRowImpl extends React.Component {
       <FixedDataTableCellGroup
         key="scrollable_cells"
         isScrolling={this.props.isScrolling}
-        height={cellHeight}
+        height={this.props.height}
         left={this.props.scrollLeft}
         offsetLeft={fixedColumnsWidth}
         width={this.props.width - fixedColumnsWidth}
@@ -170,15 +170,15 @@ class FixedDataTableRowImpl extends React.Component {
         onColumnReorderEnd={this.props.onColumnReorderEnd}
         isColumnReordering={this.props.isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
-        rowHeight={cellHeight}
+        rowHeight={this.props.height}
         rowIndex={this.props.index}
       />;
     var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
     var rowExpandedStyle = {
-      top: cellHeight,
+      top: this.props.height,
       width: this.props.width - /* borderWidth */ 2,
-      height: this.props.height - this.props.cellHeight,
+      height: subRowHeight,
       zIndex: 2
     }
     var rowExpanded = this._getRowExpanded(rowExpandedStyle)

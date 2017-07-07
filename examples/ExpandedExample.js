@@ -20,8 +20,7 @@ class ExpandedExample extends React.Component {
     }
 
     this._handleCollapseClick = this._handleCollapseClick.bind(this);
-    this._rowHeightGetter = this._rowHeightGetter.bind(this);
-    this._cellHeightGetter = this._cellHeightGetter.bind(this);
+    this._subRowHeightGetter = this._subRowHeightGetter.bind(this);
     this._rowExpandedGetter = this._rowExpandedGetter.bind(this);
   }
 
@@ -34,18 +33,15 @@ class ExpandedExample extends React.Component {
     });
   }
 
-  _rowHeightGetter(index) {
-    let cellHeight = this._cellHeightGetter(index)
-    return this.state.collapsedRows.has(index) ? cellHeight + 80 : cellHeight;
-  }
-
-  _cellHeightGetter(index) {
-    return this.state.collapsedRows.has(index) ? 51 : 50;
+  _subRowHeightGetter(index) {
+    return this.state.collapsedRows.has(index) ? 80 : 0;
   }
 
   _rowExpandedGetter({rowIndex}) {
-    if (!this.state.collapsedRows.has(rowIndex)) return null
-    return <div className={css(styles.expandStyles)}>expanded content</div>
+    if (!this.state.collapsedRows.has(rowIndex)) {
+      return null;
+    }
+    return <div className={css(styles.expandStyles)}>expanded content</div>;
   }
 
   render() {
@@ -57,8 +53,7 @@ class ExpandedExample extends React.Component {
           scrollToRow={scrollToRow}
           rowHeight={50}
           rowsCount={dataList.getSize()}
-          rowHeightGetter={this._rowHeightGetter}
-          cellHeightGetter={this._cellHeightGetter}
+          subRowHeightGetter={this._subRowHeightGetter}
           rowExpanded={this._rowExpandedGetter}
           headerHeight={50}
           width={1000}
