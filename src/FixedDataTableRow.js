@@ -175,13 +175,12 @@ class FixedDataTableRowImpl extends React.Component {
       />;
     var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
+    var rowExpanded = this._getRowExpanded(subRowHeight);
     var rowExpandedStyle = {
-      top: this.props.height,
-      width: this.props.width - /* borderWidth */ 2,
       height: subRowHeight,
-      zIndex: 2
-    }
-    var rowExpanded = this._getRowExpanded(rowExpandedStyle)
+      top: this.props.height,
+      width: this.props.width,
+    };
 
     return (
       <div
@@ -215,12 +214,12 @@ class FixedDataTableRowImpl extends React.Component {
     return width;
   };
 
-  _getRowExpanded = (/*object*/ rowExpandedStyle) => /*?object*/ {
+  _getRowExpanded = (/*number*/ subRowHeight) => /*?object*/ {
     if (this.props.rowExpanded) {
       var rowExpandedProps = {
         rowIndex: this.props.index,
-        height: rowExpandedStyle.width,
-        width: rowExpandedStyle.height
+        height: subRowHeight,
+        width: this.props.width,
       };
 
       var rowExpanded;

@@ -26,9 +26,17 @@ class ExpandedExample extends React.Component {
 
   _handleCollapseClick(rowIndex) {
     let {collapsedRows} = this.state;
-    collapsedRows.has(rowIndex) ? collapsedRows.delete(rowIndex) : collapsedRows.add(rowIndex);
+
+    let scrollToRow = rowIndex;
+    if (collapsedRows.has(rowIndex)) {
+      collapsedRows.delete(rowIndex);
+      scrollToRow = null;
+    } else {
+      collapsedRows.add(rowIndex);
+    }
+
     this.setState({
-      scrollToRow: rowIndex,
+      scrollToRow: scrollToRow,
       collapsedRows: collapsedRows
     });
   }
@@ -37,11 +45,22 @@ class ExpandedExample extends React.Component {
     return this.state.collapsedRows.has(index) ? 80 : 0;
   }
 
-  _rowExpandedGetter({rowIndex}) {
+  _rowExpandedGetter({rowIndex, width, height}) {
     if (!this.state.collapsedRows.has(rowIndex)) {
       return null;
     }
-    return <div className={css(styles.expandStyles)}>expanded content</div>;
+
+    const style = {
+      height: height,
+      width: width - 2,
+    };
+    return (
+      <div style={style}>
+        <div className={css(styles.expandStyles)}>
+            expanded content
+        </div>
+      </div>
+    );
   }
 
   render() {

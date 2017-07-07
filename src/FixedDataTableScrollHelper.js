@@ -282,6 +282,7 @@ class FixedDataTableScrollHelper {
    */
   scrollRowIntoView(/*number*/ rowIndex) /*object*/ {
     rowIndex = clamp(rowIndex, 0, Math.max(this._rowCount - 1, 0));
+    this._updateRowHeight(rowIndex);
     var rowBegin = this._rowOffsets.sumUntil(rowIndex);
     var rowEnd = rowBegin + this._storedHeights[rowIndex];
     if (rowBegin < this._position) {
