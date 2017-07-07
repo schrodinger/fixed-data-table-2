@@ -31,7 +31,7 @@ function getNestedColumns(/*array*/ columns, /*array*/ initial)/*array*/ {
 }
 
 /** 
- * Summ all column widths
+ * Sum all column widths
  */
 function getTotalWidth(/*array*/ columns) /*number*/ {
   return columns.reduce((totalWidth, column) => {
@@ -55,7 +55,7 @@ function getTotalFlexGrow(/*array*/ columns) /*number*/ {
 /**
  * Divide total available flexWidth by total number of flexGrow
  */
-function getSingleColumnFlexWidth(
+function getUnitFlexWidth(
   /*array*/ columns,
   /*number*/ totalFlexWidth
 ) /*number*/ {
@@ -70,9 +70,9 @@ function getSingleColumnFlexWidth(
 function addFlexWidth(
   /*number*/ width,
   /*number*/ columnFlexGrow = 0,
-  /*number*/ singleColumnFlexWidth
+  /*number*/ unitFlexWidth
 ) /*number*/ {
-  const columnFlexWidth = columnFlexGrow * singleColumnFlexWidth;
+  const columnFlexWidth = columnFlexGrow * unitFlexWidth;
   return width + columnFlexWidth;
 }
 
@@ -88,24 +88,19 @@ function distributeFlexWidth(
   }
 
   let totalWidth = 0;
+  const unitFlexWidth = getUnitFlexWidth(columns, totalFlexWidth);
   const newColumns = columns.map((column) => {
     if (!column.props.flexGrow) {
       totalWidth += column.props.width;
       return column;
     }
-    const columnFlexWidth = Math.floor(
-      column.props.flexGrow / remainingFlexGrow * remainingFlexWidth
-    );
 
     const newColumnWidth = addFlexWidth(
       column.props.width,
       column.props.flexGrow,
-      getSingleColumnFlexWidth(columns, totalFlexWidth)
+      unitFlexWidth
     );
     totalWidth += newColumnWidth;
-
-    remainingFlexGrow -= column.props.flexGrow;
-    remainingFlexWidth -= columnFlexWidth;
 
     return React.cloneElement(
       column,
@@ -120,12 +115,12 @@ function distributeFlexWidth(
 }
 
 /**
- * Build rekursive tree and calculate group values from descendants
+ * Build recursive tree and calculate group values from descendants
  */
 function iterateNestedColumns(
   /*array*/ columns,
-  /*number*/ singleColumnFlexWidth,
-  /*function*/ callback = () => { }
+  /*number*/ unitFlexWidth,
+  /*function*/ counter = () => { }
 ) /*array*/ {
   return columns.map((column) => {
     let newProps;
@@ -133,15 +128,16 @@ function iterateNestedColumns(
     if (!column.type.__TableColumn__) {
       let width = 0;
 
-      function getWidth(passedWidth, passedFlexGrow) {
+      // Callback to calculate data based on all children
+      function addToCounter(passedWidth) {
         width += passedWidth;
       }
 
       const children = React.Children.toArray(column.props.children);
       const innerColumns = iterateNestedColumns(
         children,
-        singleColumnFlexWidth,
-        getWidth
+        unitFlexWidth,
+        addToCounter
       );
 
       newProps = {
@@ -153,12 +149,12 @@ function iterateNestedColumns(
         width: addFlexWidth(
           column.props.width,
           column.props.flexGrow,
-          singleColumnFlexWidth
+          unitFlexWidth
         ),
       };
     }
 
-    callback(newProps.width);
+    counter(newProps.width);
 
     return React.cloneElement(
       column,
@@ -175,14 +171,14 @@ function adjustColumnGroupWidths(
   const totalCollumnsWidth = getTotalWidth(allColumns);
   const totalFlexWidth = Math.max(expectedWidth - totalCollumnsWidth, 0);
 
-  const singleColumnFlexWidth = getSingleColumnFlexWidth(
+  const unitFlexWidth = getUnitFlexWidth(
     allColumns,
     totalFlexWidth
   );
 
   const newColumnGroups = iterateNestedColumns(
     columnGroups,
-    singleColumnFlexWidth
+    unitFlexWidth
   );
   const newColumns = getNestedColumns(newColumnGroups);
 
