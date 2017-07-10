@@ -70,7 +70,7 @@ exports.ExamplePages = {
     location: 'example-expanded-rows.html',
     fileName: 'ExpandedExample.js',
     title: 'Expanded rows',
-    description: 'A table example that will let the user expanded individual rows',
+    description: 'A table example that will let the user expand individual rows',
   },
   HIDE_COLUMN_EXAMPLE: {
     location: 'example-collapse.html',
