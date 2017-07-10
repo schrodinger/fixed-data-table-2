@@ -30,6 +30,7 @@ class ExpandedExample extends React.Component {
     let scrollToRow = rowIndex;
     if (collapsedRows.has(rowIndex)) {
       collapsedRows.delete(rowIndex);
+      scrollToRow = null
     } else {
       collapsedRows.add(rowIndex);
     }

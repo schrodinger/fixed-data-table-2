@@ -118,10 +118,6 @@ class FixedDataTableScrollHelper {
     return 0;
   }
 
-  getRowHeightChanged(/*number*/ rowIndex) /*number*/ {
-    return this._updateRowHeight(rowIndex);
-  }
-
   getRowPosition(/*number*/ rowIndex) /*number*/ {
     this._updateRowHeight(rowIndex);
     return this._rowOffsets.sumUntil(rowIndex);
