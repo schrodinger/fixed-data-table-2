@@ -36,11 +36,8 @@ npm install fixed-data-table-2
 ```
 Add the default stylesheet `dist/fixed-data-table.css` using a link tag or import it with a CSS module.
 
-### Basic Example
-Note this example demonstrates typical FDT usage, but won't work out of the box.  
-In particular it doesn't include a definition for MyCustomCell.  It also assumes it's run on a page with a div with an id example and link referencing the fixed-data-table.css stylesheet.  
-Additionally it requires a toolchain for transpiling JSX similar to what [create-react-app](https://github.com/facebookincubator/create-react-app) provides.  
-For more detailed examples, please see the [examples section](http://schrodinger.github.io/fixed-data-table-2/example-object-data.html) of the documentation.  
+### Code Sample
+This is a doesn't include a definition for MyCustomCell and won't work out of the box. For more detailed examples, please see the examples section of the documentation. If you need help getting started with a React build system, we recommend [create-react-app](https://github.com/facebookincubator/create-react-app).  
 ```javascript
 import React from 'react';
 import ReactDOM from 'react-dom';
