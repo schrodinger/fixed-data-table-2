@@ -34,10 +34,10 @@ Install `fixed-data-table-2` using npm.
 ```shell
 npm install fixed-data-table-2
 ```
-Add the default stylesheet `dist/fixed-data-table.css`, then import it into any module.
+Add the default stylesheet `dist/fixed-data-table.css` using a link tag or import it with a CSS module.
 
-### Basic Example
-
+### Code Sample
+This is a doesn't include a definition for MyCustomCell and won't work out of the box. For more detailed examples, please see the examples section of the documentation. If you need help getting started with a React build system, we recommend [create-react-app](https://github.com/facebookincubator/create-react-app).  
 ```javascript
 import React from 'react';
 import ReactDOM from 'react-dom';
