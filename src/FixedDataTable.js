@@ -1023,6 +1023,11 @@ var FixedDataTable = createReactClass({
       scrollY = scrollState.position;
     }
 
+    // update row heights
+    [...Array(props.rowsCount).keys()].forEach((index) => {
+      this._scrollHelper._updateRowHeight(index);
+    });
+
     var columnResizingData;
     if (props.isColumnResizing) {
       columnResizingData = oldState && oldState.columnResizingData;
