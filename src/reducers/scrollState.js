@@ -15,6 +15,8 @@ import { computeRenderedRows, scrollTo, scrollToRow } from 'scrollStateHelper';
 import * as ActionTypes from 'ActionTypes'
 import IntegerBufferSet from 'IntegerBufferSet';
 import PrefixIntervalTree from 'PrefixIntervalTree';
+import columnStateHelper from 'columnStateHelper'
+import convertColumnElementsToData from 'convertColumnElementsToData';
 import pick from 'lodash/pick';
 import shallowEqual from 'shallowEqual';
 
@@ -22,14 +24,23 @@ import shallowEqual from 'shallowEqual';
  * Input state set from props
  */
 const DEFAULT_INPUT_STATE = {
+  columnGroups: [],
+  elementTemplates: {
+    cell: [],
+    footer: [],
+    groupHeader: [],
+    header: [],
+  },
   footerHeight: 0,
   groupHeaderHeight: 0,
   headerHeight: 0,
-  height: 0,
+  height: undefined,
   maxHeight: 0,
   rowHeight: 0,
   rowHeightGetter: () => 0,
   rowsCount: 0,
+  width: 0,
+  useGroupHeader: false,
 };
 
 /**
@@ -37,13 +48,19 @@ const DEFAULT_INPUT_STATE = {
  * NOTE (jordan) rows may contain undefineds if we don't need all the buffer positions
  */
 const DEFAULT_OUTPUT_STATE = {
+  columnReorderingData: {},
+  columnResizingData: {},
   firstRowIndex: 0,
   firstRowOffset: 0,
+  isColumnReordering: false,
+  isColumnResizing: false,
+  maxScrollX: 0,
+  maxScrollY: 0,
   rowHeights: {},
   rows: [], // rowsToRender
   scrollContentHeight: 0,
+  scrollX: 0,
   scrollY: 0,
-  maxScrollY: 0,
 };
 
 /**
@@ -67,7 +84,9 @@ function scrollState(state = DEFAULT_STATE, action) {
   switch (action.type) {
     case ActionTypes.INITIALIZE: {
       const { props } = action;
+
       let newState = setStateFromProps(state, props);
+      newState = columnStateHelper.initialize(newState, props, {});
       newState = initializeRowHeights(newState);
       const scrollAnchor = getScrollAnchor(state, props);
       return computeRenderedRows(newState, scrollAnchor);
@@ -75,6 +94,7 @@ function scrollState(state = DEFAULT_STATE, action) {
     case ActionTypes.PROP_CHANGE: {
       const { newProps, oldProps } = action;
       let newState = setStateFromProps(state, newProps);
+      newState = columnStateHelper.initialize(newState, newProps, oldProps);
 
       if (oldProps.rowsCount !== newProps.rowsCount ||
           oldProps.rowHeight !== newProps.rowHeight) {
@@ -94,6 +114,10 @@ function scrollState(state = DEFAULT_STATE, action) {
         newState = computeRenderedRows(newState, scrollAnchor);
       }
 
+      // TODO REDUX_MIGRATION solve w/ evil-diff
+      // TODO (jordan) check if relevant props unchanged and
+      // children column widths and flex widths are unchanged
+      // alternatively shallow diff and reconcile props
       return newState;
     }
     case ActionTypes.SCROLL_END: {
@@ -111,6 +135,30 @@ function scrollState(state = DEFAULT_STATE, action) {
 
       const scrollAnchor = scrollTo(state, scrollY);
       return computeRenderedRows(state, scrollAnchor);
+    }
+    case ActionTypes.COLUMN_RESIZE: {
+      const { resizeData } = action;
+      return columnStateHelper.resizeColumn(state, resizeData);
+    }
+    case ActionTypes.COLUMN_REORDER_START: {
+      const { reorderData } = action;
+      return columnStateHelper.reorderColumn(state, reorderData);
+    }
+    case ActionTypes.COLUMN_REORDER_END: {
+      return Object.assign({}, state, {
+        isColumnReordering: false,
+        columnReorderingData: {}
+      });
+    }
+    case ActionTypes.COLUMN_REORDER_MOVE: {
+      const { deltaX } = action;
+      return columnStateHelper.reorderColumnMove(state, deltaX);
+    }
+    case ActionTypes.SCROLL_TO_X: {
+      const { scrollX } = action;
+      return Object.assign({}, state, {
+        scrollX,
+      });
     }
     default: {
       return state;
@@ -191,13 +239,27 @@ function setStateFromProps(state, props) {
     'headerHeight',
     'height',
     'maxHeight',
+    'overflowX',
+    'ownerHeight',
     'rowHeight',
     'rowHeightGetter',
     'rowsCount',
+    'showScrollbarX',
+    'width',
   ]);
-  const rowHeight = props.rowHeight;
+
+  const {
+    columnGroups,
+    elementTemplates,
+    useGroupHeader,
+  } = convertColumnElementsToData(props);
+
+  const { rowHeight } = props;
   return Object.assign({}, state, {
-     rowHeightGetter: () => rowHeight,
+    columnGroups,
+    elementTemplates,
+    rowHeightGetter: () => rowHeight,
+    useGroupHeader
   }, propsToState);
 }
 

@@ -74,10 +74,20 @@ var FixedDataTableBufferedRows = React.createClass({
     for (let i = 0; i < rowsToRender.length; ++i) {
       const rowIndex = rowsToRender[i];
       if (rowIndex === undefined) {
-        this._staticRowArray[i] = React.cloneElement(this._staticRowArray[i], {
-          key: i,
-          visible: false,
-        });
+        this._staticRowArray[i] = (
+          <FixedDataTableRow
+            key={i}
+            isScrolling={props.isScrolling}
+            index={i}
+            width={props.width}
+            height={0}
+            offsetTop={0}
+            scrollLeft={Math.round(props.scrollLeft)}
+            visible={false}
+            fixedColumns={props.fixedColumns}
+            scrollableColumns={props.scrollableColumns}
+          />
+        );
         continue;
       }
 
