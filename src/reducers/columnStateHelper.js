@@ -91,7 +91,7 @@ function initialize(oldState, props, columnGroups, useGroupHeader, elementTempla
   var maxScrollX = Math.max(0, scrollContentWidth - props.width);
   scrollX = Math.min(scrollX, maxScrollX);
 
-  // isColumnResizing should be overwritten by value from props if avaailble
+  // isColumnResizing should be overwritten by value from props if available
   var isColumnResizing = props.isColumnResizing !== undefined ?
     props.isColumnResizing : oldState && oldState.isColumnResizing;
 

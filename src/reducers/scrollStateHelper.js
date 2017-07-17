@@ -11,363 +11,376 @@
 
 'use strict';
 
-import IntegerBufferSet from 'IntegerBufferSet';
-import PrefixIntervalTree from 'PrefixIntervalTree';
+import bufferRowsCountSelector from 'bufferRowsCount';
 import clamp from 'clamp';
-
-const MIN_BUFFER_ROWS = 3;
-const MAX_BUFFER_ROWS = 6;
-const BUFFER_ROWS = 5;
-const NO_ROWS_SCROLL_RESULT = {
-  rowIndex: 0,
-  firstRowOffset: 0,
-  scrollY: 0,
-  scrollContentHeight: 0,
-  maxScrollY: 0
-};
+import viewportHeightSelector from 'viewportHeight';
 
 /**
- * Modifies state with updated scrollHeights and returns total height change
+ * Returns data about the rows to render
+ * rows is a map of rowIndexes to render to their heights
+ * firstRowIndex & firstRowOffset are calculated based on the lastIndex if
+ * specified in scrollAnchor.
+ * Otherwise, they are unchanged from the firstIndex & firstOffset scrollAnchor values.
  *
  * @param {!Object} state
- * @param {number} rowIndex
- * @return {number}
- * @private
+ * @param {{
+ *   firstIndex: number,
+ *   firstOffset: number,
+ *   lastIndex: number,
+ * }} scrollAnchor
+ * @return {!Object} The updated state object
  */
-function _updateRowHeight(state, rowIndex) {
-  if (rowIndex < 0 || rowIndex >= state.rowsCount) {
-    return 0;
-  }
-  var newHeight = state.rowHeightGetter(rowIndex);
-  if (newHeight !== state.storedHeights[rowIndex]) {
-    var change = newHeight - state.storedHeights[rowIndex];
-    state.rowOffsets.set(rowIndex, newHeight);
-    state.storedHeights[rowIndex] = newHeight;
-    state.scrollContentHeight += change;
-    return change;
-  }
-  return 0;
-}
+function computeRenderedRows(state, scrollAnchor) {
+  const newState = Object.assign({}, state);
+  const rowRange = calculateRenderedRowRange(newState, scrollAnchor);
+  computeRenderedRowOffsets(newState, rowRange);
 
-/**
- * @param {!Object} state
- * @param {number} firstRowIndex
- * @param {number} firstRowOffset
- * @private
- */
-function _updateHeightsInViewport(state, firstRowIndex, firstRowOffset) {
-  let { rowsCount, storedHeights, viewportHeight } = state;
-
-  // NOTE (jordan) firstRowOffset is a negative value representing how much of the first row is off screen
-  var top = firstRowOffset;
-  var index = firstRowIndex;
-  while (top <= viewportHeight && index < rowsCount) {
-    _updateRowHeight(state, index);
-    top += storedHeights[index];
-    index++;
-  }
-}
-
-/**
- * Updates row heights for rows above current view port
- *
- * @param {!Object} state
- * @param {number} firstRowIndex
- * @private
- */
-function _updateHeightsAboveViewport(state, firstRowIndex) {
-  var index = firstRowIndex - 1;
-  while (index >= 0 && index >= firstRowIndex - BUFFER_ROWS) {
-    var delta = _updateRowHeight(state, index);
-    state.scrollY += delta;
-    index--;
-  }
-}
-
-/**
- * @param {!Object} state
- * @param {number}
- * @return {number}
- * @private
- */
-function _getRowAtEndPosition(state, rowIndex) {
-  let { storedHeights, viewportHeight, rowOffsets } = state;
-  // We need to update enough rows above the selected one to be sure that when
-  // we scroll to selected position all rows between first shown and selected
-  // one have most recent heights computed and will not resize
-  // NOTE (jordan) We don't need to update leading buffered rows here because
-  // _updateHeightsAboveViewport updates scrollY accordingly
-  _updateRowHeight(state, rowIndex);
-  var currentRowIndex = rowIndex;
-  var top = storedHeights[currentRowIndex];
-  while (top < viewportHeight && currentRowIndex >= 0) {
-    currentRowIndex--;
-    if (currentRowIndex >= 0) {
-      _updateRowHeight(state, currentRowIndex);
-      top += storedHeights[currentRowIndex];
-    }
-  }
-  var position = rowOffsets.sumTo(rowIndex) - viewportHeight;
-  if (position < 0) {
-    position = 0;
-  }
-  return position;
-};
-
-/**
- * @param {!Object} stte
- * @param {number} rowIndex
- * @param {number} firstViewportRowIndex
- * @param {number} lastViewportRowIndex
- */
-function _addRowToBuffer(state, rowIndex, firstViewportRowIndex, lastViewportRowIndex) {
-  let { bufferSet, bufferRowsCount, rows } = state;
-  var rowPosition = bufferSet.getValuePosition(rowIndex);
-  var viewportRowsCount = lastViewportRowIndex - firstViewportRowIndex + 1;
-  var allowedRowsCount = viewportRowsCount + bufferRowsCount * 2;
-
-  if (rowPosition === null && bufferSet.getSize() >= allowedRowsCount) {
-    rowPosition = bufferSet.replaceFurthestValuePosition(
-      firstViewportRowIndex,
-      lastViewportRowIndex,
-      rowIndex
-    );
-  }
-
-  if (rowPosition === null) {
-    // We can't reuse any of existing positions for this row. We have to
-    // create new position
-    rowPosition = bufferSet.getNewPositionForValue(rowIndex);
-    rows[rowPosition] = rowIndex;
-  } else {
-    // This row already is in the table with rowPosition position or it
-    // can replace row that is in that position
-    rows[rowPosition] = rowIndex;
-  }
-};
-
-/**
- * @param {!Object} state
- * @private
- */
-function _updateRows(state) {
-  let {
+  const {
+    rowsCount,
+    rowHeights,
     firstRowIndex,
     firstRowOffset,
-    maxVisibleRowCount,
-    rowsCount,
-    viewportHeight,
-    rowHeightGetter,
-    bufferRowsCount
-  } = state;
-
-  let totalHeight = firstRowOffset;
-  //let rowIndex = firstRowIndex;
-  let rowIndex = Math.max(firstRowIndex - bufferRowsCount, 0);
-  let endIndex = Math.min(firstRowIndex + maxVisibleRowCount + bufferRowsCount, rowsCount);
-
-  state.viewportRowsBegin = firstRowIndex;
-  while (rowIndex < endIndex || (totalHeight < viewportHeight && rowIndex < rowsCount)) {
-    _addRowToBuffer(
-      state,
-      rowIndex,
-      firstRowIndex,
-      endIndex - 1
-    );
-    totalHeight += rowHeightGetter(rowIndex);
-    ++rowIndex;
-    // Store index after the last viewport row as end, to be able to
-    // distinguish when there are no rows rendered in viewport
-    state.viewportRowsEnd = rowIndex;
-  }
-
-  return state;
-};
-
-/**
- * @param {!Object} state
- * @private
- */
-function _recalculateRowHeights(state) {
-  let { rows, rowHeights, rowOffsets } = state;
-  state.rowHeights = {};
-
-  //Sort the rows, we slice first to avoid changing original
-  let sortedRowsToRender = rows.slice().sort((a, b) => a - b);
-  sortedRowsToRender.forEach((rowIndex) => {
-    _updateRowHeight(state, rowIndex);
-    state.rowHeights[rowIndex] = rowOffsets.sumUntil(rowIndex);
-  });
-
-  return state;
-}
-
-/**
- * @param {!Object} state
- * @param {number} rowHeights
- * @param {function(number) : number=} rowHeightGetter
- * @return {!Object}
- */
-export function updateRowHeights(state, {
-  rowHeight,
-  rowHeightGetter = () => rowHeight
-}) {
-
-  state.rowHeight = rowHeight;
-  state.rowHeightGetter = rowHeightGetter;
-  state.rowOffsets = PrefixIntervalTree.uniform(state.rowsCount, rowHeight);
-  state.scrollContentHeight = state.rowsCount * rowHeight;
-
-  state.maxVisibleRowCount = Math.ceil(state.viewportHeight / rowHeight) + 1;
-  state.bufferRowsCount = clamp(
-    Math.floor(state.maxVisibleRowCount / 2),
-    MIN_BUFFER_ROWS,
-    MAX_BUFFER_ROWS
-  );
-
-  state.storedHeights = new Array(state.rowsCount);
-  for (var i = 0; i < state.rowsCount; i++) {
-    state.storedHeights[i] = rowHeight;
-  }
-
-  return state;
-}
-
-/**
- * @param {!Object} state
- * @param {number} rowsCount
- * @return {!Object}
- */
-export function updateRowCount(state, { rowsCount }) {
-  state.rowsCount = rowsCount;
-  state.scrollContentHeight = rowsCount * state.rowHeight;
-  state.rowOffsets = PrefixIntervalTree.uniform(rowsCount, state.rowHeight);
-  state.storedHeights = new Array(rowsCount);
-  for (var i = 0; i < rowsCount; i++) {
-    state.storedHeights[i] = state.rowHeight;
-  }
-
-  state.rows = [];
-  state.bufferSet = new IntegerBufferSet();
-
-  return state;
-}
-
-export function updateViewHeight(state, {
-  height,
-  maxHeight,
-  headerHeight = 0,
-  footerHeight = 0,
-  groupHeaderHeight = 0
-}) {
-  state.viewportHeight = (height === undefined ? maxHeight : height) -
-    headerHeight - footerHeight - groupHeaderHeight;
-  state.maxVisibleRowCount = Math.ceil(state.viewportHeight / state.rowHeight) + 1;
-  state.bufferRowsCount = clamp(Math.floor(state.maxVisibleRowCount / 2),
-    MIN_BUFFER_ROWS,
-    MAX_BUFFER_ROWS
-  );
-
-  return state;
-}
-
-/**
- * @param {!Object} state
- * @param {number} scrollPosition
- * @return {!Object}
- */
-export function scrollTo(state, scrollPosition) {
-  let { scrollContentHeight, rowsCount, viewportHeight, rowOffsets } = state;
+  } = newState;
 
   if (rowsCount === 0) {
-    return { ...state, ...NO_ROWS_SCROLL_RESULT };
+    newState.scrollY = 0;
+  } else {
+    newState.scrollY = rowHeights[firstRowIndex] - firstRowOffset;
   }
-
-  if (scrollPosition <= 0) {
-    // If scrollPosition less than or equal to 0 first row should be fully visible
-    // on top
-    scrollY = 0;
-    _updateHeightsInViewport(state, 0, 0);
-
-    return Object.assign({}, state, {
-      firstRowIndex: 0,
-      firstRowOffset: 0,
-      scrollY: scrollY,
-    });
-  } else if (scrollPosition >= scrollContentHeight - viewportHeight) {
-    // If scrollPosition is equal to or greater than max scroll value, we need
-    // to make sure to have bottom border of last row visible.
-    var rowIndex = rowsCount - 1;
-    scrollPosition = _getRowAtEndPosition(state, rowIndex);
-  }
-
-  let firstRowIndex = rowOffsets.greatestLowerBound(scrollPosition);
-  firstRowIndex = clamp(firstRowIndex, 0, Math.max(rowsCount - 1, 0));
-  const firstRowPosition = rowOffsets.sumUntil(firstRowIndex);
-  const firstRowOffset = firstRowPosition - scrollPosition;
-
-  _updateHeightsInViewport(state, firstRowIndex, firstRowOffset);
-  _updateHeightsAboveViewport(state, firstRowIndex);
-
-  return Object.assign({}, state, {
-    firstRowIndex,
-    firstRowOffset,
-    scrollY: scrollPosition,
-  });
-};
+  return newState;
+}
 
 /**
+ * Scroll to a specific position in the grid
+ *
  * @param {!Object} state
- * @param {number} rowIndex
- * @return {!Object}
+ * @param {number} scrollY
+ * @return {{
+ *   firstIndex: number,
+ *   firstOffset: number,
+ *   lastIndex: number,
+ *   changed: boolean,
+ * }}
  */
-export function scrollToRow(state, rowIndex) {
-  let {
-    rowsCount,
+function scrollTo(state, scrollY) {
+  const viewportHeight = viewportHeightSelector(state);
+  const {
     rowOffsets,
-    storedHeights,
-    scrollY,
-    viewportHeight,
+    rowsCount,
+    scrollContentHeight,
   } = state;
 
-  rowIndex = clamp(rowIndex, 0, Math.max(rowsCount - 1, 0));
-  var rowBegin = rowOffsets.sumUntil(rowIndex);
-  var rowEnd = rowBegin + storedHeights[rowIndex];
-  if (rowBegin < scrollY) {
-    return scrollTo(state, rowBegin);
-  } else if (scrollY + viewportHeight < rowEnd) {
-    var position = _getRowAtEndPosition(state, rowIndex);
-    return scrollTo(state, position);
+  if (rowsCount === 0) {
+    return {
+      firstIndex: 0,
+      firstOffset: 0,
+      lastIndex: undefined,
+      changed: state.firstRowIndex !== 0 || state.firstRowOffset !== 0,
+    };
   }
-  return state;
-};
 
-/**
- * @param {!Object} state
- * @return {!Object}
- */
-export function scrollEnd(state) {
-  return Object.assign({}, state, {
-    scrolling: false
-  });
-};
+  let firstIndex = 0;
+  let firstOffset = 0;
+  let lastIndex = undefined;
+  if (scrollY <= 0) {
+    // Use defaults (from above) to scroll to first row
+  } else if (scrollY >= scrollContentHeight - viewportHeight) {
+    // Scroll to the last row
+    firstIndex = undefined;
+    lastIndex = rowsCount - 1;
+  } else {
+    // Mark the row which will appear first in the viewport
+    // We use this as our "marker" when scrolling even if updating rowHeights
+    // leads to it not being different from the scrollY specified
+    const newRowIdx = rowOffsets.greatestLowerBound(scrollY);
+    firstIndex = clamp(newRowIdx, 0, Math.max(rowsCount - 1, 0));
 
-/**
- * @param {!Object} state
- * @return {!Object}
- */
-export function scrollStart(state) {
-  return Object.assign({}, state, {
-    scrolling: true
-  });
-};
+    // Record how far into the first row we should scroll
+    // firstOffset is a negative value representing how much larger scrollY is
+    // than the scroll position of the first row in the viewport
+    const firstRowPosition = rowOffsets.sumUntil(firstIndex);
+    firstOffset = firstRowPosition - scrollY;
+  }
 
-/**
- * @param {!Object} state
- * @return {!Object}
- */
-export function updateVisibleRows(state) {
-  state = _updateRows(state);
-  state = _recalculateRowHeights(state);
-  return state;
+  return {
+    firstIndex,
+    firstOffset,
+    lastIndex,
+    // NOTE (jordan) This changed heuristic may give false positives,
+    // but that's fine since it's used as a filter to computeRenderedRows
+    changed: scrollY !== 0,
+  };
 }
+
+/**
+ * Scroll a specified row into the viewport
+ * If the row is before the viewport, it will become the first row in the viewport
+ * If the row is after the viewport, it will become the last row in the viewport
+ * If the row is in the viewport, do nothing
+ *
+ * @param {!Object} state
+ * @param {number} rowIndex
+ * @return {{
+ *   firstIndex: number,
+ *   firstOffset: number,
+ *   lastIndex: number,
+ *   changed: boolean,
+ * }}
+ */
+function scrollToRow(state, rowIndex) {
+  const viewportHeight = viewportHeightSelector(state);
+  const {
+    rowOffsets,
+    rowsCount,
+    storedHeights,
+    scrollY,
+  } = state;
+
+  if (rowsCount === 0) {
+    return {
+      firstIndex: 0,
+      firstOffset: 0,
+      lastIndex: undefined,
+      changed: state.firstRowIndex !== 0 || state.firstRowOffset !== 0,
+    };
+  }
+
+  rowIndex = clamp(rowIndex, 0, Math.max(rowsCount - 1, 0));
+  let rowBegin = rowOffsets.sumUntil(rowIndex);
+  let rowEnd = rowBegin + storedHeights[rowIndex];
+
+  let firstIndex = rowIndex;
+  let lastIndex = undefined;
+  if (rowBegin < scrollY) {
+    // If before the viewport, set as the first row in the viewport
+    // Uses defaults (from above)
+  } else if (scrollY + viewportHeight < rowEnd) {
+    // If after the viewport, set as the last row in the viewport
+    firstIndex = undefined;
+    lastIndex = rowIndex;
+  } else {
+    // If already in the viewport, do nothing.
+    return {
+      firstIndex: state.firstRowIndex,
+      firstOffset: state.firstRowOffset,
+      lastIndex: undefined,
+      changed: false,
+    };
+  }
+
+  return {
+    firstIndex,
+    firstOffset: 0,
+    lastIndex,
+    changed: true,
+  };
+}
+
+/**
+ * Determine the range of rows to render (buffer and viewport)
+ * The leading and trailing buffer is based on a fixed count,
+ * while the viewport rows are based on their height and the viewport height
+ * We use the scrollAnchor to determine what either the first or last row
+ * will be, as well as the offset.
+ *
+ * NOTE (jordan) This alters state so it shouldn't be called
+ * without state having been cloned first.
+ *
+ * @param {!Object} state
+ * @param {{
+ *   firstIndex: number,
+ *   firstOffset: number,
+ *   lastIndex: number,
+ * }} scrollAnchor
+ * @return {{
+ *   endBufferIdx: number,
+ *   endViewportIdx: number,
+ *   firstBufferIdx: number,
+ *   firstViewportIdx: number,
+ * }}
+ * @private
+ */
+function calculateRenderedRowRange(state, scrollAnchor) {
+  const bufferRowsCount = bufferRowsCountSelector(state);
+  const viewportHeight = viewportHeightSelector(state);
+  const rowsCount = state.rowsCount;
+
+  if (rowsCount === 0) {
+    return {
+      endBufferIdx: 0,
+      endViewportIdx: 0,
+      firstBufferIdx: 0,
+      firstViewportIdx: 0,
+    };
+  }
+
+  let {
+    firstIndex,
+    firstOffset,
+    lastIndex,
+  } = scrollAnchor;
+
+  // If our first or last index is greater than our rowsCount,
+  // treat it as if the last row is at the bottom of the viewport
+  if (firstIndex >= rowsCount || lastIndex >= rowsCount) {
+    lastIndex = rowsCount - 1;
+  }
+
+  // Walk the viewport until filled with rows
+  // If lastIndex is set, walk backward so that row is the last in the viewport
+  let step = 1;
+  let startIdx = firstIndex;
+  let totalHeight = firstOffset;
+  if (lastIndex !== undefined) {
+    step = -1;
+    startIdx = lastIndex;
+    totalHeight = 0;
+  }
+
+  // Loop to walk the viewport until we've touched enough rows to fill its height
+  let rowIdx = startIdx;
+  while (totalHeight < viewportHeight && rowIdx < rowsCount && rowIdx >= 0) {
+    totalHeight += updateRowHeight(state, rowIdx);
+    rowIdx += step;
+  }
+
+  const endIdx = rowIdx - step;
+  let firstRowOffset = firstOffset;
+  if (lastIndex !== undefined) {
+    // Calculate offset needed to position last row at bottom of viewport
+    // This should be negative and represent how far the first row needs to be offscreen
+    if (rowIdx >= 0) {
+      firstRowOffset = viewportHeight - totalHeight;
+    } else {
+      firstRowOffset = 0;
+    }
+  }
+
+  // Loop to walk the leading buffer
+  const firstViewportIdx = Math.min(startIdx, endIdx);
+  const firstBufferIdx = Math.max(firstViewportIdx - bufferRowsCount, 0);
+  for (rowIdx = firstBufferIdx; rowIdx < firstViewportIdx; rowIdx++) {
+    updateRowHeight(state, rowIdx);
+  }
+
+  // Loop to walk the trailing buffer
+  const endViewportIdx = Math.max(startIdx, endIdx) + 1;
+  const endBufferIdx = Math.min(endViewportIdx + bufferRowsCount, rowsCount);
+  for (rowIdx = endViewportIdx; rowIdx < endBufferIdx; rowIdx++) {
+    updateRowHeight(state, rowIdx);
+  }
+
+  state.firstRowIndex = firstViewportIdx;
+  state.firstRowOffset = firstRowOffset;
+
+  return {
+    endBufferIdx,
+    endViewportIdx,
+    firstBufferIdx,
+    firstViewportIdx,
+  };
+}
+
+/**
+ * Walk the rows to render and compute the
+ *
+ * NOTE (jordan) This alters state so it shouldn't be called
+ * without state having been cloned first.
+ *
+ * @param {!Object} state
+ * @param {{
+ *   endBufferIdx: number,
+ *   endViewportIdx: number,
+ *   firstBufferIdx: number,
+ *   firstViewportIdx: number,
+ * }} rowRange
+ * @private
+ */
+function computeRenderedRowOffsets(state, rowRange) {
+  const {
+    bufferSet,
+    rowOffsets,
+    storedHeights,
+  } = state;
+  const {
+    endBufferIdx,
+    endViewportIdx,
+    firstBufferIdx,
+    firstViewportIdx,
+  } = rowRange;
+
+  const renderedRowsCount = endBufferIdx - firstBufferIdx;
+  if (renderedRowsCount === 0) {
+    state.rowHeights = {};
+    state.rows = [];
+    return;
+  }
+
+  const bufferMapping = []; // state.rows
+  const rowOffsetsCache = {}; // state.rowHeights
+  let runningOffset = rowOffsets.sumUntil(firstBufferIdx);
+  for (let rowIdx = firstBufferIdx; rowIdx < endBufferIdx; rowIdx++) {
+
+    // Update the offset for rendering the row
+    rowOffsetsCache[rowIdx] = runningOffset;
+    runningOffset += storedHeights[rowIdx];
+
+    // Check if row already has a position in the buffer
+    let rowPosition = bufferSet.getValuePosition(rowIdx);
+
+    // Request a position in the buffer through eviction of another row
+    if (rowPosition === null && bufferSet.getSize() >= renderedRowsCount) {
+      rowPosition = bufferSet.replaceFurthestValuePosition(
+        firstViewportIdx,
+        endViewportIdx - 1,
+        rowIdx
+      );
+    }
+
+    // If we can't reuse any existing position, create a new one
+    if (rowPosition === null) {
+      rowPosition = bufferSet.getNewPositionForValue(rowIdx);
+    }
+
+    bufferMapping[rowPosition] = rowIdx;
+  }
+
+  state.rowHeights = rowOffsetsCache;
+  state.rows = bufferMapping;
+}
+
+/**
+ * Update our cached row height for a specific index
+ * based on the value from rowHeightGetter
+ *
+ * NOTE (jordan) This alters state so it shouldn't be called
+ * without state having been cloned first.
+ *
+ * @param {!Object} state
+ * @param {number} rowIdx
+ * @return {number} The new row height
+ * @private
+ */
+function updateRowHeight(state, rowIdx) {
+  const {
+    storedHeights,
+    rowOffsets,
+    rowHeightGetter,
+  } = state;
+
+  const newHeight = rowHeightGetter(rowIdx);
+  const oldHeight = storedHeights[rowIdx];
+  if (newHeight !== oldHeight) {
+    rowOffsets.set(rowIdx, newHeight);
+    storedHeights[rowIdx] = newHeight;
+    state.scrollContentHeight += newHeight - oldHeight;
+  }
+
+  return storedHeights[rowIdx];
+}
+
+module.exports = {
+  computeRenderedRows,
+  scrollTo,
+  scrollToRow,
+};
