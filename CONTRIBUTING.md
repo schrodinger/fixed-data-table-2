@@ -1,6 +1,14 @@
 # Contributing to FixedDataTable
 We want to make contributing to this project as easy and transparent as possible.
 
+A good place to start is by running the demo server to see examples and documentation:
+
+```shell
+npm run site-dev-server [optional-port-number]
+```
+
+Open your browser to http://localhost:8080 (or your chosen port number).
+
 ## Pull Requests
 
 We actively welcome your pull requests - however, before you begin a pull request, please create an issue so we can determine whether or not the work that you are planning to do is either already being worked on or out of the scope of this project.
