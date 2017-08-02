@@ -43,6 +43,7 @@ var FOOTER = 'footer';
 var CELL = 'cell';
 var DRAG_SCROLL_SPEED = 15;
 var DRAG_SCROLL_BUFFER = 100;
+var DOUBLE_CLICK_TIMEOUT = 500;
 
 /**
  * Data grid component with fixed or scrollable header and columns.
@@ -765,7 +766,7 @@ var FixedDataTable = createReactClass({
   ) {
 
     var nowMs = Date.now();
-    if (this.state.lastColumnResizeStart && nowMs - this.state.lastColumnResizeStart < 500) {
+    if (this.state.lastColumnResizeStart && nowMs - this.state.lastColumnResizeStart < DOUBLE_CLICK_TIMEOUT) {
       (this.props.onColumnResizeDoubleClick || emptyFunction)(columnKey);
     }
 
