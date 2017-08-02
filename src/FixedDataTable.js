@@ -398,13 +398,6 @@ const FixedDataTable = React.createClass({
       scrollTop,
     } = this.props;
 
-    // If scrollLeft is unchanged, ignore it
-    // TODO (jordan) switch to handle this same as we do for scrollTop
-    if (nextProps.scrollLeft === scrollLeft) {
-      nextProps = Object.assign({}, nextProps);
-      delete nextProps.scrollLeft;
-    }
-
     const newOverflowX = nextProps.overflowX;
     const newOverflowY = nextProps.overflowY;
     const touchEnabled = nextProps.touchScrollEnabled === true;
@@ -426,7 +419,7 @@ const FixedDataTable = React.createClass({
     // In the case of controlled scrolling, notify.
     if (ownerHeight !== nextProps.ownerHeight ||
         scrollTop !== nextProps.scrollTop ||
-        nextProps.scrollLeft !== undefined) {
+        scrollLeft !== nextProps.scrollLeft) {
       this._didScrollStart();
     }
     this._didScrollStop();
@@ -764,47 +757,6 @@ const FixedDataTable = React.createClass({
     if (scrollStart !== scrollX && onHorizontalScroll) {
       onHorizontalScroll(scrollX)
     };
-  },
-
-  // TODO (jordan) delete me
-  _calculateState(props) {
-    /* TODO REDUX_MIGRATION
-    // Handle scrolling to a new scroll top when prop set
-    if (props.scrollTop !== this.props.scrollTop) {
-      scrollState = this._scrollHelper.scrollTo(props.scrollTop);
-      firstRowIndex = scrollState.index;
-      firstRowOffset = scrollState.offset;
-      scrollY = scrollState.position;
-    }
-    */
-
-    // TODO REDUX_MIGRATION
-    //this._scrollHelper.setViewportHeight(bodyHeight);
-
-    /* TODO REDUX_MIGRATION
-    Scroll doesn't reset to top
-    https://github.com/schrodinger/fixed-data-table-2/commit/b2c4e2c7a9ecf5e9b93314751b77ed1c5c0c4f73
-
-    // This calculation is synonymous to Element.scrollTop
-    var scrollTop = Math.abs(firstRowOffset - this._scrollHelper.getRowPosition(firstRowIndex));
-    // This case can happen when the user is completely scrolled down and resizes the viewport to be taller vertically.
-    // This is because we set the viewport height after having calculated the rows
-    if (scrollTop !== scrollY) {
-      scrollTop = maxScrollY;
-      scrollState = this._scrollHelper.scrollTo(scrollTop);
-      firstRowIndex = scrollState.index;
-      firstRowOffset = scrollState.offset;
-      scrollY = scrollState.position;
-    }
-    */
-
-   // TODO REDUX_MIGRATION
-   // https://github.com/schrodinger/fixed-data-table-2/commit/c981cc0e377016217fd069a03d741119b8793d8e
-   // Need to update viewportHeight when heigh changes
-
-    // The order of elements in this object matters and bringing height or
-    // scrollY to the top can break various features due to conflicts with
-    // the spread operator over props.
   },
 
   _onScroll(/*number*/ deltaX, /*number*/ deltaY) {

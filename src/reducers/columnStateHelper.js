@@ -43,7 +43,8 @@ function initialize(state, props, oldProps) {
     width,
   } = state;
 
-  if (scrollLeft !== undefined) {
+  if (scrollLeft !== undefined &&
+      (!oldProps || scrollLeft !== oldProps.scrollLeft)) {
     scrollX = scrollLeft;
   }
 

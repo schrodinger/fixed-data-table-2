@@ -255,6 +255,15 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     rowIdx += step;
   }
 
+  // NOTE (jordan) This handles #115 where resizing the viewport may
+  // leave only a subset of rows shown, but no scrollbar to scroll up to the first rows.
+  if (rowIdx === rowsCount && totalHeight < availableHeight) {
+    return calculateRenderedRowRange(state, {
+      firstOffset: 0,
+      lastIndex: rowsCount - 1,
+    });
+  }
+
   let firstRowOffset = firstOffset;
   if (lastIndex !== undefined) {
     // Calculate offset needed to position last row at bottom of viewport
