@@ -18,6 +18,11 @@
 }
 
 .fixedDataTableLayout/header,
+.fixedDataTableLayout/footer {
+  z-index: 2;
+}
+
+.fixedDataTableLayout/header,
 .fixedDataTableLayout/hasBottomBorder {
   border-bottom-style: solid;
   border-bottom-width: 1px;
@@ -49,4 +54,11 @@
 .fixedDataTableLayout/horizontalScrollbar {
   bottom: 0;
   position: absolute;
+}
+
+.fixedDataTable/fixed/cells {
+  z-index: 1;
+}
+.fixedDataTable/scrollable/cells {
+  z-index: 0;
 }
