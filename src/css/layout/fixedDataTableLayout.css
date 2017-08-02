@@ -45,8 +45,3 @@
   overflow: hidden;
   position: relative;
 }
-
-.fixedDataTableLayout/horizontalScrollbar {
-  bottom: 0;
-  position: absolute;
-}

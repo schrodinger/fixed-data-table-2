@@ -65,6 +65,19 @@ function distributeFlexWidth(columns, flexWidth, flexGrow) {
   };
 }
 
+/**
+ * @param  {!Array.<{
+ *   columns: !Array.{
+ *     flexGrow: number,
+ *     width: number,
+ *   },
+ * }>} columnGroups
+ * @param  {number} expectedWidth
+ * @return {!Array.<{
+ *   flexGrow: number,
+ *   width: number,
+ * }>}
+ */
 function adjustColumnGroupWidths(columnGroups, expectedWidth) {
   const allColumns = [];
   forEach(columnGroups, columnGroup => {

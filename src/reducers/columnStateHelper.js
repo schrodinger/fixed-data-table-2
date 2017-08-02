@@ -12,110 +12,125 @@
 'use strict';
 
 import FixedDataTableWidthHelper from 'FixedDataTableWidthHelper';
+import columnsSelector from 'columns';
 import emptyFunction from 'emptyFunction';
-import partition from 'lodash/partition';
+import isNil from 'lodash/isNil';
+import fixedColumnsWidthSelector from 'fixedColumnsWidth';
+import scrollContentWidthSelector from 'scrollContentWidth';
 
-var EMPTY_OBJECT = {};
-var DRAG_SCROLL_SPEED = 15;
-var DRAG_SCROLL_BUFFER = 100;
+const DRAG_SCROLL_SPEED = 15;
+const DRAG_SCROLL_BUFFER = 100;
 
 /**
  * Creates new state object when rowHeight or rowCount changes
  * TODO (jordan) Audit this method for cases where deep values are not properly cloned
  *
- * @param {!Object} oldState
+ * @param {!Object} state
  * @param {!Object} props
- * @param {!Object} columnGroups
- * @param {boolean} useGroupHeader
- * @param {!Object} elementTemplates
+ * @param {Object} oldProps
  * @return {!Object}
  */
-function initialize(oldState, props, columnGroups, useGroupHeader, elementTemplates) {
-  scrollX = oldState ? oldState.scrollX : 0;
-  if (props.scrollLeft !== undefined) {
-    scrollX = props.scrollLeft;
+function initialize(state, props, oldProps) {
+  const {
+    scrollLeft,
+    scrollToColumn,
+  } = props;
+
+  let {
+    columnResizingData,
+    isColumnResizing,
+    scrollX,
+    width,
+  } = state;
+
+  if (scrollLeft !== undefined) {
+    scrollX = scrollLeft;
   }
 
-  let groupHeaderHeight = useGroupHeader ? props.groupHeaderHeight : 0;
-
-  let columnResizingData;
-  if (props.isColumnResizing) {
-    columnResizingData = oldState && oldState.columnResizingData;
-  } else {
-    columnResizingData = EMPTY_OBJECT;
-  }
-
-  const columns = FixedDataTableWidthHelper
-    .adjustColumnGroupWidths(columnGroups, props.width);
-  const [fixedColumns, scrollableColumns] = partition(columns, column => column.fixed);
-
-  var lastScrollToColumn = oldState ? oldState.scrollToColumn : undefined;
-  if (props.scrollToColumn !== null && props.scrollToColumn !== lastScrollToColumn) {
-    // If selected column is a fixed column, don't scroll
-    var fixedColumnsCount = fixedColumns.length;
-    if (props.scrollToColumn >= fixedColumnsCount) {
-      let totalFixedColumnsWidth = 0;
-      for (let i = 0; i < fixedColumns.length; ++i) {
-        totalFixedColumnsWidth += fixedColumns[i].width;
-      }
-
-      let scrollableColumnIndex = Math.min(
-        props.scrollToColumn - fixedColumnsCount,
-        scrollableColumns.length - 1,
-      );
-
-      var previousColumnsWidth = 0;
-      for (let i = 0; i < scrollableColumnIndex; ++i) {
-        previousColumnsWidth += scrollableColumns[i].width;
-      }
-
-      var availableScrollWidth = props.width - totalFixedColumnsWidth;
-      var selectedColumnWidth = scrollableColumns[scrollableColumnIndex].width;
-      var minAcceptableScrollPosition =
-        previousColumnsWidth + selectedColumnWidth - availableScrollWidth;
-
-      if (scrollX < minAcceptableScrollPosition) {
-        scrollX = minAcceptableScrollPosition;
-      }
-
-      if (scrollX > previousColumnsWidth) {
-        scrollX = previousColumnsWidth;
-      }
-    }
-  }
-
-  var scrollContentWidth =
-    FixedDataTableWidthHelper.getTotalWidth(columns);
-  var horizontalScrollbarVisible = scrollContentWidth > props.width &&
-    props.overflowX !== 'hidden' && props.showScrollbarX !== false;
-  var maxScrollX = Math.max(0, scrollContentWidth - props.width);
+  scrollX = scrollTo(state, props, oldProps.scrollToColumn, scrollX);
+  const maxScrollX = Math.max(0, scrollContentWidthSelector(state) - width);
   scrollX = Math.min(scrollX, maxScrollX);
 
   // isColumnResizing should be overwritten by value from props if available
-  var isColumnResizing = props.isColumnResizing !== undefined ?
-    props.isColumnResizing : oldState && oldState.isColumnResizing;
+  isColumnResizing = props.isColumnResizing !== undefined ? props.isColumnResizing : isColumnResizing;
+  columnResizingData = isColumnResizing ? columnResizingData : {};
 
-  return Object.assign({}, oldState, {
-    elementTemplates,
-    columnGroups,
+  return Object.assign({}, state, {
     columnResizingData,
-    columns,
-    groupHeaderHeight,
     isColumnResizing,
     maxScrollX,
-    horizontalScrollbarVisible,
     scrollX,
-    useGroupHeader: useGroupHeader,
-    width: props.width
   });
 };
+
+/**
+ * @param {{
+ *   columnGroups: {!Array.<{
+ *     columns: !Array.{
+ *       flexGrow: number,
+ *       width: number,
+ *     },
+ *   }>},
+ *   width: number,
+ * }} state
+ * @param {{
+ *   scrollToColumn: number,
+ *   width: number,
+ * }} props
+ * @param {number} oldScrollToColumn
+ * @param {number} scrollX
+ * @return {number} The new scrollX
+ */
+function scrollTo(state, props, oldScrollToColumn, scrollX) {
+  const {
+    scrollToColumn,
+    width,
+  } = props;
+  const {
+    fixedColumns,
+    scrollableColumns,
+  } = columnsSelector(state);
+  const fixedColumnsCount = fixedColumns.length;
+
+  const scrollToUnchanged = scrollToColumn === oldScrollToColumn
+  const selectedColumnFixed = scrollToColumn < fixedColumnsCount;
+  if (isNil(scrollToColumn) || scrollToUnchanged || selectedColumnFixed) {
+    return scrollX;
+  }
+
+  const clampedColumnIndex = Math.min(scrollToColumn - fixedColumnsCount,
+    scrollableColumns.length - 1);
+
+  // Compute the width of all columns to the left of the column
+  let previousWidth = 0;
+  for (let columnIdx = 0; columnIdx < clampedColumnIndex; ++columnIdx) {
+    previousWidth += scrollableColumns[columnIdx].width;
+  }
+
+  // Compute the scroll position which sets the column on the right of the viewport
+  const availableScrollWidth = width - fixedColumnsWidthSelector(state);
+  const selectedColumnWidth = scrollableColumns[clampedColumnIndex].width;
+  const minScrollPosition = previousWidth + selectedColumnWidth - availableScrollWidth;
+
+  // Handle offscreen to the left
+  if (scrollX < minScrollPosition) {
+    return minScrollPosition;
+  }
+
+  // Handle offscreen to the right
+  if (scrollX > previousWidth) {
+    return previousWidth;
+  }
+
+  return scrollX;
+}
 
 /**
  * This is called when a cell that is in the header of a column has its
  * resizer knob clicked on. It displays the resizer and puts in the correct
  * location on the table.
  */
-function resizeColumn(oldState, resizeData) {
+function resizeColumn(state, resizeData) {
   let {
     cellMinWidth,
     cellMaxWidth,
@@ -126,7 +141,7 @@ function resizeColumn(oldState, resizeData) {
     clientY,
     leftOffset
   } = resizeData;
-  return Object.assign({}, oldState, {
+  return Object.assign({}, state, {
     isColumnResizing: true,
     columnResizingData: {
       left: leftOffset + combinedWidth - cellWidth,
@@ -143,7 +158,7 @@ function resizeColumn(oldState, resizeData) {
   });
 };
 
-function reorderColumn(oldState, reorderData) {
+function reorderColumn(state, reorderData) {
   let {
     columnKey,
     left,
@@ -151,11 +166,12 @@ function reorderColumn(oldState, reorderData) {
     width
   } = reorderData;
 
-  const isFixed = oldState.columns.some(function(column) {
+  const { allColumns } = columnsSelector(state);
+  const isFixed = allColumns.some(function(column) {
     return column.columnKey === columnKey && column.fixed;
   });
 
-  return Object.assign({}, oldState, {
+  return Object.assign({}, state, {
     isColumnReordering: true,
     columnReorderingData: {
       cancelReorder: false,
@@ -171,40 +187,45 @@ function reorderColumn(oldState, reorderData) {
   });
 };
 
-function reorderColumnMove(oldState, deltaX) {
-  //NOTE Need to clone this object when use pureRendering
-  var reorderingData = Object.assign({}, oldState.columnReorderingData);
-  reorderingData.dragDistance = deltaX;
-  reorderingData.columnBefore = undefined;
-  reorderingData.columnAfter = undefined;
+function reorderColumnMove(state, deltaX) {
+  const {
+    isFixed,
+    originalLeft,
+    scrollStart,
+  } = state.columnReorderingData;
 
-  var isFixedColumn = oldState.columnReorderingData.isFixed;
-  var scrollX = oldState.scrollX;
+  let {
+    maxScrollX,
+    scrollX,
+    width,
+  } = state;
+  if (!isFixed) {
+    // Relative dragX position on scroll
+    const dragX = originalLeft - scrollStart + deltaX;
 
-  if (!isFixedColumn) {
-    //Relative dragX position on scroll
-    var dragX = reorderingData.originalLeft - reorderingData.scrollStart + reorderingData.dragDistance;
+    const { allColumns } = columnsSelector(state);
+    const fixedColumnsWidth = allColumns.reduce(
+      (sum, column) => column.fixed ? sum + column.width : sum, 0);
+    const relativeWidth = width - fixedColumnsWidth;
 
-    var fixedColumnsWidth = oldState.columns
-      .reduce((sum, column) => {
-        if (column.fixed) {
-          return sum + column.width;
-        }
-        return sum;
-      }, 0);
-    var relativeWidth = oldState.width - fixedColumnsWidth;
-
-    //Scroll the table left or right if we drag near the edges of the table
+    // Scroll the table left or right if we drag near the edges of the table
     if (dragX > relativeWidth - DRAG_SCROLL_BUFFER) {
-      scrollX = Math.min(scrollX + DRAG_SCROLL_SPEED, oldState.maxScrollX);
+      scrollX = Math.min(scrollX + DRAG_SCROLL_SPEED, maxScrollX);
     } else if (dragX <= DRAG_SCROLL_BUFFER) {
       scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
     }
 
-    reorderingData.dragDistance += oldState.scrollX - reorderingData.scrollStart;
+    deltaX += scrollX - scrollStart;
   }
 
-  return Object.assign({}, oldState, {
+  // NOTE (jordan) Need to clone this object when use pureRendering
+  const reorderingData = Object.assign({}, state.columnReorderingData, {
+    dragDistance: deltaX,
+    columnBefore: undefined,
+    columnAfter: undefined,
+  });
+
+  return Object.assign({}, state, {
     scrollX: scrollX,
     columnReorderingData: reorderingData
   });

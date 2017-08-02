@@ -42,6 +42,9 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.RESPONSIVE_EXAMPLE.location]: require('../../examples/ResponsiveExample'),
   [ExamplePages.STYLING_EXAMPLE.location]: require('../../examples/StylingExample'),
   [ExamplePages.TOOLTIP_EXAMPLE.location]: require('../../examples/TooltipExample'),
+  [ExamplePages.FOOTER_EXAMPLE.location]: require('../../examples/FooterExample'),
+  [ExamplePages.MAX_HEIGHT_EXAMPLE.location]: require('../../examples/MaxHeightExample'),
+  [ExamplePages.OWNER_HEIGHT_EXAMPLE.location]: require('../../examples/OwnerHeightExample'),
   [ExamplePages.CONTEXT_EXAMPLE.location]: require('../../examples/ContextExample'),
 };
 

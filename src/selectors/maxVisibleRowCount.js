@@ -9,7 +9,7 @@
  * @providesModule maxVisibleRowCount
  */
 import { createSelector } from 'reselect';
-import viewportHeight from 'viewportHeight';
+import verticalHeights from 'verticalHeights';
 
 /**
  * @return {number} The maximum number of expected visible rows.
@@ -18,6 +18,6 @@ import viewportHeight from 'viewportHeight';
  */
 export default createSelector([
   state => state.rowHeight,
-  viewportHeight,
-], (rowHeight, viewportHeight) =>
-  Math.ceil(viewportHeight / rowHeight) + 1);
+  verticalHeights,
+], (rowHeight, verticalHeights) =>
+  Math.ceil(verticalHeights.availableHeight / rowHeight) + 1);

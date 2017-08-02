@@ -11,13 +11,6 @@
 
 'use strict';
 
-import columnState from 'columnState';
 import scrollState from 'scrollState';
-import { combineReducers } from 'redux';
 
-const reducers = combineReducers({
-  columnState,
-  scrollState,
-});
-
-module.exports = reducers;
+module.exports = scrollState;

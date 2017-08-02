@@ -13,7 +13,7 @@
 
 import bufferRowsCountSelector from 'bufferRowsCount';
 import clamp from 'clamp';
-import viewportHeightSelector from 'viewportHeight';
+import verticalHeightsSelector from 'verticalHeights';
 
 /**
  * Returns data about the rows to render
@@ -35,19 +35,28 @@ function computeRenderedRows(state, scrollAnchor) {
   const rowRange = calculateRenderedRowRange(newState, scrollAnchor);
   computeRenderedRowOffsets(newState, rowRange);
 
-  const {
-    rowsCount,
-    rowHeights,
+  let {
     firstRowIndex,
     firstRowOffset,
+    rowHeights,
+    rowsCount,
+    scrollContentHeight,
+    scrollY,
   } = newState;
 
+  const { bodyHeight } = verticalHeightsSelector(newState);
+  const maxScrollY = scrollContentHeight - bodyHeight;
+
   if (rowsCount === 0) {
-    newState.scrollY = 0;
+    scrollY = 0;
   } else {
-    newState.scrollY = rowHeights[firstRowIndex] - firstRowOffset;
+    scrollY = rowHeights[firstRowIndex] - firstRowOffset;
   }
-  return newState;
+  scrollY = Math.min(scrollY, maxScrollY);
+  return Object.assign(newState, {
+    maxScrollY,
+    scrollY,
+  });
 }
 
 /**
@@ -63,7 +72,7 @@ function computeRenderedRows(state, scrollAnchor) {
  * }}
  */
 function scrollTo(state, scrollY) {
-  const viewportHeight = viewportHeightSelector(state);
+  const { availableHeight } = verticalHeightsSelector(state);
   const {
     rowOffsets,
     rowsCount,
@@ -84,7 +93,7 @@ function scrollTo(state, scrollY) {
   let lastIndex = undefined;
   if (scrollY <= 0) {
     // Use defaults (from above) to scroll to first row
-  } else if (scrollY >= scrollContentHeight - viewportHeight) {
+  } else if (scrollY >= scrollContentHeight - availableHeight) {
     // Scroll to the last row
     firstIndex = undefined;
     lastIndex = rowsCount - 1;
@@ -128,7 +137,7 @@ function scrollTo(state, scrollY) {
  * }}
  */
 function scrollToRow(state, rowIndex) {
-  const viewportHeight = viewportHeightSelector(state);
+  const { availableHeight } = verticalHeightsSelector(state);
   const {
     rowOffsets,
     rowsCount,
@@ -154,7 +163,7 @@ function scrollToRow(state, rowIndex) {
   if (rowBegin < scrollY) {
     // If before the viewport, set as the first row in the viewport
     // Uses defaults (from above)
-  } else if (scrollY + viewportHeight < rowEnd) {
+  } else if (scrollY + availableHeight < rowEnd) {
     // If after the viewport, set as the last row in the viewport
     firstIndex = undefined;
     lastIndex = rowIndex;
@@ -202,7 +211,7 @@ function scrollToRow(state, rowIndex) {
  */
 function calculateRenderedRowRange(state, scrollAnchor) {
   const bufferRowsCount = bufferRowsCountSelector(state);
-  const viewportHeight = viewportHeightSelector(state);
+  const { availableHeight } = verticalHeightsSelector(state);
   const rowsCount = state.rowsCount;
 
   if (rowsCount === 0) {
@@ -239,21 +248,18 @@ function calculateRenderedRowRange(state, scrollAnchor) {
 
   // Loop to walk the viewport until we've touched enough rows to fill its height
   let rowIdx = startIdx;
-  while (totalHeight < viewportHeight && rowIdx < rowsCount && rowIdx >= 0) {
+  let endIdx = rowIdx;
+  while (totalHeight < availableHeight && rowIdx < rowsCount && rowIdx >= 0) {
     totalHeight += updateRowHeight(state, rowIdx);
+    endIdx = rowIdx;
     rowIdx += step;
   }
 
-  const endIdx = rowIdx - step;
   let firstRowOffset = firstOffset;
   if (lastIndex !== undefined) {
     // Calculate offset needed to position last row at bottom of viewport
     // This should be negative and represent how far the first row needs to be offscreen
-    if (rowIdx >= 0) {
-      firstRowOffset = viewportHeight - totalHeight;
-    } else {
-      firstRowOffset = 0;
-    }
+    firstRowOffset = Math.min(availableHeight - totalHeight, 0);
   }
 
   // Loop to walk the leading buffer

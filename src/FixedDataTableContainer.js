@@ -16,6 +16,8 @@ import { bindActionCreators } from 'redux';
 
 import FixedDataTable from 'FixedDataTable';
 import FixedDataTableStore from 'FixedDataTableStore';
+import invariant from 'invariant';
+import pick from 'lodash/pick';
 import * as ActionTypes from 'ActionTypes';
 import * as scrollActions from 'scrollActions';
 import * as columnActions from 'columnActions';
@@ -46,6 +48,11 @@ export default class FixedDataTableContainer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    invariant(
+      nextProps.height !== undefined || nextProps.maxHeight !== undefined,
+      'You must set either a height or a maxHeight'
+    );
+
     this.reduxStore.dispatch({
       type: ActionTypes.PROP_CHANGE,
       newProps: nextProps,
@@ -66,27 +73,26 @@ export default class FixedDataTableContainer extends React.Component {
 
   update() {
     const state = this.reduxStore.getState();
-    const {
-      firstRowIndex,
-      firstRowOffset,
-      rows,
-      rowHeights,
-      scrollContentHeight,
-      scrollY,
-    } = state.scrollState;
+    const boundState = pick(state, [
+      'columnGroups',
+      'columnReorderingData',
+      'columnResizingData',
+      'elementTemplates',
+      'firstRowIndex',
+      'firstRowOffset',
+      'isColumnReordering',
+      'isColumnResizing',
+      'maxScrollX',
+      'maxScrollY',
+      'rows',
+      'rowHeightGetter',
+      'rowHeights',
+      'scrollContentHeight',
+      'scrollX',
+      'scrollY',
+      'useGroupHeader',
+    ]);
 
-    // TODO REDUX_MIGRATION
-    //const maxScrollY = Math.max(0, scrollContentHeight - this.state.bodyHeight);
-
-    this.setState({
-      firstRowIndex,
-      firstRowOffset,
-      //maxScrollY,
-      rows,
-      rowHeights,
-      scrollContentHeight,
-      scrollY,
-      ...state.columnState,
-    });
+    this.setState(boundState);
   }
 }
