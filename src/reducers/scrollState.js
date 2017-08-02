@@ -88,7 +88,7 @@ function scrollState(state = DEFAULT_STATE, action) {
       let newState = setStateFromProps(state, props);
       newState = columnStateHelper.initialize(newState, props, {});
       newState = initializeRowHeights(newState);
-      const scrollAnchor = getScrollAnchor(state, props);
+      const scrollAnchor = getScrollAnchor(newState, props);
       return computeRenderedRows(newState, scrollAnchor);
     }
     case ActionTypes.PROP_CHANGE: {
@@ -107,7 +107,7 @@ function scrollState(state = DEFAULT_STATE, action) {
         newState.bufferSet = new IntegerBufferSet();
       }
 
-      const scrollAnchor = getScrollAnchor(state, newProps, oldProps);
+      const scrollAnchor = getScrollAnchor(newState, newProps, oldProps);
 
       // If anything has changed in state, update our rendered rows
       if (!shallowEqual(state, newState) || scrollAnchor.changed) {

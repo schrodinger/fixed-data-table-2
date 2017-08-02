@@ -168,11 +168,9 @@ describe('FixedDataTableRoot', function() {
     });
 
     it('should set scrollToRow correctly when height changes', function() {
-      let table = renderTable({ height: 0, scrollToRow: 30});
-      table.setState({height: 200});
-      //scrollToRow is considered valid if row is visible. Test to make sure that row is somewhere in between
-      assert.isBelow(table.getTableState().scrollY, 30 * 100, 'should be below first row');
-      assert.isAbove(table.getTableState().scrollY, 30 * 100 - 300, 'should be above last row');
+      let table = renderTable({ height: 0, scrollToRow: 30 });
+      table.setState({ height: 200 });
+      assert.equal(table.getTableState().scrollY, 30 * 100, 'should be scrolled to 30th row');
     });
   });
 });

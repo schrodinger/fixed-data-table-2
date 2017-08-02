@@ -8,6 +8,7 @@
  *
  * @providesModule fixedColumnsWidth
  */
+import WidthHelper from 'FixedDataTableWidthHelper';
 import columnsSelector from 'columns';
 import { createSelector } from 'reselect';
 
@@ -27,10 +28,5 @@ export default createSelector([
   columnsSelector,
 ], columns => {
   const { fixedColumns } = columns;
-
-  let totalFixedColumnsWidth = 0;
-  for (let columnIdx = 0; columnIdx < fixedColumns.length; ++columnIdx) {
-    totalFixedColumnsWidth += fixedColumns[columnIdx].width;
-  }
-  return totalFixedColumnsWidth;
+  return WidthHelper.getTotalWidth(fixedColumns);
 });

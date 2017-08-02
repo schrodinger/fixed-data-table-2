@@ -14,6 +14,7 @@ import partition from 'lodash/partition';
 
 /**
  * @typedef {{
+ *   fixed: boolean,
  *   flexGrow: number,
  *   width: number
  * }}
