@@ -41,6 +41,19 @@ class FixedDataTableRow extends React.Component {
     height: PropTypes.number.isRequired,
 
     /**
+     * Height of the content to be displayed below the row.
+     */
+    subRowHeight: PropTypes.number,
+
+    /**
+     * the row expanded.
+     */
+    rowExpanded: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.func,
+    ]),
+
+    /**
      * The row index.
      */
     index: PropTypes.number.isRequired,
@@ -114,9 +127,10 @@ class FixedDataTableRow extends React.Component {
   };
 
   render() /*object*/ {
+    var subRowHeight = this.props.subRowHeight || 0;
     var style = {
       width: this.props.width,
-      height: this.props.height,
+      height: this.props.height + subRowHeight,
     };
 
     var innerHeight = this.props.height - (this.props.hasBottomBorder ? 1 : 0);
@@ -173,6 +187,12 @@ class FixedDataTableRow extends React.Component {
       />;
     var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
+    var rowExpanded = this._getRowExpanded(subRowHeight);
+    var rowExpandedStyle = {
+      height: subRowHeight,
+      top: this.props.height,
+      width: this.props.width,
+    };
 
     return (
       <div
@@ -188,6 +208,11 @@ class FixedDataTableRow extends React.Component {
           {scrollableColumns}
           {columnsLeftShadow}
         </div>
+        {rowExpanded && <div
+          className={cx('fixedDataTableRowLayout/rowExpanded')}
+          style={rowExpandedStyle}>
+          {rowExpanded}
+        </div>}
         {columnsRightShadow}
       </div>
     );
@@ -200,6 +225,25 @@ class FixedDataTableRow extends React.Component {
     }
     return width;
   };
+
+  _getRowExpanded = (/*number*/ subRowHeight) => /*?object*/ {
+    if (this.props.rowExpanded) {
+      var rowExpandedProps = {
+        rowIndex: this.props.index,
+        height: subRowHeight,
+        width: this.props.width,
+      };
+
+      var rowExpanded;
+      if (React.isValidElement(this.props.rowExpanded)) {
+        rowExpanded = React.cloneElement(this.props.rowExpanded, rowExpandedProps);
+      } else if (typeof this.props.rowExpanded === 'function') {
+        rowExpanded = this.props.rowExpanded(rowExpandedProps);
+      }
+
+      return rowExpanded;
+    }
+  }
 
   _renderColumnsLeftShadow = (/*number*/ left) => /*?object*/ {
     var className = cx({
