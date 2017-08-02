@@ -121,7 +121,7 @@ class FixedDataTableRow extends React.Component {
     onColumnReorderEnd: PropTypes.func,
 
     /**
-     * Whether the row has a bottom borer accross it
+     * Whether the row has a bottom border accross it
      */
     hasBottomBorder: PropTypes.bool
   };
