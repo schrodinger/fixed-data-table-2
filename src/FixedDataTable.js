@@ -795,7 +795,7 @@ var FixedDataTable = createReactClass({
       });
 
       if (finalWidth != initialWidth) {
-        (this.props.onColumnResizeEndCallback || emptyFunction)(columnKey, finalWidth);
+        (this.props.onColumnResizeEndCallback || emptyFunction)(finalWidth, columnKey);
       }
   },
 
