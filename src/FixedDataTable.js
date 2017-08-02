@@ -611,8 +611,8 @@ const FixedDataTable = React.createClass({
         />;
     }
 
-    // ownerScrollAvailable is true if there's more room to scroll after
-    // all rows are rendered in the component but potentially beyond the owner element.
+    // ownerScrollAvailable is true if the rows rendered will overflow the owner element
+    // so we show a shadow in that case even if the FDT component can't scroll anymore
     const ownerScrollAvailable = ownerHeight && ownerHeight < componentHeight &&
       scrollContentHeight > visibleRowsHeight;
     let bottomShadow;
