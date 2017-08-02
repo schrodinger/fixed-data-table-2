@@ -382,7 +382,7 @@ var FixedDataTable = createReactClass({
       showScrollbarX: true,
       showScrollbarY: true,
       touchScrollEnabled: false,
-      showBorderOnAllRows: true,
+      showBorderOnAllRows: false,
       stopScrollPropagation: false
     };
   },
