@@ -334,7 +334,7 @@ const FixedDataTable = React.createClass({
       this._onScroll,
       this._shouldHandleWheelX,
       this._shouldHandleWheelY,
-      props.stopScrollPropagation
+      this.props.stopScrollPropagation
     );
 
     const touchEnabled = this.props.touchScrollEnabled === true;
@@ -342,7 +342,7 @@ const FixedDataTable = React.createClass({
       this._onScroll,
       touchEnabled && this._shouldHandleWheelX,
       touchEnabled && this._shouldHandleWheelY,
-      props.stopScrollPropagation
+      this.props.stopScrollPropagation
     );
   },
 
