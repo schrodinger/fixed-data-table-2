@@ -406,30 +406,10 @@ const FixedDataTable = React.createClass({
 
   componentWillReceiveProps(/*object*/ nextProps) {
     const {
-      overflowX,
-      overflowY,
       ownerHeight,
       scrollLeft,
       scrollTop,
     } = this.props;
-
-    const newOverflowX = nextProps.overflowX;
-    const newOverflowY = nextProps.overflowY;
-    const touchEnabled = nextProps.touchScrollEnabled === true;
-
-    if (newOverflowX !== overflowX ||
-        newOverflowY !== overflowY) {
-      this._wheelHandler = new ReactWheelHandler(
-        this._onScroll,
-        newOverflowX !== 'hidden', // Should handle horizontal scroll
-        newOverflowY !== 'hidden' // Should handle vertical scroll
-      );
-      this._touchHandler = new ReactTouchHandler(
-        this._onScroll,
-        newOverflowX !== 'hidden' && touchEnabled, // Should handle horizontal scroll
-        newOverflowY !== 'hidden' && touchEnabled // Should handle vertical scroll
-      );
-    }
 
     // In the case of controlled scrolling, notify.
     if (ownerHeight !== nextProps.ownerHeight ||
