@@ -302,6 +302,13 @@ const FixedDataTable = React.createClass({
      * Whether columns are currently being reordered.
      */
     isColumnReordering: PropTypes.bool,
+
+    // TODO (jordan) Remove propType of bufferRowCount without losing documentation
+    /**
+     * The number of rows outside the viewport to prerender. Defaults to roughly
+     * half of the number of visible rows.
+     */
+    bufferRowCount: PropTypes.number,
   },
 
   getDefaultProps() /*object*/ {

@@ -24,6 +24,7 @@ import shallowEqual from 'shallowEqual';
  * Input state set from props
  */
 const DEFAULT_INPUT_STATE = {
+  bufferRowCount: null,
   columnGroups: [],
   elementTemplates: {
     cell: [],
@@ -234,6 +235,7 @@ function initializeRowHeights(state) {
  */
 function setStateFromProps(state, props) {
   const propsToState = pick(props, [
+    'bufferRowCount',
     'footerHeight',
     'groupHeaderHeight',
     'headerHeight',
