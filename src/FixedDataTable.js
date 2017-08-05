@@ -231,6 +231,11 @@ const FixedDataTable = React.createClass({
     onScrollEnd: PropTypes.func,
 
     /**
+     * If enabled scroll events will not be propagated outside of the table.
+     */
+    stopScrollPropagation: PropTypes.bool,
+
+    /**
      * Callback that is called when `rowHeightGetter` returns a different height
      * for a row than the `rowHeight` prop. This is necessary because initially
      * table estimates heights of some parts of the content.
@@ -317,7 +322,8 @@ const FixedDataTable = React.createClass({
       groupHeaderHeight: 0,
       headerHeight: 0,
       showScrollbarY: true,
-      touchScrollEnabled: false
+      touchScrollEnabled: false,
+      stopScrollPropagation: false
     };
   },
 
@@ -327,14 +333,16 @@ const FixedDataTable = React.createClass({
     this._wheelHandler = new ReactWheelHandler(
       this._onScroll,
       this._shouldHandleWheelX,
-      this._shouldHandleWheelY
+      this._shouldHandleWheelY,
+      props.stopScrollPropagation
     );
 
     const touchEnabled = this.props.touchScrollEnabled === true;
     this._touchHandler = new ReactTouchHandler(
       this._onScroll,
       touchEnabled && this._shouldHandleWheelX,
-      touchEnabled && this._shouldHandleWheelY
+      touchEnabled && this._shouldHandleWheelY,
+      props.stopScrollPropagation
     );
   },
 
