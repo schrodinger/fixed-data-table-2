@@ -352,11 +352,11 @@ const FixedDataTable = createReactClass({
   },
 
   _shouldHandleTouchX(/*number*/ delta) /*boolean*/ {
-    return this.props.touchEnabled && this._shouldHandleWheelX(delta);
+    return this.props.touchScrollEnabled && this._shouldHandleWheelX(delta);
   },
 
   _shouldHandleTouchY(/*number*/ delta) /*boolean*/ {
-    return this.props.touchEnabled && this._shouldHandleWheelY(delta);
+    return this.props.touchScrollEnabled && this._shouldHandleWheelY(delta);
   },
 
   _shouldHandleWheelX(/*number*/ delta) /*boolean*/ {

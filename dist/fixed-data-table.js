@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.16 
+ * FixedDataTable v0.7.17 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.16';
+	FixedDataTableRoot.version = '0.7.17';
 	module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -622,8 +622,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this._didScrollStop = (0, _debounceCore2.default)(this._didScrollStop, 200, this);
 
-	    var touchEnabled = props.touchScrollEnabled === true;
-
 	    this._wheelHandler = new _ReactWheelHandler2.default(this._onScroll, this._shouldHandleWheelX, this._shouldHandleWheelY, props.stopScrollPropagation);
 	    this._touchHandler = new _ReactTouchHandler2.default(this._onScroll, this._shouldHandleTouchX, this._shouldHandleTouchY, props.stopScrollPropagation);
 
@@ -634,10 +632,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._touchHandler = null;
 	  },
 	  _shouldHandleTouchX: function _shouldHandleTouchX( /*number*/delta) /*boolean*/{
-	    return this.props.touchEnabled && this._shouldHandleWheelX(delta);
+	    return this.props.touchScrollEnabled && this._shouldHandleWheelX(delta);
 	  },
 	  _shouldHandleTouchY: function _shouldHandleTouchY( /*number*/delta) /*boolean*/{
-	    return this.props.touchEnabled && this._shouldHandleWheelY(delta);
+	    return this.props.touchScrollEnabled && this._shouldHandleWheelY(delta);
 	  },
 	  _shouldHandleWheelX: function _shouldHandleWheelX( /*number*/delta) /*boolean*/{
 	    if (this.props.overflowX === 'hidden') {
@@ -687,7 +685,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  componentWillReceiveProps: function componentWillReceiveProps( /*object*/nextProps) {
 	    var newOverflowX = nextProps.overflowX;
 	    var newOverflowY = nextProps.overflowY;
-	    var touchEnabled = nextProps.touchScrollEnabled === true;
 
 	    // In the case of controlled scrolling, notify.
 	    if (this.props.ownerHeight !== nextProps.ownerHeight || this.props.scrollTop !== nextProps.scrollTop || this.props.scrollLeft !== nextProps.scrollLeft) {
