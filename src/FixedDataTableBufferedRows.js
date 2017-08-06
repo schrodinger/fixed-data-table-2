@@ -10,16 +10,16 @@
  * @typechecks
  */
 
-import React from 'React';
 import FixedDataTableRow from 'FixedDataTableRow';
-
+import PropTypes from 'prop-types';
+import React from 'React';
+import createReactClass from 'create-react-class';
 import cx from 'cx';
 import emptyFunction from 'emptyFunction';
 import joinClasses from 'joinClasses';
 
-var {PropTypes} = React;
-
-var FixedDataTableBufferedRows = React.createClass({
+var FixedDataTableBufferedRows = createReactClass({
+  displayName: 'FixedDataTableBufferedRows',
 
   propTypes: {
     isScrolling: PropTypes.bool,

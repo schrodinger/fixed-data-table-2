@@ -7,7 +7,7 @@
 var React = require('react');
 var Constants = require('../Constants');
 
-var ExampleHeader = React.createClass({
+class ExampleHeader extends React.Component { 
   render() {
     const contextDisclamer = this.props.page.fileName === 'ContextExample.js' ? (
       <div>
@@ -35,6 +35,6 @@ var ExampleHeader = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = ExampleHeader;

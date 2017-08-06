@@ -12,10 +12,10 @@
 
 import React from 'React';
 
+import PropTypes from 'prop-types';
+
 import cx from 'cx';
 import joinClasses from 'joinClasses';
-
-var {PropTypes} = React;
 
 /**
  * Component that handles default cell layout and styling.
@@ -40,8 +40,8 @@ var {PropTypes} = React;
  * );
  * ```
  */
-var FixedDataTableCellDefault = React.createClass({
-  propTypes: {
+class FixedDataTableCellDefault extends React.Component {
+  static propTypes = {
 
     /**
      * Outer height of the cell.
@@ -71,7 +71,7 @@ var FixedDataTableCellDefault = React.createClass({
      * pass the prop through at their discretion.
      */
     rowIndex: PropTypes.number
-  },
+  };
 
   render() {
     //Remove some props like columnKey and rowIndex so we don't pass it into the div
@@ -109,7 +109,7 @@ var FixedDataTableCellDefault = React.createClass({
         </div>
       </div>
     );
-  },
-});
+  }
+}
 
 module.exports = FixedDataTableCellDefault;
