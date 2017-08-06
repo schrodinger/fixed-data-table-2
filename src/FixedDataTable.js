@@ -172,6 +172,43 @@ const FixedDataTable = createReactClass({
     rowHeightGetter: PropTypes.func,
 
     /**
+     * Pixel height of sub-row unless `subRowHeightGetter` is specified and returns
+     * different value.  Defaults to 0 and no sub-row being displayed.
+     */
+    subRowHeight: PropTypes.number,
+
+    /**
+     * If specified, `subRowHeightGetter(index)` is called for each row and the
+     * returned value overrides `subRowHeight` for particular row.
+     */
+    subRowHeightGetter: PropTypes.func,
+
+   /**
+    * The row expanded for table row.
+    * This can either be a React element, or a function that generates
+    * a React Element. By default, the React element passed in can expect to
+    * receive the following props:
+    *
+    * ```
+    * props: {
+    *   rowIndex; number // (the row index)
+    *   height: number // (supplied from the Table or rowHeightGetter)
+    *   width: number // (supplied from the Table)
+    * }
+    * ```
+    *
+    * Because you are passing in your own React element, you can feel free to
+    * pass in whatever props you may want or need.
+    *
+    * If you pass in a function, you will receive the same props object as the
+    * first argument.
+    */
+   rowExpanded: PropTypes.oneOfType([
+     PropTypes.element,
+     PropTypes.func,
+   ]),
+
+    /**
      * To get any additional CSS classes that should be added to a row,
      * `rowClassNameGetter(index)` is called.
      */
@@ -682,12 +719,14 @@ const FixedDataTable = createReactClass({
         onRowMouseEnter={props.onRowMouseEnter}
         onRowMouseLeave={props.onRowMouseLeave}
         rowClassNameGetter={props.rowClassNameGetter}
-        rowsCount={props.rowsCount}
+        rowExpanded={props.rowExpanded}
         rowHeightGetter={props.rowHeightGetter}
         rowKeyGetter={props.rowKeyGetter}
+        rowsCount={props.rowsCount}
         scrollLeft={props.scrollX}
         scrollableColumns={scrollableCellTemplates}
         showLastRowBorder={true}
+        subRowHeightGetter={props.subRowHeightGetter}
         width={props.width}
         rowsToRender={props.rows}
         rowHeights={props.rowHeights}

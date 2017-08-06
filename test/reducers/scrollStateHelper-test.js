@@ -38,6 +38,7 @@ describe('scrollStateHelper', function() {
         rowOffsets: PrefixIntervalTree.uniform(80, 125),
         storedHeights: initialStoredHeights,
         scrollContentHeight: 10000,
+        subRowHeightGetter: () => 0,
       };
     });
 

@@ -96,6 +96,7 @@ export default class FixedDataTableContainer extends React.Component {
       'scrollContentHeight',
       'scrollX',
       'scrollY',
+      'subRowHeightGetter',
       'useGroupHeader',
     ]);
 

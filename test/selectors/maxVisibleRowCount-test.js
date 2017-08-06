@@ -6,12 +6,12 @@ import maxVisibleRowCount from 'maxVisibleRowCount';
 
 describe('maxVisibleRowCount', function() {
   it('should return a visible row count estimated from the row height', function() {
-    const result = maxVisibleRowCount.resultFunc(50, { availableHeight: 500 });
+    const result = maxVisibleRowCount.resultFunc(50, 0, { availableHeight: 500 });
     assert.strictEqual(result, 11);
   });
 
   it('should round up', function() {
-    const result = maxVisibleRowCount.resultFunc(50, { availableHeight: 510 });
+    const result = maxVisibleRowCount.resultFunc(50, 0, { availableHeight: 510 });
     assert.strictEqual(result, 12);
   });
 });

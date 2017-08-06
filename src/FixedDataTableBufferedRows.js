@@ -35,13 +35,19 @@ var FixedDataTableBufferedRows = createReactClass({
     onRowMouseEnter: PropTypes.func,
     onRowMouseLeave: PropTypes.func,
     rowClassNameGetter: PropTypes.func,
-    rowsCount: PropTypes.number.isRequired,
+    rowExpanded: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.func,
+    ]),
+    rowHeightGetter: PropTypes.func,
     rowHeights: PropTypes.object.isRequired,
     rowKeyGetter: PropTypes.func,
+    rowsCount: PropTypes.number.isRequired,
     rowsToRender: PropTypes.array.isRequired,
     scrollLeft: PropTypes.number.isRequired,
     scrollableColumns: PropTypes.array.isRequired,
     showLastRowBorder: PropTypes.bool,
+    subRowHeightGetter: PropTypes.func,
     width: PropTypes.number.isRequired,
   },
 
@@ -91,10 +97,10 @@ var FixedDataTableBufferedRows = createReactClass({
         continue;
       }
 
-      const currentRowHeight = this._getRowHeight(rowIndex);
+      const currentRowHeight = this.props.rowHeightGetter(rowIndex);
+      const currentSubRowHeight = this.props.subRowHeightGetter(rowIndex);
       const rowOffsetTop = baseOffsetTop + props.rowHeights[rowIndex];
       const rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
-
       const hasBottomBorder =
         rowIndex === props.rowsCount - 1 && props.showLastRowBorder;
 
@@ -105,6 +111,8 @@ var FixedDataTableBufferedRows = createReactClass({
           index={rowIndex}
           width={props.width}
           height={currentRowHeight}
+          subRowHeight={currentSubRowHeight}
+          rowExpanded={props.rowExpanded}
           scrollLeft={Math.round(props.scrollLeft)}
           offsetTop={Math.round(rowOffsetTop)}
           visible={true}
@@ -127,12 +135,6 @@ var FixedDataTableBufferedRows = createReactClass({
     }
 
     return <div>{this._staticRowArray}</div>;
-  },
-
-  _getRowHeight(/*number*/ index) /*number*/ {
-    return this.props.rowHeightGetter ?
-      this.props.rowHeightGetter(index) :
-      this.props.defaultRowHeight;
   },
 });
 

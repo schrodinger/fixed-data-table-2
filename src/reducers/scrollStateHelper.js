@@ -173,6 +173,7 @@ function scrollToRow(state, rowIndex) {
       firstIndex: state.firstRowIndex,
       firstOffset: state.firstRowOffset,
       lastIndex: undefined,
+      // TODO (jordan) may need to make this true to handle expanding row example...
       changed: false,
     };
   }
@@ -381,9 +382,10 @@ function updateRowHeight(state, rowIdx) {
     storedHeights,
     rowOffsets,
     rowHeightGetter,
+    subRowHeightGetter,
   } = state;
 
-  const newHeight = rowHeightGetter(rowIdx);
+  const newHeight = rowHeightGetter(rowIdx) + subRowHeightGetter(rowIdx);
   const oldHeight = storedHeights[rowIdx];
   if (newHeight !== oldHeight) {
     rowOffsets.set(rowIdx, newHeight);

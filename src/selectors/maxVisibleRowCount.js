@@ -18,6 +18,9 @@ import verticalHeights from 'verticalHeights';
  */
 export default createSelector([
   state => state.rowHeight,
+  state => state.subRowHeight,
   verticalHeights,
-], (rowHeight, verticalHeights) =>
-  Math.ceil(verticalHeights.availableHeight / rowHeight) + 1);
+], (rowHeight, subRowHeight, verticalHeights) => {
+  const defaultFullRowHeight = rowHeight + subRowHeight;
+  return Math.ceil(verticalHeights.availableHeight / defaultFullRowHeight) + 1;
+});
