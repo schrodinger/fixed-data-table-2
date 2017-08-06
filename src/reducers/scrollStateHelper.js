@@ -155,6 +155,7 @@ function scrollToRow(state, rowIndex) {
   }
 
   rowIndex = clamp(rowIndex, 0, Math.max(rowsCount - 1, 0));
+  updateRowHeight(state, rowIndex);
   let rowBegin = rowOffsets.sumUntil(rowIndex);
   let rowEnd = rowBegin + storedHeights[rowIndex];
 
@@ -173,7 +174,6 @@ function scrollToRow(state, rowIndex) {
       firstIndex: state.firstRowIndex,
       firstOffset: state.firstRowOffset,
       lastIndex: undefined,
-      // TODO (jordan) may need to make this true to handle expanding row example...
       changed: false,
     };
   }

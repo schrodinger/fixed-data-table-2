@@ -273,6 +273,7 @@ describe('scrollStateHelper', function() {
     let oldState;
     beforeEach(function() {
       oldState = {
+        rowHeightGetter: () => 100,
         rowOffsets: {
           sumUntil: (idx) => idx * 100,
         },
@@ -282,6 +283,7 @@ describe('scrollStateHelper', function() {
           40: 100,
           99: 100,
         },
+        subRowHeightGetter: () => 0,
       };
     });
 
