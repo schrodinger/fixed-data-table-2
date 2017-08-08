@@ -20,7 +20,7 @@ function buildHasteMap() {
   return hasteMap;
 };
 
-function resolveHasteDefines(hi) {
+function resolveHasteDefines() {
   // Run in the context of webpack's compiler.
   var hasteMap = buildHasteMap();
   this.plugin('module', function(request, callback) {
