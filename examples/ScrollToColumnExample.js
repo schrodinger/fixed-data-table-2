@@ -50,63 +50,63 @@ class ScrollToColumnExample extends React.Component {
           {...this.props}>
           <Column
             columnKey="firstName"
-            header={<Cell>First Name [1]</Cell>}
+            header={<Cell>First Name [0]</Cell>}
             cell={<TextCell data={filteredDataList} />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="lastName"
-            header={<Cell>Last Name [2]</Cell>}
+            header={<Cell>Last Name [1]</Cell>}
             cell={<TextCell data={filteredDataList} />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="city"
-            header={<Cell>City [3]</Cell>}
+            header={<Cell>City [2]</Cell>}
             cell={<TextCell data={filteredDataList} />}
             width={100}
           />
           <Column
             columnKey="street"
-            header={<Cell>Street [4]</Cell>}
+            header={<Cell>Street [3]</Cell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="zipCode"
-            header={<Cell>Zip Code [5]</Cell>}
+            header={<Cell>Zip Code [4]</Cell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="bs"
-            header={<Cell>BS [6]</Cell>}
+            header={<Cell>BS [5]</Cell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="catchPhrase"
-            header={<Cell>Catch Phrase [7]</Cell>}
+            header={<Cell>Catch Phrase [6]</Cell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="companyName"
-            header={<Cell>Company Name [8]</Cell>}
+            header={<Cell>Company Name [7]</Cell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="words"
-            header={<Cell>Words [9]</Cell>}
+            header={<Cell>Words [8]</Cell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="sentence"
-            header={<Cell>Sentence [10]</Cell>}
+            header={<Cell>Sentence [9]</Cell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
