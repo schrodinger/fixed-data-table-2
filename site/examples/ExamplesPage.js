@@ -34,7 +34,7 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.SCROLL_TO_ROW_EXAMPLE.location]: require('../../examples/ScrollToRowExample'),
   [ExamplePages.SCROLL_TO_COLUMN_EXAMPLE.location]: require('../../examples/ScrollToColumnExample'),
   [ExamplePages.TOUCH_SCROLL_EXAMPLE.location]: require('../../examples/TouchScrollExample'),
-  [ExamplePages.COLLAPSE_EXAMPLE.location]: require('../../examples/CollapseExample'),
+  [ExamplePages.EXPANDED_EXAMPLE.location]: require('../../examples/ExpandedExample'),
   [ExamplePages.FLEXGROW_EXAMPLE.location]: require('../../examples/FlexGrowExample'),
   [ExamplePages.COLUMN_GROUPS_EXAMPLE.location]: require('../../examples/ColumnGroupsExample'),
   [ExamplePages.PAGINATION_EXAMPLE.location]: require('../../examples/PaginationExample'),
