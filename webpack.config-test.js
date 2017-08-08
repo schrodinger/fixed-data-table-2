@@ -3,6 +3,9 @@ var resolvers = require('./build_helpers/resolvers');
 var path = require('path');
 
 module.exports = {
+  resolve: {
+    plugins: [resolvers.resolveHasteDefines]
+  },
   devServer: {
     host: 'localhost',
     port: '8081'
@@ -11,7 +14,7 @@ module.exports = {
   devtool: 'eval',
 
   entry: {
-    'test': [`mocha!./testRunner.js`]
+    'test': [`mocha-loader!./testRunner.js`]
   },
 
   output: {
@@ -32,7 +35,6 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       '__DEV__': JSON.stringify(process.env.NODE_ENV !== 'production')
-    }),
-    resolvers.resolveHasteDefines
+    })
   ]
 };
