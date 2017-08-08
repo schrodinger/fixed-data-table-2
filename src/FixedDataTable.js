@@ -957,6 +957,9 @@ var FixedDataTable = createReactClass({
       children.push(child);
     });
 
+    // Allow room for the scrollbar, less 1px for the last column's border
+    var adjustedWidth = props.width - Scrollbar.SIZE - Scrollbar.OFFSET;
+
     var useGroupHeader = false;
     if (children.length && children[0].type.__TableColumnGroup__) {
       useGroupHeader = true;
@@ -1037,14 +1040,14 @@ var FixedDataTable = createReactClass({
       var columnGroupSettings =
         FixedDataTableWidthHelper.adjustColumnGroupWidths(
           children,
-          props.width
+          adjustedWidth
       );
       columns = columnGroupSettings.columns;
       columnGroups = columnGroupSettings.columnGroups;
     } else {
       columns = FixedDataTableWidthHelper.adjustColumnWidths(
         children,
-        props.width
+        adjustedWidth
       );
     }
 
@@ -1066,28 +1069,41 @@ var FixedDataTable = createReactClass({
           totalFixedColumnsWidth += column.props.width;
         }
 
+        // Convert column index (0 indexed) to scrollable index (0 indexed)
+        // and clamp to max scrollable index
         var scrollableColumnIndex = Math.min(
           props.scrollToColumn - fixedColumnsCount,
           columnInfo.bodyScrollableColumns.length - 1,
         );
 
+        // Sum width for all columns before column
         var previousColumnsWidth = 0;
         for (i = 0; i < scrollableColumnIndex; ++i) {
           column = columnInfo.bodyScrollableColumns[i];
           previousColumnsWidth += column.props.width;
         }
 
-        var availableScrollWidth = props.width - totalFixedColumnsWidth;
+        // Get width of scrollable columns in viewport
+        var availableScrollWidth = adjustedWidth - totalFixedColumnsWidth;
+
+        // Get width of specified column
         var selectedColumnWidth = columnInfo.bodyScrollableColumns[
           scrollableColumnIndex
         ].props.width;
+
+        // Must scroll at least far enough for end of column (prevColWidth + selColWidth)
+        // to be in viewport (availableScrollWidth = viewport width)
         var minAcceptableScrollPosition =
           previousColumnsWidth + selectedColumnWidth - availableScrollWidth;
 
+        // If scrolled less than minimum amount, scroll to minimum amount
+        // so column on right of viewport
         if (scrollX < minAcceptableScrollPosition) {
           scrollX = minAcceptableScrollPosition;
         }
 
+        // If scrolled more than previous columns, at least part of column will be offscreen to left
+        // Scroll so column is flush with left edge of viewport
         if (scrollX > previousColumnsWidth) {
           scrollX = previousColumnsWidth;
         }
@@ -1104,7 +1120,7 @@ var FixedDataTable = createReactClass({
     var scrollContentWidth =
       FixedDataTableWidthHelper.getTotalWidth(columns);
 
-    var horizontalScrollbarVisible = scrollContentWidth > props.width &&
+    var horizontalScrollbarVisible = scrollContentWidth > adjustedWidth &&
       props.overflowX !== 'hidden' && props.showScrollbarX !== false;
 
     if (horizontalScrollbarVisible) {
@@ -1113,7 +1129,7 @@ var FixedDataTable = createReactClass({
       totalHeightReserved += Scrollbar.SIZE;
     }
 
-    var maxScrollX = Math.max(0, scrollContentWidth - props.width);
+    var maxScrollX = Math.max(0, scrollContentWidth - adjustedWidth);
     var maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
     scrollX = Math.min(scrollX, maxScrollX);
     scrollY = Math.min(scrollY, maxScrollY);

@@ -14,12 +14,12 @@
  * Table.
  */
 .public/fixedDataTable/main {
-  border-color: #d3d3d3;
+  border-color: var(border-color);
 }
 
 .public/fixedDataTable/header,
 .public/fixedDataTable/hasBottomBorder {
-  border-color: #d3d3d3;
+  border-color: var(border-color);
 }
 
 .public/fixedDataTable/header .public/fixedDataTableCell/main {
@@ -34,7 +34,7 @@
 
 .public/fixedDataTable/footer .public/fixedDataTableCell/main {
   background-color: var(fbui-desktop-background-light);
-  border-color: #d3d3d3;
+  border-color: var(border-color);
 }
 
 .public/fixedDataTable/topShadow {

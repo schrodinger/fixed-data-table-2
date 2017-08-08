@@ -9,7 +9,7 @@ const { ImageCell, TextCell } = require('./helpers/cells');
 const { Table, Column, Cell } = require('fixed-data-table-2');
 const React = require('react');
 
-class ScrollToExample extends React.Component {
+class ScrollToRowExample extends React.Component {
   constructor(props) {
     super(props);
 
@@ -157,4 +157,4 @@ class ScrollToExample extends React.Component {
   }
 }
 
-module.exports = ScrollToExample;
+module.exports = ScrollToRowExample;

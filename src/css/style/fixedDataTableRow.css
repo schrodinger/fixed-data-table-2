@@ -22,7 +22,7 @@
 }
 
 .public/fixedDataTableRow/fixedColumnsDivider {
-  border-color: #d3d3d3;
+  border-color: var(border-color);
 }
 
 .public/fixedDataTableRow/columnsShadow {

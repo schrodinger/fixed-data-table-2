@@ -12,6 +12,7 @@
 
 "use strict";
 
+// If you change these, you'll need to restart the dev server for it to take effect.
 var CSS_VARS = {
   'scrollbar-face-active-color': '#7d7d7d',
   'scrollbar-face-color': '#c2c2c2',
@@ -19,7 +20,8 @@ var CSS_VARS = {
   'scrollbar-face-radius': '6px',
   'scrollbar-size': '15px',
   'scrollbar-size-large': '17px',
-  'scrollbar-track-color': 'rgba(255, 255, 255, 0.8)',
+  'scrollbar-track-color': '#fff',
+  'border-color': '#d3d3d3',
   'fbui-white': '#fff',
   'fbui-desktop-background-light': '#f6f7f8',
 };
