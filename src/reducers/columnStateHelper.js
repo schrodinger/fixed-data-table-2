@@ -207,6 +207,7 @@ function reorderColumnMove(state, deltaX) {
     const fixedColumnsWidth = allColumns.reduce(
       (sum, column) => column.fixed ? sum + column.width : sum, 0);
     const relativeWidth = width - fixedColumnsWidth;
+    deltaX += scrollX - scrollStart;
 
     // Scroll the table left or right if we drag near the edges of the table
     if (dragX > relativeWidth - DRAG_SCROLL_BUFFER) {
@@ -214,8 +215,6 @@ function reorderColumnMove(state, deltaX) {
     } else if (dragX <= DRAG_SCROLL_BUFFER) {
       scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
     }
-
-    deltaX += scrollX - scrollStart;
   }
 
   // NOTE (jordan) Need to clone this object when use pureRendering

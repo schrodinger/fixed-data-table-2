@@ -27,6 +27,7 @@ describe('ReactTouchHandler', function() {
 
   afterEach(function() {
     sandbox.restore();
+    ReactTouchHandler.__ResetDependency__('requestAnimationFramePolyfill');
   });
 
   describe('onTouchStart', function() {

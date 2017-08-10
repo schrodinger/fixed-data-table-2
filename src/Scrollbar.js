@@ -241,11 +241,13 @@ var Scrollbar = React.createClass({
     /*number*/ contentSize,
     /*string*/ orientation
   ) /*object*/ {
-    if (size < 1 || contentSize <= size) {
+
+    const clampedSize = Math.max(1, size);
+    if (contentSize <= clampedSize) {
       return UNSCROLLABLE_STATE;
     }
 
-    var stateKey = `${position}_${size}_${contentSize}_${orientation}`;
+    var stateKey = `${position}_${clampedSize}_${contentSize}_${orientation}`;
     if (this._stateKey === stateKey) {
       return this._stateForKey;
     }
@@ -257,16 +259,16 @@ var Scrollbar = React.createClass({
     // function will translate it into physical position to render.
 
     var isHorizontal = orientation === 'horizontal';
-    var scale = size / contentSize;
-    var faceSize = size * scale;
+    var scale = clampedSize / contentSize;
+    var faceSize = clampedSize * scale;
 
     if (faceSize < FACE_SIZE_MIN) {
-      scale = (size - FACE_SIZE_MIN) / (contentSize - size);
+      scale = (clampedSize - FACE_SIZE_MIN) / (contentSize - clampedSize);
       faceSize = FACE_SIZE_MIN;
     }
 
     var scrollable = true;
-    var maxPosition = contentSize - size;
+    var maxPosition = contentSize - clampedSize;
 
     if (position < 0) {
       position = 0;

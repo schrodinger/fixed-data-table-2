@@ -117,7 +117,7 @@ function scrollTo(state, scrollY) {
     lastIndex,
     // NOTE (jordan) This changed heuristic may give false positives,
     // but that's fine since it's used as a filter to computeRenderedRows
-    changed: scrollY !== 0,
+    changed: true,
   };
 }
 

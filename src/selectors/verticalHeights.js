@@ -67,7 +67,7 @@ export default createSelector([
   // Determine the height allowed for the component
   const useMaxHeight = height === undefined;
   const maxComponentHeight = Math.round(useMaxHeight ? maxHeight : height);
-  const availableHeight = maxComponentHeight - reservedHeight;
+  const availableHeight = Math.max(maxComponentHeight - reservedHeight, 0);
 
   // If less content than space for rows (bodyHeight), then
   // we should shrink the space for rows to fit our row content (scrollContentHeight).
