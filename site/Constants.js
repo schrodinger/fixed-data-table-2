@@ -54,11 +54,17 @@ exports.ExamplePages = {
     title: 'Reorderable columns',
     description: 'Table with drag and drop column reordering and a dummy "store" for persistence.',
   },
-  SCROLL_TO_EXAMPLE: {
-    location: 'example-scroll-to.html',
-    fileName: 'ScrollToExample.js',
+  SCROLL_TO_ROW_EXAMPLE: {
+    location: 'example-scroll-to-row.html',
+    fileName: 'ScrollToRowExample.js',
     title: 'Jump to row',
     description: 'A table example that will list search matches and jump to specified row',
+  },
+  SCROLL_TO_COLUMN_EXAMPLE: {
+    location: 'example-scroll-to-column.html',
+    fileName: 'ScrollToColumnExample.js',
+    title: 'Jump to column',
+    description: 'A table example that will jump to a specified column',
   },
   TOUCH_SCROLL_EXAMPLE: {
     location: 'example-touch-scroll.html',
