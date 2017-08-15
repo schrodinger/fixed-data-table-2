@@ -3018,7 +3018,7 @@ mocha-loader@^1.0.0:
     script-loader "~0.7.0"
     style-loader "~0.13.1"
 
-mocha-webpack@next:
+mocha-webpack@1.0.0-rc.1:
   version "1.0.0-rc.1"
   resolved "https://registry.yarnpkg.com/mocha-webpack/-/mocha-webpack-1.0.0-rc.1.tgz#3927de84169cf646a18157dcaf07832c1d6d2b2e"
   dependencies:
