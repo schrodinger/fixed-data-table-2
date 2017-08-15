@@ -13,8 +13,8 @@
  * Table cell.
  */
 .public/fixedDataTableCell/main {
-  background-color: var(fbui-white);
-  border-color: var(border-color);
+  background-color: var(--fbui-white);
+  border-color: var(--border-color);
 }
 
 .public/fixedDataTableCell/highlighted {

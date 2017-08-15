@@ -47,10 +47,5 @@ function escapeCode(code) {
 }
 
 module.exports = function(markdown) {
-  if (this && this.cacheable) {
-    // Webpack specific call
-    this.cacheable();
-  }
-
   return marked(markdown, { renderer: renderer });
 };

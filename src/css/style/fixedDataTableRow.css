@@ -13,12 +13,12 @@
  * Table row.
  */
 .public/fixedDataTableRow/main {
-  background-color: var(fbui-white);
+  background-color: var(--fbui-white);
 }
 
 .public/fixedDataTableRow/highlighted,
 .public/fixedDataTableRow/highlighted .public/fixedDataTableCell/main {
-  background-color: var(fbui-desktop-background-light);
+  background-color: var(--fbui-desktop-background-light);
 }
 
 .public/fixedDataTableRow/fixedColumnsDivider {
