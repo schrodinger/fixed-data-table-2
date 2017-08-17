@@ -50,7 +50,7 @@ function shallowEqual(objA, objB) {
  *
  *   var ReactComponentWithPureRenderMixin =
  *     require('ReactComponentWithPureRenderMixin');
- *   React.createClass({
+ *   createReactClass({
  *     mixins: [ReactComponentWithPureRenderMixin],
  *
  *     render: function() {

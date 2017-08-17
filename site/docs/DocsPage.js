@@ -28,7 +28,7 @@ var DOCS_MARKDOWN_FILES = {
   [DocsPages.API_V5.COLUMNGROUP_API.location]: require('../../docs/api-v0.5/ColumnGroupAPI.md'),
 };
 
-var DocsPage = React.createClass({
+class DocsPage extends React.Component {
   render() {
     var HTML = DOCS_MARKDOWN_FILES[this.props.page.location];
 
@@ -51,7 +51,7 @@ var DocsPage = React.createClass({
         </div>
       </div>
     );
-  },
-});
+  }
+};
 
 module.exports = DocsPage;

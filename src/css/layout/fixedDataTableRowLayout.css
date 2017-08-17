@@ -22,6 +22,12 @@
   top: 0;
 }
 
+.fixedDataTableRowLayout/rowExpanded {
+  box-sizing: border-box;
+  left: 0;
+  position: absolute;
+}
+
 .fixedDataTableRowLayout/fixedColumnsDivider {
   backface-visibility: hidden;
   border-left-style: solid;

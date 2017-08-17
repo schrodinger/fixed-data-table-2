@@ -16,14 +16,15 @@
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import Locale from 'Locale';
 import React from 'React';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
 
 import clamp from 'clamp';
 import cx from 'cx';
 
-var {PropTypes} = React;
-
-var FixedDataTableColumnReorderHandle = React.createClass({
+var FixedDataTableColumnReorderHandle = createReactClass({
+  displayName: 'FixedDataTableColumnReorderHandle',
   mixins: [ReactComponentWithPureRenderMixin],
 
   propTypes: {
@@ -50,7 +51,6 @@ var FixedDataTableColumnReorderHandle = React.createClass({
 
   componentWillReceiveProps(/*object*/ newProps) {
   },
-
 
   componentWillUnmount() {
     if (this._mouseMoveTracker) {
@@ -127,7 +127,7 @@ var FixedDataTableColumnReorderHandle = React.createClass({
       dragDistance: this._distance
     });
     this.props.onColumnReorderMove(this._distance);
-  }
+  },
 });
 
 module.exports = FixedDataTableColumnReorderHandle;

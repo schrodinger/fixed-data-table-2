@@ -33,7 +33,7 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.HIDE_COLUMN_EXAMPLE.location]: require('../../examples/HideColumnExample'),
   [ExamplePages.SCROLL_TO_EXAMPLE.location]: require('../../examples/ScrollToExample'),
   [ExamplePages.TOUCH_SCROLL_EXAMPLE.location]: require('../../examples/TouchScrollExample'),
-  [ExamplePages.COLLAPSE_EXAMPLE.location]: require('../../examples/CollapseExample'),
+  [ExamplePages.EXPANDED_EXAMPLE.location]: require('../../examples/ExpandedExample'),
   [ExamplePages.FLEXGROW_EXAMPLE.location]: require('../../examples/FlexGrowExample'),
   [ExamplePages.COLUMN_GROUPS_EXAMPLE.location]: require('../../examples/ColumnGroupsExample'),
   [ExamplePages.PAGINATION_EXAMPLE.location]: require('../../examples/PaginationExample'),
@@ -48,12 +48,14 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.CONTEXT_EXAMPLE.location]: require('../../examples/ContextExample'),
 };
 
-var ExamplesPage = React.createClass({
-  getInitialState() {
-    return {
+class ExamplesPage extends React.Component {
+  constructor(props) {
+    super(props);
+    
+    this.state = {
       renderPage: false
     };
-  },
+  }
 
   render() {
     return (
@@ -62,7 +64,7 @@ var ExamplesPage = React.createClass({
         {this.state.renderPage && this._renderPage()}
       </ExamplesWrapper>
     );
-  },
+  }
 
   _renderPage() {
     var Example = EXAMPLE_COMPONENTS[this.props.page.location];
@@ -73,7 +75,7 @@ var ExamplesPage = React.createClass({
         width={this.state.tableWidth}
       />
     );
-  },
+  }
 
   componentDidMount() {
     this._update();
@@ -85,12 +87,12 @@ var ExamplesPage = React.createClass({
     } else {
       win.onresize = this._onResize;
     }
-  },
+  }
 
   _onResize() {
     clearTimeout(this._updateTimer);
     this._updateTimer = setTimeout(this._update, 16);
-  },
+  }
 
   _update() {
     var win = window;
@@ -103,6 +105,6 @@ var ExamplesPage = React.createClass({
       tableHeight: win.innerHeight - 200,
     });
   }
-});
+}
 
 module.exports = ExamplesPage;

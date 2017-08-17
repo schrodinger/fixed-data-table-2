@@ -24,6 +24,7 @@ import shallowEqual from 'shallowEqual';
  * Input state set from props
  */
 const DEFAULT_INPUT_STATE = {
+  bufferRowCount: null,
   columnGroups: [],
   elementTemplates: {
     cell: [],
@@ -39,6 +40,8 @@ const DEFAULT_INPUT_STATE = {
   rowHeight: 0,
   rowHeightGetter: () => 0,
   rowsCount: 0,
+  subRowHeight: 0,
+  subRowHeightGetter: () => 0,
   width: 0,
   useGroupHeader: false,
 };
@@ -97,7 +100,8 @@ function scrollState(state = DEFAULT_STATE, action) {
       newState = columnStateHelper.initialize(newState, newProps, oldProps);
 
       if (oldProps.rowsCount !== newProps.rowsCount ||
-          oldProps.rowHeight !== newProps.rowHeight) {
+          oldProps.rowHeight !== newProps.rowHeight ||
+          oldProps.subRowHeight !== newProps.subRowHeight) {
         newState = initializeRowHeights(newState);
       }
 
@@ -184,11 +188,13 @@ function scrollState(state = DEFAULT_STATE, action) {
  */
 function getScrollAnchor(state, newProps, oldProps) {
   if (newProps.scrollToRow !== undefined &&
+      newProps.scrollToRow !== null &&
       (!oldProps || newProps.scrollToRow !== oldProps.scrollToRow)) {
     return scrollToRow(state, newProps.scrollToRow);
   }
 
   if (newProps.scrollTop !== undefined &&
+      newProps.scrollTop !== null &&
       (!oldProps || newProps.scrollTop !== oldProps.scrollTop)) {
     return scrollTo(state, newProps.scrollTop);
   }
@@ -211,13 +217,15 @@ function initializeRowHeights(state) {
   const {
     rowHeight,
     rowsCount,
+    subRowHeight,
   } = state;
 
-  const rowOffsets = PrefixIntervalTree.uniform(rowsCount, rowHeight);
-  const scrollContentHeight = rowsCount * rowHeight;
+  const defaultFullRowHeight = rowHeight + subRowHeight;
+  const rowOffsets = PrefixIntervalTree.uniform(rowsCount, defaultFullRowHeight);
+  const scrollContentHeight = rowsCount * defaultFullRowHeight;
   const storedHeights = new Array(rowsCount);
   for (let idx = 0; idx < rowsCount; idx++) {
-    storedHeights[idx] = rowHeight;
+    storedHeights[idx] = defaultFullRowHeight;
   }
   return Object.assign({}, state, {
     rowOffsets,
@@ -234,6 +242,7 @@ function initializeRowHeights(state) {
  */
 function setStateFromProps(state, props) {
   const propsToState = pick(props, [
+    'bufferRowCount',
     'footerHeight',
     'groupHeaderHeight',
     'headerHeight',
@@ -245,6 +254,8 @@ function setStateFromProps(state, props) {
     'rowHeightGetter',
     'rowsCount',
     'showScrollbarX',
+    'subRowHeight',
+    'subRowHeightGetter',
     'width',
   ]);
 
@@ -254,11 +265,12 @@ function setStateFromProps(state, props) {
     useGroupHeader,
   } = convertColumnElementsToData(props);
 
-  const { rowHeight } = props;
+  const { rowHeight, subRowHeight } = props;
   return Object.assign({}, state, {
     columnGroups,
     elementTemplates,
     rowHeightGetter: () => rowHeight,
+    subRowHeightGetter: () => subRowHeight || 0,
     useGroupHeader
   }, propsToState);
 }

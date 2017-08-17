@@ -8,40 +8,72 @@ const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
 const { CollapseCell, TextCell } = require('./helpers/cells');
 const { Table, Column, Cell } = require('fixed-data-table-2');
 const React = require('react');
+const {StyleSheet, css} = require('aphrodite');
 
-class CollapseExample extends React.Component {
+class ExpandedExample extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      scrollToRow: null,
       collapsedRows: new Set(),
       dataList: new FakeObjectDataListStore(2000)
     }
 
     this._handleCollapseClick = this._handleCollapseClick.bind(this);
-    this._rowHeightGetter = this._rowHeightGetter.bind(this);
+    this._subRowHeightGetter = this._subRowHeightGetter.bind(this);
+    this._rowExpandedGetter = this._rowExpandedGetter.bind(this);
   }
 
   _handleCollapseClick(rowIndex) {
     let {collapsedRows} = this.state;
-    collapsedRows.has(rowIndex) ? collapsedRows.delete(rowIndex) : collapsedRows.add(rowIndex);
+
+    let scrollToRow = rowIndex;
+    if (collapsedRows.has(rowIndex)) {
+      collapsedRows.delete(rowIndex);
+      scrollToRow = null
+    } else {
+      collapsedRows.add(rowIndex);
+    }
+
     this.setState({
+      scrollToRow: scrollToRow,
       collapsedRows: collapsedRows
     });
   }
 
-  _rowHeightGetter(index) {
-    return this.state.collapsedRows.has(index) ? 100 : 50;
+  _subRowHeightGetter(index) {
+    return this.state.collapsedRows.has(index) ? 80 : 0;
+  }
+
+  _rowExpandedGetter({rowIndex, width, height}) {
+    if (!this.state.collapsedRows.has(rowIndex)) {
+      return null;
+    }
+
+    const style = {
+      height: height,
+      width: width - 2,
+    };
+    return (
+      <div style={style}>
+        <div className={css(styles.expandStyles)}>
+            expanded content
+        </div>
+      </div>
+    );
   }
 
   render() {
-    let {dataList, collapsedRows} = this.state;
+    let {dataList, collapsedRows, scrollToRow} = this.state;
 
     return (
       <div>
         <Table
+          scrollToRow={scrollToRow}
           rowHeight={50}
           rowsCount={dataList.getSize()}
-          rowHeightGetter={this._rowHeightGetter}
+          subRowHeightGetter={this._subRowHeightGetter}
+          rowExpanded={this._rowExpandedGetter}
           headerHeight={50}
           width={1000}
           height={500}
@@ -89,4 +121,16 @@ class CollapseExample extends React.Component {
   }
 }
 
-module.exports = CollapseExample;
+const styles = StyleSheet.create({
+ expandStyles: {
+    'background-color': 'white',
+    border: '1px solid #d3d3d3',
+    'box-sizing': 'border-box',
+    padding: '20px',
+    overflow:'hidden',
+    width: '100%',
+    height: '100%'
+  }
+});
+
+module.exports = ExpandedExample;

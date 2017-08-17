@@ -20,9 +20,16 @@ const MAX_BUFFER_ROWS = 6;
  *   In total we will buffer twice this number of rows (half ahead, and half behind).
  */
 export default createSelector([
+  state => state.bufferRowCount,
   maxVisibleRowCount,
-], maxVisibleRowCount => clamp(
-  Math.floor(maxVisibleRowCount / 2),
-  MIN_BUFFER_ROWS,
-  MAX_BUFFER_ROWS
-));
+], (bufferRowCount, maxVisibleRowCount) => {
+  if (bufferRowCount !== null) {
+    return bufferRowCount;
+  }
+
+  return clamp(
+    Math.floor(maxVisibleRowCount / 2),
+    MIN_BUFFER_ROWS,
+    MAX_BUFFER_ROWS
+  );
+});

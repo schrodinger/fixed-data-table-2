@@ -2,7 +2,7 @@
 /**
  * Data type validator for the paging data store
  *
- * Instead of having React.PropTypes.instanceOf(PagedData) the custom PropTypes
+ * Instead of having PropTypes.instanceOf(PagedData) the custom PropTypes
  * allows any data structure as long as it provides the required function.
  *
  * @param {object} props         The list of the props

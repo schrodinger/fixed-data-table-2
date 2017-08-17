@@ -22,7 +22,7 @@ const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
 
 /**
- * Creates new state object when rowHeight or rowCount changes
+ * Initialize scrollX state
  * TODO (jordan) Audit this method for cases where deep values are not properly cloned
  *
  * @param {!Object} state
@@ -43,7 +43,8 @@ function initialize(state, props, oldProps) {
     width,
   } = state;
 
-  if (scrollLeft !== undefined) {
+  if (scrollLeft !== undefined &&
+      (!oldProps || scrollLeft !== oldProps.scrollLeft)) {
     scrollX = scrollLeft;
   }
 

@@ -28,9 +28,8 @@ export default class FixedDataTableContainer extends React.Component {
 
     this.update = this.update.bind(this);
 
-    // TODO (jordan) destroy on unmount
     this.reduxStore = FixedDataTableStore.get();
-    this.reduxStore.subscribe(this.update);
+    this.unsubscribe = this.reduxStore.subscribe(this.update);
 
     this.scrollActions = bindActionCreators(scrollActions, this.reduxStore.dispatch);
     this.columnActions = bindActionCreators(columnActions, this.reduxStore.dispatch);
@@ -58,6 +57,13 @@ export default class FixedDataTableContainer extends React.Component {
       newProps: nextProps,
       oldProps: this.props,
     });
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+    this.reduxStore = null;
   }
 
   render() {
@@ -90,6 +96,7 @@ export default class FixedDataTableContainer extends React.Component {
       'scrollContentHeight',
       'scrollX',
       'scrollY',
+      'subRowHeightGetter',
       'useGroupHeader',
     ]);
 

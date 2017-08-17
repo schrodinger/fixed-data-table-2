@@ -155,6 +155,7 @@ function scrollToRow(state, rowIndex) {
   }
 
   rowIndex = clamp(rowIndex, 0, Math.max(rowsCount - 1, 0));
+  updateRowHeight(state, rowIndex);
   let rowBegin = rowOffsets.sumUntil(rowIndex);
   let rowEnd = rowBegin + storedHeights[rowIndex];
 
@@ -253,6 +254,15 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     totalHeight += updateRowHeight(state, rowIdx);
     endIdx = rowIdx;
     rowIdx += step;
+  }
+
+  // NOTE (jordan) This handles #115 where resizing the viewport may
+  // leave only a subset of rows shown, but no scrollbar to scroll up to the first rows.
+  if (rowIdx === rowsCount && totalHeight < availableHeight) {
+    return calculateRenderedRowRange(state, {
+      firstOffset: 0,
+      lastIndex: rowsCount - 1,
+    });
   }
 
   let firstRowOffset = firstOffset;
@@ -372,9 +382,10 @@ function updateRowHeight(state, rowIdx) {
     storedHeights,
     rowOffsets,
     rowHeightGetter,
+    subRowHeightGetter,
   } = state;
 
-  const newHeight = rowHeightGetter(rowIdx);
+  const newHeight = rowHeightGetter(rowIdx) + subRowHeightGetter(rowIdx);
   const oldHeight = storedHeights[rowIdx];
   if (newHeight !== oldHeight) {
     rowOffsets.set(rowIdx, newHeight);

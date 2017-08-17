@@ -17,6 +17,8 @@ import FixedDataTableBufferedRows from 'FixedDataTableBufferedRows';
 import FixedDataTableColumnResizeHandle from 'FixedDataTableColumnResizeHandle';
 import FixedDataTableRow from 'FixedDataTableRow';
 import React from 'React';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
 import ReactTouchHandler from 'ReactTouchHandler';
 import ReactWheelHandler from 'ReactWheelHandler';
@@ -28,8 +30,6 @@ import horizontalScrollbarVisibleSelector from 'horizontalScrollbarVisible';
 import joinClasses from 'joinClasses';
 import verticalHeightsSelector from 'verticalHeights';
 import verticalLayoutSelector from 'verticalLayout';
-
-const { PropTypes } = React;
 
 /**
  * Data grid component with fixed or scrollable header and columns.
@@ -77,7 +77,8 @@ const { PropTypes } = React;
  * - Scrollable Body Columns: The body columns that move while scrolling
  *   vertically or horizontally.
  */
-const FixedDataTable = React.createClass({
+const FixedDataTable = createReactClass({
+  displayName: 'FixedDataTable',
 
   propTypes: {
 
@@ -171,6 +172,43 @@ const FixedDataTable = React.createClass({
     rowHeightGetter: PropTypes.func,
 
     /**
+     * Pixel height of sub-row unless `subRowHeightGetter` is specified and returns
+     * different value.  Defaults to 0 and no sub-row being displayed.
+     */
+    subRowHeight: PropTypes.number,
+
+    /**
+     * If specified, `subRowHeightGetter(index)` is called for each row and the
+     * returned value overrides `subRowHeight` for particular row.
+     */
+    subRowHeightGetter: PropTypes.func,
+
+   /**
+    * The row expanded for table row.
+    * This can either be a React element, or a function that generates
+    * a React Element. By default, the React element passed in can expect to
+    * receive the following props:
+    *
+    * ```
+    * props: {
+    *   rowIndex; number // (the row index)
+    *   height: number // (supplied from the Table or rowHeightGetter)
+    *   width: number // (supplied from the Table)
+    * }
+    * ```
+    *
+    * Because you are passing in your own React element, you can feel free to
+    * pass in whatever props you may want or need.
+    *
+    * If you pass in a function, you will receive the same props object as the
+    * first argument.
+    */
+   rowExpanded: PropTypes.oneOfType([
+     PropTypes.element,
+     PropTypes.func,
+   ]),
+
+    /**
      * To get any additional CSS classes that should be added to a row,
      * `rowClassNameGetter(index)` is called.
      */
@@ -229,6 +267,11 @@ const FixedDataTable = React.createClass({
      * and vertical scroll values.
      */
     onScrollEnd: PropTypes.func,
+
+    /**
+     * If enabled scroll events will not be propagated outside of the table.
+     */
+    stopScrollPropagation: PropTypes.bool,
 
     /**
      * Callback that is called when `rowHeightGetter` returns a different height
@@ -302,6 +345,13 @@ const FixedDataTable = React.createClass({
      * Whether columns are currently being reordered.
      */
     isColumnReordering: PropTypes.bool,
+
+    // TODO (jordan) Remove propType of bufferRowCount without losing documentation
+    /**
+     * The number of rows outside the viewport to prerender. Defaults to roughly
+     * half of the number of visible rows.
+     */
+    bufferRowCount: PropTypes.number,
   },
 
   getDefaultProps() /*object*/ {
@@ -310,7 +360,8 @@ const FixedDataTable = React.createClass({
       groupHeaderHeight: 0,
       headerHeight: 0,
       showScrollbarY: true,
-      touchScrollEnabled: false
+      touchScrollEnabled: false,
+      stopScrollPropagation: false
     };
   },
 
@@ -320,15 +371,29 @@ const FixedDataTable = React.createClass({
     this._wheelHandler = new ReactWheelHandler(
       this._onScroll,
       this._shouldHandleWheelX,
-      this._shouldHandleWheelY
+      this._shouldHandleWheelY,
+      this.props.stopScrollPropagation
     );
 
-    const touchEnabled = this.props.touchScrollEnabled === true;
     this._touchHandler = new ReactTouchHandler(
       this._onScroll,
-      touchEnabled && this._shouldHandleWheelX,
-      touchEnabled && this._shouldHandleWheelY
+      this._shouldHandleTouchX,
+      this._shouldHandleTouchY,
+      this.props.stopScrollPropagation
     );
+  },
+
+  componentWillUnmount() {
+    this._wheelHandler = null;
+    this._touchHandler = null;
+  },
+
+  _shouldHandleTouchX(/*number*/ delta) /*boolean*/ {
+    return this.props.touchScrollEnabled && this._shouldHandleWheelX(delta);
+  },
+
+  _shouldHandleTouchY(/*number*/ delta) /*boolean*/ {
+    return this.props.touchScrollEnabled && this._shouldHandleWheelY(delta);
   },
 
   _shouldHandleWheelX(/*number*/ delta) /*boolean*/ {
@@ -391,42 +456,15 @@ const FixedDataTable = React.createClass({
 
   componentWillReceiveProps(/*object*/ nextProps) {
     const {
-      overflowX,
-      overflowY,
       ownerHeight,
       scrollLeft,
       scrollTop,
     } = this.props;
 
-    // If scrollLeft is unchanged, ignore it
-    // TODO (jordan) switch to handle this same as we do for scrollTop
-    if (nextProps.scrollLeft === scrollLeft) {
-      nextProps = Object.assign({}, nextProps);
-      delete nextProps.scrollLeft;
-    }
-
-    const newOverflowX = nextProps.overflowX;
-    const newOverflowY = nextProps.overflowY;
-    const touchEnabled = nextProps.touchScrollEnabled === true;
-
-    if (newOverflowX !== overflowX ||
-        newOverflowY !== overflowY) {
-      this._wheelHandler = new ReactWheelHandler(
-        this._onScroll,
-        newOverflowX !== 'hidden', // Should handle horizontal scroll
-        newOverflowY !== 'hidden' // Should handle vertical scroll
-      );
-      this._touchHandler = new ReactTouchHandler(
-        this._onScroll,
-        newOverflowX !== 'hidden' && touchEnabled, // Should handle horizontal scroll
-        newOverflowY !== 'hidden' && touchEnabled // Should handle vertical scroll
-      );
-    }
-
     // In the case of controlled scrolling, notify.
     if (ownerHeight !== nextProps.ownerHeight ||
         scrollTop !== nextProps.scrollTop ||
-        nextProps.scrollLeft !== undefined) {
+        scrollLeft !== nextProps.scrollLeft) {
       this._didScrollStart();
     }
     this._didScrollStop();
@@ -681,12 +719,14 @@ const FixedDataTable = React.createClass({
         onRowMouseEnter={props.onRowMouseEnter}
         onRowMouseLeave={props.onRowMouseLeave}
         rowClassNameGetter={props.rowClassNameGetter}
-        rowsCount={props.rowsCount}
+        rowExpanded={props.rowExpanded}
         rowHeightGetter={props.rowHeightGetter}
         rowKeyGetter={props.rowKeyGetter}
+        rowsCount={props.rowsCount}
         scrollLeft={props.scrollX}
         scrollableColumns={scrollableCellTemplates}
         showLastRowBorder={true}
+        subRowHeightGetter={props.subRowHeightGetter}
         width={props.width}
         rowsToRender={props.rows}
         rowHeights={props.rowHeights}
@@ -766,88 +806,45 @@ const FixedDataTable = React.createClass({
     };
   },
 
-  // TODO (jordan) delete me
-  _calculateState(props) {
-    /* TODO REDUX_MIGRATION
-    // Handle scrolling to a new scroll top when prop set
-    if (props.scrollTop !== this.props.scrollTop) {
-      scrollState = this._scrollHelper.scrollTo(props.scrollTop);
-      firstRowIndex = scrollState.index;
-      firstRowOffset = scrollState.offset;
-      scrollY = scrollState.position;
-    }
-    */
-
-    // TODO REDUX_MIGRATION
-    //this._scrollHelper.setViewportHeight(bodyHeight);
-
-    /* TODO REDUX_MIGRATION
-    Scroll doesn't reset to top
-    https://github.com/schrodinger/fixed-data-table-2/commit/b2c4e2c7a9ecf5e9b93314751b77ed1c5c0c4f73
-
-    // This calculation is synonymous to Element.scrollTop
-    var scrollTop = Math.abs(firstRowOffset - this._scrollHelper.getRowPosition(firstRowIndex));
-    // This case can happen when the user is completely scrolled down and resizes the viewport to be taller vertically.
-    // This is because we set the viewport height after having calculated the rows
-    if (scrollTop !== scrollY) {
-      scrollTop = maxScrollY;
-      scrollState = this._scrollHelper.scrollTo(scrollTop);
-      firstRowIndex = scrollState.index;
-      firstRowOffset = scrollState.offset;
-      scrollY = scrollState.position;
-    }
-    */
-
-   // TODO REDUX_MIGRATION
-   // https://github.com/schrodinger/fixed-data-table-2/commit/c981cc0e377016217fd069a03d741119b8793d8e
-   // Need to update viewportHeight when heigh changes
-
-    // The order of elements in this object matters and bringing height or
-    // scrollY to the top can break various features due to conflicts with
-    // the spread operator over props.
-  },
-
   _onScroll(/*number*/ deltaX, /*number*/ deltaY) {
-    if (this.isMounted()) {
-      const {
-        maxScrollX,
-        maxScrollY,
-        onHorizontalScroll,
-        onVerticalScroll,
-        overflowX,
-        overflowY,
-        scrollActions,
-        scrollX,
-        scrollY,
-      } = this.props;
+    const {
+      maxScrollX,
+      maxScrollY,
+      onHorizontalScroll,
+      onVerticalScroll,
+      overflowX,
+      overflowY,
+      scrollActions,
+      scrollX,
+      scrollY,
+    } = this.props;
 
-      if (!this._isScrolling) {
-        this._didScrollStart();
-      }
-      let x = scrollX;
-      let y = scrollY;
-      if (Math.abs(deltaY) > Math.abs(deltaX) && overflowY !== 'hidden') {
-        y += deltaY;
-        y = y < 0 ? 0 : y;
-        y = y > maxScrollY ? maxScrollY : y;
-
-        //NOTE (jordan) This is a hacky workaround to prevent FDT from setting its internal state
-        if (onVerticalScroll ? onVerticalScroll(y) : true) {
-          scrollActions.scrollToY(y);
-        }
-      } else if (deltaX && overflowX !== 'hidden') {
-        x += deltaX;
-        x = x < 0 ? 0 : x;
-        x = x > maxScrollX ? maxScrollX : x;
-
-        //NOTE (asif) This is a hacky workaround to prevent FDT from setting its internal state
-        if (onHorizontalScroll ? onHorizontalScroll(x) : true) {
-          scrollActions.scrollToX(x);
-        }
-      }
-
-      this._didScrollStop();
+    if (!this._isScrolling) {
+      this._didScrollStart();
     }
+    let x = scrollX;
+    let y = scrollY;
+    if (Math.abs(deltaY) > Math.abs(deltaX) && overflowY !== 'hidden') {
+      y += deltaY;
+      y = y < 0 ? 0 : y;
+      y = y > maxScrollY ? maxScrollY : y;
+
+      //NOTE (jordan) This is a hacky workaround to prevent FDT from setting its internal state
+      if (onVerticalScroll ? onVerticalScroll(y) : true) {
+        scrollActions.scrollToY(y);
+      }
+    } else if (deltaX && overflowX !== 'hidden') {
+      x += deltaX;
+      x = x < 0 ? 0 : x;
+      x = x > maxScrollX ? maxScrollX : x;
+
+      //NOTE (asif) This is a hacky workaround to prevent FDT from setting its internal state
+      if (onHorizontalScroll ? onHorizontalScroll(x) : true) {
+        scrollActions.scrollToX(x);
+      }
+    }
+
+    this._didScrollStop();
   },
 
   _onHorizontalScroll(/*number*/ scrollPos) {
@@ -857,16 +854,18 @@ const FixedDataTable = React.createClass({
       scrollX,
     } = this.props;
 
-    if (this.isMounted() && scrollPos !== scrollX) {
-      if (!this._isScrolling) {
-        this._didScrollStart();
-      }
-
-      if (onHorizontalScroll ? onHorizontalScroll(scrollPos) : true) {
-        scrollActions.scrollToX(scrollPos);
-      }
-      this._didScrollStop();
+    if (scrollPos === scrollX) {
+      return;
     }
+
+    if (!this._isScrolling) {
+      this._didScrollStart();
+    }
+
+    if (onHorizontalScroll ? onHorizontalScroll(scrollPos) : true) {
+      scrollActions.scrollToX(scrollPos);
+    }
+    this._didScrollStop();
   },
 
   _onVerticalScroll(/*number*/ scrollPos) {
@@ -876,17 +875,19 @@ const FixedDataTable = React.createClass({
       scrollY,
     } = this.props;
 
-    if (this.isMounted() && scrollPos !== scrollY) {
-      if (!this._isScrolling) {
-        this._didScrollStart();
-      }
-
-      if (onHorizontalScroll ? onHorizontalScroll(scrollPos) : true) {
-        scrollActions.scrollToY(scrollPos);
-      }
-
-      this._didScrollStop();
+    if (scrollPos === scrollY) {
+      return;
     }
+
+    if (!this._isScrolling) {
+      this._didScrollStart();
+    }
+
+    if (onHorizontalScroll ? onHorizontalScroll(scrollPos) : true) {
+      scrollActions.scrollToY(scrollPos);
+    }
+
+    this._didScrollStop();
   },
 
   _didScrollStart() {
@@ -898,13 +899,15 @@ const FixedDataTable = React.createClass({
       scrollY,
     } = this.props;
 
-    if (this.isMounted() && !this._isScrolling) {
-      this._isScrolling = true;
-      scrollActions.startScroll();
+    if (this._isScrolling) {
+      return;
+    }
 
-      if (onScrollStart) {
-        onScrollStart(scrollX, scrollY, firstRowIndex);
-      }
+    this._isScrolling = true;
+    scrollActions.startScroll();
+
+    if (onScrollStart) {
+      onScrollStart(scrollX, scrollY, firstRowIndex);
     }
   },
 
@@ -917,19 +920,23 @@ const FixedDataTable = React.createClass({
       scrollY,
     } = this.props;
 
-    if (this.isMounted() && this._isScrolling) {
-      this._isScrolling = false;
-      scrollActions.stopScroll();
+    if (!this._isScrolling) {
+      return;
+    }
 
-      if (onScrollEnd) {
-        onScrollEnd(scrollX, scrollY, firstRowIndex);
-      }
+    this._isScrolling = false;
+    scrollActions.stopScroll();
+
+    if (onScrollEnd) {
+      onScrollEnd(scrollX, scrollY, firstRowIndex);
     }
   },
 });
 
-const HorizontalScrollbar = React.createClass({
+const HorizontalScrollbar = createReactClass({
+  displayName: 'HorizontalScrollbar',
   mixins: [ReactComponentWithPureRenderMixin],
+
   propTypes: {
     contentSize: PropTypes.number.isRequired,
     offset: PropTypes.number.isRequired,
