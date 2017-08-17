@@ -62,6 +62,7 @@ export default class FixedDataTableContainer extends React.Component {
   componentWillUnmount() {
     if (this.unsubscribe) {
       this.unsubscribe();
+      this.unsubscribe = null;
     }
     this.reduxStore = null;
   }
