@@ -456,6 +456,16 @@ var FixedDataTable = createReactClass({
     );
   },
 
+  _onKeyDown(event) {
+    if(event.key === "PageDown") {
+      this._onScroll(0,this._scrollbarYHeight);
+        event.preventDefault();
+    } else if(event.key === "PageUp") {
+      this._onScroll(0,this._scrollbarYHeight * -1);
+        event.preventDefault();
+    }
+  },
+
   _reportContentHeight() {
     var scrollContentHeight = this.state.scrollContentHeight;
     var reservedHeight = this.state.reservedHeight;
@@ -556,6 +566,7 @@ var FixedDataTable = createReactClass({
 
       scrollbarYHeight = Math.max(0, footOffsetTop - bodyOffsetTop);
     }
+    this._scrollbarYHeight = scrollbarYHeight;
 
     var verticalScrollbar;
     if (showScrollbarY) {
@@ -679,6 +690,8 @@ var FixedDataTable = createReactClass({
           cx('fixedDataTableLayout/main'),
           cx('public/fixedDataTable/main'),
         )}
+        tabIndex={0}
+        onKeyDown={this._onKeyDown}
         onWheel={this._wheelHandler.onWheel}
         onTouchStart={this._touchHandler.onTouchStart}
         onTouchEnd={this._touchHandler.onTouchEnd}
