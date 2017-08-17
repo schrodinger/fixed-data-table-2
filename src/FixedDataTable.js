@@ -958,10 +958,11 @@ var FixedDataTable = createReactClass({
     });
 
     var tableWidth = props.width;
+    var reservedHeight = props.headerHeight + props.groupHeaderHeight + props.footerHeight;
     var scrollContentHeight = this._scrollHelper.getContentHeight();
 
     // Allow room for the scrollbar, less 1px for the last column's border
-    if (props.showScrollbarY && props.height < scrollContentHeight) {
+    if (props.showScrollbarY && props.height < scrollContentHeight + reservedHeight) {
      tableWidth = tableWidth - Scrollbar.SIZE - Scrollbar.OFFSET;
     }
 
