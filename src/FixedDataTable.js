@@ -957,8 +957,13 @@ var FixedDataTable = createReactClass({
       children.push(child);
     });
 
+    var tableWidth = props.width;
+    var scrollContentHeight = this._scrollHelper.getContentHeight();
+
     // Allow room for the scrollbar, less 1px for the last column's border
-    var adjustedWidth = props.width - Scrollbar.SIZE - Scrollbar.OFFSET;
+    if (props.showScrollbarY && props.height < scrollContentHeight) {
+     tableWidth = tableWidth - Scrollbar.SIZE - Scrollbar.OFFSET;
+    }
 
     var useGroupHeader = false;
     if (children.length && children[0].type.__TableColumnGroup__) {
@@ -1040,14 +1045,14 @@ var FixedDataTable = createReactClass({
       var columnGroupSettings =
         FixedDataTableWidthHelper.adjustColumnGroupWidths(
           children,
-          adjustedWidth
+          tableWidth
       );
       columns = columnGroupSettings.columns;
       columnGroups = columnGroupSettings.columnGroups;
     } else {
       columns = FixedDataTableWidthHelper.adjustColumnWidths(
         children,
-        adjustedWidth
+        tableWidth
       );
     }
 
@@ -1084,7 +1089,7 @@ var FixedDataTable = createReactClass({
         }
 
         // Get width of scrollable columns in viewport
-        var availableScrollWidth = adjustedWidth - totalFixedColumnsWidth;
+        var availableScrollWidth = tableWidth - totalFixedColumnsWidth;
 
         // Get width of specified column
         var selectedColumnWidth = columnInfo.bodyScrollableColumns[
@@ -1120,7 +1125,7 @@ var FixedDataTable = createReactClass({
     var scrollContentWidth =
       FixedDataTableWidthHelper.getTotalWidth(columns);
 
-    var horizontalScrollbarVisible = scrollContentWidth > adjustedWidth &&
+    var horizontalScrollbarVisible = scrollContentWidth > tableWidth &&
       props.overflowX !== 'hidden' && props.showScrollbarX !== false;
 
     if (horizontalScrollbarVisible) {
@@ -1129,7 +1134,7 @@ var FixedDataTable = createReactClass({
       totalHeightReserved += Scrollbar.SIZE;
     }
 
-    var maxScrollX = Math.max(0, scrollContentWidth - adjustedWidth);
+    var maxScrollX = Math.max(0, scrollContentWidth - tableWidth);
     var maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
     scrollX = Math.min(scrollX, maxScrollX);
     scrollY = Math.min(scrollY, maxScrollY);
