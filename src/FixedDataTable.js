@@ -957,18 +957,17 @@ var FixedDataTable = createReactClass({
       children.push(child);
     });
 
+    var useGroupHeader = children.length > 0 && children[0].type.__TableColumnGroup__ === true;
+    var groupHeaderHeight = useGroupHeader ? props.groupHeaderHeight : 0;
+
     var tableWidth = props.width;
-    var reservedHeight = props.headerHeight + props.groupHeaderHeight + props.footerHeight;
+    var totalHeightReserved = props.footerHeight + props.headerHeight +
+      groupHeaderHeight + 2 * BORDER_HEIGHT;
     var scrollContentHeight = this._scrollHelper.getContentHeight();
 
     // Allow room for the scrollbar, less 1px for the last column's border
-    if (props.showScrollbarY && props.height < scrollContentHeight + reservedHeight) {
+    if (props.showScrollbarY && props.height < scrollContentHeight + totalHeightReserved) {
      tableWidth = tableWidth - Scrollbar.SIZE - Scrollbar.OFFSET;
-    }
-
-    var useGroupHeader = false;
-    if (children.length && children[0].type.__TableColumnGroup__) {
-      useGroupHeader = true;
     }
 
     var scrollState;
@@ -981,8 +980,6 @@ var FixedDataTable = createReactClass({
     if (props.scrollLeft !== undefined && props.scrollLeft !== lastScrollLeft) {
       scrollX = props.scrollLeft;
     }
-
-    var groupHeaderHeight = useGroupHeader ? props.groupHeaderHeight : 0;
 
     if (oldState && (props.rowsCount !== oldState.rowsCount || props.rowHeight !== oldState.rowHeight || props.height !== oldState.height)) {
       // Number of rows changed, try to scroll to the row from before the
@@ -1118,8 +1115,6 @@ var FixedDataTable = createReactClass({
 
     var useMaxHeight = props.height === undefined;
     var height = Math.round(useMaxHeight ? props.maxHeight : props.height);
-    var totalHeightReserved = props.footerHeight + props.headerHeight +
-      groupHeaderHeight + 2 * BORDER_HEIGHT;
     var bodyHeight = height - totalHeightReserved;
     var scrollContentHeight = this._scrollHelper.getContentHeight();
     var totalHeightNeeded = scrollContentHeight + totalHeightReserved;
