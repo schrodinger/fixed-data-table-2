@@ -458,24 +458,39 @@ var FixedDataTable = createReactClass({
   },
 
   _onKeyDown(event) {
-    if(event.key === 'PageDown') {
-      this._onScroll(0, this._scrollbarYHeight);
+    switch (event.key) {
+      case 'PageDown':
+        this._onScroll(0, this._scrollbarYHeight);
         event.preventDefault();
-    } else if(event.key === 'PageUp') {
-      this._onScroll(0, this._scrollbarYHeight * -1);
+        break;
+
+      case 'PageUp':
+        this._onScroll(0, this._scrollbarYHeight * -1);
         event.preventDefault();
-    } else if(event.key === 'ArrowDown') {
-      this._onScroll(0, ARROW_SCROLL_SPEED);
+        break;
+
+      case 'ArrowDown':
+        this._onScroll(0, ARROW_SCROLL_SPEED);
         event.preventDefault();
-    } else if(event.key === 'ArrowUp') {
-      this._onScroll(0, ARROW_SCROLL_SPEED * -1);
+        break;
+
+      case 'ArrowUp':
+        this._onScroll(0, ARROW_SCROLL_SPEED * -1);
         event.preventDefault();
-    } else if(event.key === 'ArrowRight') {
-      this._onScroll(ARROW_SCROLL_SPEED, 0);
+        break;
+
+      case 'ArrowRight':
+        this._onScroll(ARROW_SCROLL_SPEED, 0);
         event.preventDefault();
-    } else if(event.key === 'ArrowLeft') {
-      this._onScroll(ARROW_SCROLL_SPEED * -1, 0);
+        break;
+
+      case 'ArrowLeft':
+        this._onScroll(ARROW_SCROLL_SPEED * -1, 0);
         event.preventDefault();
+        break;
+
+      default:
+        break;
     }
   },
 
