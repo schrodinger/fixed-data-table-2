@@ -41,6 +41,7 @@ var BORDER_HEIGHT = 1;
 var HEADER = 'header';
 var FOOTER = 'footer';
 var CELL = 'cell';
+var ARROW_SCROLL_SPEED = 25;
 var DRAG_SCROLL_SPEED = 15;
 var DRAG_SCROLL_BUFFER = 100;
 
@@ -457,11 +458,23 @@ var FixedDataTable = createReactClass({
   },
 
   _onKeyDown(event) {
-    if(event.key === "PageDown") {
-      this._onScroll(0,this._scrollbarYHeight);
+    if(event.key === 'PageDown') {
+      this._onScroll(0, this._scrollbarYHeight);
         event.preventDefault();
-    } else if(event.key === "PageUp") {
-      this._onScroll(0,this._scrollbarYHeight * -1);
+    } else if(event.key === 'PageUp') {
+      this._onScroll(0, this._scrollbarYHeight * -1);
+        event.preventDefault();
+    } else if(event.key === 'ArrowDown') {
+      this._onScroll(0, ARROW_SCROLL_SPEED);
+        event.preventDefault();
+    } else if(event.key === 'ArrowUp') {
+      this._onScroll(0, ARROW_SCROLL_SPEED * -1);
+        event.preventDefault();
+    } else if(event.key === 'ArrowRight') {
+      this._onScroll(ARROW_SCROLL_SPEED, 0);
+        event.preventDefault();
+    } else if(event.key === 'ArrowLeft') {
+      this._onScroll(ARROW_SCROLL_SPEED * -1, 0);
         event.preventDefault();
     }
   },
