@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.17 
+ * FixedDataTable v0.8.0 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -208,7 +208,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Table: _FixedDataTable2.default
 	};
 
-	FixedDataTableRoot.version = '0.7.17';
+	FixedDataTableRoot.version = '0.8.0';
 	module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -460,6 +460,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	    rowHeightGetter: _propTypes2.default.func,
 
 	    /**
+	     * Pixel height of sub-row unless `subRowHeightGetter` is specified and returns
+	     * different value.  Defaults to 0 and no sub-row being displayed.
+	     */
+	    subRowHeight: _propTypes2.default.number,
+
+	    /**
+	     * If specified, `subRowHeightGetter(index)` is called for each row and the
+	     * returned value overrides `subRowHeight` for particular row.
+	     */
+	    subRowHeightGetter: _propTypes2.default.func,
+
+	    /**
+	     * The row expanded for table row.
+	     * This can either be a React element, or a function that generates
+	     * a React Element. By default, the React element passed in can expect to
+	     * receive the following props:
+	     *
+	     * ```
+	     * props: {
+	     *   rowIndex; number // (the row index)
+	     *   height: number // (supplied from the Table or rowHeightGetter)
+	     *   width: number // (supplied from the Table)
+	     * }
+	     * ```
+	     *
+	     * Because you are passing in your own React element, you can feel free to
+	     * pass in whatever props you may want or need.
+	     *
+	     * If you pass in a function, you will receive the same props object as the
+	     * first argument.
+	     */
+	    rowExpanded: _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.func]),
+
+	    /**
 	     * To get any additional CSS classes that should be added to a row,
 	     * `rowClassNameGetter(index)` is called.
 	     */
@@ -618,7 +652,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var props = this.props;
 
 	    var viewportHeight = (props.height === undefined ? props.maxHeight : props.height) - (props.headerHeight || 0) - (props.footerHeight || 0) - (props.groupHeaderHeight || 0);
-	    this._scrollHelper = new _FixedDataTableScrollHelper2.default(props.rowsCount, props.rowHeight, viewportHeight, props.rowHeightGetter);
+	    this._scrollHelper = new _FixedDataTableScrollHelper2.default(props.rowsCount, props.rowHeight, viewportHeight, props.rowHeightGetter, props.subRowHeight, props.subRowHeightGetter);
 
 	    this._didScrollStop = (0, _debounceCore2.default)(this._didScrollStop, 200, this);
 
@@ -882,6 +916,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      rowsCount: state.rowsCount,
 	      rowGetter: state.rowGetter,
 	      rowHeightGetter: state.rowHeightGetter,
+	      subRowHeight: state.subRowHeight,
+	      subRowHeightGetter: state.subRowHeightGetter,
+	      rowExpanded: state.rowExpanded,
 	      rowKeyGetter: state.rowKeyGetter,
 	      scrollLeft: state.scrollX,
 	      scrollableColumns: state.bodyScrollableColumns,
@@ -1077,6 +1114,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      children.push(child);
 	    });
 
+	    // Allow room for the scrollbar, less 1px for the last column's border
+	    var adjustedWidth = props.width - _Scrollbar2.default.SIZE - _Scrollbar2.default.OFFSET;
+
 	    var useGroupHeader = false;
 	    if (children.length && children[0].type.__TableColumnGroup__) {
 	      useGroupHeader = true;
@@ -1102,13 +1142,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var oldViewportHeight = this._scrollHelper._viewportHeight;
 
-	      this._scrollHelper = new _FixedDataTableScrollHelper2.default(props.rowsCount, props.rowHeight, viewportHeight, props.rowHeightGetter);
+	      this._scrollHelper = new _FixedDataTableScrollHelper2.default(props.rowsCount, props.rowHeight, viewportHeight, props.rowHeightGetter, props.subRowHeight, props.subRowHeightGetter);
 	      scrollState = this._scrollHelper.scrollToRow(firstRowIndex, firstRowOffset);
 	      firstRowIndex = scrollState.index;
 	      firstRowOffset = scrollState.offset;
 	      scrollY = scrollState.position;
-	    } else if (oldState && props.rowHeightGetter !== oldState.rowHeightGetter) {
-	      this._scrollHelper.setRowHeightGetter(props.rowHeightGetter);
+	    } else if (oldState) {
+	      if (props.rowHeightGetter !== oldState.rowHeightGetter) {
+	        this._scrollHelper.setRowHeightGetter(props.rowHeightGetter);
+	      }
+	      if (props.subRowHeightGetter !== oldState.subRowHeightGetter) {
+	        this._scrollHelper.setSubRowHeightGetter(props.subRowHeightGetter);
+	      }
 	    }
 
 	    var lastScrollToRow = oldState ? oldState.scrollToRow : undefined;
@@ -1138,11 +1183,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var columnGroups;
 
 	    if (useGroupHeader) {
-	      var columnGroupSettings = _FixedDataTableWidthHelper2.default.adjustColumnGroupWidths(children, props.width);
+	      var columnGroupSettings = _FixedDataTableWidthHelper2.default.adjustColumnGroupWidths(children, adjustedWidth);
 	      columns = columnGroupSettings.columns;
 	      columnGroups = columnGroupSettings.columnGroups;
 	    } else {
-	      columns = _FixedDataTableWidthHelper2.default.adjustColumnWidths(children, props.width);
+	      columns = _FixedDataTableWidthHelper2.default.adjustColumnWidths(children, adjustedWidth);
 	    }
 
 	    var columnInfo = this._populateColumnsAndColumnData(columns, columnGroups, oldState);
@@ -1159,22 +1204,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	          totalFixedColumnsWidth += column.props.width;
 	        }
 
+	        // Convert column index (0 indexed) to scrollable index (0 indexed)
+	        // and clamp to max scrollable index
 	        var scrollableColumnIndex = Math.min(props.scrollToColumn - fixedColumnsCount, columnInfo.bodyScrollableColumns.length - 1);
 
+	        // Sum width for all columns before column
 	        var previousColumnsWidth = 0;
 	        for (i = 0; i < scrollableColumnIndex; ++i) {
 	          column = columnInfo.bodyScrollableColumns[i];
 	          previousColumnsWidth += column.props.width;
 	        }
 
-	        var availableScrollWidth = props.width - totalFixedColumnsWidth;
+	        // Get width of scrollable columns in viewport
+	        var availableScrollWidth = adjustedWidth - totalFixedColumnsWidth;
+
+	        // Get width of specified column
 	        var selectedColumnWidth = columnInfo.bodyScrollableColumns[scrollableColumnIndex].props.width;
+
+	        // Must scroll at least far enough for end of column (prevColWidth + selColWidth)
+	        // to be in viewport (availableScrollWidth = viewport width)
 	        var minAcceptableScrollPosition = previousColumnsWidth + selectedColumnWidth - availableScrollWidth;
 
+	        // If scrolled less than minimum amount, scroll to minimum amount
+	        // so column on right of viewport
 	        if (scrollX < minAcceptableScrollPosition) {
 	          scrollX = minAcceptableScrollPosition;
 	        }
 
+	        // If scrolled more than previous columns, at least part of column will be offscreen to left
+	        // Scroll so column is flush with left edge of viewport
 	        if (scrollX > previousColumnsWidth) {
 	          scrollX = previousColumnsWidth;
 	        }
@@ -1189,7 +1247,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var totalHeightNeeded = scrollContentHeight + totalHeightReserved;
 	    var scrollContentWidth = _FixedDataTableWidthHelper2.default.getTotalWidth(columns);
 
-	    var horizontalScrollbarVisible = scrollContentWidth > props.width && props.overflowX !== 'hidden' && props.showScrollbarX !== false;
+	    var horizontalScrollbarVisible = scrollContentWidth > adjustedWidth && props.overflowX !== 'hidden' && props.showScrollbarX !== false;
 
 	    if (horizontalScrollbarVisible) {
 	      bodyHeight -= _Scrollbar2.default.SIZE;
@@ -1197,7 +1255,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      totalHeightReserved += _Scrollbar2.default.SIZE;
 	    }
 
-	    var maxScrollX = Math.max(0, scrollContentWidth - props.width);
+	    var maxScrollX = Math.max(0, scrollContentWidth - adjustedWidth);
 	    var maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
 	    scrollX = Math.min(scrollX, maxScrollX);
 	    scrollY = Math.min(scrollY, maxScrollY);
@@ -5050,6 +5108,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;
 	Scrollbar.SIZE = parseInt((0, _cssVar2.default)('scrollbar-size'), 10);
+	Scrollbar.OFFSET = FACE_MARGIN / 2 + 1;
 
 	module.exports = Scrollbar;
 
@@ -5442,6 +5501,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 
+	// If you change these, you'll need to restart the dev server for it to take effect.
+
 	var CSS_VARS = {
 	  'scrollbar-face-active-color': '#7d7d7d',
 	  'scrollbar-face-color': '#c2c2c2',
@@ -5449,7 +5510,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  'scrollbar-face-radius': '6px',
 	  'scrollbar-size': '15px',
 	  'scrollbar-size-large': '17px',
-	  'scrollbar-track-color': 'rgba(255, 255, 255, 0.8)',
+	  'scrollbar-track-color': '#fff',
+	  'border-color': '#d3d3d3',
 	  'fbui-white': '#fff',
 	  'fbui-desktop-background-light': '#f6f7f8'
 	};
@@ -5906,6 +5968,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    rowClassNameGetter: _propTypes2.default.func,
 	    rowsCount: _propTypes2.default.number.isRequired,
 	    rowHeightGetter: _propTypes2.default.func,
+	    subRowHeight: _propTypes2.default.number,
+	    subRowHeightGetter: _propTypes2.default.func,
+	    rowExpanded: _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.func]),
 	    rowKeyGetter: _propTypes2.default.func,
 	    rowPositionGetter: _propTypes2.default.func.isRequired,
 	    scrollLeft: _propTypes2.default.number.isRequired,
@@ -5980,6 +6045,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    for (var i = 0; i < rowsToRender.length; ++i) {
 	      var rowIndex = rowsToRender[i];
 	      var currentRowHeight = this._getRowHeight(rowIndex);
+	      var currentSubRowHeight = this._getSubRowHeight(rowIndex);
 	      var rowOffsetTop = baseOffsetTop + rowPositions[rowIndex];
 	      var rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
 
@@ -5991,6 +6057,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        index: rowIndex,
 	        width: props.width,
 	        height: currentRowHeight,
+	        subRowHeight: currentSubRowHeight,
+	        rowExpanded: props.rowExpanded,
 	        scrollLeft: Math.round(props.scrollLeft),
 	        offsetTop: Math.round(rowOffsetTop),
 	        fixedColumns: props.fixedColumns,
@@ -6015,6 +6083,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  _getRowHeight: function _getRowHeight( /*number*/index) /*number*/{
 	    return this.props.rowHeightGetter ? this.props.rowHeightGetter(index) : this.props.defaultRowHeight;
+	  },
+	  _getSubRowHeight: function _getSubRowHeight( /*number*/index) /*number*/{
+	    return this.props.subRowHeightGetter ? this.props.subRowHeightGetter(index) : this.props.subRowHeight;
 	  }
 	});
 
@@ -6656,6 +6727,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	        width += columns[i].props.width;
 	      }
 	      return width;
+	    }, _this._getRowExpanded = function ( /*number*/subRowHeight) /*?object*/{
+	      if (_this.props.rowExpanded) {
+	        var rowExpandedProps = {
+	          rowIndex: _this.props.index,
+	          height: subRowHeight,
+	          width: _this.props.width
+	        };
+
+	        var rowExpanded;
+	        if (_React2.default.isValidElement(_this.props.rowExpanded)) {
+	          rowExpanded = _React2.default.cloneElement(_this.props.rowExpanded, rowExpandedProps);
+	        } else if (typeof _this.props.rowExpanded === 'function') {
+	          rowExpanded = _this.props.rowExpanded(rowExpandedProps);
+	        }
+
+	        return rowExpanded;
+	      }
 	    }, _this._renderColumnsLeftShadow = function ( /*number*/left) /*?object*/{
 	      var className = (0, _cx2.default)({
 	        'fixedDataTableRowLayout/fixedColumnsDivider': left > 0,
@@ -6692,11 +6780,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(FixedDataTableRowImpl, [{
 	    key: 'render',
 	    value: function render() /*object*/{
+	      var subRowHeight = this.props.subRowHeight || 0;
 	      var style = {
 	        width: this.props.width,
-	        height: this.props.height
+	        height: this.props.height + subRowHeight
 	      };
-
 	      var className = (0, _cx2.default)({
 	        'fixedDataTableRowLayout/main': true,
 	        'public/fixedDataTableRow/main': true,
@@ -6743,6 +6831,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	      var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
 	      var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
+	      var rowExpanded = this._getRowExpanded(subRowHeight);
+	      var rowExpandedStyle = {
+	        height: subRowHeight,
+	        top: this.props.height,
+	        width: this.props.width
+	      };
 
 	      return _React2.default.createElement(
 	        'div',
@@ -6760,6 +6854,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	          fixedColumns,
 	          scrollableColumns,
 	          columnsLeftShadow
+	        ),
+	        rowExpanded && _React2.default.createElement(
+	          'div',
+	          {
+	            className: (0, _cx2.default)('fixedDataTableRowLayout/rowExpanded'),
+	            style: rowExpandedStyle },
+	          rowExpanded
 	        ),
 	        columnsRightShadow
 	      );
@@ -6782,6 +6883,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Height of the row.
 	   */
 	  height: _propTypes2.default.number.isRequired,
+
+	  /**
+	   * Height of the content to be displayed below the row.
+	   */
+	  subRowHeight: _propTypes2.default.number,
+
+	  /**
+	   * the row expanded.
+	   */
+	  rowExpanded: _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.func]),
 
 	  /**
 	   * The row index.
@@ -8610,19 +8721,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /*number*/defaultRowHeight,
 	  /*number*/viewportHeight,
 	  /*?function*/rowHeightGetter) {
+	    var _this = this;
+
+	    var defaultSubRowHeight = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+	    var
+	    /*?function*/subRowHeightGetter = arguments[5];
+
 	    _classCallCheck(this, FixedDataTableScrollHelper);
 
-	    this._rowOffsets = _PrefixIntervalTree2.default.uniform(rowCount, defaultRowHeight);
+	    var defaultFullRowHeight = defaultRowHeight + defaultSubRowHeight;
+	    this._rowOffsets = _PrefixIntervalTree2.default.uniform(rowCount, defaultFullRowHeight);
 	    this._storedHeights = new Array(rowCount);
 	    for (var i = 0; i < rowCount; ++i) {
-	      this._storedHeights[i] = defaultRowHeight;
+	      this._storedHeights[i] = defaultFullRowHeight;
 	    }
 	    this._rowCount = rowCount;
 	    this._position = 0;
-	    this._contentHeight = rowCount * defaultRowHeight;
-	    this._defaultRowHeight = defaultRowHeight;
-	    this._rowHeightGetter = rowHeightGetter ? rowHeightGetter : function () {
-	      return defaultRowHeight;
+	    this._contentHeight = rowCount * defaultFullRowHeight;
+
+	    this._rowHeightGetter = rowHeightGetter;
+	    this._subRowHeightGetter = subRowHeightGetter;
+	    this._fullRowHeightGetter = function (rowIdx) {
+	      var rowHeight = _this._rowHeightGetter ? _this._rowHeightGetter(rowIdx) : defaultRowHeight;
+	      var subRowHeight = _this._subRowHeightGetter ? _this._subRowHeightGetter(rowIdx) : defaultSubRowHeight;
+	      return rowHeight + subRowHeight;
 	    };
 	    this._viewportHeight = viewportHeight;
 	    this.scrollRowIntoView = this.scrollRowIntoView.bind(this);
@@ -8631,6 +8753,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.scrollTo = this.scrollTo.bind(this);
 	    this.scrollToRow = this.scrollToRow.bind(this);
 	    this.setRowHeightGetter = this.setRowHeightGetter.bind(this);
+	    this.setSubRowHeightGetter = this.setSubRowHeightGetter.bind(this);
 	    this.getContentHeight = this.getContentHeight.bind(this);
 	    this.getRowPosition = this.getRowPosition.bind(this);
 
@@ -8641,6 +8764,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'setRowHeightGetter',
 	    value: function setRowHeightGetter( /*function*/rowHeightGetter) {
 	      this._rowHeightGetter = rowHeightGetter;
+	    }
+	  }, {
+	    key: 'setSubRowHeightGetter',
+	    value: function setSubRowHeightGetter( /*function*/subRowHeightGetter) {
+	      this._subRowHeightGetter = subRowHeightGetter;
 	    }
 	  }, {
 	    key: 'setViewportHeight',
@@ -8681,7 +8809,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (rowIndex < 0 || rowIndex >= this._rowCount) {
 	        return 0;
 	      }
-	      var newHeight = this._rowHeightGetter(rowIndex);
+	      var newHeight = this._fullRowHeightGetter(rowIndex);
 	      if (newHeight !== this._storedHeights[rowIndex]) {
 	        var change = newHeight - this._storedHeights[rowIndex];
 	        this._rowOffsets.set(rowIndex, newHeight);
@@ -8861,6 +8989,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'scrollRowIntoView',
 	    value: function scrollRowIntoView( /*number*/rowIndex) /*object*/{
 	      rowIndex = (0, _clamp2.default)(rowIndex, 0, Math.max(this._rowCount - 1, 0));
+	      this._updateRowHeight(rowIndex);
 	      var rowBegin = this._rowOffsets.sumUntil(rowIndex);
 	      var rowEnd = rowBegin + this._storedHeights[rowIndex];
 	      if (rowBegin < this._position) {

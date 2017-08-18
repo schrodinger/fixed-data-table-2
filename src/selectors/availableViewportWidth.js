@@ -6,27 +6,19 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule scrollContentWidth
+ * @providesModule availableViewportWidth
  */
-import WidthHelper from 'FixedDataTableWidthHelper';
-import columnsSelector from 'columns';
+import Scrollbar from 'Scrollbar';
 import { createSelector } from 'reselect';
 
 /**
  * @param {{
- *   columnGroups: {!Array.<{
- *     columns: !Array.{
- *       flexGrow: number,
- *       width: number,
- *     },
- *   }>},
  *   width: number,
  * }} state
- * @return {number} The total width of all columns.
+ * @return {number} The width available for rendering cells.
  */
 export default createSelector([
-  columnsSelector,
-], columns => {
-  const { allColumns } = columns;
-  return WidthHelper.getTotalWidth(allColumns);
+  state => state.width,
+], width => {
+  return width - Scrollbar.SIZE - Scrollbar.OFFSET;
 });

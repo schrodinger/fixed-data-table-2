@@ -11,7 +11,7 @@
 
 'use strict';
 
-import FixedDataTableWidthHelper from 'FixedDataTableWidthHelper';
+import availableViewportWidth from 'availableViewportWidth';
 import columnsSelector from 'columns';
 import emptyFunction from 'emptyFunction';
 import isNil from 'lodash/isNil';
@@ -49,7 +49,7 @@ function initialize(state, props, oldProps) {
   }
 
   scrollX = scrollTo(state, props, oldProps.scrollToColumn, scrollX);
-  const maxScrollX = Math.max(0, scrollContentWidthSelector(state) - width);
+  const maxScrollX = Math.max(0, scrollContentWidthSelector(state) - availableViewportWidth(state));
   scrollX = Math.min(scrollX, maxScrollX);
 
   // isColumnResizing should be overwritten by value from props if available
@@ -99,6 +99,8 @@ function scrollTo(state, props, oldScrollToColumn, scrollX) {
     return scrollX;
   }
 
+  // Convert column index (0 indexed) to scrollable index (0 indexed)
+  // and clamp to max scrollable index
   const clampedColumnIndex = Math.min(scrollToColumn - fixedColumnsCount,
     scrollableColumns.length - 1);
 
@@ -108,17 +110,28 @@ function scrollTo(state, props, oldScrollToColumn, scrollX) {
     previousWidth += scrollableColumns[columnIdx].width;
   }
 
-  // Compute the scroll position which sets the column on the right of the viewport
-  const availableScrollWidth = width - fixedColumnsWidthSelector(state);
+  // Get width for scrollable columns in viewport
+  // TODO (jordan) replace fixedColumnsWidthSelector with selector for availableScrollWidth
+  const availableScrollWidth = availableViewportWidth(state) - fixedColumnsWidthSelector(state);
+
+  // Get width of specified column
   const selectedColumnWidth = scrollableColumns[clampedColumnIndex].width;
+
+  // Compute the scroll position which sets the column on the right of the viewport
+  // Must scroll at least far enough for end of column (previousWidth + selectedColumnWidth)
+  // to be in viewport.
   const minScrollPosition = previousWidth + selectedColumnWidth - availableScrollWidth;
 
   // Handle offscreen to the left
+  // If scrolled less than minimum amount, scroll to minimum amount
+  // so column on right of viewport
   if (scrollX < minScrollPosition) {
     return minScrollPosition;
   }
 
   // Handle offscreen to the right
+  // If scrolled more than previous columns, at least part of column will be offscreen to left
+  // Scroll so column is flush with left edge of viewport
   if (scrollX > previousWidth) {
     return previousWidth;
   }

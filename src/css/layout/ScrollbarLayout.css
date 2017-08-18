@@ -14,8 +14,6 @@
   outline: none;
   overflow: hidden;
   position: absolute;
-  transition-duration: 250ms;
-  transition-timing-function: ease;
   user-select: none;
 }
 
@@ -23,13 +21,7 @@
   bottom: 0;
   right: 0;
   top: 0;
-  transition-property: background-color width;
   width: var(scrollbar-size);
-}
-
-.ScrollbarLayout/mainVertical.public/Scrollbar/mainActive,
-.ScrollbarLayout/mainVertical:hover {
-  width: var(scrollbar-size-large);
 }
 
 .ScrollbarLayout/mainHorizontal {
@@ -49,6 +41,9 @@
   overflow: hidden;
   position: absolute;
   z-index: 1;
+  transition-duration: 250ms;
+  transition-timing-function: ease;
+  transition-property: background-color width position;
 }
 
 /**
@@ -72,10 +67,15 @@
 }
 
 .ScrollbarLayout/faceHorizontal:after {
+  top: var(scrollbar-face-margin);
   bottom: var(scrollbar-face-margin);
   left: 0;
-  top: var(scrollbar-face-margin);
   width: 100%;
+}
+
+.ScrollbarLayout/faceHorizontal.public/Scrollbar/faceActive:after,
+.ScrollbarLayout/main:hover .ScrollbarLayout/faceHorizontal:after {
+  bottom: calc(var(scrollbar-face-margin)/2);
 }
 
 .ScrollbarLayout/faceVertical {
@@ -90,3 +90,10 @@
   right: var(scrollbar-face-margin);
   top: 0;
 }
+
+.ScrollbarLayout/main:hover .ScrollbarLayout/faceVertical:after,
+.ScrollbarLayout/faceVertical.public/Scrollbar/faceActive:after {
+  left: calc(var(scrollbar-face-margin)/2);
+  right: calc(var(scrollbar-face-margin)/2);
+}
+

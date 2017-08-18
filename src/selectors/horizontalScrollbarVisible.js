@@ -8,6 +8,7 @@
  *
  * @providesModule horizontalScrollbarVisible
  */
+import availableViewportWidth from 'availableViewportWidth';
 import { createSelector } from 'reselect';
 import scrollContentWidth from 'scrollContentWidth';
 
@@ -29,8 +30,8 @@ export default createSelector([
   state => state.overflowX,
   state => state.showScrollbarX,
   scrollContentWidth,
-  state => state.width,
-], (overflowX, showScrollbarX, scrollContentWidth, width) => {
+  availableViewportWidth,
+], (overflowX, showScrollbarX, scrollContentWidth, availableViewportWidth) => {
   const disableScrollbar = overflowX === 'hidden' || showScrollbarX === false;
-  return scrollContentWidth > width && !disableScrollbar;
+  return scrollContentWidth > availableViewportWidth && !disableScrollbar;
 });

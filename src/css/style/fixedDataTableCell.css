@@ -14,7 +14,7 @@
  */
 .public/fixedDataTableCell/main {
   background-color: var(fbui-white);
-  border-color: #d3d3d3;
+  border-color: var(border-color);
 }
 
 .public/fixedDataTableCell/highlighted {

@@ -8,7 +8,9 @@
  *
  * @providesModule columns
  */
+import Scrollbar from 'Scrollbar';
 import WidthHelper from 'FixedDataTableWidthHelper';
+import availableViewportWidth from 'availableViewportWidth';
 import { createSelector } from 'reselect';
 import partition from 'lodash/partition';
 
@@ -36,9 +38,9 @@ let columnDefinition;
  */
 export default createSelector([
   state => state.columnGroups,
-  state => state.width,
-], (columnGroups, width) => {
-  const allColumns = WidthHelper.adjustColumnGroupWidths(columnGroups, width);
+  availableViewportWidth,
+], (columnGroups, availableViewportWidth) => {
+  const allColumns = WidthHelper.adjustColumnGroupWidths(columnGroups, availableViewportWidth);
   const [fixedColumns, scrollableColumns] = partition(allColumns, column => column.fixed);
   return {
     allColumns,
