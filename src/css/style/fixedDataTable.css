@@ -14,12 +14,12 @@
  * Table.
  */
 .public/fixedDataTable/main {
-  border-color: var(border-color);
+  border-color: var(--border-color);
 }
 
 .public/fixedDataTable/header,
 .public/fixedDataTable/hasBottomBorder {
-  border-color: var(border-color);
+  border-color: var(--border-color);
 }
 
 .public/fixedDataTable/header .public/fixedDataTableCell/main {
@@ -28,13 +28,13 @@
 
 .public/fixedDataTable/header,
 .public/fixedDataTable/header .public/fixedDataTableCell/main {
-  background-color: var(fbui-desktop-background-light);
+  background-color: var(--fbui-desktop-background-light);
   background-image: linear-gradient(#fff, #efefef);
 }
 
 .public/fixedDataTable/footer .public/fixedDataTableCell/main {
-  background-color: var(fbui-desktop-background-light);
-  border-color: var(border-color);
+  background-color: var(--fbui-desktop-background-light);
+  border-color: var(--border-color);
 }
 
 .public/fixedDataTable/topShadow {
@@ -46,5 +46,5 @@
 }
 
 .public/fixedDataTable/horizontalScrollbar .public/Scrollbar/mainHorizontal {
-  background-color: var(fbui-white);
+  background-color: var(--fbui-white);
 }

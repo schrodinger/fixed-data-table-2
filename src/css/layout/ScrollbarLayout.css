@@ -21,11 +21,11 @@
   bottom: 0;
   right: 0;
   top: 0;
-  width: var(scrollbar-size);
+  width: var(--scrollbar-size);
 }
 
 .ScrollbarLayout/mainHorizontal {
-  height: var(scrollbar-size);
+  height: var(--scrollbar-size);
   left: 0;
   transition-property: background-color height;
 }
@@ -33,7 +33,7 @@
 /* Touching the scroll-track directly makes the scroll-track bolder */
 .ScrollbarLayout/mainHorizontal.public/Scrollbar/mainActive,
 .ScrollbarLayout/mainHorizontal:hover {
-  height: var(scrollbar-size-large);
+  height: var(--scrollbar-size-large);
 }
 
 .ScrollbarLayout/face {
@@ -53,7 +53,7 @@
  * scrollface element while dragging it.
  */
 .ScrollbarLayout/face:after {
-  border-radius: var(scrollbar-face-radius);
+  border-radius: var(--scrollbar-face-radius);
   content: '';
   display: block;
   position: absolute;
@@ -67,15 +67,15 @@
 }
 
 .ScrollbarLayout/faceHorizontal:after {
-  top: var(scrollbar-face-margin);
-  bottom: var(scrollbar-face-margin);
+  bottom: var(--scrollbar-face-margin);
   left: 0;
+  top: var(--scrollbar-face-margin);
   width: 100%;
 }
 
 .ScrollbarLayout/faceHorizontal.public/Scrollbar/faceActive:after,
 .ScrollbarLayout/main:hover .ScrollbarLayout/faceHorizontal:after {
-  bottom: calc(var(scrollbar-face-margin)/2);
+  bottom: calc(var(--scrollbar-face-margin)/2);
 }
 
 .ScrollbarLayout/faceVertical {
@@ -86,14 +86,13 @@
 
 .ScrollbarLayout/faceVertical:after {
   height: 100%;
-  left: var(scrollbar-face-margin);
-  right: var(scrollbar-face-margin);
+  left: var(--scrollbar-face-margin);
+  right: var(--scrollbar-face-margin);
   top: 0;
 }
 
 .ScrollbarLayout/main:hover .ScrollbarLayout/faceVertical:after,
 .ScrollbarLayout/faceVertical.public/Scrollbar/faceActive:after {
-  left: calc(var(scrollbar-face-margin)/2);
-  right: calc(var(scrollbar-face-margin)/2);
+  left: calc(var(--scrollbar-face-margin)/2);
+  right: calc(var(--scrollbar-face-margin)/2);
 }
-
