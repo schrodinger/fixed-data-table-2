@@ -18,7 +18,7 @@
 .public/Scrollbar/main.public/Scrollbar/mainActive,
 .public/Scrollbar/main {
   background-color: var(--scrollbar-track-color);
-  border-left: 1px solid var(border-color);
+  border-left: 1px solid var(--border-color);
 }
 
 .public/Scrollbar/mainOpaque,
