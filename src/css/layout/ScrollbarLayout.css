@@ -76,7 +76,7 @@
 
 .ScrollbarLayout/faceHorizontal.public/Scrollbar/faceActive:after,
 .ScrollbarLayout/main:hover .ScrollbarLayout/faceHorizontal:after {
-  bottom: calc(var(scrollbar-face-margin)/2);
+  bottom: calc(var(--scrollbar-face-margin)/2);
 }
 
 .ScrollbarLayout/faceVertical {
@@ -94,6 +94,6 @@
 
 .ScrollbarLayout/main:hover .ScrollbarLayout/faceVertical:after,
 .ScrollbarLayout/faceVertical.public/Scrollbar/faceActive:after {
-  left: calc(var(scrollbar-face-margin)/2);
-  right: calc(var(scrollbar-face-margin)/2);
+  left: calc(var(--scrollbar-face-margin)/2);
+  right: calc(var(--scrollbar-face-margin)/2);
 }
