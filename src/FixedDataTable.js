@@ -977,13 +977,13 @@ var FixedDataTable = createReactClass({
     var scrollX = oldState ? oldState.scrollX : 0;
 
     var lastScrollLeft = oldState ? oldState.scrollLeft : 0;
+
     if (props.scrollLeft !== undefined && props.scrollLeft !== lastScrollLeft) {
       scrollX = props.scrollLeft;
     }
 
     if (oldState && (props.rowsCount !== oldState.rowsCount || props.rowHeight !== oldState.rowHeight || props.height !== oldState.height)) {
-      // Number of rows changed, try to scroll to the row from before the
-      // change
+      // Number of rows changed, try to scroll to the row from before the change
       var viewportHeight =
         (props.height === undefined ? props.maxHeight : props.height) -
         (props.headerHeight || 0) -
@@ -1014,7 +1014,7 @@ var FixedDataTable = createReactClass({
     }
 
     var lastScrollToRow  = oldState ? oldState.scrollToRow : undefined;
-    if (props.scrollToRow != null && (props.scrollToRow !== lastScrollToRow || viewportHeight !== oldViewportHeight)) {
+    if (props.scrollToRow !== null && (props.scrollToRow !== lastScrollToRow || viewportHeight !== oldViewportHeight)) {
       scrollState = this._scrollHelper.scrollRowIntoView(props.scrollToRow);
       firstRowIndex = scrollState.index;
       firstRowOffset = scrollState.offset;
