@@ -37,7 +37,7 @@ class ExpandedExample extends React.Component {
 
     this.setState({
       scrollToRow: scrollToRow,
-      collapsedRows: collapsedRows
+      collapsedRows: new Set([...collapsedRows])
     });
   }
 
