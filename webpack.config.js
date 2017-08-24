@@ -22,8 +22,7 @@ var plugins = [
   new ExtractTextPlugin('[name].css'),
   new webpack.DefinePlugin({
     '__DEV__': JSON.stringify(process.env.NODE_ENV !== 'production')
-  }),
-  resolvers.resolveHasteDefines,
+  })
 ];
 
 var entry = {};
@@ -59,26 +58,29 @@ if (process.env.COMPRESS) {
 }
 
 plugins.push(
-  new webpack.BannerPlugin(banner, {raw: true})
+  new webpack.BannerPlugin({ banner, raw: true })
 );
 
 module.exports = {
+  resolve: {
+    plugins: [resolvers.resolveHasteDefines]
+  },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        use: 'babel-loader'
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract(
-          'style-loader',
-          [
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
             'css-loader',
             path.join(__dirname, './build_helpers/cssTransformLoader.js')
           ].join('!')
-        )
+        })
       },
     ],
   },
@@ -88,7 +90,7 @@ module.exports = {
   output: {
     library: 'FixedDataTable',
     libraryTarget: 'umd',
-    path: 'dist',
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
   },
 

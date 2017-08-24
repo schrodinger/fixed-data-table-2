@@ -28,20 +28,29 @@ class FixedDataTableScrollHelper {
     /*number*/ rowCount,
     /*number*/ defaultRowHeight,
     /*number*/ viewportHeight,
-    /*?function*/ rowHeightGetter
+    /*?function*/ rowHeightGetter,
+    /*number*/ defaultSubRowHeight = 0,
+    /*?function*/ subRowHeightGetter,
   ) {
-    this._rowOffsets = PrefixIntervalTree.uniform(rowCount, defaultRowHeight);
+    const defaultFullRowHeight = defaultRowHeight + defaultSubRowHeight;
+    this._rowOffsets = PrefixIntervalTree.uniform(rowCount, defaultFullRowHeight);
     this._storedHeights = new Array(rowCount);
     for (var i = 0; i < rowCount; ++i) {
-      this._storedHeights[i] = defaultRowHeight;
+      this._storedHeights[i] = defaultFullRowHeight;
     }
     this._rowCount = rowCount;
     this._position = 0;
-    this._contentHeight = rowCount * defaultRowHeight;
-    this._defaultRowHeight = defaultRowHeight;
-    this._rowHeightGetter = rowHeightGetter ?
-      rowHeightGetter :
-      () => defaultRowHeight;
+    this._contentHeight = rowCount * defaultFullRowHeight;
+
+    this._rowHeightGetter = rowHeightGetter;
+    this._subRowHeightGetter = subRowHeightGetter;
+    this._fullRowHeightGetter = (rowIdx) => {
+      const rowHeight = this._rowHeightGetter ? this._rowHeightGetter(rowIdx) :
+        defaultRowHeight;
+      const subRowHeight = this._subRowHeightGetter ? this._subRowHeightGetter(rowIdx) :
+        defaultSubRowHeight;
+      return rowHeight + subRowHeight;
+    };
     this._viewportHeight = viewportHeight;
     this.scrollRowIntoView = this.scrollRowIntoView.bind(this);
     this.setViewportHeight = this.setViewportHeight.bind(this);
@@ -49,6 +58,7 @@ class FixedDataTableScrollHelper {
     this.scrollTo = this.scrollTo.bind(this);
     this.scrollToRow = this.scrollToRow.bind(this);
     this.setRowHeightGetter = this.setRowHeightGetter.bind(this);
+    this.setSubRowHeightGetter = this.setSubRowHeightGetter.bind(this);
     this.getContentHeight = this.getContentHeight.bind(this);
     this.getRowPosition = this.getRowPosition.bind(this);
 
@@ -57,6 +67,10 @@ class FixedDataTableScrollHelper {
 
   setRowHeightGetter(/*function*/ rowHeightGetter) {
     this._rowHeightGetter = rowHeightGetter;
+  }
+
+  setSubRowHeightGetter(/*function*/ subRowHeightGetter) {
+    this._subRowHeightGetter = subRowHeightGetter;
   }
 
   setViewportHeight(/*number*/ viewportHeight) {
@@ -93,7 +107,7 @@ class FixedDataTableScrollHelper {
     if (rowIndex < 0 || rowIndex >= this._rowCount) {
       return 0;
     }
-    var newHeight = this._rowHeightGetter(rowIndex);
+    var newHeight = this._fullRowHeightGetter(rowIndex);
     if (newHeight !== this._storedHeights[rowIndex]) {
       var change = newHeight - this._storedHeights[rowIndex];
       this._rowOffsets.set(rowIndex, newHeight);
@@ -264,6 +278,7 @@ class FixedDataTableScrollHelper {
    */
   scrollRowIntoView(/*number*/ rowIndex) /*object*/ {
     rowIndex = clamp(rowIndex, 0, Math.max(this._rowCount - 1, 0));
+    this._updateRowHeight(rowIndex);
     var rowBegin = this._rowOffsets.sumUntil(rowIndex);
     var rowEnd = rowBegin + this._storedHeights[rowIndex];
     if (rowBegin < this._position) {

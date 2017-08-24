@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.17 
+ * FixedDataTable v0.8.0 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -183,8 +183,9 @@
 
 /* Touching the scroll-track directly makes the scroll-track bolder */
 .public_Scrollbar_main.public_Scrollbar_mainActive,
-.public_Scrollbar_main:hover {
-  background-color: rgba(255, 255, 255, 0.8);
+.public_Scrollbar_main {
+  background-color: #fff;
+  border-left: 1px solid #d3d3d3;
 }
 
 .public_Scrollbar_mainOpaque,

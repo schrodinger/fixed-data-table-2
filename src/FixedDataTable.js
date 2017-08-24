@@ -184,6 +184,43 @@ var FixedDataTable = createReactClass({
     rowHeightGetter: PropTypes.func,
 
     /**
+     * Pixel height of sub-row unless `subRowHeightGetter` is specified and returns
+     * different value.  Defaults to 0 and no sub-row being displayed.
+     */
+    subRowHeight: PropTypes.number,
+
+    /**
+     * If specified, `subRowHeightGetter(index)` is called for each row and the
+     * returned value overrides `subRowHeight` for particular row.
+     */
+    subRowHeightGetter: PropTypes.func,
+
+   /**
+    * The row expanded for table row.
+    * This can either be a React element, or a function that generates
+    * a React Element. By default, the React element passed in can expect to
+    * receive the following props:
+    *
+    * ```
+    * props: {
+    *   rowIndex; number // (the row index)
+    *   height: number // (supplied from the Table or rowHeightGetter)
+    *   width: number // (supplied from the Table)
+    * }
+    * ```
+    *
+    * Because you are passing in your own React element, you can feel free to
+    * pass in whatever props you may want or need.
+    *
+    * If you pass in a function, you will receive the same props object as the
+    * first argument.
+    */
+   rowExpanded: PropTypes.oneOfType([
+     PropTypes.element,
+     PropTypes.func,
+   ]),
+
+    /**
      * To get any additional CSS classes that should be added to a row,
      * `rowClassNameGetter(index)` is called.
      */
@@ -351,7 +388,9 @@ var FixedDataTable = createReactClass({
       props.rowsCount,
       props.rowHeight,
       viewportHeight,
-      props.rowHeightGetter
+      props.rowHeightGetter,
+      props.subRowHeight,
+      props.subRowHeightGetter,
     );
 
     this._didScrollStop = debounceCore(this._didScrollStop, 200, this);
@@ -684,6 +723,9 @@ var FixedDataTable = createReactClass({
         rowsCount={state.rowsCount}
         rowGetter={state.rowGetter}
         rowHeightGetter={state.rowHeightGetter}
+        subRowHeight={state.subRowHeight}
+        subRowHeightGetter={state.subRowHeightGetter}
+        rowExpanded={state.rowExpanded}
         rowKeyGetter={state.rowKeyGetter}
         scrollLeft={state.scrollX}
         scrollableColumns={state.bodyScrollableColumns}
@@ -915,6 +957,9 @@ var FixedDataTable = createReactClass({
       children.push(child);
     });
 
+    // Allow room for the scrollbar, less 1px for the last column's border
+    var adjustedWidth = props.width - Scrollbar.SIZE - Scrollbar.OFFSET;
+
     var useGroupHeader = false;
     if (children.length && children[0].type.__TableColumnGroup__) {
       useGroupHeader = true;
@@ -948,14 +993,21 @@ var FixedDataTable = createReactClass({
         props.rowsCount,
         props.rowHeight,
         viewportHeight,
-        props.rowHeightGetter
+        props.rowHeightGetter,
+        props.subRowHeight,
+        props.subRowHeightGetter,
       );
       scrollState = this._scrollHelper.scrollToRow(firstRowIndex, firstRowOffset);
       firstRowIndex = scrollState.index;
       firstRowOffset = scrollState.offset;
       scrollY = scrollState.position;
-    } else if (oldState && props.rowHeightGetter !== oldState.rowHeightGetter) {
-      this._scrollHelper.setRowHeightGetter(props.rowHeightGetter);
+    } else if (oldState) {
+      if (props.rowHeightGetter !== oldState.rowHeightGetter) {
+        this._scrollHelper.setRowHeightGetter(props.rowHeightGetter);
+      }
+      if (props.subRowHeightGetter !== oldState.subRowHeightGetter) {
+        this._scrollHelper.setSubRowHeightGetter(props.subRowHeightGetter);
+      }
     }
 
     var lastScrollToRow  = oldState ? oldState.scrollToRow : undefined;
@@ -988,14 +1040,14 @@ var FixedDataTable = createReactClass({
       var columnGroupSettings =
         FixedDataTableWidthHelper.adjustColumnGroupWidths(
           children,
-          props.width
+          adjustedWidth
       );
       columns = columnGroupSettings.columns;
       columnGroups = columnGroupSettings.columnGroups;
     } else {
       columns = FixedDataTableWidthHelper.adjustColumnWidths(
         children,
-        props.width
+        adjustedWidth
       );
     }
 
@@ -1017,28 +1069,41 @@ var FixedDataTable = createReactClass({
           totalFixedColumnsWidth += column.props.width;
         }
 
+        // Convert column index (0 indexed) to scrollable index (0 indexed)
+        // and clamp to max scrollable index
         var scrollableColumnIndex = Math.min(
           props.scrollToColumn - fixedColumnsCount,
           columnInfo.bodyScrollableColumns.length - 1,
         );
 
+        // Sum width for all columns before column
         var previousColumnsWidth = 0;
         for (i = 0; i < scrollableColumnIndex; ++i) {
           column = columnInfo.bodyScrollableColumns[i];
           previousColumnsWidth += column.props.width;
         }
 
-        var availableScrollWidth = props.width - totalFixedColumnsWidth;
+        // Get width of scrollable columns in viewport
+        var availableScrollWidth = adjustedWidth - totalFixedColumnsWidth;
+
+        // Get width of specified column
         var selectedColumnWidth = columnInfo.bodyScrollableColumns[
           scrollableColumnIndex
         ].props.width;
+
+        // Must scroll at least far enough for end of column (prevColWidth + selColWidth)
+        // to be in viewport (availableScrollWidth = viewport width)
         var minAcceptableScrollPosition =
           previousColumnsWidth + selectedColumnWidth - availableScrollWidth;
 
+        // If scrolled less than minimum amount, scroll to minimum amount
+        // so column on right of viewport
         if (scrollX < minAcceptableScrollPosition) {
           scrollX = minAcceptableScrollPosition;
         }
 
+        // If scrolled more than previous columns, at least part of column will be offscreen to left
+        // Scroll so column is flush with left edge of viewport
         if (scrollX > previousColumnsWidth) {
           scrollX = previousColumnsWidth;
         }
@@ -1055,7 +1120,7 @@ var FixedDataTable = createReactClass({
     var scrollContentWidth =
       FixedDataTableWidthHelper.getTotalWidth(columns);
 
-    var horizontalScrollbarVisible = scrollContentWidth > props.width &&
+    var horizontalScrollbarVisible = scrollContentWidth > adjustedWidth &&
       props.overflowX !== 'hidden' && props.showScrollbarX !== false;
 
     if (horizontalScrollbarVisible) {
@@ -1064,7 +1129,7 @@ var FixedDataTable = createReactClass({
       totalHeightReserved += Scrollbar.SIZE;
     }
 
-    var maxScrollX = Math.max(0, scrollContentWidth - props.width);
+    var maxScrollX = Math.max(0, scrollContentWidth - adjustedWidth);
     var maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
     scrollX = Math.min(scrollX, maxScrollX);
     scrollY = Math.min(scrollY, maxScrollY);

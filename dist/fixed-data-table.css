@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.7.17 
+ * FixedDataTable v0.8.0 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -221,6 +221,12 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   top: 0;
 }
 
+.fixedDataTableRowLayout_rowExpanded {
+  box-sizing: border-box;
+  left: 0;
+  position: absolute;
+}
+
 .fixedDataTableRowLayout_fixedColumnsDivider {
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden;
@@ -261,10 +267,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   outline: none;
   overflow: hidden;
   position: absolute;
-  -webkit-transition-duration: 250ms;
-          transition-duration: 250ms;
-  -webkit-transition-timing-function: ease;
-          transition-timing-function: ease;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -275,14 +277,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   bottom: 0;
   right: 0;
   top: 0;
-  -webkit-transition-property: background-color width;
-          transition-property: background-color width;
   width: 15px;
-}
-
-.ScrollbarLayout_mainVertical.public_Scrollbar_mainActive,
-.ScrollbarLayout_mainVertical:hover {
-  width: 17px;
 }
 
 .ScrollbarLayout_mainHorizontal {
@@ -304,6 +299,12 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   overflow: hidden;
   position: absolute;
   z-index: 1;
+  -webkit-transition-duration: 250ms;
+          transition-duration: 250ms;
+  -webkit-transition-timing-function: ease;
+          transition-timing-function: ease;
+  -webkit-transition-property: background-color width position;
+          transition-property: background-color width position;
 }
 
 /**
@@ -328,10 +329,15 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .ScrollbarLayout_faceHorizontal:after {
+  top: 4px;
   bottom: 4px;
   left: 0;
-  top: 4px;
   width: 100%;
+}
+
+.ScrollbarLayout_faceHorizontal.public_Scrollbar_faceActive:after,
+.ScrollbarLayout_main:hover .ScrollbarLayout_faceHorizontal:after {
+  bottom: calc(4px/2);
 }
 
 .ScrollbarLayout_faceVertical {
@@ -346,6 +352,13 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   right: 4px;
   top: 0;
 }
+
+.ScrollbarLayout_main:hover .ScrollbarLayout_faceVertical:after,
+.ScrollbarLayout_faceVertical.public_Scrollbar_faceActive:after {
+  left: calc(4px/2);
+  right: calc(4px/2);
+}
+
 /**
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -520,8 +533,9 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 
 /* Touching the scroll-track directly makes the scroll-track bolder */
 .public_Scrollbar_main.public_Scrollbar_mainActive,
-.public_Scrollbar_main:hover {
-  background-color: rgba(255, 255, 255, 0.8);
+.public_Scrollbar_main {
+  background-color: #fff;
+  border-left: 1px solid #d3d3d3;
 }
 
 .public_Scrollbar_mainOpaque,

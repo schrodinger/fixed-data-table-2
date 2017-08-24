@@ -20,7 +20,7 @@ describe('FixedDataTableRoot', function() {
           rowHeight={100}
           headerHeight={50}
         >
-          <Column 
+          <Column
             width={300}
           />
         </Table>
@@ -48,7 +48,7 @@ describe('FixedDataTableRoot', function() {
     getTableState() {
       return this.refs['table'].state;
     }
-    
+
     render() {
       return (
         <Table
@@ -88,7 +88,8 @@ describe('FixedDataTableRoot', function() {
 
     it('should set scrollToColumn correctly', function() {
       let table = renderTable({scrollToColumn: 3});
-      assert.equal(table.getTableState().scrollX, 300 * 2, 'should be third visible column');
+      // extra 18 comes from Scrollbar.SIZE & Scrollbar.OFFSET
+      assert.equal(table.getTableState().scrollX, 300 * 2 + 18, 'should be third visible column');
     });
 
     it('should set scrollToRow correctly', function() {

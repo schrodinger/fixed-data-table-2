@@ -54,11 +54,17 @@ exports.ExamplePages = {
     title: 'Reorderable columns',
     description: 'Table with drag and drop column reordering and a dummy "store" for persistence.',
   },
-  SCROLL_TO_EXAMPLE: {
-    location: 'example-scroll-to.html',
-    fileName: 'ScrollToExample.js',
+  SCROLL_TO_ROW_EXAMPLE: {
+    location: 'example-scroll-to-row.html',
+    fileName: 'ScrollToRowExample.js',
     title: 'Jump to row',
     description: 'A table example that will list search matches and jump to specified row',
+  },
+  SCROLL_TO_COLUMN_EXAMPLE: {
+    location: 'example-scroll-to-column.html',
+    fileName: 'ScrollToColumnExample.js',
+    title: 'Jump to column',
+    description: 'A table example that will jump to a specified column',
   },
   TOUCH_SCROLL_EXAMPLE: {
     location: 'example-touch-scroll.html',
@@ -66,11 +72,11 @@ exports.ExamplePages = {
     title: 'Touch scroll',
     description: 'A table example that will let users scrolls with touch screens. This feature is currently in beta.',
   },
-  COLLAPSE_EXAMPLE: {
-    location: 'example-collapse-rows.html',
-    fileName: 'CollapseExample.js',
-    title: 'Collapsable rows',
-    description: 'A table example that will let the user collapse individual rows',
+  EXPANDED_EXAMPLE: {
+    location: 'example-expanded-rows.html',
+    fileName: 'ExpandedExample.js',
+    title: 'Expanded rows',
+    description: 'A table example that will let the user expand individual rows',
   },
   HIDE_COLUMN_EXAMPLE: {
     location: 'example-collapse.html',
