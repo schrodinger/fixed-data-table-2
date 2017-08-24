@@ -65,13 +65,6 @@ class ColumnGroupsExample extends React.Component {
             width={150}
           />
         </ColumnGroup>
-        <Column
-          columnKey="email"
-          header={<Cell>Date</Cell>}
-          cell={<TextCell data={dataList} />}
-          flexGrow={1}
-          width={150}
-        />
       </Table>
     );
   }
