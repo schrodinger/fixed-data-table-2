@@ -128,7 +128,14 @@ function iterateNestedColumns(
     if (!column.type.__TableColumn__) {
       let width = 0;
 
-      // Callback to calculate data based on all children
+      /*
+       * Callback to calculate data based on all children.
+       * Each level of the recursion calls the counter callback to increase the parent counter values
+       * such as the width of all children. This way we can avoid one additional step to walk over all
+       * children after the recursive mapping and sum up their values. Instead we can just use the counter
+       * variable charged by the counter callback during recursion.
+       */
+
       function addToCounter(passedWidth) {
         width += passedWidth;
       }
