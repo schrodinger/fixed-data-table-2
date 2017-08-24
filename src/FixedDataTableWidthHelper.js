@@ -19,14 +19,16 @@ import React from 'React';
  */
 function getNestedColumns(/*array*/ columns, /*array*/ initial)/*array*/ {
   return columns.reduce((prev, column) => {
-    if (!column.type.__TableColumn__) {
-      return getNestedColumns(
-        React.Children.toArray(column.props.children),
-        prev
-      );
+    // TODO (dangoo) improve this check to only return true for column-like elements (Issue #175)
+    if (column.type.__TableColumn__) {
+      return prev.concat(column);
     }
 
-    return prev.concat(column);
+    return getNestedColumns(
+      React.Children.toArray(column.props.children),
+      prev
+    );
+    
   }, initial || []);
 }
 
