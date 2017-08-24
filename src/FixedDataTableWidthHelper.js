@@ -14,57 +14,101 @@
 
 import React from 'React';
 
-function getTotalWidth(/*array*/ columns) /*number*/ {
-  var totalWidth = 0;
-  for (var i = 0; i < columns.length; ++i) {
-    totalWidth += columns[i].props.width;
-  }
-  return totalWidth;
+/**
+ * Flatten nested columns 
+ */
+function getNestedColumns(/*array*/ columns, /*array*/ initial)/*array*/ {
+  return columns.reduce((prev, column) => {
+    // TODO (dangoo) improve this check to only return true for column-like elements (Issue #175)
+    if (column.type.__TableColumn__) {
+      return prev.concat(column);
+    }
+
+    return getNestedColumns(
+      React.Children.toArray(column.props.children),
+      prev
+    );
+    
+  }, initial || []);
 }
 
+/** 
+ * Sum all column widths
+ */
+function getTotalWidth(/*array*/ columns) /*number*/ {
+  return columns.reduce((totalWidth, column) => {
+    return totalWidth + column.props.width;
+  }, 0);
+}
+
+/** 
+ * Summ all column flexGrows
+ */
 function getTotalFlexGrow(/*array*/ columns) /*number*/ {
-  var totalFlexGrow = 0;
-  for (var i = 0; i < columns.length; ++i) {
-    totalFlexGrow += columns[i].props.flexGrow || 0;
-  }
-  return totalFlexGrow;
+  return columns.reduce((totalFlexGrow, column) => {
+    if (column.props.flexGrow > 0) {
+      return totalFlexGrow + column.props.flexGrow;
+    }
+
+    return totalFlexGrow;
+  }, 0);
+}
+
+/**
+ * Divide total available flexWidth by total number of flexGrow
+ */
+function getUnitFlexWidth(
+  /*array*/ columns,
+  /*number*/ totalFlexWidth
+) /*number*/ {
+  const totalFlexGrow = getTotalFlexGrow(columns);
+
+  return (totalFlexGrow !== 0) ? (totalFlexWidth / totalFlexGrow) : 0;
+}
+
+/** 
+ * Calculate new width including flexWidth
+ */
+function addFlexWidth(
+  /*number*/ width,
+  /*number*/ columnFlexGrow = 0,
+  /*number*/ unitFlexWidth
+) /*number*/ {
+  const columnFlexWidth = columnFlexGrow * unitFlexWidth;
+  return width + columnFlexWidth;
 }
 
 function distributeFlexWidth(
   /*array*/ columns,
-  /*number*/ flexWidth
+  /*number*/ totalFlexWidth
 ) /*object*/ {
-  if (flexWidth <= 0) {
+  if (totalFlexWidth <= 0) {
     return {
       columns: columns,
       width: getTotalWidth(columns),
     };
   }
-  var remainingFlexGrow = getTotalFlexGrow(columns);
-  var remainingFlexWidth = flexWidth;
-  var newColumns = [];
-  var totalWidth = 0;
-  for (var i = 0; i < columns.length; ++i) {
-    var column = columns[i];
+
+  let totalWidth = 0;
+  const unitFlexWidth = getUnitFlexWidth(columns, totalFlexWidth);
+  const newColumns = columns.map((column) => {
     if (!column.props.flexGrow) {
       totalWidth += column.props.width;
-      newColumns.push(column);
-      continue;
+      return column;
     }
-    var columnFlexWidth = Math.floor(
-      column.props.flexGrow / remainingFlexGrow * remainingFlexWidth
+
+    const newColumnWidth = addFlexWidth(
+      column.props.width,
+      column.props.flexGrow,
+      unitFlexWidth
     );
-    var newColumnWidth = Math.floor(column.props.width + columnFlexWidth);
     totalWidth += newColumnWidth;
 
-    remainingFlexGrow -= column.props.flexGrow;
-    remainingFlexWidth -= columnFlexWidth;
-
-    newColumns.push(React.cloneElement(
+    return React.cloneElement(
       column,
-      {width: newColumnWidth}
-    ));
-  }
+      { width: newColumnWidth }
+    );
+  });
 
   return {
     columns: newColumns,
@@ -72,64 +116,89 @@ function distributeFlexWidth(
   };
 }
 
+/**
+ * Build recursive tree and calculate group values from descendants
+ */
+function iterateNestedColumns(
+  /*array*/ columns,
+  /*number*/ unitFlexWidth,
+  /*function*/ counter = () => { }
+) /*array*/ {
+  return columns.map((column) => {
+    let newProps;
+
+    // TODO (dangoo) improve this check to only return true for column-like elements (Issue #175)
+    if (column.type.__TableColumn__) {
+      // Compute new dimensions for column
+      newProps = {
+        width: addFlexWidth(
+          column.props.width,
+          column.props.flexGrow,
+          unitFlexWidth
+        ),
+      };
+    } else {
+      // Counter item(s)
+      let width = 0;
+
+      /*
+       * Callback to calculate data based on all children.
+       * Each level of the recursion calls the counter callback to increase the parent counter values
+       * such as the width of all children. This way we can avoid one additional step to walk over all
+       * children after the recursive mapping and sum up their values. Instead we can just use the counter
+       * variable charged by the counter callback during recursion.
+       */
+
+      function addToCounter(passedWidth) {
+        width += passedWidth;
+      }
+
+      const children = React.Children.toArray(column.props.children);
+      const innerColumns = iterateNestedColumns(
+        children,
+        unitFlexWidth,
+        addToCounter
+      );
+
+      newProps = {
+        width,
+        children: innerColumns,
+      };
+    }
+
+    // Charge counter with elements props
+    counter(newProps.width);
+
+    // Returns new element with recalculated dimensions
+    return React.cloneElement(
+      column,
+      newProps
+    );
+  });
+}
+
 function adjustColumnGroupWidths(
   /*array*/ columnGroups,
   /*number*/ expectedWidth
 ) /*object*/ {
-  var allColumns = [];
-  var i;
-  for (i = 0; i < columnGroups.length; ++i) {
-    React.Children.forEach(
-      columnGroups[i].props.children,
-      (column) => {
-        allColumns.push(column);
-      }
-    );
-  }
-  var columnsWidth = getTotalWidth(allColumns);
-  var remainingFlexGrow = getTotalFlexGrow(allColumns);
-  var remainingFlexWidth = Math.max(expectedWidth - columnsWidth, 0);
+  const allColumns = getNestedColumns(columnGroups);
+  const totalCollumnsWidth = getTotalWidth(allColumns);
+  const totalFlexWidth = Math.max(expectedWidth - totalCollumnsWidth, 0);
 
-  var newAllColumns = [];
-  var newColumnGroups = [];
+  const unitFlexWidth = getUnitFlexWidth(
+    allColumns,
+    totalFlexWidth
+  );
 
-  for (i = 0; i < columnGroups.length; ++i) {
-    var columnGroup = columnGroups[i];
-    var currentColumns = [];
-
-    React.Children.forEach(
-      columnGroup.props.children,
-      (column) => {
-        currentColumns.push(column);
-      }
-    );
-
-    var columnGroupFlexGrow = getTotalFlexGrow(currentColumns);
-    var columnGroupFlexWidth = Math.floor(
-      columnGroupFlexGrow / remainingFlexGrow * remainingFlexWidth
-    );
-
-    var newColumnSettings = distributeFlexWidth(
-      currentColumns,
-      columnGroupFlexWidth
-    );
-
-    remainingFlexGrow -= columnGroupFlexGrow;
-    remainingFlexWidth -= columnGroupFlexWidth;
-
-    for (var j = 0; j < newColumnSettings.columns.length; ++j) {
-      newAllColumns.push(newColumnSettings.columns[j]);
-    }
-
-    newColumnGroups.push(React.cloneElement(
-      columnGroup,
-      {width: newColumnSettings.width}
-    ));
-  }
+  const newColumnGroups = iterateNestedColumns(
+    columnGroups,
+    unitFlexWidth
+  );
+  const newColumns = getNestedColumns(newColumnGroups);
 
   return {
-    columns: newAllColumns,
     columnGroups: newColumnGroups,
+    columns: newColumns,
   };
 }
 
@@ -137,14 +206,16 @@ function adjustColumnWidths(
   /*array*/ columns,
   /*number*/ expectedWidth
 ) /*array*/ {
-  var columnsWidth = getTotalWidth(columns);
+  const columnsWidth = getTotalWidth(columns);
+
   if (columnsWidth < expectedWidth) {
     return distributeFlexWidth(columns, expectedWidth - columnsWidth).columns;
   }
+
   return columns;
 }
 
-var FixedDataTableWidthHelper = {
+const FixedDataTableWidthHelper = {
   getTotalWidth,
   getTotalFlexGrow,
   distributeFlexWidth,
