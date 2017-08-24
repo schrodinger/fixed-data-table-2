@@ -125,7 +125,18 @@ function iterateNestedColumns(
   return columns.map((column) => {
     let newProps;
 
-    if (!column.type.__TableColumn__) {
+    // TODO (dangoo) improve this check to only return true for column-like elements (Issue #175)
+    if (column.type.__TableColumn__) {
+      // Compute new dimensions for column
+      newProps = {
+        width: addFlexWidth(
+          column.props.width,
+          column.props.flexGrow,
+          unitFlexWidth
+        ),
+      };
+    } else {
+      // Counter item(s)
       let width = 0;
 
       /*
@@ -151,18 +162,12 @@ function iterateNestedColumns(
         width,
         children: innerColumns,
       };
-    } else {
-      newProps = {
-        width: addFlexWidth(
-          column.props.width,
-          column.props.flexGrow,
-          unitFlexWidth
-        ),
-      };
     }
 
+    // Charge counter with elements props
     counter(newProps.width);
 
+    // Returns new element with recalculated dimensions
     return React.cloneElement(
       column,
       newProps
