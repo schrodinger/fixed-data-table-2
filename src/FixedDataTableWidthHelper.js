@@ -72,6 +72,26 @@ function distributeFlexWidth(columns, flexWidth, flexGrow) {
  *     width: number,
  *   },
  * }>} columnGroups
+ * @return {!Array.<{
+ *   flexGrow: number,
+ *   width: number,
+ * }>}
+ */
+function getAllColumns(columnGroups) {
+  const allColumns = [];
+  forEach(columnGroups, columnGroup => {
+    Array.prototype.push.apply(allColumns, columnGroup.columns)
+  });
+  return allColumns;
+}
+
+/**
+ * @param  {!Array.<{
+ *   columns: !Array.{
+ *     flexGrow: number,
+ *     width: number,
+ *   },
+ * }>} columnGroups
  * @param  {number} expectedWidth
  * @return {!Array.<{
  *   flexGrow: number,
@@ -79,12 +99,8 @@ function distributeFlexWidth(columns, flexWidth, flexGrow) {
  * }>}
  */
 function adjustColumnGroupWidths(columnGroups, expectedWidth) {
-  const allColumns = [];
-  forEach(columnGroups, columnGroup => {
-    Array.prototype.push.apply(allColumns, columnGroup.columns)
-  });
-
-  var remainingFlexGrow = getTotalFlexGrow(allColumns);
+  const allColumns = getAllColumns(columnGroups);
+  let remainingFlexGrow = getTotalFlexGrow(allColumns);
   if (remainingFlexGrow === 0) {
     return allColumns;
   }
@@ -110,10 +126,9 @@ function adjustColumnGroupWidths(columnGroups, expectedWidth) {
   return allColumns;
 }
 
-var FixedDataTableWidthHelper = {
-  sumPropWidths,
-  getTotalWidth,
+module.exports = {
   adjustColumnGroupWidths,
+  getAllColumns,
+  getTotalWidth,
+  sumPropWidths,
 };
-
-module.exports = FixedDataTableWidthHelper;

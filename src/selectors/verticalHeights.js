@@ -9,16 +9,15 @@
  * @providesModule verticalHeights
  */
 import Scrollbar from 'Scrollbar';
+import groupHeaderHeight from 'groupHeaderHeight';
+import roughHeights from 'roughHeights';
+import scrollbarsVisible from 'scrollbarsVisible';
 import { createSelector } from 'reselect';
-import horizontalScrollbarVisible from 'horizontalScrollbarVisible';
-
-const BORDER_HEIGHT = 1;
 
 /**
-* @param {{
+ * @param {{
  *   columnGroups: {!Array.<{
  *     columns: !Array.{
- *       flexGrow: number,
  *       width: number,
  *     },
  *   }>},
@@ -28,46 +27,42 @@ const BORDER_HEIGHT = 1;
  *   height: ?number,
  *   maxHeight: ?number,
  *   overflowX: string,
+ *   overflowY: string,
  *   ownerHeight: number,
+ *   scrollContentHeight: number,
  *   showScrollbarX: boolean,
+ *   showScrollbarY: boolean,
  *   useGroupHeader: boolean,
  *   width: number,
  * }} state
  * @return {{
- *   availableHeight: number,
  *   bodyHeight: number,
+ *   bodyOffsetTop: number,
  *   componentHeight: number,
  *   contentHeight: number,
- *   footerHeight: number,
- *   groupHeaderHeight: number,
- *   headerHeight: number,
+ *   footOffsetTop: number,
+ *   headerOffsetTop: number,
+ *   rowsContainerHeight: number,
  *   visibleRowsHeight: number,
  * }} The heights for parts of the table
  */
 export default createSelector([
   state => state.footerHeight,
-  state => state.groupHeaderHeight,
+  groupHeaderHeight,
   state => state.headerHeight,
-  state => state.height,
-  horizontalScrollbarVisible,
-  state => state.maxHeight,
+  roughHeights,
   state => state.ownerHeight,
   state => state.scrollContentHeight,
-  state => state.useGroupHeader,
-], (footerHeight, groupHeaderHeight, headerHeight, height,
-    horizontalScrollbarVisible, maxHeight, ownerHeight, scrollContentHeight,
-    useGroupHeader) => {
+  scrollbarsVisible,
+], (footerHeight, groupHeaderHeight, headerHeight, roughHeights,
+    ownerHeight, scrollContentHeight, scrollbarsVisible) => {
+  const { reservedHeight, useMaxHeight } = roughHeights;
+  const { availableHeight, scrollsHorizontally } = scrollbarsVisible;
 
-  // Initialize & compute heights
-  groupHeaderHeight = useGroupHeader ? groupHeaderHeight : 0;
-  const scrollbarHeight = horizontalScrollbarVisible ? Scrollbar.SIZE : 0;
-  const reservedHeight = footerHeight + headerHeight + groupHeaderHeight +
-    scrollbarHeight + 2 * BORDER_HEIGHT;
-
-  // Determine the height allowed for the component
-  const useMaxHeight = height === undefined;
-  const maxComponentHeight = Math.round(useMaxHeight ? maxHeight : height);
-  const availableHeight = Math.max(maxComponentHeight - reservedHeight, 0);
+  let reservedWScrollbar = reservedHeight;
+  if (scrollsHorizontally) {
+    reservedWScrollbar += Scrollbar.SIZE;
+  }
 
   // If less content than space for rows (bodyHeight), then
   // we should shrink the space for rows to fit our row content (scrollContentHeight).
@@ -76,13 +71,13 @@ export default createSelector([
   // If using max height, component should only be sized to content.
   // Otherwise use all available height.
   const rowContainerHeight = useMaxHeight ? bodyHeight : availableHeight;
-  const componentHeight = rowContainerHeight + reservedHeight;
+  const componentHeight = rowContainerHeight + reservedWScrollbar;
 
   // If we have an owner height and it's less than the component height,
   // adjust visible height so we show footer and scrollbar position at the bottom of owner.
   let visibleRowsHeight = rowContainerHeight;
   if (ownerHeight < componentHeight) {
-    visibleRowsHeight = ownerHeight - reservedHeight;
+    visibleRowsHeight = ownerHeight - reservedWScrollbar;
   }
 
   // If using max height, virtual row container is scrollContentHeight, otherwise
@@ -92,19 +87,25 @@ export default createSelector([
 
   // contentHeight is the virtual rows height and reserved height,
   // or ownerHeight if that's larger
-  let contentHeight = virtualRowContainerHeight + reservedHeight;
+  let contentHeight = virtualRowContainerHeight + reservedWScrollbar;
   if (ownerHeight) {
     contentHeight = Math.max(ownerHeight, contentHeight);
   }
 
+  // Determine component offsets
+  const headerOffsetTop = groupHeaderHeight;
+  const bodyOffsetTop = headerOffsetTop + headerHeight;
+  const footOffsetTop = bodyOffsetTop + visibleRowsHeight;
+  const scrollbarXOffsetTop = footOffsetTop + footerHeight;
+
   return {
-    availableHeight,
     bodyHeight,
+    bodyOffsetTop,
     componentHeight,
     contentHeight,
-    footerHeight,
-    groupHeaderHeight,
-    headerHeight,
+    footOffsetTop,
+    headerOffsetTop,
+    rowsContainerHeight: scrollbarXOffsetTop,
     visibleRowsHeight,
   };
 });

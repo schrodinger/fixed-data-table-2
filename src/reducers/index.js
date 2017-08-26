@@ -89,15 +89,14 @@ function reducers(state = DEFAULT_STATE, action) {
       const { props } = action;
 
       let newState = setStateFromProps(state, props);
-      newState = columnStateHelper.initialize(newState, props, {});
       newState = initializeRowHeights(newState);
       const scrollAnchor = getScrollAnchor(newState, props);
-      return computeRenderedRows(newState, scrollAnchor);
+      newState = computeRenderedRows(newState, scrollAnchor);
+      return columnStateHelper.initialize(newState, props, {});
     }
     case ActionTypes.PROP_CHANGE: {
       const { newProps, oldProps } = action;
       let newState = setStateFromProps(state, newProps);
-      newState = columnStateHelper.initialize(newState, newProps, oldProps);
 
       if (oldProps.rowsCount !== newProps.rowsCount ||
           oldProps.rowHeight !== newProps.rowHeight ||
@@ -117,6 +116,8 @@ function reducers(state = DEFAULT_STATE, action) {
       if (!shallowEqual(state, newState) || scrollAnchor.changed) {
         newState = computeRenderedRows(newState, scrollAnchor);
       }
+
+      newState = columnStateHelper.initialize(newState, newProps, oldProps);
 
       // TODO REDUX_MIGRATION solve w/ evil-diff
       // TODO (jordan) check if relevant props unchanged and

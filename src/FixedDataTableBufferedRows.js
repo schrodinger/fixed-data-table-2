@@ -24,8 +24,6 @@ var FixedDataTableBufferedRows = createReactClass({
   propTypes: {
     isScrolling: PropTypes.bool,
     defaultRowHeight: PropTypes.number.isRequired,
-    firstRowIndex: PropTypes.number.isRequired,
-    firstRowOffset: PropTypes.number.isRequired,
     fixedColumns: PropTypes.array.isRequired,
     height: PropTypes.number.isRequired,
     offsetTop: PropTypes.number.isRequired,
@@ -45,6 +43,7 @@ var FixedDataTableBufferedRows = createReactClass({
     rowsCount: PropTypes.number.isRequired,
     rowsToRender: PropTypes.array.isRequired,
     scrollLeft: PropTypes.number.isRequired,
+    scrollTop: PropTypes.number.isRequired,
     scrollableColumns: PropTypes.array.isRequired,
     showLastRowBorder: PropTypes.bool,
     subRowHeightGetter: PropTypes.func,
@@ -75,7 +74,7 @@ var FixedDataTableBufferedRows = createReactClass({
     var rowsToRender = this.props.rowsToRender || [];
 
     this._staticRowArray.length = rowsToRender.length;
-    var baseOffsetTop = props.firstRowOffset - props.rowHeights[props.firstRowIndex] + props.offsetTop;
+    var baseOffsetTop = props.offsetTop - props.scrollTop;
 
     for (let i = 0; i < rowsToRender.length; ++i) {
       const rowIndex = rowsToRender[i];
