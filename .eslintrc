@@ -4,6 +4,10 @@
     // Schrodinger coding guidelines (https://github.com/schrodinger/fixed-data-table-2/blob/master/CONTRIBUTING.md#coding-style)
     "strict": [0, "global"],
     "indent": [2,2],
+    "comma-dangle": [2, {
+      "arrays": "always-multiline",
+      "objects": "always-multiline"
+    }],
     "no-mixed-spaces-and-tabs": 2,
     "quotes": [2,"single",{ "allowTemplateLiterals": true }],
     "semi": [2,"always"],
