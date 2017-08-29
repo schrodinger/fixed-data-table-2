@@ -127,9 +127,9 @@ import 'fixed-data-table-2/dist/fixed-data-table.css';
 
 // Table data as a list of array.
 const rows = [
-  ['a1', 'b1', 'c1'],
-  ['a2', 'b2', 'c2'],
-  ['a3', 'b3', 'c3'],
+  "first row",
+  "second row",
+  "third row"
   // .... and more
 ];
 
