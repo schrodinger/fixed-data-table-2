@@ -1,0 +1,25 @@
+{
+  "extends": "airbnb",
+  "rules": {
+    // Schrodinger coding guidelines (https://github.com/schrodinger/fixed-data-table-2/blob/master/CONTRIBUTING.md#coding-style)
+    "strict": [0, "global"],
+    "indent": [2,2],
+    "no-mixed-spaces-and-tabs": 2,
+    "quotes": [2,"single",{ "allowTemplateLiterals": true }],
+    "semi": [2,"always"],
+    "max-len": [2, 80, 2, {"ignoreComments": true, "ignoreUrls": true}],
+    "no-restricted-syntax": [2,
+      {
+      "selector": "CallExpression[callee.name='setTimeout'][arguments.length!=2]",
+      "message": "Do not use the optional parameters of setTimeout"
+      },
+      {
+        "selector": "CallExpression[callee.name='setInterval'][arguments.length!=2]",
+        "message": "Do not use the optional parameters of setInterval"
+      }
+    ],
+
+    // Additional configuration and normalization
+    "no-param-reassign": [2, { "props": false }]
+  }
+}
