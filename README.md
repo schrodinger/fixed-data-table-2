@@ -72,7 +72,7 @@ The cell components in a column will receive the current array index of your dat
       header={<Cell>Column 1</Cell>}
       cell={({rowIndex, ...props}) => (
         <Cell {...props}>
-        {rows[rowIndex] }
+        {rows[rowIndex]}
         </Cell>
       )}
       width={2000}
