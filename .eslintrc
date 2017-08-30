@@ -1,5 +1,8 @@
 {
   "extends": "airbnb",
+  "env": {
+    "browser": true
+  },
   "rules": {
     // Schrodinger coding guidelines (https://github.com/schrodinger/fixed-data-table-2/blob/master/CONTRIBUTING.md#coding-style)
     "strict": [0, "global"],
@@ -24,6 +27,7 @@
     ],
 
     // Additional configuration and normalization
-    "no-param-reassign": [2, {"props": false}]
+    "no-param-reassign": [2, {"props": false}],
+    "no-underscore-dangle": "off"
   }
 }
