@@ -1,0 +1,7 @@
+// Special settings for /test, inherits from /.eslintrc
+{
+    "env": {
+        "node": true,
+        "mocha": true
+    }
+}
