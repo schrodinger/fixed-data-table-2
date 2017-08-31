@@ -9,13 +9,20 @@ import sinon from 'sinon';
 
 describe('scrollStateHelper', function() {
   beforeEach(function() {
-    scrollStateHelper.__Rewire__('verticalHeightsSelector', () => ({
+    scrollStateHelper.__Rewire__('roughHeightsSelector', () => ({
+      maxAvailableHeight: 600,
+    }));
+    scrollStateHelper.__Rewire__('scrollbarsVisibleSelector', () => ({
       availableHeight: 600,
+    }));
+    scrollStateHelper.__Rewire__('verticalHeightsSelector', () => ({
       bodyHeight: 600,
     }));
   });
 
   afterEach(function() {
+    scrollStateHelper.__ResetDependency__('roughHeightsSelector');
+    scrollStateHelper.__ResetDependency__('scrollbarsVisibleSelector');
     scrollStateHelper.__ResetDependency__('verticalHeightsSelector');
   });
 
@@ -55,6 +62,7 @@ describe('scrollStateHelper', function() {
       };
 
       const newState = scrollStateHelper.computeRenderedRows(oldState, scrollAnchor);
+      console.log(newState);
 
       const expectedRowHeights = {};
       const expectedRows = [];

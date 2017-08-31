@@ -63,12 +63,6 @@ export default createSelector([
     scrollsVertically = true;
   }
 
-  // Handle case where horizontal scrollbar makes vertical scrollbar necessary
-  if (allowVerticalScrollbar && scrollsHorizontally &&
-      scrollContentHeight > minAvailableHeight) {
-    scrollsVertically = true;
-  }
-
   // Handle case where vertical scrollbar makes horizontal scrollbar necessary
   if (scrollsVertically &&
       horizontalScrollbarVisible === ScrollbarState.IF_VERTICAL_VISIBLE) {

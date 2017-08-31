@@ -40,7 +40,6 @@ function initialize(state, props, oldProps) {
     columnResizingData,
     isColumnResizing,
     scrollX,
-    width,
   } = state;
 
   if (scrollLeft !== undefined &&
@@ -83,10 +82,7 @@ function initialize(state, props, oldProps) {
  * @return {number} The new scrollX
  */
 function scrollTo(state, props, oldScrollToColumn, scrollX) {
-  const {
-    scrollToColumn,
-    width,
-  } = props;
+  const { scrollToColumn } = props;
   const {
     fixedColumns,
     scrollableColumns,

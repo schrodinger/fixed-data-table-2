@@ -231,6 +231,7 @@ describe('columnStateHelper', function() {
   });
 
   describe('initialize', function() {
+    let availableWidth;
     let oldState;
     beforeEach(function() {
       oldState = {
@@ -239,9 +240,10 @@ describe('columnStateHelper', function() {
         },
         isColumnResizing: true,
         scrollX: 300,
-        width: 200,
       };
+      availableWidth = 200;
 
+      columnStateHelper.__Rewire__('availableViewportWidth', () => availableWidth);
       columnStateHelper.__Rewire__('fixedColumnsWidthSelector', () => 150);
       columnStateHelper.__Rewire__('scrollContentWidthSelector', () => 600);
       columnStateHelper.__Rewire__('columnsSelector', () => ({
@@ -255,6 +257,7 @@ describe('columnStateHelper', function() {
     });
 
     afterEach(function() {
+      columnStateHelper.__ResetDependency__('availableViewportWidth');
       columnStateHelper.__ResetDependency__('fixedColumnsWidthSelector');
       columnStateHelper.__ResetDependency__('scrollContentWidthSelector');
       columnStateHelper.__ResetDependency__('columnsSelector');
@@ -303,68 +306,68 @@ describe('columnStateHelper', function() {
 
     it('should scroll to column when specified via prop', function() {
       oldState.scrollX = 0;
+      availableWidth = 350;
       const result = columnStateHelper.initialize(oldState, {
         scrollToColumn: 2,
-        width: 350,
       }, {});
 
       assert.deepEqual(result, Object.assign({}, oldState, {
-        maxScrollX: 400,
+        maxScrollX: 250,
         scrollX: 100,
       }));
     });
 
     it('should scroll to column when behind existing scroll', function() {
-      oldState.scrollX = 300;
+      oldState.scrollX = 250;
+      availableWidth = 350;
       const result = columnStateHelper.initialize(oldState, {
         scrollToColumn: 2,
-        width: 350,
       }, {});
 
       assert.deepEqual(result, Object.assign({}, oldState, {
-        maxScrollX: 400,
+        maxScrollX: 250,
         scrollX: 150,
       }));
     });
 
     it('should not change scroll when column already on screen', function() {
       oldState.scrollX = 125;
+      availableWidth = 350;
       const result = columnStateHelper.initialize(oldState, {
         scrollToColumn: 2,
-        width: 350,
       }, {});
 
       assert.deepEqual(result, Object.assign({}, oldState, {
-        maxScrollX: 400,
+        maxScrollX: 250,
         scrollX: 125,
       }));
     });
 
     it('should not change scroll when column is fixed', function() {
-      oldState.scrollX = 300;
+      oldState.scrollX = 250;
+      availableWidth = 350;
       const result = columnStateHelper.initialize(oldState, {
         scrollToColumn: 0,
-        width: 350,
       }, {});
 
       assert.deepEqual(result, Object.assign({}, oldState, {
-        maxScrollX: 400,
-        scrollX: 300,
+        maxScrollX: 250,
+        scrollX: 250,
       }));
     });
 
     it('should not change scroll when column is unchange', function() {
-      oldState.scrollX = 300;
+      oldState.scrollX = 250;
+      availableWidth = 350;
       const result = columnStateHelper.initialize(oldState, {
         scrollToColumn: 2,
-        width: 350,
       }, {
         scrollToColumn: 2
       });
 
       assert.deepEqual(result, Object.assign({}, oldState, {
-        maxScrollX: 400,
-        scrollX: 300,
+        maxScrollX: 250,
+        scrollX: 250,
       }));
     });
   });
