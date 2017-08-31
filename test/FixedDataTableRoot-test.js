@@ -123,9 +123,10 @@ describe('FixedDataTableRoot', function() {
 
     it('should update scrollToColumn correctly', function() {
       let table = renderTable({scrollToColumn: 3});
-      assert.equal(table.getTableState().scrollX, 300 * 2, 'should be third visible column');
+      // extra 18 comes from Scrollbar.SIZE & Scrollbar.OFFSET
+      assert.equal(table.getTableState().scrollX, 300 * 2 + 18, 'should be third visible column');
       table = renderTable({scrollToColumn: 1});
-      assert.equal(table.getTableState().scrollX, 300 * 1, 'should be first visible column');
+      assert.equal(table.getTableState().scrollX, 300, 'should be first visible column');
     });
 
     it('should update scrollToRow correctly', function() {

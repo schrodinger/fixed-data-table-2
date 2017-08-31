@@ -8,15 +8,20 @@
  *
  * @providesModule horizontalScrollbarVisible
  */
-import availableViewportWidth from 'availableViewportWidth';
+import Scrollbar from 'Scrollbar';
 import { createSelector } from 'reselect';
-import scrollContentWidth from 'scrollContentWidth';
+import minColWidth from 'minColWidth';
+
+export const ScrollbarState = {
+  HIDDEN: 'hidden',
+  IF_VERTICAL_VISIBLE: 'if_vertical_visible',
+  VISIBLE: 'visible',
+};
 
 /**
  * @param {{
  *   columnGroups: {!Array.<{
  *     columns: !Array.{
- *       flexGrow: number,
  *       width: number,
  *     },
  *   }>},
@@ -24,14 +29,23 @@ import scrollContentWidth from 'scrollContentWidth';
  *   showScrollbarX: boolean,
  *   width: number,
  * }} state
- * @return {boolean} True if the horizontal scrollbar should be shown.
+ * @return {string} ScrollbarState representing the visibility of the horizontal scrollbar
  */
 export default createSelector([
   state => state.overflowX,
   state => state.showScrollbarX,
-  scrollContentWidth,
-  availableViewportWidth,
-], (overflowX, showScrollbarX, scrollContentWidth, availableViewportWidth) => {
-  const disableScrollbar = overflowX === 'hidden' || showScrollbarX === false;
-  return scrollContentWidth > availableViewportWidth && !disableScrollbar;
+  minColWidth,
+  state => state.width,
+], (overflowX, showScrollbarX, minColWidth, width) => {
+  if (overflowX === 'hidden' || showScrollbarX === false) {
+    return ScrollbarState.HIDDEN;
+  } else if (minColWidth > width) {
+    return ScrollbarState.VISIBLE;
+  }
+
+  const scrollbarSpace = Scrollbar.SIZE + Scrollbar.OFFSET;
+  if (minColWidth > width - scrollbarSpace) {
+    return ScrollbarState.IF_VERTICAL_VISIBLE;
+  }
+  return ScrollbarState.HIDDEN;
 });

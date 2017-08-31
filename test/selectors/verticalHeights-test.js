@@ -8,252 +8,205 @@ describe('verticalHeights', function() {
   let footerHeightIn;
   let groupHeaderHeightIn;
   let headerHeightIn;
-  let height;
-  let horizontalScrollbarVisible;
-  let maxHeight;
   let ownerHeight;
+  let roughHeights;
   let scrollContentHeight;
-  let useGroupHeader;
+  let scrollbarsVisible;
+
 
   beforeEach(function() {
     footerHeightIn = 10;
     groupHeaderHeightIn = 35;
     headerHeightIn = 40;
-    height = 800;
-    horizontalScrollbarVisible = false;
-    maxHeight = undefined;
     ownerHeight = undefined;
+    roughHeights = {
+      reservedHeight: 87,
+      useMaxHeight: false,
+    };
     scrollContentHeight = 2000;
-    useGroupHeader = true;
+    scrollbarsVisible = {
+      availableHeight: 713,
+      scrollsHorizontally: false,
+    };
   });
 
   it('should compute appropriate component heights', function() {
     const {
-      availableHeight,
       bodyHeight,
+      bodyOffsetTop,
       componentHeight,
       contentHeight,
-      footerHeight,
-      groupHeaderHeight,
-      headerHeight,
+      footOffsetTop,
+      headerOffsetTop,
+      rowsContainerHeight,
       visibleRowsHeight,
     } = verticalHeights.resultFunc(footerHeightIn, groupHeaderHeightIn,
-      headerHeightIn, height, horizontalScrollbarVisible, maxHeight,
-      ownerHeight, scrollContentHeight, useGroupHeader);
+      headerHeightIn, roughHeights, ownerHeight, scrollContentHeight,
+      scrollbarsVisible);
 
-    assert.strictEqual(availableHeight, 713, 'availableHeight incorrect');
     assert.strictEqual(bodyHeight, 713, 'bodyHeight incorrect');
+    assert.strictEqual(bodyOffsetTop, 75, 'bodyOffsetTop incorrect');
     assert.strictEqual(componentHeight, 800, 'componentHeight incorrect');
     assert.strictEqual(contentHeight, 2087, 'contentHeight incorrect');
-    assert.strictEqual(footerHeight, 10, 'footerHeight incorrect');
-    assert.strictEqual(groupHeaderHeight, 35, 'groupHeaderHeight incorrect');
-    assert.strictEqual(headerHeight, 40, 'headerHeight incorrect');
+    assert.strictEqual(footOffsetTop, 788, 'footOffsetTop incorrect');
+    assert.strictEqual(headerOffsetTop, 35, 'headerOffsetTop incorrect');
+    assert.strictEqual(rowsContainerHeight, 798, 'rowsContainerHeight incorrect');
     assert.strictEqual(visibleRowsHeight, 713, 'visibleRowsHeight incorrect');
   });
 
-  it('should ignore groupHeaderHeight when not using group header', function() {
-    useGroupHeader = false;
-    const {
-      availableHeight,
-      bodyHeight,
-      componentHeight,
-      contentHeight,
-      footerHeight,
-      groupHeaderHeight,
-      headerHeight,
-      visibleRowsHeight,
-    } = verticalHeights.resultFunc(footerHeightIn, groupHeaderHeightIn,
-      headerHeightIn, height, horizontalScrollbarVisible, maxHeight,
-      ownerHeight, scrollContentHeight, useGroupHeader);
-
-    assert.strictEqual(availableHeight, 748, 'availableHeight incorrect');
-    assert.strictEqual(bodyHeight, 748, 'bodyHeight incorrect');
-    assert.strictEqual(componentHeight, 800, 'componentHeight incorrect');
-    assert.strictEqual(contentHeight, 2052, 'contentHeight incorrect');
-    assert.strictEqual(footerHeight, 10, 'footerHeight incorrect');
-    assert.strictEqual(groupHeaderHeight, 0, 'groupHeaderHeight incorrect');
-    assert.strictEqual(headerHeight, 40, 'headerHeight incorrect');
-    assert.strictEqual(visibleRowsHeight, 748, 'visibleRowsHeight incorrect');
-  });
-
   it('should adjust when horizontal scrollbar is visible', function() {
-    horizontalScrollbarVisible = true;
+    scrollbarsVisible = {
+      availableHeight: 698,
+      scrollsHorizontally: true,
+    };
     const {
-      availableHeight,
       bodyHeight,
+      bodyOffsetTop,
       componentHeight,
       contentHeight,
-      footerHeight,
-      groupHeaderHeight,
-      headerHeight,
+      footOffsetTop,
+      headerOffsetTop,
+      rowsContainerHeight,
       visibleRowsHeight,
     } = verticalHeights.resultFunc(footerHeightIn, groupHeaderHeightIn,
-      headerHeightIn, height, horizontalScrollbarVisible, maxHeight,
-      ownerHeight, scrollContentHeight, useGroupHeader);
+      headerHeightIn, roughHeights, ownerHeight, scrollContentHeight,
+      scrollbarsVisible);
 
-    assert.strictEqual(availableHeight, 698, 'availableHeight incorrect');
     assert.strictEqual(bodyHeight, 698, 'bodyHeight incorrect');
+    assert.strictEqual(bodyOffsetTop, 75, 'bodyOffsetTop incorrect');
     assert.strictEqual(componentHeight, 800, 'componentHeight incorrect');
     assert.strictEqual(contentHeight, 2102, 'contentHeight incorrect');
-    assert.strictEqual(footerHeight, 10, 'footerHeight incorrect');
-    assert.strictEqual(groupHeaderHeight, 35, 'groupHeaderHeight incorrect');
-    assert.strictEqual(headerHeight, 40, 'headerHeight incorrect');
+    assert.strictEqual(footOffsetTop, 773, 'footOffsetTop incorrect');
+    assert.strictEqual(headerOffsetTop, 35, 'headerOffsetTop incorrect');
+    assert.strictEqual(rowsContainerHeight, 783, 'rowsContainerHeight incorrect');
     assert.strictEqual(visibleRowsHeight, 698, 'visibleRowsHeight incorrect');
-  });
-
-  it('should not have negative available height', function() {
-    height = 50;
-    const {
-      availableHeight,
-      bodyHeight,
-      componentHeight,
-      contentHeight,
-      footerHeight,
-      groupHeaderHeight,
-      headerHeight,
-      visibleRowsHeight,
-    } = verticalHeights.resultFunc(footerHeightIn, groupHeaderHeightIn,
-      headerHeightIn, height, horizontalScrollbarVisible, maxHeight,
-      ownerHeight, scrollContentHeight, useGroupHeader);
-
-    assert.strictEqual(availableHeight, 0, 'availableHeight incorrect');
-    assert.strictEqual(bodyHeight, 0, 'bodyHeight incorrect');
-    assert.strictEqual(componentHeight, 87, 'componentHeight incorrect');
-    assert.strictEqual(contentHeight, 2087, 'contentHeight incorrect');
-    assert.strictEqual(footerHeight, 10, 'footerHeight incorrect');
-    assert.strictEqual(groupHeaderHeight, 35, 'groupHeaderHeight incorrect');
-    assert.strictEqual(headerHeight, 40, 'headerHeight incorrect');
-    assert.strictEqual(visibleRowsHeight, 0, 'visibleRowsHeight incorrect');
   });
 
   it('should collapse rows body height when not enough content', function() {
     scrollContentHeight = 100;
     const {
-      availableHeight,
       bodyHeight,
+      bodyOffsetTop,
       componentHeight,
       contentHeight,
-      footerHeight,
-      groupHeaderHeight,
-      headerHeight,
+      footOffsetTop,
+      headerOffsetTop,
+      rowsContainerHeight,
       visibleRowsHeight,
     } = verticalHeights.resultFunc(footerHeightIn, groupHeaderHeightIn,
-      headerHeightIn, height, horizontalScrollbarVisible, maxHeight,
-      ownerHeight, scrollContentHeight, useGroupHeader);
+      headerHeightIn, roughHeights, ownerHeight, scrollContentHeight,
+      scrollbarsVisible);
 
-    assert.strictEqual(availableHeight, 713, 'availableHeight incorrect');
     assert.strictEqual(bodyHeight, 100, 'bodyHeight incorrect');
+    assert.strictEqual(bodyOffsetTop, 75, 'bodyOffsetTop incorrect');
     assert.strictEqual(componentHeight, 800, 'componentHeight incorrect');
     assert.strictEqual(contentHeight, 800, 'contentHeight incorrect');
-    assert.strictEqual(footerHeight, 10, 'footerHeight incorrect');
-    assert.strictEqual(groupHeaderHeight, 35, 'groupHeaderHeight incorrect');
-    assert.strictEqual(headerHeight, 40, 'headerHeight incorrect');
+    assert.strictEqual(footOffsetTop, 788, 'footOffsetTop incorrect');
+    assert.strictEqual(headerOffsetTop, 35, 'headerOffsetTop incorrect');
+    assert.strictEqual(rowsContainerHeight, 798, 'rowsContainerHeight incorrect');
     assert.strictEqual(visibleRowsHeight, 713, 'visibleRowsHeight incorrect');
   });
 
-  it('should use max height when specified instead of height', function() {
-    height = undefined;
-    maxHeight = 800;
+  it('should not be affected by use max height when content exceeds height', function() {
+    roughHeights.useMaxHeight = true;
     const {
-      availableHeight,
       bodyHeight,
+      bodyOffsetTop,
       componentHeight,
       contentHeight,
-      footerHeight,
-      groupHeaderHeight,
-      headerHeight,
+      footOffsetTop,
+      headerOffsetTop,
+      rowsContainerHeight,
       visibleRowsHeight,
     } = verticalHeights.resultFunc(footerHeightIn, groupHeaderHeightIn,
-      headerHeightIn, height, horizontalScrollbarVisible, maxHeight,
-      ownerHeight, scrollContentHeight, useGroupHeader);
+      headerHeightIn, roughHeights, ownerHeight, scrollContentHeight,
+      scrollbarsVisible);
 
-    assert.strictEqual(availableHeight, 713, 'availableHeight incorrect');
     assert.strictEqual(bodyHeight, 713, 'bodyHeight incorrect');
+    assert.strictEqual(bodyOffsetTop, 75, 'bodyOffsetTop incorrect');
     assert.strictEqual(componentHeight, 800, 'componentHeight incorrect');
     assert.strictEqual(contentHeight, 2087, 'contentHeight incorrect');
-    assert.strictEqual(footerHeight, 10, 'footerHeight incorrect');
-    assert.strictEqual(groupHeaderHeight, 35, 'groupHeaderHeight incorrect');
-    assert.strictEqual(headerHeight, 40, 'headerHeight incorrect');
+    assert.strictEqual(footOffsetTop, 788, 'footOffsetTop incorrect');
+    assert.strictEqual(headerOffsetTop, 35, 'headerOffsetTop incorrect');
+    assert.strictEqual(rowsContainerHeight, 798, 'rowsContainerHeight incorrect');
     assert.strictEqual(visibleRowsHeight, 713, 'visibleRowsHeight incorrect');
   });
 
   it('should collapse whole component when not enough content and max height specified', function() {
-    height = undefined;
-    maxHeight = 800;
     scrollContentHeight = 100;
+    roughHeights.useMaxHeight = true;
     const {
-      availableHeight,
       bodyHeight,
+      bodyOffsetTop,
       componentHeight,
       contentHeight,
-      footerHeight,
-      groupHeaderHeight,
-      headerHeight,
+      footOffsetTop,
+      headerOffsetTop,
+      rowsContainerHeight,
       visibleRowsHeight,
     } = verticalHeights.resultFunc(footerHeightIn, groupHeaderHeightIn,
-      headerHeightIn, height, horizontalScrollbarVisible, maxHeight,
-      ownerHeight, scrollContentHeight, useGroupHeader);
+      headerHeightIn, roughHeights, ownerHeight, scrollContentHeight,
+      scrollbarsVisible);
 
-    assert.strictEqual(availableHeight, 713, 'availableHeight incorrect');
     assert.strictEqual(bodyHeight, 100, 'bodyHeight incorrect');
+    assert.strictEqual(bodyOffsetTop, 75, 'bodyOffsetTop incorrect');
     assert.strictEqual(componentHeight, 187, 'componentHeight incorrect');
     assert.strictEqual(contentHeight, 187, 'contentHeight incorrect');
-    assert.strictEqual(footerHeight, 10, 'footerHeight incorrect');
-    assert.strictEqual(groupHeaderHeight, 35, 'groupHeaderHeight incorrect');
-    assert.strictEqual(headerHeight, 40, 'headerHeight incorrect');
+    assert.strictEqual(footOffsetTop, 175, 'footOffsetTop incorrect');
+    assert.strictEqual(headerOffsetTop, 35, 'headerOffsetTop incorrect');
+    assert.strictEqual(rowsContainerHeight, 185, 'rowsContainerHeight incorrect');
     assert.strictEqual(visibleRowsHeight, 100, 'visibleRowsHeight incorrect');
   });
 
   it('should adjust visibleRowsHeight to ownerHeight when specified', function() {
     ownerHeight = 300;
     const {
-      availableHeight,
       bodyHeight,
+      bodyOffsetTop,
       componentHeight,
       contentHeight,
-      footerHeight,
-      groupHeaderHeight,
-      headerHeight,
+      footOffsetTop,
+      headerOffsetTop,
+      rowsContainerHeight,
       visibleRowsHeight,
     } = verticalHeights.resultFunc(footerHeightIn, groupHeaderHeightIn,
-      headerHeightIn, height, horizontalScrollbarVisible, maxHeight,
-      ownerHeight, scrollContentHeight, useGroupHeader);
+      headerHeightIn, roughHeights, ownerHeight, scrollContentHeight,
+      scrollbarsVisible);
 
-    assert.strictEqual(availableHeight, 713, 'availableHeight incorrect');
     assert.strictEqual(bodyHeight, 713, 'bodyHeight incorrect');
+    assert.strictEqual(bodyOffsetTop, 75, 'bodyOffsetTop incorrect');
     assert.strictEqual(componentHeight, 800, 'componentHeight incorrect');
     assert.strictEqual(contentHeight, 2087, 'contentHeight incorrect');
-    assert.strictEqual(footerHeight, 10, 'footerHeight incorrect');
-    assert.strictEqual(groupHeaderHeight, 35, 'groupHeaderHeight incorrect');
-    assert.strictEqual(headerHeight, 40, 'headerHeight incorrect');
+    assert.strictEqual(footOffsetTop, 288, 'footOffsetTop incorrect');
+    assert.strictEqual(headerOffsetTop, 35, 'headerOffsetTop incorrect');
+    assert.strictEqual(rowsContainerHeight, 298, 'rowsContainerHeight incorrect');
     assert.strictEqual(visibleRowsHeight, 213, 'visibleRowsHeight incorrect');
   });
 
   it('should grow the component to ownerHeight, even when collapsing due to useMaxHeight', function() {
-    height = undefined;
-    maxHeight = 800;
-    scrollContentHeight = 100;
     ownerHeight = 300;
+    scrollContentHeight = 100;
+    roughHeights.useMaxHeight = true;
     const {
-      availableHeight,
       bodyHeight,
+      bodyOffsetTop,
       componentHeight,
       contentHeight,
-      footerHeight,
-      groupHeaderHeight,
-      headerHeight,
+      footOffsetTop,
+      headerOffsetTop,
+      rowsContainerHeight,
       visibleRowsHeight,
     } = verticalHeights.resultFunc(footerHeightIn, groupHeaderHeightIn,
-      headerHeightIn, height, horizontalScrollbarVisible, maxHeight,
-      ownerHeight, scrollContentHeight, useGroupHeader);
+      headerHeightIn, roughHeights, ownerHeight, scrollContentHeight,
+      scrollbarsVisible);
 
-    assert.strictEqual(availableHeight, 713, 'availableHeight incorrect');
     assert.strictEqual(bodyHeight, 100, 'bodyHeight incorrect');
+    assert.strictEqual(bodyOffsetTop, 75, 'bodyOffsetTop incorrect');
     assert.strictEqual(componentHeight, 187, 'componentHeight incorrect');
     assert.strictEqual(contentHeight, 300, 'contentHeight incorrect');
-    assert.strictEqual(footerHeight, 10, 'footerHeight incorrect');
-    assert.strictEqual(groupHeaderHeight, 35, 'groupHeaderHeight incorrect');
-    assert.strictEqual(headerHeight, 40, 'headerHeight incorrect');
+    assert.strictEqual(footOffsetTop, 175, 'footOffsetTop incorrect');
+    assert.strictEqual(headerOffsetTop, 35, 'headerOffsetTop incorrect');
+    assert.strictEqual(rowsContainerHeight, 185, 'rowsContainerHeight incorrect');
     assert.strictEqual(visibleRowsHeight, 100, 'visibleRowsHeight incorrect');
   });
 });

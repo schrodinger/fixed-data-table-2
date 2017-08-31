@@ -13,6 +13,8 @@
 
 import bufferRowsCountSelector from 'bufferRowsCount';
 import clamp from 'clamp';
+import roughHeightsSelector from 'roughHeights';
+import scrollbarsVisibleSelector from 'scrollbarsVisible';
 import verticalHeightsSelector from 'verticalHeights';
 
 /**
@@ -32,27 +34,37 @@ import verticalHeightsSelector from 'verticalHeights';
  */
 function computeRenderedRows(state, scrollAnchor) {
   const newState = Object.assign({}, state);
-  const rowRange = calculateRenderedRowRange(newState, scrollAnchor);
-  computeRenderedRowOffsets(newState, rowRange);
+  let rowRange = calculateRenderedRowRange(newState, scrollAnchor);
 
   let {
-    firstRowIndex,
-    firstRowOffset,
-    rowHeights,
     rowsCount,
     scrollContentHeight,
-    scrollY,
   } = newState;
 
   const { bodyHeight } = verticalHeightsSelector(newState);
   const maxScrollY = scrollContentHeight - bodyHeight;
 
+  // NOTE (jordan) This handles #115 where resizing the viewport may
+  // leave only a subset of rows shown, but no scrollbar to scroll up to the first rows.
+  if (maxScrollY === 0) {
+    if (rowRange.firstViewportIdx > 0) {
+      rowRange = calculateRenderedRowRange(newState, {
+        firstOffset: 0,
+        lastIndex: rowsCount - 1,
+      });
+    }
+
+    newState.firstRowOffset = 0;
+  }
+
+  computeRenderedRowOffsets(newState, rowRange);
   if (rowsCount === 0) {
     scrollY = 0;
   } else {
-    scrollY = rowHeights[firstRowIndex] - firstRowOffset;
+    scrollY = newState.rowHeights[rowRange.firstViewportIdx] - newState.firstRowOffset;
   }
   scrollY = Math.min(scrollY, maxScrollY);
+
   return Object.assign(newState, {
     maxScrollY,
     scrollY,
@@ -72,7 +84,7 @@ function computeRenderedRows(state, scrollAnchor) {
  * }}
  */
 function scrollTo(state, scrollY) {
-  const { availableHeight } = verticalHeightsSelector(state);
+  const { availableHeight } = scrollbarsVisibleSelector(state);
   const {
     rowOffsets,
     rowsCount,
@@ -137,7 +149,7 @@ function scrollTo(state, scrollY) {
  * }}
  */
 function scrollToRow(state, rowIndex) {
-  const { availableHeight } = verticalHeightsSelector(state);
+  const { availableHeight } = scrollbarsVisibleSelector(state);
   const {
     rowOffsets,
     rowsCount,
@@ -212,7 +224,7 @@ function scrollToRow(state, rowIndex) {
  */
 function calculateRenderedRowRange(state, scrollAnchor) {
   const bufferRowsCount = bufferRowsCountSelector(state);
-  const { availableHeight } = verticalHeightsSelector(state);
+  const { maxAvailableHeight } = roughHeightsSelector(state);
   const rowsCount = state.rowsCount;
 
   if (rowsCount === 0) {
@@ -250,26 +262,11 @@ function calculateRenderedRowRange(state, scrollAnchor) {
   // Loop to walk the viewport until we've touched enough rows to fill its height
   let rowIdx = startIdx;
   let endIdx = rowIdx;
-  while (totalHeight < availableHeight && rowIdx < rowsCount && rowIdx >= 0) {
+  while (rowIdx < rowsCount && rowIdx >= 0 &&
+      totalHeight < maxAvailableHeight) {
     totalHeight += updateRowHeight(state, rowIdx);
     endIdx = rowIdx;
     rowIdx += step;
-  }
-
-  // NOTE (jordan) This handles #115 where resizing the viewport may
-  // leave only a subset of rows shown, but no scrollbar to scroll up to the first rows.
-  if (rowIdx === rowsCount && totalHeight < availableHeight) {
-    return calculateRenderedRowRange(state, {
-      firstOffset: 0,
-      lastIndex: rowsCount - 1,
-    });
-  }
-
-  let firstRowOffset = firstOffset;
-  if (lastIndex !== undefined) {
-    // Calculate offset needed to position last row at bottom of viewport
-    // This should be negative and represent how far the first row needs to be offscreen
-    firstRowOffset = Math.min(availableHeight - totalHeight, 0);
   }
 
   // Loop to walk the leading buffer
@@ -286,9 +283,15 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     updateRowHeight(state, rowIdx);
   }
 
-  state.firstRowIndex = firstViewportIdx;
-  state.firstRowOffset = firstRowOffset;
+  const { availableHeight } = scrollbarsVisibleSelector(state);
+  if (lastIndex !== undefined) {
+    // Calculate offset needed to position last row at bottom of viewport
+    // This should be negative and represent how far the first row needs to be offscreen
+    firstOffset = Math.min(availableHeight - totalHeight, 0);
+  }
 
+  state.firstRowIndex = firstViewportIdx;
+  state.firstRowOffset = firstOffset;
   return {
     endBufferIdx,
     endViewportIdx,

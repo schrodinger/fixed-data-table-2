@@ -26,10 +26,9 @@ import Scrollbar from 'Scrollbar';
 import columnDetailsSelector from 'columnDetails';
 import cx from 'cx';
 import debounceCore from 'debounceCore';
-import horizontalScrollbarVisibleSelector from 'horizontalScrollbarVisible';
 import joinClasses from 'joinClasses';
+import scrollbarsVisible from 'scrollbarsVisible';
 import verticalHeightsSelector from 'verticalHeights';
-import verticalLayoutSelector from 'verticalLayout';
 
 /**
  * Data grid component with fixed or scrollable header and columns.
@@ -484,41 +483,38 @@ const FixedDataTable = createReactClass({
 
     const {
       bodyHeight,
-      componentHeight,
-      footerHeight,
-      headerHeight,
-      visibleRowsHeight,
-    } = verticalHeightsSelector(this.props);
-
-    const {
       bodyOffsetTop,
+      componentHeight,
       footOffsetTop,
       headerOffsetTop,
       rowsContainerHeight,
-    } = verticalLayoutSelector(this.props);
+      visibleRowsHeight,
+    } = verticalHeightsSelector(this.props);
 
     const {
       className,
       columnReorderingData,
       columnResizingData,
+      footerHeight,
+      headerHeight,
       isColumnReordering,
       isColumnResizing,
       maxScrollX,
       maxScrollY,
       onColumnReorderEndCallback,
       onColumnResizeEndCallback,
-      overflowY,
       ownerHeight,
       scrollContentHeight,
       scrollX,
       scrollY,
-      showScrollbarY,
       useGroupHeader,
       width,
     } = this.props;
 
-    const horizontalScrollbarVisible = horizontalScrollbarVisibleSelector(this.props);
-
+    const {
+      scrollsHorizontally,
+      scrollsVertically,
+    } = scrollbarsVisible(this.props);
     const onColumnReorder = onColumnReorderEndCallback ? this._onColumnReorder : null;
 
     let groupHeader;
@@ -547,10 +543,8 @@ const FixedDataTable = createReactClass({
       );
     }
 
-    const showVerticalScrollbar = maxScrollY > 0 &&
-      overflowY !== 'hidden' && showScrollbarY !== false;
     let verticalScrollbar;
-    if (showVerticalScrollbar) {
+    if (scrollsVertically) {
       verticalScrollbar =
         <Scrollbar
           size={visibleRowsHeight}
@@ -562,7 +556,7 @@ const FixedDataTable = createReactClass({
     }
 
     let horizontalScrollbar;
-    if (horizontalScrollbarVisible) {
+    if (scrollsHorizontally) {
       horizontalScrollbar =
         <HorizontalScrollbar
           contentSize={width + maxScrollX}
@@ -708,8 +702,6 @@ const FixedDataTable = createReactClass({
       <FixedDataTableBufferedRows
         isScrolling={this._isScrolling}
         defaultRowHeight={props.rowHeight}
-        firstRowIndex={props.firstRowIndex}
-        firstRowOffset={props.firstRowOffset}
         fixedColumns={fixedCellTemplates}
         height={bodyHeight}
         offsetTop={offsetTop}
@@ -724,6 +716,7 @@ const FixedDataTable = createReactClass({
         rowKeyGetter={props.rowKeyGetter}
         rowsCount={props.rowsCount}
         scrollLeft={props.scrollX}
+        scrollTop={props.scrollY}
         scrollableColumns={scrollableCellTemplates}
         showLastRowBorder={true}
         subRowHeightGetter={props.subRowHeightGetter}

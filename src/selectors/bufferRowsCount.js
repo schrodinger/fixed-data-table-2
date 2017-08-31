@@ -8,27 +8,50 @@
  *
  * @providesModule bufferRowsCount
  */
-import maxVisibleRowCount from 'maxVisibleRowCount';
 import clamp from 'clamp';
 import { createSelector } from 'reselect';
+import roughHeights from 'roughHeights';
 
 const MIN_BUFFER_ROWS = 3;
 const MAX_BUFFER_ROWS = 6;
 
 /**
+ * @param {{
+ *   bufferRowCount: ?number,
+ *   columnGroups: {!Array.<{
+ *     columns: !Array.{
+ *       width: number,
+ *     },
+ *   }>},
+ *   footerHeight: number,
+ *   groupHeaderHeight: number,
+ *   headerHeight: number,
+ *   height: ?number,
+ *   maxHeight: ?number,
+ *   overflowX: string,
+ *   rowHeight: number,
+ *   showScrollbarX: boolean,
+ *   subRowHeight: number,
+ *   useGroupHeader: boolean,
+ *   width: number,
+ * }} state
  * @return {number} The number of rows to buffer both ahead and behind the viewport.
  *   In total we will buffer twice this number of rows (half ahead, and half behind).
  */
 export default createSelector([
   state => state.bufferRowCount,
-  maxVisibleRowCount,
-], (bufferRowCount, maxVisibleRowCount) => {
+  state => state.rowHeight,
+  state => state.subRowHeight,
+  roughHeights,
+], (bufferRowCount, rowHeight, subRowHeight, { maxAvailableHeight }) => {
   if (bufferRowCount !== null) {
     return bufferRowCount;
   }
 
+  const fullRowHeight = rowHeight + subRowHeight;
+  const avgVisibleRowCount = Math.ceil(maxAvailableHeight / fullRowHeight) + 1;
   return clamp(
-    Math.floor(maxVisibleRowCount / 2),
+    Math.floor(avgVisibleRowCount / 2),
     MIN_BUFFER_ROWS,
     MAX_BUFFER_ROWS
   );

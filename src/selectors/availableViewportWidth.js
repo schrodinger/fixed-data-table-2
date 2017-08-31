@@ -10,6 +10,7 @@
  */
 import Scrollbar from 'Scrollbar';
 import { createSelector } from 'reselect';
+import scrollbarsVisible from 'scrollbarsVisible';
 
 /**
  * @param {{
@@ -18,7 +19,10 @@ import { createSelector } from 'reselect';
  * @return {number} The width available for rendering cells.
  */
 export default createSelector([
+  scrollbarsVisible,
   state => state.width,
-], width => {
-  return width - Scrollbar.SIZE - Scrollbar.OFFSET;
+], ({ scrollsVertically }, width) => {
+  const scrollbarSize = Scrollbar.SIZE + Scrollbar.OFFSET;
+  const scrollbarSpace = scrollsVertically ? scrollbarSize : 0;
+  return width - scrollbarSpace;
 });
