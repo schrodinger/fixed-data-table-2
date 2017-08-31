@@ -62,7 +62,6 @@ describe('scrollStateHelper', function() {
       };
 
       const newState = scrollStateHelper.computeRenderedRows(oldState, scrollAnchor);
-      console.log(newState);
 
       const expectedRowHeights = {};
       const expectedRows = [];
