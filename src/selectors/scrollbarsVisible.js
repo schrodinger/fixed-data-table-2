@@ -8,75 +8,63 @@
  *
  * @providesModule scrollbarsVisible
  */
-import { createSelector } from 'reselect';
-import horizontalScrollbarVisible, { ScrollbarState } from 'horizontalScrollbarVisible';
-import roughHeights from 'roughHeights';
+import roughHeights, { ScrollbarState } from 'roughHeights';
+import shallowEqualSelector from 'shallowEqualSelector';
 
 /**
+ * State regarding which scrollbars will be shown.
+ * Also includes the actual availableHeight which depends on the scrollbars.
+ *
  * @param {{
- *   columnGroups: {!Array.<{
- *     columns: !Array.{
- *       width: number,
- *     },
- *   }>},
- *   footerHeight: number,
- *   groupHeaderHeight: number,
- *   headerHeight: number,
- *   height: ?number,
- *   maxHeight: ?number,
- *   overflowX: string,
+ *   minAvailableHeight: number,
+ *   maxAvailableHeight: number,
+ *   scrollStateX: ScrollbarState,
+ * }} roughHeights
+ * @param {number} scrollContentHeight,
+ * @param {{
  *   overflowY: string,
- *   scrollContentHeight: number,
- *   showScrollbarX: boolean,
  *   showScrollbarY: boolean,
- *   useGroupHeader: boolean,
- *   width: number,
- * }} state
- * @return {
+ * }} scrollFlags
+ * @return {{
  *   availableHeight: number,
- *   scrollsHorizontally: boolean,
- *   scrollsVertically: boolean,
- * } State regarding whether the scrollbars are visible and the availableHeight
+ *   scrollEnabledX: boolean,
+ *   scrollEnabledY: boolean,
+ * }}
  */
-export default createSelector([
-  horizontalScrollbarVisible,
-  state => state.overflowY,
-  roughHeights,
-  state => state.scrollContentHeight,
-  state => state.showScrollbarY,
-], (horizontalScrollbarVisible, overflowY, roughHeights, scrollContentHeight,
-    showScrollbarY) => {
-
-  const {
-    minAvailableHeight,
-    maxAvailableHeight,
-  } = roughHeights;
-  const allowVerticalScrollbar = overflowY !== 'hidden' &&
+function scrollbarsVisible(roughHeights, scrollContentHeight, scrollFlags) {
+  const { overflowY, showScrollbarY } = scrollFlags;
+  const allowScrollbarY = overflowY !== 'hidden' &&
     showScrollbarY !== false;
 
-  let scrollsVertically = false;
-  let scrollsHorizontally = false;
-  if (horizontalScrollbarVisible === ScrollbarState.VISIBLE) {
-    scrollsHorizontally = true;
+  const { minAvailableHeight, maxAvailableHeight, scrollStateX } = roughHeights;
+  let scrollEnabledY = false;
+  let scrollEnabledX = false;
+  if (scrollStateX === ScrollbarState.VISIBLE) {
+    scrollEnabledX = true;
   }
-  if (allowVerticalScrollbar && scrollContentHeight > maxAvailableHeight) {
-    scrollsVertically = true;
+  if (allowScrollbarY && scrollContentHeight > maxAvailableHeight) {
+    scrollEnabledY = true;
   }
 
   // Handle case where vertical scrollbar makes horizontal scrollbar necessary
-  if (scrollsVertically &&
-      horizontalScrollbarVisible === ScrollbarState.IF_VERTICAL_VISIBLE) {
-    scrollsHorizontally = true;
+  if (scrollEnabledY && scrollStateX === ScrollbarState.IF_SCROLL_Y) {
+    scrollEnabledX = true;
   }
 
   let availableHeight = maxAvailableHeight;
-  if (scrollsHorizontally) {
+  if (scrollEnabledX) {
     availableHeight = minAvailableHeight;
   }
 
   return {
     availableHeight,
-    scrollsHorizontally,
-    scrollsVertically,
+    scrollEnabledX,
+    scrollEnabledY,
   }
-});
+}
+
+export default shallowEqualSelector([
+  roughHeights,
+  state => state.scrollContentHeight,
+  state => state.scrollFlags,
+], scrollbarsVisible);

@@ -11,11 +11,10 @@
 
 'use strict';
 
-import bufferRowsCountSelector from 'bufferRowsCount';
 import clamp from 'clamp';
 import roughHeightsSelector from 'roughHeights';
 import scrollbarsVisibleSelector from 'scrollbarsVisible';
-import verticalHeightsSelector from 'verticalHeights';
+import tableHeightsSelector from 'tableHeights';
 
 /**
  * Returns data about the rows to render
@@ -36,12 +35,9 @@ function computeRenderedRows(state, scrollAnchor) {
   const newState = Object.assign({}, state);
   let rowRange = calculateRenderedRowRange(newState, scrollAnchor);
 
-  let {
-    rowsCount,
-    scrollContentHeight,
-  } = newState;
-
-  const { bodyHeight } = verticalHeightsSelector(newState);
+  const { rowSettings, scrollContentHeight } = newState;
+  const { rowsCount } = rowSettings;
+  const { bodyHeight } = tableHeightsSelector(newState);
   const maxScrollY = scrollContentHeight - bodyHeight;
 
   // NOTE (jordan) This handles #115 where resizing the viewport may
@@ -85,11 +81,8 @@ function computeRenderedRows(state, scrollAnchor) {
  */
 function scrollTo(state, scrollY) {
   const { availableHeight } = scrollbarsVisibleSelector(state);
-  const {
-    rowOffsets,
-    rowsCount,
-    scrollContentHeight,
-  } = state;
+  const { rowOffsets, rowSettings, scrollContentHeight } = state;
+  const { rowsCount } = rowSettings;
 
   if (rowsCount === 0) {
     return {
@@ -150,12 +143,8 @@ function scrollTo(state, scrollY) {
  */
 function scrollToRow(state, rowIndex) {
   const { availableHeight } = scrollbarsVisibleSelector(state);
-  const {
-    rowOffsets,
-    rowsCount,
-    storedHeights,
-    scrollY,
-  } = state;
+  const { rowOffsets, rowSettings, storedHeights, scrollY } = state;
+  const { rowsCount } = rowSettings;
 
   if (rowsCount === 0) {
     return {
@@ -223,9 +212,8 @@ function scrollToRow(state, rowIndex) {
  * @private
  */
 function calculateRenderedRowRange(state, scrollAnchor) {
-  const bufferRowsCount = bufferRowsCountSelector(state);
-  const { maxAvailableHeight } = roughHeightsSelector(state);
-  const rowsCount = state.rowsCount;
+  const { bufferRowCount, maxAvailableHeight } = roughHeightsSelector(state);
+  const rowsCount = state.rowSettings.rowsCount;
 
   if (rowsCount === 0) {
     return {
@@ -236,14 +224,10 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     };
   }
 
-  let {
-    firstIndex,
-    firstOffset,
-    lastIndex,
-  } = scrollAnchor;
 
   // If our first or last index is greater than our rowsCount,
   // treat it as if the last row is at the bottom of the viewport
+  let { firstIndex, firstOffset, lastIndex } = scrollAnchor;
   if (firstIndex >= rowsCount || lastIndex >= rowsCount) {
     lastIndex = rowsCount - 1;
   }
@@ -271,14 +255,14 @@ function calculateRenderedRowRange(state, scrollAnchor) {
 
   // Loop to walk the leading buffer
   const firstViewportIdx = Math.min(startIdx, endIdx);
-  const firstBufferIdx = Math.max(firstViewportIdx - bufferRowsCount, 0);
+  const firstBufferIdx = Math.max(firstViewportIdx - bufferRowCount, 0);
   for (rowIdx = firstBufferIdx; rowIdx < firstViewportIdx; rowIdx++) {
     updateRowHeight(state, rowIdx);
   }
 
   // Loop to walk the trailing buffer
   const endViewportIdx = Math.max(startIdx, endIdx) + 1;
-  const endBufferIdx = Math.min(endViewportIdx + bufferRowsCount, rowsCount);
+  const endBufferIdx = Math.min(endViewportIdx + bufferRowCount, rowsCount);
   for (rowIdx = endViewportIdx; rowIdx < endBufferIdx; rowIdx++) {
     updateRowHeight(state, rowIdx);
   }
@@ -316,11 +300,7 @@ function calculateRenderedRowRange(state, scrollAnchor) {
  * @private
  */
 function computeRenderedRowOffsets(state, rowRange) {
-  const {
-    bufferSet,
-    rowOffsets,
-    storedHeights,
-  } = state;
+  const { bufferSet, rowOffsets, storedHeights } = state;
   const {
     endBufferIdx,
     endViewportIdx,
@@ -381,12 +361,8 @@ function computeRenderedRowOffsets(state, rowRange) {
  * @private
  */
 function updateRowHeight(state, rowIdx) {
-  const {
-    storedHeights,
-    rowOffsets,
-    rowHeightGetter,
-    subRowHeightGetter,
-  } = state;
+  const { storedHeights, rowOffsets, rowSettings } = state;
+  const { rowHeightGetter, subRowHeightGetter } = rowSettings;
 
   const newHeight = rowHeightGetter(rowIdx) + subRowHeightGetter(rowIdx);
   const oldHeight = storedHeights[rowIdx];

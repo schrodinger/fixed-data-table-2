@@ -42,9 +42,9 @@ function _extractTemplates(elementTemplates, columnElement) {
 /**
  * Converts React column / column group elements into props and cell rendering templates
  */
-function convertColumnElementsToData(props) {
+function convertColumnElementsToData(childComponents) {
   const children = [];
-  React.Children.forEach(props.children, (child, index) => {
+  React.Children.forEach(childComponents, (child, index) => {
     if (child == null) {
       return;
     }
@@ -77,7 +77,7 @@ function convertColumnElementsToData(props) {
 
     return {
       columnGroups,
-      elementTemplates: elementTemplates,
+      elementTemplates,
       useGroupHeader: true,
     };
   }
@@ -92,7 +92,7 @@ function convertColumnElementsToData(props) {
     columnGroups: [{
       columns: columns,
     }],
-    elementTemplates: elementTemplates,
+    elementTemplates,
     useGroupHeader: false,
   };
 };

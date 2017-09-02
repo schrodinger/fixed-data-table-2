@@ -14,11 +14,11 @@
 
 import FixedDataTableCellGroup from 'FixedDataTableCellGroup';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
-import FixedDataTableWidthHelper from 'FixedDataTableWidthHelper';
 import PropTypes from 'prop-types';
 import React from 'React';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
+import { sumPropWidths } from 'widthHelper';
 
 /**
  * Component that renders the row for <FixedDataTable />.
@@ -143,7 +143,7 @@ class FixedDataTableRowImpl extends React.Component {
       'public/fixedDataTableRow/odd': (this.props.index % 2 === 1),
       'public/fixedDataTableRow/even': (this.props.index % 2 === 0),
     });
-    var fixedColumnsWidth = FixedDataTableWidthHelper.sumPropWidths(this.props.fixedColumns);
+    var fixedColumnsWidth = sumPropWidths(this.props.fixedColumns);
     var fixedColumns =
       <FixedDataTableCellGroup
         key="fixed_cells"
@@ -182,7 +182,7 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
       />;
-    var scrollableColumnsWidth = FixedDataTableWidthHelper.sumPropWidths(this.props.scrollableColumns);
+    var scrollableColumnsWidth = sumPropWidths(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
     var rowExpanded = this._getRowExpanded(subRowHeight);
     var rowExpandedStyle = {

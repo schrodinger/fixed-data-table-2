@@ -13,7 +13,6 @@ describe('columnStateHelper', function() {
         placeholder: true
       };
 
-      // --- Run Test ---
       const result = columnStateHelper.resizeColumn(oldState, {
         cellMinWidth: 10,
         cellMaxWidth: 200,
@@ -25,7 +24,6 @@ describe('columnStateHelper', function() {
         leftOffset: 13
       });
 
-      // --- Verify Expectations ---
       assert.deepEqual(result, {
         placeholder: true,
         isColumnResizing: true,
@@ -46,19 +44,21 @@ describe('columnStateHelper', function() {
   });
 
   describe('reorderColumn', function() {
+    beforeEach(function() {
+      columnStateHelper.__Rewire__('columnWidths', () => ({
+        fixedColumns: [{ columnKey: 'col1', fixed: true }],
+      }));
+    });
+
+    afterEach(function() {
+      columnStateHelper.__ResetDependency__('columnWidths');
+    });
+
     it('should return a new object with column reorder data', function() {
-      const fakeColumnGroups = [{
-        columns: [{
-          columnKey: 'col1',
-          fixed: true,
-        }],
-      }];
       const oldState = {
         placeholder: true,
-        columnGroups: fakeColumnGroups,
       };
 
-      // --- Run Test ---
       const result = columnStateHelper.reorderColumn(oldState, {
         columnKey: 'col1',
         left: 20,
@@ -66,9 +66,7 @@ describe('columnStateHelper', function() {
         width: 100
       });
 
-      // --- Verify Expectations ---
       assert.deepEqual(result, {
-        columnGroups: fakeColumnGroups,
         placeholder: true,
         isColumnReordering: true,
         columnReorderingData: {
@@ -87,19 +85,9 @@ describe('columnStateHelper', function() {
   });
 
   describe('reorderColumnMove', function() {
-    let fakeColumnGroups;
     let reorderingData;
-    before(function() {
-      fakeColumnGroups = [{
-        columns: [
-          { width: 50, fixed: true },
-          { width: 80, fixed: true },
-          { width: 300, fixed: false },
-          { width: 180, fixed: false },
-          { width: 400, fixed: false },
-        ],
-      }];
-
+    let oldState;
+    beforeEach(function() {
       reorderingData = {
         cancelReorder: false,
         dragDistance: 0,
@@ -111,83 +99,69 @@ describe('columnStateHelper', function() {
         columnBefore: undefined,
         columnAfter: undefined,
       };
+
+      oldState = {
+        columnReorderingData: reorderingData,
+        isColumnReordering: true,
+        maxScrollX: 660,
+        scrollX: 195,
+      };
+
+      columnStateHelper.__Rewire__('columnWidths', () => ({
+        availableScrollWidth: 220,
+        fixedColumns: [
+          { width: 50, fixed: true },
+          { width: 80, fixed: true },
+        ],
+        maxScrollX: 660,
+        scrollableColumns: [
+          { width: 300, fixed: false },
+          { width: 180, fixed: false },
+          { width: 400, fixed: false },
+        ],
+      }));
+    });
+
+    afterEach(function() {
+      columnStateHelper.__ResetDependency__('columnWidths');
     });
 
     it('should update drag distance on move', function() {
-      const oldState = {
-        columnGroups: fakeColumnGroups,
-        scrollX: 195,
-        maxScrollX: 660,
-        width: 350,
-        isColumnReordering: true,
-        columnReorderingData: reorderingData,
-      };
-
-      // --- Run Test ---
       const result = columnStateHelper.reorderColumnMove(oldState, 10);
 
-      // --- Verify Expectations ---
       assert.deepEqual(result, {
-        columnGroups: fakeColumnGroups,
-        scrollX: 195,
-        maxScrollX: 660,
-        width: 350,
-        isColumnReordering: true,
         columnReorderingData: Object.assign({}, reorderingData, {
           dragDistance: 10,
         }),
+        isColumnReordering: true,
+        maxScrollX: 660,
+        scrollX: 195,
       });
     });
 
     it('should adjust scrollX when nears first edge', function() {
-      const oldState = {
-        columnGroups: fakeColumnGroups,
-        scrollX: 195,
-        maxScrollX: 660,
-        width: 350,
-        isColumnReordering: true,
-        columnReorderingData: reorderingData,
-      };
-
-      // --- Run Test ---
       const result = columnStateHelper.reorderColumnMove(oldState, -30);
 
-      // --- Verify Expectations ---
       assert.deepEqual(result, {
-        columnGroups: fakeColumnGroups,
-        scrollX: 180,
-        maxScrollX: 660,
-        width: 350,
-        isColumnReordering: true,
         columnReorderingData: Object.assign({}, reorderingData, {
           dragDistance: -30,
         }),
+        isColumnReordering: true,
+        maxScrollX: 660,
+        scrollX: 180,
       });
     });
 
     it('should adjust scrollX when nears end edge', function() {
-      const oldState = {
-        columnGroups: fakeColumnGroups,
-        scrollX: 195,
-        maxScrollX: 660,
-        width: 350,
-        isColumnReordering: true,
-        columnReorderingData: reorderingData,
-      };
-
-      // --- Run Test ---
       const result = columnStateHelper.reorderColumnMove(oldState, 30);
 
-      // --- Verify Expectations ---
       assert.deepEqual(result, {
-        columnGroups: fakeColumnGroups,
-        scrollX: 210,
-        maxScrollX: 660,
-        width: 350,
-        isColumnReordering: true,
         columnReorderingData: Object.assign({}, reorderingData, {
           dragDistance: 30,
         }),
+        isColumnReordering: true,
+        maxScrollX: 660,
+        scrollX: 210,
       });
     });
 
@@ -203,29 +177,18 @@ describe('columnStateHelper', function() {
         columnBefore: undefined,
         columnAfter: undefined,
       };
+      oldState.columnReorderingData = reorderingData;
+      oldState.scrollX = 25;
 
-      const oldState = {
-        columnGroups: fakeColumnGroups,
-        scrollX: 25,
-        maxScrollX: 660,
-        width: 350,
-        isColumnReordering: true,
-        columnReorderingData: reorderingData,
-      };
-
-      // --- Run Test ---
       const result = columnStateHelper.reorderColumnMove(oldState, -10);
 
-      // --- Verify Expectations ---
       assert.deepEqual(result, {
-        columnGroups: fakeColumnGroups,
-        scrollX: 25,
-        maxScrollX: 660,
-        width: 350,
-        isColumnReordering: true,
         columnReorderingData: Object.assign({}, reorderingData, {
           dragDistance: -10,
         }),
+        isColumnReordering: true,
+        maxScrollX: 660,
+        scrollX: 25,
       });
     });
   });
@@ -243,11 +206,10 @@ describe('columnStateHelper', function() {
       };
       availableWidth = 200;
 
-      columnStateHelper.__Rewire__('availableViewportWidth', () => availableWidth);
-      columnStateHelper.__Rewire__('fixedColumnsWidthSelector', () => 150);
-      columnStateHelper.__Rewire__('scrollContentWidthSelector', () => 600);
-      columnStateHelper.__Rewire__('columnsSelector', () => ({
+      columnStateHelper.__Rewire__('columnWidths', () => ({
+        availableScrollWidth: availableWidth - 150,
         fixedColumns: [{ id: 1, width: 150 }],
+        maxScrollX: 600 - availableWidth,
         scrollableColumns: [
           { id: 2, width: 150 },
           { id: 3, width: 150 },
@@ -257,10 +219,7 @@ describe('columnStateHelper', function() {
     });
 
     afterEach(function() {
-      columnStateHelper.__ResetDependency__('availableViewportWidth');
-      columnStateHelper.__ResetDependency__('fixedColumnsWidthSelector');
-      columnStateHelper.__ResetDependency__('scrollContentWidthSelector');
-      columnStateHelper.__ResetDependency__('columnsSelector');
+      columnStateHelper.__ResetDependency__('columnWidths');
     });
 
     it('should initialize column state as expected', function() {

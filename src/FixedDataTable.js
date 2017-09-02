@@ -23,12 +23,12 @@ import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin
 import ReactTouchHandler from 'ReactTouchHandler';
 import ReactWheelHandler from 'ReactWheelHandler';
 import Scrollbar from 'Scrollbar';
-import columnDetailsSelector from 'columnDetails';
+import columnTemplatesSelector from 'columnTemplates';
 import cx from 'cx';
 import debounceCore from 'debounceCore';
 import joinClasses from 'joinClasses';
 import scrollbarsVisible from 'scrollbarsVisible';
-import verticalHeightsSelector from 'verticalHeights';
+import tableHeightsSelector from 'tableHeights';
 
 /**
  * Data grid component with fixed or scrollable header and columns.
@@ -81,12 +81,14 @@ const FixedDataTable = createReactClass({
 
   propTypes: {
 
+    // TODO (jordan) Remove propType of width without losing documentation (moved to tableSize)
     /**
      * Pixel width of table. If all columns do not fit,
      * a horizontal scrollbar will appear.
      */
     width: PropTypes.number.isRequired,
 
+    // TODO (jordan) Remove propType of height without losing documentation (moved to tableSize)
     /**
      * Pixel height of table. If all rows do not fit,
      * a vertical scrollbar will appear.
@@ -100,6 +102,7 @@ const FixedDataTable = createReactClass({
      */
     className: PropTypes.string,
 
+    // TODO (jordan) Remove propType of maxHeight without losing documentation (moved to tableSize)
     /**
      * Maximum pixel height of table. If all rows do not fit,
      * a vertical scrollbar will appear.
@@ -108,6 +111,7 @@ const FixedDataTable = createReactClass({
      */
     maxHeight: PropTypes.number,
 
+    // TODO (jordan) Remove propType of ownerHeight without losing documentation (moved to tableSize)
     /**
      * Pixel height of table's owner, this is used in a managed scrolling
      * situation when you want to slide the table up from below the fold
@@ -123,6 +127,7 @@ const FixedDataTable = createReactClass({
      */
     ownerHeight: PropTypes.number,
 
+    // TODO (jordan) Remove propType of overflowX & overflowY without losing documentation (moved to scrollFlags)
     overflowX: PropTypes.oneOf(['hidden', 'auto']),
     overflowY: PropTypes.oneOf(['hidden', 'auto']),
 
@@ -132,7 +137,7 @@ const FixedDataTable = createReactClass({
      */
     touchScrollEnabled: PropTypes.bool,
 
-    // TODO (jordan) Remove propType of showScrollbarX without losing documentation
+    // TODO (jordan) Remove propType of showScrollbarX & showScrollbarY without losing documentation (moved to scrollFlags)
     /**
      * Hide the scrollbar but still enable scroll functionality
      */
@@ -153,29 +158,34 @@ const FixedDataTable = createReactClass({
      */
     onVerticalScroll: PropTypes.func,
 
+    // TODO (jordan) Remove propType of rowsCount without losing documentation (moved to rowSettings)
     /**
      * Number of rows in the table.
      */
     rowsCount: PropTypes.number.isRequired,
 
+    // TODO (jordan) Remove propType of rowHeight without losing documentation (moved to rowSettings)
     /**
      * Pixel height of rows unless `rowHeightGetter` is specified and returns
      * different value.
      */
     rowHeight: PropTypes.number.isRequired,
 
+    // TODO (jordan) Remove propType of rowHeightGetter without losing documentation (moved to rowSettings)
     /**
      * If specified, `rowHeightGetter(index)` is called for each row and the
      * returned value overrides `rowHeight` for particular row.
      */
     rowHeightGetter: PropTypes.func,
 
+    // TODO (jordan) Remove propType of subRowHeight without losing documentation (moved to rowSettings)
     /**
      * Pixel height of sub-row unless `subRowHeightGetter` is specified and returns
      * different value.  Defaults to 0 and no sub-row being displayed.
      */
     subRowHeight: PropTypes.number,
 
+    // TODO (jordan) Remove propType of subRowHeightGetter without losing documentation (moved to rowSettings)
     /**
      * If specified, `subRowHeightGetter(index)` is called for each row and the
      * returned value overrides `subRowHeight` for particular row.
@@ -191,7 +201,7 @@ const FixedDataTable = createReactClass({
     * ```
     * props: {
     *   rowIndex; number // (the row index)
-    *   height: number // (supplied from the Table or rowHeightGetter)
+    *   height: number // (supplied from subRowHeight or subRowHeightGetter)
     *   width: number // (supplied from the Table)
     * }
     * ```
@@ -219,16 +229,19 @@ const FixedDataTable = createReactClass({
      */
     rowKeyGetter: PropTypes.func,
 
+    // TODO (jordan) Remove propType of groupHeaderHeight without losing documentation (moved to elementHeights)
     /**
      * Pixel height of the column group header.
      */
     groupHeaderHeight: PropTypes.number,
 
+    // TODO (jordan) Remove propType of headerHeight without losing documentation (moved to elementHeights)
     /**
      * Pixel height of header.
      */
     headerHeight: PropTypes.number.isRequired,
 
+    // TODO (jordan) Remove propType of footerHeight without losing documentation (moved to elementHeights)
     /**
      * Pixel height of footer.
      */
@@ -355,10 +368,11 @@ const FixedDataTable = createReactClass({
 
   getDefaultProps() /*object*/ {
     return {
-      footerHeight: 0,
-      groupHeaderHeight: 0,
-      headerHeight: 0,
-      showScrollbarY: true,
+      elementHeights: {
+        footerHeight: 0,
+        groupHeaderHeight: 0,
+        headerHeight: 0,
+      },
       touchScrollEnabled: false,
       stopScrollPropagation: false
     };
@@ -396,11 +410,8 @@ const FixedDataTable = createReactClass({
   },
 
   _shouldHandleWheelX(/*number*/ delta) /*boolean*/ {
-    const {
-      maxScrollX,
-      overflowX,
-      scrollX,
-    } = this.props;
+    const { maxScrollX, scrollFlags, scrollX } = this.props;
+    const { overflowX } = scrollFlags;
 
     if (overflowX === 'hidden') {
       return false;
@@ -418,11 +429,8 @@ const FixedDataTable = createReactClass({
   },
 
   _shouldHandleWheelY(/*number*/ delta) /*boolean*/ {
-    const {
-      maxScrollY,
-      overflowY,
-      scrollY,
-    } = this.props;
+    const { maxScrollY, scrollFlags, scrollY } = this.props;
+    const { overflowY } = scrollFlags;
 
     if (overflowY === 'hidden' || delta === 0) {
       return false;
@@ -440,7 +448,7 @@ const FixedDataTable = createReactClass({
   },
 
   _reportContentHeight() {
-    const { contentHeight } = verticalHeightsSelector(this.props);
+    const { contentHeight } = tableHeightsSelector(this.props);
     const { onContentHeightChange } = this.props;
 
     if (contentHeight !== this._contentHeight && onContentHeightChange) {
@@ -454,16 +462,11 @@ const FixedDataTable = createReactClass({
   },
 
   componentWillReceiveProps(/*object*/ nextProps) {
-    const {
-      ownerHeight,
-      scrollLeft,
-      scrollTop,
-    } = this.props;
 
     // In the case of controlled scrolling, notify.
-    if (ownerHeight !== nextProps.ownerHeight ||
-        scrollTop !== nextProps.scrollTop ||
-        scrollLeft !== nextProps.scrollLeft) {
+    if (this.props.tableSize.ownerHeight !== nextProps.tableSize.ownerHeight ||
+        this.props.scrollTop !== nextProps.scrollTop ||
+        this.props.scrollLeft !== nextProps.scrollLeft) {
       this._didScrollStart();
     }
     this._didScrollStop();
@@ -479,46 +482,41 @@ const FixedDataTable = createReactClass({
       fixedColumns,
       scrollableColumnGroups,
       scrollableColumns,
-    } = columnDetailsSelector(this.props);
+    } = columnTemplatesSelector(this.props);
 
     const {
       bodyHeight,
       bodyOffsetTop,
       componentHeight,
       footOffsetTop,
-      headerOffsetTop,
-      rowsContainerHeight,
+      scrollbarXOffsetTop,
       visibleRowsHeight,
-    } = verticalHeightsSelector(this.props);
+    } = tableHeightsSelector(this.props);
 
     const {
       className,
       columnReorderingData,
       columnResizingData,
-      footerHeight,
-      headerHeight,
+      elementHeights,
       isColumnReordering,
       isColumnResizing,
       maxScrollX,
       maxScrollY,
       onColumnReorderEndCallback,
       onColumnResizeEndCallback,
-      ownerHeight,
       scrollContentHeight,
       scrollX,
       scrollY,
-      useGroupHeader,
-      width,
+      tableSize,
     } = this.props;
 
-    const {
-      scrollsHorizontally,
-      scrollsVertically,
-    } = scrollbarsVisible(this.props);
+    const { ownerHeight, width } = tableSize;
+    const { footerHeight, groupHeaderHeight, headerHeight } = elementHeights;
+    const { scrollEnabledX, scrollEnabledY } = scrollbarsVisible(this.props);
     const onColumnReorder = onColumnReorderEndCallback ? this._onColumnReorder : null;
 
     let groupHeader;
-    if (useGroupHeader) {
+    if (groupHeaderHeight > 0) {
       groupHeader = (
         <FixedDataTableRow
           key="group_header"
@@ -528,7 +526,7 @@ const FixedDataTable = createReactClass({
             cx('public/fixedDataTable/header'),
           )}
           width={width}
-          height={headerOffsetTop}
+          height={groupHeaderHeight}
           index={0}
           zIndex={1}
           offsetTop={0}
@@ -543,9 +541,9 @@ const FixedDataTable = createReactClass({
       );
     }
 
-    let verticalScrollbar;
-    if (scrollsVertically) {
-      verticalScrollbar =
+    let scrollbarY;
+    if (scrollEnabledY) {
+      scrollbarY =
         <Scrollbar
           size={visibleRowsHeight}
           contentSize={scrollContentHeight}
@@ -555,12 +553,12 @@ const FixedDataTable = createReactClass({
         />;
     }
 
-    let horizontalScrollbar;
-    if (scrollsHorizontally) {
-      horizontalScrollbar =
+    let scrollbarX;
+    if (scrollEnabledX) {
+      scrollbarX =
         <HorizontalScrollbar
           contentSize={width + maxScrollX}
-          offset={rowsContainerHeight}
+          offset={scrollbarXOffsetTop}
           onScroll={this._onHorizontalScroll}
           position={scrollX}
           size={width}
@@ -618,7 +616,7 @@ const FixedDataTable = createReactClass({
         height={headerHeight}
         index={-1}
         zIndex={1}
-        offsetTop={headerOffsetTop}
+        offsetTop={groupHeaderHeight}
         scrollLeft={scrollX}
         visible={true}
         fixedColumns={fixedColumns.header}
@@ -678,7 +676,7 @@ const FixedDataTable = createReactClass({
         <div
           className={cx('fixedDataTableLayout/rowsContainer')}
           style={{
-            height: rowsContainerHeight,
+            height: scrollbarXOffsetTop,
             width
           }}>
           {dragKnob}
@@ -689,8 +687,8 @@ const FixedDataTable = createReactClass({
           {topShadow}
           {bottomShadow}
         </div>
-        {verticalScrollbar}
-        {horizontalScrollbar}
+        {scrollbarY}
+        {scrollbarX}
       </div>
     );
   },
@@ -701,7 +699,6 @@ const FixedDataTable = createReactClass({
     return (
       <FixedDataTableBufferedRows
         isScrolling={this._isScrolling}
-        defaultRowHeight={props.rowHeight}
         fixedColumns={fixedCellTemplates}
         height={bodyHeight}
         offsetTop={offsetTop}
@@ -712,15 +709,13 @@ const FixedDataTable = createReactClass({
         onRowMouseLeave={props.onRowMouseLeave}
         rowClassNameGetter={props.rowClassNameGetter}
         rowExpanded={props.rowExpanded}
-        rowHeightGetter={props.rowHeightGetter}
         rowKeyGetter={props.rowKeyGetter}
-        rowsCount={props.rowsCount}
+        rowSettings={props.rowSettings}
         scrollLeft={props.scrollX}
         scrollTop={props.scrollY}
         scrollableColumns={scrollableCellTemplates}
         showLastRowBorder={true}
-        subRowHeightGetter={props.subRowHeightGetter}
-        width={props.width}
+        width={props.tableSize.width}
         rowsToRender={props.rows}
         rowHeights={props.rowHeights}
       />
@@ -805,12 +800,12 @@ const FixedDataTable = createReactClass({
       maxScrollY,
       onHorizontalScroll,
       onVerticalScroll,
-      overflowX,
-      overflowY,
       scrollActions,
+      scrollFlags,
       scrollX,
       scrollY,
     } = this.props;
+    const { overflowX, overflowY } = scrollFlags;
 
     if (!this._isScrolling) {
       this._didScrollStart();

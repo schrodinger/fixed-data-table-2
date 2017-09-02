@@ -11,16 +11,15 @@
  * @noflow
  */
 
-import React from 'React';
-import { bindActionCreators } from 'redux';
-
+import * as ActionTypes from 'ActionTypes';
 import FixedDataTable from 'FixedDataTable';
 import FixedDataTableStore from 'FixedDataTableStore';
+import React from 'React';
+import { bindActionCreators } from 'redux';
+import * as columnActions from 'columnActions';
 import invariant from 'invariant';
 import pick from 'lodash/pick';
-import * as ActionTypes from 'ActionTypes';
 import * as scrollActions from 'scrollActions';
-import * as columnActions from 'columnActions';
 
 export default class FixedDataTableContainer extends React.Component {
   constructor(props) {
@@ -84,6 +83,7 @@ export default class FixedDataTableContainer extends React.Component {
       'columnGroups',
       'columnReorderingData',
       'columnResizingData',
+      'elementHeights',
       'elementTemplates',
       'firstRowIndex',
       'isColumnReordering',
@@ -91,13 +91,13 @@ export default class FixedDataTableContainer extends React.Component {
       'maxScrollX',
       'maxScrollY',
       'rows',
-      'rowHeightGetter',
       'rowHeights',
+      'rowSettings',
       'scrollContentHeight',
+      'scrollFlags',
       'scrollX',
       'scrollY',
-      'subRowHeightGetter',
-      'useGroupHeader',
+      'tableSize',
     ]);
 
     this.setState(boundState);

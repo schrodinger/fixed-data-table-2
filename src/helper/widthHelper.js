@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule FixedDataTableWidthHelper
+ * @providesModule widthHelper
  * @typechecks
  */
 
@@ -16,11 +16,11 @@ import React from 'React';
 import forEach from 'lodash/forEach';
 import reduce from 'lodash/reduce';
 
-function sumPropWidths(columns) {
+export function sumPropWidths(columns) {
   return reduce(columns, (accum, column) => accum + column.props.width, 0);
 }
 
-function getTotalWidth(columns) {
+export function getTotalWidth(columns) {
   return reduce(columns, (accum, column) => accum + column.width, 0);
 }
 
@@ -77,7 +77,7 @@ function distributeFlexWidth(columns, flexWidth, flexGrow) {
  *   width: number,
  * }>}
  */
-function getAllColumns(columnGroups) {
+export function getAllColumns(columnGroups) {
   const allColumns = [];
   forEach(columnGroups, columnGroup => {
     Array.prototype.push.apply(allColumns, columnGroup.columns)
@@ -98,7 +98,7 @@ function getAllColumns(columnGroups) {
  *   width: number,
  * }>}
  */
-function adjustColumnGroupWidths(columnGroups, expectedWidth) {
+export function adjustColumnGroupWidths(columnGroups, expectedWidth) {
   const allColumns = getAllColumns(columnGroups);
   let remainingFlexGrow = getTotalFlexGrow(allColumns);
   if (remainingFlexGrow === 0) {
@@ -125,10 +125,3 @@ function adjustColumnGroupWidths(columnGroups, expectedWidth) {
   });
   return allColumns;
 }
-
-module.exports = {
-  adjustColumnGroupWidths,
-  getAllColumns,
-  getTotalWidth,
-  sumPropWidths,
-};

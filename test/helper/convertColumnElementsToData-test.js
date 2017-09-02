@@ -62,24 +62,19 @@ describe('convertColumnElementsToData', function() {
       columnGroups,
       elementTemplates,
       useGroupHeader,
-    } = convertColumnElementsToData({
-      children: [
-        {
-          props: {
-            children: [column1, column2],
-            header: { id: 'g1' },
-          },
-          type: { __TableColumnGroup__: true },
-        },
-        {
-          props: {
-            children: [column3],
-            header: { id: 'g2' },
-          },
-          type: { __TableColumnGroup__: true },
-        },
-      ],
-    });
+    } = convertColumnElementsToData([{
+      props: {
+        children: [column1, column2],
+        header: { id: 'g1' },
+      },
+      type: { __TableColumnGroup__: true },
+    }, {
+      props: {
+        children: [column3],
+        header: { id: 'g2' },
+      },
+      type: { __TableColumnGroup__: true },
+    }]);
 
     assert.deepEqual(columnGroups, [{
       columns: [{
@@ -112,9 +107,7 @@ describe('convertColumnElementsToData', function() {
       columnGroups,
       elementTemplates,
       useGroupHeader,
-    } = convertColumnElementsToData({
-      children: [column1, column2],
-    });
+    } = convertColumnElementsToData([column1, column2]);
 
     assert.deepEqual(columnGroups, [{
       columns: [{
@@ -160,9 +153,7 @@ describe('convertColumnElementsToData', function() {
       columnGroups,
       elementTemplates,
       useGroupHeader,
-    } = convertColumnElementsToData({
-      children: [testColumn],
-    });
+    } = convertColumnElementsToData([testColumn]);
 
     assert.deepEqual(columnGroups, [{
       columns: [{
@@ -189,9 +180,7 @@ describe('convertColumnElementsToData', function() {
       columnGroups,
       elementTemplates,
       useGroupHeader,
-    } = convertColumnElementsToData({
-      children: [column1, column2],
-    });
+    } = convertColumnElementsToData([column1, column2]);
 
     assert.deepEqual(columnGroups, [{
       columns: [{

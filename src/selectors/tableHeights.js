@@ -6,61 +6,44 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule verticalHeights
+ * @providesModule tableHeights
  */
 import Scrollbar from 'Scrollbar';
-import groupHeaderHeight from 'groupHeaderHeight';
 import roughHeights from 'roughHeights';
 import scrollbarsVisible from 'scrollbarsVisible';
-import { createSelector } from 'reselect';
+import shallowEqualSelector from 'shallowEqualSelector';
 
 /**
+ * Compute the necessary heights for rendering parts of the table
+ *
  * @param {{
- *   columnGroups: {!Array.<{
- *     columns: !Array.{
- *       width: number,
- *     },
- *   }>},
  *   footerHeight: number,
  *   groupHeaderHeight: number,
  *   headerHeight: number,
- *   height: ?number,
- *   maxHeight: ?number,
- *   overflowX: string,
- *   overflowY: string,
- *   ownerHeight: number,
- *   scrollContentHeight: number,
- *   showScrollbarX: boolean,
- *   showScrollbarY: boolean,
- *   useGroupHeader: boolean,
- *   width: number,
- * }} state
+ * }} elementHeights
+ * @param {number|undefined} ownerHeight
+ * @param {number} reservedHeight
+ * @param {number} scrollContentHeight
+ * @param {{
+ *   availableHeight: number,
+ *   scrollEnabledX: boolean,
+ * }} scrollbarsVisible
+ * @param {boolean} useMaxHeight
  * @return {{
  *   bodyHeight: number,
  *   bodyOffsetTop: number,
  *   componentHeight: number,
  *   contentHeight: number,
  *   footOffsetTop: number,
- *   headerOffsetTop: number,
- *   rowsContainerHeight: number,
+ *   scrollbarXOffsetTop: number,
  *   visibleRowsHeight: number,
- * }} The heights for parts of the table
+ * }}
  */
-export default createSelector([
-  state => state.footerHeight,
-  groupHeaderHeight,
-  state => state.headerHeight,
-  roughHeights,
-  state => state.ownerHeight,
-  state => state.scrollContentHeight,
-  scrollbarsVisible,
-], (footerHeight, groupHeaderHeight, headerHeight, roughHeights,
-    ownerHeight, scrollContentHeight, scrollbarsVisible) => {
-  const { reservedHeight, useMaxHeight } = roughHeights;
-  const { availableHeight, scrollsHorizontally } = scrollbarsVisible;
-
+function tableHeights(elementHeights, ownerHeight, reservedHeight,
+    scrollContentHeight, scrollbarsVisible, useMaxHeight) {
+  const { availableHeight, scrollEnabledX } = scrollbarsVisible;
   let reservedWScrollbar = reservedHeight;
-  if (scrollsHorizontally) {
+  if (scrollEnabledX) {
     reservedWScrollbar += Scrollbar.SIZE;
   }
 
@@ -93,8 +76,8 @@ export default createSelector([
   }
 
   // Determine component offsets
-  const headerOffsetTop = groupHeaderHeight;
-  const bodyOffsetTop = headerOffsetTop + headerHeight;
+  const { footerHeight, groupHeaderHeight, headerHeight } = elementHeights;
+  const bodyOffsetTop = groupHeaderHeight + headerHeight;
   const footOffsetTop = bodyOffsetTop + visibleRowsHeight;
   const scrollbarXOffsetTop = footOffsetTop + footerHeight;
 
@@ -104,8 +87,16 @@ export default createSelector([
     componentHeight,
     contentHeight,
     footOffsetTop,
-    headerOffsetTop,
-    rowsContainerHeight: scrollbarXOffsetTop,
+    scrollbarXOffsetTop,
     visibleRowsHeight,
   };
-});
+}
+
+export default shallowEqualSelector([
+  state => state.elementHeights,
+  state => state.tableSize.ownerHeight,
+  state => roughHeights(state).reservedHeight,
+  state => state.scrollContentHeight,
+  scrollbarsVisible,
+  state => state.tableSize.useMaxHeight,
+], tableHeights);
