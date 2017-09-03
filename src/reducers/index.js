@@ -11,11 +11,12 @@
 
 'use strict';
 
-import { computeRenderedRows, scrollTo, scrollToRow } from 'scrollStateHelper';
-import * as ActionTypes from 'ActionTypes'
+import { getScrollAnchor, scrollTo } from 'scrollAnchor';
+import * as ActionTypes from 'ActionTypes';
 import IntegerBufferSet from 'IntegerBufferSet';
 import PrefixIntervalTree from 'PrefixIntervalTree';
 import columnStateHelper from 'columnStateHelper'
+import computeRenderedRows from 'computeRenderedRows';
 import convertColumnElementsToData from 'convertColumnElementsToData';
 import pick from 'lodash/pick';
 import shallowEqual from 'shallowEqual';
@@ -182,43 +183,6 @@ function reducers(state = DEFAULT_STATE, action) {
     default: {
       return state;
     }
-  }
-}
-
-/**
- * Get the anchor for scrolling.
- * This will either be the first row's index and an offset, or the last row's index.
- * We also pass a flag indicating if the anchor has changed from the state
- *
- * @param {!Object} state
- * @param {!Object} newProps
- * @param {!Object} oldProps
- * @return {{
- *   firstIndex: number,
- *   firstOffset: number,
- *   lastIndex: number,
- *   changed: boolean,
- * }}
- * @private
- */
-function getScrollAnchor(state, newProps, oldProps) {
-  if (newProps.scrollToRow !== undefined &&
-      newProps.scrollToRow !== null &&
-      (!oldProps || newProps.scrollToRow !== oldProps.scrollToRow)) {
-    return scrollToRow(state, newProps.scrollToRow);
-  }
-
-  if (newProps.scrollTop !== undefined &&
-      newProps.scrollTop !== null &&
-      (!oldProps || newProps.scrollTop !== oldProps.scrollTop)) {
-    return scrollTo(state, newProps.scrollTop);
-  }
-
-  return {
-    firstIndex: state.firstRowIndex,
-    firstOffset: state.firstRowOffset,
-    lastIndex: undefined,
-    changed: false,
   }
 }
 
