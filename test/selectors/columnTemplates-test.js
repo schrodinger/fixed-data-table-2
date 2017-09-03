@@ -6,7 +6,7 @@ import columnTemplates from 'columnTemplates';
 
 describe('columnTemplates', function() {
   it('should organize props and templates appropriately', function() {
-    const columnGroups = [{
+    const columnGroupProps = [{
       id: 10,
       fixed: true,
     }, {
@@ -14,7 +14,7 @@ describe('columnTemplates', function() {
       fixed: false,
     }];
 
-    const allColumns = [{
+    const columnProps = [{
       id: 1,
       fixed: true,
     },{
@@ -24,6 +24,11 @@ describe('columnTemplates', function() {
       id: 3,
       fixed: false,
     }];
+
+    const columnWidths = {
+      columnGroupProps,
+      columnProps,
+    };
 
     const templates = {
       cell: [{ id: 'c1' }, { id: 'c2' }, { id: 'c3' }],
@@ -37,7 +42,7 @@ describe('columnTemplates', function() {
       fixedColumns,
       scrollableColumnGroups,
       scrollableColumns,
-    } = columnTemplates.resultFunc(allColumns, columnGroups, templates);
+    } = columnTemplates.resultFunc(columnWidths, templates);
 
     assert.deepEqual(fixedColumnGroups, [{
       props: { id: 10, fixed: true },

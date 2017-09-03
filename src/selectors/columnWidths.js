@@ -8,8 +8,10 @@
  *
  * @providesModule columnWidths
  */
-import { adjustColumnGroupWidths, getTotalWidth } from 'widthHelper';
+import { getTotalFlexGrow, getTotalWidth } from 'widthHelper';
 import Scrollbar from 'Scrollbar';
+import forEach from 'lodash/forEach';
+import map from 'lodash/map';
 import partition from 'lodash/partition';
 import scrollbarsVisible from 'scrollbarsVisible';
 import shallowEqualSelector from 'shallowEqualSelector';
@@ -18,39 +20,43 @@ import shallowEqualSelector from 'shallowEqualSelector';
  * @typedef {{
  *   fixed: boolean,
  *   flexGrow: number,
- *   width: number
+ *   width: number,
  * }}
  */
 let columnDefinition;
 
 /**
- * @param {!Array.<{
- *   columns: !Array.<columnDefinition>,
- * }>} columnGroups
+ * @param {!Array.<columnDefinition>} columnGroupProps
+ * @param {!Array.<columnDefinition>} columnProps
  * @param {boolean} scrollEnabledY
  * @param {number} width
  * @return {{
- *   allColumns: !Array.<columnDefinition>,
+ *   columnGroupProps: !Array.<columnDefinition>,
+ *   columnProps: !Array.<columnDefinition>,
  *   availableScrollWidth: number,
  *   fixedColumns: !Array.<columnDefinition>,
  *   scrollableColumns: !Array.<columnDefinition>,
  *   maxScrollX: number,
  * }} The total width of all columns.
  */
-function columnWidths(columnGroups, scrollEnabledY, width) {
+function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
   const scrollbarSpace = scrollEnabledY ? Scrollbar.SIZE + Scrollbar.OFFSET : 0;
   const viewportWidth = width - scrollbarSpace;
 
-  const allColumns = adjustColumnGroupWidths(columnGroups, viewportWidth);
+  const {
+    newColumnGroupProps,
+    newColumnProps,
+  } = flexWidths(columnGroupProps, columnProps, viewportWidth);
   const [
     fixedColumns,
     scrollableColumns,
-  ] = partition(allColumns, column => column.fixed);
+  ] = partition(newColumnProps, column => column.fixed);
 
   const availableScrollWidth = viewportWidth - getTotalWidth(fixedColumns);
-  const maxScrollX = Math.max(0, getTotalWidth(allColumns) - viewportWidth);
+  const maxScrollX = Math.max(0, getTotalWidth(newColumnProps) - viewportWidth);
   return {
-    allColumns,
+    columnGroupProps: newColumnGroupProps,
+    columnProps: newColumnProps,
     availableScrollWidth,
     fixedColumns,
     scrollableColumns,
@@ -58,8 +64,65 @@ function columnWidths(columnGroups, scrollEnabledY, width) {
   };
 }
 
+/**
+ * @param {!Array.<columnDefinition>} columnGroupProps
+ * @param {!Array.<columnDefinition>} columnProps
+ * @param {number} viewportWidth
+ * @return {{
+ *   newColumnGroupProps: !Array.<columnDefinition>,
+ *   newColumnProps: !Array.<columnDefinition>
+ * }}
+ */
+function flexWidths(columnGroupProps, columnProps, viewportWidth) {
+  let remainingFlexGrow = getTotalFlexGrow(columnProps);
+  if (remainingFlexGrow === 0) {
+    return {
+      newColumnGroupProps: columnGroupProps,
+      newColumnProps: columnProps,
+    };
+  }
+
+  const columnsWidth = getTotalWidth(columnProps);
+  let remainingFlexWidth = Math.max(viewportWidth - columnsWidth, 0);
+
+  const newColumnProps = map(columnProps, column => {
+    const { flexGrow } = column;
+    if (!flexGrow) {
+      return column;
+    }
+
+    const flexWidth = Math.floor(
+      flexGrow * remainingFlexWidth / remainingFlexGrow);
+    const newWidth = column.width + flexWidth;
+    remainingFlexGrow -= flexGrow;
+    remainingFlexWidth -= flexWidth;
+
+    return Object.assign({}, column, { width: newWidth });
+  });
+
+  const columnGroupWidths = map(columnGroupProps, () => 0);
+  forEach(newColumnProps, column => {
+    if (column.groupIdx !== undefined) {
+      columnGroupWidths[column.groupIdx] += column.width;
+    }
+  });
+
+  let newColumnGroupProps = map(columnGroupProps, (columnGroup, idx) => {
+    if (columnGroupWidths[idx] === columnGroup.width) {
+      return columnGroup;
+    }
+    return Object.assign({}, columnGroup, { width: columnGroupWidths[idx] });
+  });
+
+  return {
+    newColumnGroupProps,
+    newColumnProps,
+  };
+}
+
 export default shallowEqualSelector([
-  state => state.columnGroups,
+  state => state.columnGroupProps,
+  state => state.columnProps,
   state => scrollbarsVisible(state).scrollEnabledY,
   state => state.tableSize.width,
 ], columnWidths);

@@ -53,15 +53,7 @@ function initialize(state, props, oldProps) {
 };
 
 /**
- * @param {{
- *   columnGroups: {!Array.<{
- *     columns: !Array.{
- *       flexGrow: number,
- *       width: number,
- *     },
- *   }>},
- *   width: number,
- * }} state
+ * @param {!Object} state
  * @param {{
  *   scrollToColumn: number,
  *   width: number,

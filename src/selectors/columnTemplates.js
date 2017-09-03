@@ -33,13 +33,11 @@ let columnDetails;
  * Lists of cell templates & component props for
  * the fixed and scrollable columns and column groups
  *
- * @param {!Array.<!Object>} allColumns
- * @param {!Array.<{
- *   columns: !Array.<{
- *     flexGrow: number,
- *     width: number
+ * @param {{
+ *   columnGroupProps: !Array.<!Object>,
+ *   columnProps: !Array.<!Object>,
  *   }>,
- * }>} columnGroups
+ * }} columnWidths
  * @param {{
  *   cell: !Array.<ReactElement>,
  *   footer: !Array.<ReactElement>,
@@ -53,14 +51,15 @@ let columnDetails;
  *   scrollableColumns: !Array.<columnDetails>,
  * }}
  */
-function columnTemplates(allColumns, columnGroups, elementTemplates) {
+function columnTemplates(columnWidths, elementTemplates) {
+  const { columnGroupProps, columnProps } = columnWidths;
 
   // Ugly transforms to extract data into a row consumable format.
   // TODO (jordan) figure out if this can efficiently be merged with
   // the result of convertColumnElementsToData.
   const fixedColumnGroups = [];
   const scrollableColumnGroups = [];
-  forEach(columnGroups, (columnGroup, index) => {
+  forEach(columnGroupProps, (columnGroup, index) => {
     const groupData = {
       props: columnGroup,
       template: elementTemplates.groupHeader[index],
@@ -82,7 +81,7 @@ function columnTemplates(allColumns, columnGroups, elementTemplates) {
     header: [],
     footer: [],
   };
-  forEach(allColumns, (column, index) => {
+  forEach(columnProps, (column, index) => {
     let columnContainer = scrollableColumns;
     if (column.fixed) {
       columnContainer = fixedColumns;
@@ -111,7 +110,6 @@ function columnTemplates(allColumns, columnGroups, elementTemplates) {
 }
 
 export default shallowEqualSelector([
-  state => columnWidths(state).allColumns,
-  state => state.columnGroups,
+  state => columnWidths(state),
   state => state.elementTemplates,
 ], columnTemplates);

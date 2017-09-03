@@ -61,40 +61,40 @@ function convertColumnElementsToData(childComponents) {
     header: [],
   };
 
+  const columnProps = [];
   const hasGroupHeader = children.length && children[0].type.__TableColumnGroup__;
   if (hasGroupHeader) {
-    const columnGroups = map(children, _extractProps);
+    const columnGroupProps = map(children, _extractProps);
     forEach(children, (columnGroupElement, index) => {
       elementTemplates.groupHeader.push(columnGroupElement.props.header);
 
-      const columns = [];
       React.Children.forEach(columnGroupElement.props.children, (child) => {
-        columns.push(_extractProps(child));
+        const column = _extractProps(child);
+        column.groupIdx = index;
+        columnProps.push(column);
         _extractTemplates(elementTemplates, child);
       });
-      columnGroups[index].columns = columns;
     });
 
     return {
-      columnGroups,
+      columnGroupProps,
+      columnProps,
       elementTemplates,
       useGroupHeader: true,
     };
   }
 
   // Use a default column group
-  const columns = [];
   forEach(children, (child) => {
-    columns.push(_extractProps(child));
+    columnProps.push(_extractProps(child));
     _extractTemplates(elementTemplates, child);
   });
   return {
-    columnGroups: [{
-      columns: columns,
-    }],
+    columnGroupProps: [],
+    columnProps,
     elementTemplates,
     useGroupHeader: false,
   };
 };
 
-module.exports = convertColumnElementsToData;
+export default convertColumnElementsToData;

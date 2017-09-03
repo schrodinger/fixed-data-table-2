@@ -57,41 +57,44 @@ describe('convertColumnElementsToData', function() {
     };
   });
 
-  it('should return appropriate columnGroups and elementTemplates', function() {
+  it('should return appropriate columnGroupProps, columnProps, and elementTemplates', function() {
     const {
-      columnGroups,
+      columnGroupProps,
+      columnProps,
       elementTemplates,
       useGroupHeader,
     } = convertColumnElementsToData([{
       props: {
+        fixed: true,
         children: [column1, column2],
         header: { id: 'g1' },
       },
       type: { __TableColumnGroup__: true },
     }, {
       props: {
+        fixed: false,
         children: [column3],
         header: { id: 'g2' },
       },
       type: { __TableColumnGroup__: true },
     }]);
 
-    assert.deepEqual(columnGroups, [{
-      columns: [{
-        columnKey: 'bob',
-        fixed: true,
-        width: 100,
-      }, {
-        columnKey: 'sue',
-        fixed: false,
-        width: 50,
-      }],
+    assert.deepEqual(columnGroupProps, [{ fixed: true }, { fixed: false }]);
+    assert.deepEqual(columnProps, [{
+      columnKey: 'bob',
+      fixed: true,
+      width: 100,
+      groupIdx: 0,
     }, {
-      columns: [{
-        columnKey: 'bill',
-        fixed: false,
-        width: 200,
-      }]
+      columnKey: 'sue',
+      fixed: false,
+      width: 50,
+      groupIdx: 0,
+    }, {
+      columnKey: 'bill',
+      fixed: false,
+      width: 200,
+      groupIdx: 1,
     }]);
     assert.deepEqual(elementTemplates, {
       cell: [{ id: 'c1' }, { id: 'c2' }, { id: 'c3' }],
@@ -102,23 +105,23 @@ describe('convertColumnElementsToData', function() {
     assert.strictEqual(useGroupHeader, true);
   });
 
-  it('should combine columns into a single group if none exist', function() {
+  it('should not specify a groupIdx if none exists', function() {
     const {
-      columnGroups,
+      columnGroupProps,
+      columnProps,
       elementTemplates,
       useGroupHeader,
     } = convertColumnElementsToData([column1, column2]);
 
-    assert.deepEqual(columnGroups, [{
-      columns: [{
-        columnKey: 'bob',
-        fixed: true,
-        width: 100,
-      },{
-        columnKey: 'sue',
-        fixed: false,
-        width: 50,
-      }],
+    assert.deepEqual(columnGroupProps, []);
+    assert.deepEqual(columnProps, [{
+      columnKey: 'bob',
+      fixed: true,
+      width: 100,
+    },{
+      columnKey: 'sue',
+      fixed: false,
+      width: 50,
     }]);
     assert.deepEqual(elementTemplates, {
       cell: [{ id: 'c1' }, { id: 'c2' }],
@@ -149,26 +152,20 @@ describe('convertColumnElementsToData', function() {
       type: { __TableColumn__: true },
     };
 
-    const {
-      columnGroups,
-      elementTemplates,
-      useGroupHeader,
-    } = convertColumnElementsToData([testColumn]);
+    const { columnProps } = convertColumnElementsToData([testColumn]);
 
-    assert.deepEqual(columnGroups, [{
-      columns: [{
-        align: 'center',
-        allowCellsRecycling: true,
-        cellClassName: 'myClass',
-        columnKey: 'test',
-        flexGrow: 10,
-        fixed: true,
-        isReorderable: true,
-        isResizable: true,
-        maxWidth: 200,
-        minWidth: 50,
-        width: 100,
-      }],
+    assert.deepEqual(columnProps, [{
+      align: 'center',
+      allowCellsRecycling: true,
+      cellClassName: 'myClass',
+      columnKey: 'test',
+      flexGrow: 10,
+      fixed: true,
+      isReorderable: true,
+      isResizable: true,
+      maxWidth: 200,
+      minWidth: 50,
+      width: 100,
     }]);
   });
 
@@ -177,21 +174,18 @@ describe('convertColumnElementsToData', function() {
     delete column1.props.footer;
 
     const {
-      columnGroups,
+      columnProps,
       elementTemplates,
-      useGroupHeader,
     } = convertColumnElementsToData([column1, column2]);
 
-    assert.deepEqual(columnGroups, [{
-      columns: [{
-        columnKey: 'bob',
-        fixed: true,
-        width: 100,
-      }, {
-        columnKey: 'sue',
-        fixed: false,
-        width: 50,
-      }],
+    assert.deepEqual(columnProps, [{
+      columnKey: 'bob',
+      fixed: true,
+      width: 100,
+    }, {
+      columnKey: 'sue',
+      fixed: false,
+      width: 50,
     }]);
 
     assert.deepEqual(elementTemplates, {

@@ -8,7 +8,7 @@
  *
  * @providesModule roughHeights
  */
-import { getAllColumns, getTotalWidth } from 'widthHelper';
+import { getTotalWidth } from 'widthHelper';
 import Scrollbar from 'Scrollbar';
 import clamp from 'clamp';
 import shallowEqualSelector from 'shallowEqualSelector';
@@ -44,10 +44,8 @@ export const ScrollbarState = {
  * only if the vertical scrollbar is shown.
  *
  * @param {!Array.<{
- *   columns: !Array.{
- *     width: number,
- *   },
- * }>} columnGroups
+ *   width: number,
+ * }>} columnProps
  * @param {{
  *   footerHeight: number,
  *   groupHeaderHeight: number,
@@ -76,7 +74,7 @@ export const ScrollbarState = {
  *   scrollStateX: ScrollbarState,
  * }}
  */
-function roughHeights(columnGroups, elementHeights, rowSettings,
+function roughHeights(columnProps, elementHeights, rowSettings,
     scrollFlags, tableSize) {
   const { footerHeight, headerHeight, groupHeaderHeight } = elementHeights;
   const reservedHeight = footerHeight + headerHeight +
@@ -86,7 +84,7 @@ function roughHeights(columnGroups, elementHeights, rowSettings,
   const maxComponentHeight = Math.round(useMaxHeight ? maxHeight : height);
   const roughAvailableHeight = maxComponentHeight - reservedHeight;
 
-  const scrollStateX = getScrollStateX(columnGroups, scrollFlags, width);
+  const scrollStateX = getScrollStateX(columnProps, scrollFlags, width);
   let minAvailableHeight = roughAvailableHeight;
   let maxAvailableHeight = roughAvailableHeight;
   switch (scrollStateX) {
@@ -112,10 +110,8 @@ function roughHeights(columnGroups, elementHeights, rowSettings,
 
 /**
  * @param {!Array.<{
- *   columns: !Array.{
- *     width: number,
- *   },
- * }>} columnGroups
+ *   width: number,
+ * }>} columnProps
  * @param {{
  *   overflowX: string,
  *   showScrollbarX: boolean,
@@ -123,11 +119,9 @@ function roughHeights(columnGroups, elementHeights, rowSettings,
  * @param {number} width
  * @return {ScrollbarState}
  */
-function getScrollStateX(columnGroups, scrollFlags, width) {
-  const allColumns = getAllColumns(columnGroups);
-  const minColWidth = getTotalWidth(allColumns);
-
+function getScrollStateX(columnProps, scrollFlags, width) {
   const { overflowX, showScrollbarX } = scrollFlags;
+  const minColWidth = getTotalWidth(columnProps);
   if (overflowX === 'hidden' || showScrollbarX === false) {
     return ScrollbarState.HIDDEN;
   } else if (minColWidth > width) {
@@ -167,7 +161,7 @@ function getBufferRowCount(maxAvailableHeight, rowSettings) {
 }
 
 export default shallowEqualSelector([
-  state => state.columnGroups,
+  state => state.columnProps,
   state => state.elementHeights,
   state => state.rowSettings,
   state => state.scrollFlags,

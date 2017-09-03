@@ -80,7 +80,8 @@ export default class FixedDataTableContainer extends React.Component {
   update() {
     const state = this.reduxStore.getState();
     const boundState = pick(state, [
-      'columnGroups',
+      'columnGroupProps',
+      'columnProps',
       'columnReorderingData',
       'columnResizingData',
       'elementHeights',

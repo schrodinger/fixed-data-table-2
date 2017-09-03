@@ -24,7 +24,8 @@ import shallowEqual from 'shallowEqual';
  * Input state set from props
  */
 const DEFAULT_INPUT_STATE = {
-  columnGroups: [],
+  columnProps: [],
+  columnGroupProps: [],
   elementTemplates: {
     cell: [],
     footer: [],
@@ -250,11 +251,15 @@ function initializeRowHeights(state) {
  * @private
  */
 function setStateFromProps(state, props) {
-  const { columnGroups, elementTemplates, useGroupHeader } =
-    convertColumnElementsToData(props.children);
+  const {
+    columnGroupProps,
+    columnProps,
+    elementTemplates,
+    useGroupHeader,
+  } = convertColumnElementsToData(props.children);
 
   const newState = Object.assign({}, state,
-    { columnGroups, elementTemplates });
+    { columnGroupProps, columnProps, elementTemplates });
 
   Object.assign(newState.elementHeights, pick(props,
     ['footerHeight', 'groupHeaderHeight', 'headerHeight']));

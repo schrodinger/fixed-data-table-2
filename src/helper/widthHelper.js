@@ -12,8 +12,6 @@
 
 'use strict';
 
-import React from 'React';
-import forEach from 'lodash/forEach';
 import reduce from 'lodash/reduce';
 
 export function sumPropWidths(columns) {
@@ -24,104 +22,6 @@ export function getTotalWidth(columns) {
   return reduce(columns, (accum, column) => accum + column.width, 0);
 }
 
-function getTotalFlexGrow(columns) {
+export function getTotalFlexGrow(columns) {
   return reduce(columns, (accum, column) => accum + (column.flexGrow || 0), 0);
-}
-
-function distributeFlexWidth(columns, flexWidth, flexGrow) {
-  if (flexWidth <= 0) {
-    return {
-      columns: columns,
-      width: getTotalWidth(columns),
-    };
-  }
-
-  let remainingFlexWidth = flexWidth;
-  let remainingFlexGrow = flexGrow;
-
-  const columnWidths = [];
-  let totalWidth = 0;
-  forEach(columns, column => {
-    if (!column.flexGrow) {
-      totalWidth += column.width;
-      columnWidths.push(column.width);
-      return;
-    }
-
-    const columnFlexWidth = Math.floor(
-      column.flexGrow / remainingFlexGrow * remainingFlexWidth);
-    const newColumnWidth = Math.floor(column.width + columnFlexWidth);
-    totalWidth += newColumnWidth;
-
-    remainingFlexGrow -= column.flexGrow;
-    remainingFlexWidth -= columnFlexWidth;
-
-    columnWidths.push(newColumnWidth);
-  });
-
-  return {
-    columnWidths,
-    width: totalWidth,
-  };
-}
-
-/**
- * @param  {!Array.<{
- *   columns: !Array.{
- *     flexGrow: number,
- *     width: number,
- *   },
- * }>} columnGroups
- * @return {!Array.<{
- *   flexGrow: number,
- *   width: number,
- * }>}
- */
-export function getAllColumns(columnGroups) {
-  const allColumns = [];
-  forEach(columnGroups, columnGroup => {
-    Array.prototype.push.apply(allColumns, columnGroup.columns)
-  });
-  return allColumns;
-}
-
-/**
- * @param  {!Array.<{
- *   columns: !Array.{
- *     flexGrow: number,
- *     width: number,
- *   },
- * }>} columnGroups
- * @param  {number} expectedWidth
- * @return {!Array.<{
- *   flexGrow: number,
- *   width: number,
- * }>}
- */
-export function adjustColumnGroupWidths(columnGroups, expectedWidth) {
-  const allColumns = getAllColumns(columnGroups);
-  let remainingFlexGrow = getTotalFlexGrow(allColumns);
-  if (remainingFlexGrow === 0) {
-    return allColumns;
-  }
-
-  var columnsWidth = getTotalWidth(allColumns);
-  var remainingFlexWidth = Math.max(expectedWidth - columnsWidth, 0);
-  forEach(columnGroups, columnGroup => {
-    const currentColumns = columnGroup.columns;
-    const columnGroupFlexGrow = getTotalFlexGrow(currentColumns);
-    const columnGroupFlexWidth = Math.floor(
-      columnGroupFlexGrow / remainingFlexGrow * remainingFlexWidth);
-
-    var newColumnSettings = distributeFlexWidth(
-      currentColumns, columnGroupFlexWidth, columnGroupFlexGrow);
-    remainingFlexGrow -= columnGroupFlexGrow;
-    remainingFlexWidth -= columnGroupFlexWidth;
-
-    columnGroup.width = newColumnSettings.width;
-    forEach(newColumnSettings.columnWidths, (newWidth, index) => {
-      currentColumns[index].width = newWidth;
-    });
-  });
-  return allColumns;
 }
