@@ -134,7 +134,7 @@ function calculateRenderedRowRange(state, scrollAnchor) {
   }
 
   // Loop to walk the leading buffer
-  const firstViewportIdx = Math.min(startIdx, endIdx);
+  let firstViewportIdx = Math.min(startIdx, endIdx);
   const firstBufferIdx = Math.max(firstViewportIdx - bufferRowCount, 0);
   for (rowIdx = firstBufferIdx; rowIdx < firstViewportIdx; rowIdx++) {
     updateRowHeight(state, rowIdx);
@@ -152,6 +152,14 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     // Calculate offset needed to position last row at bottom of viewport
     // This should be negative and represent how far the first row needs to be offscreen
     firstOffset = Math.min(availableHeight - totalHeight, 0);
+
+    // Handle a case where the offset puts the first row fully offscreen
+    // This can happen if availableHeight & maxAvailableHeight are different
+    const { storedHeights } = state;
+    if (-1 * firstOffset >= storedHeights[firstViewportIdx]) {
+      firstViewportIdx += 1;
+      firstOffset += storedHeights[firstViewportIdx];
+    }
   }
 
   state.firstRowIndex = firstViewportIdx;
