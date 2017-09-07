@@ -54,9 +54,8 @@ export default function computeRenderedRows(state, scrollAnchor) {
   }
 
   computeRenderedRowOffsets(newState, rowRange);
-  if (rowsCount === 0) {
-    scrollY = 0;
-  } else {
+  let scrollY = 0;
+  if (rowsCount > 0) {
     scrollY = newState.rowHeights[rowRange.firstViewportIdx] - newState.firstRowOffset;
   }
   scrollY = Math.min(scrollY, maxScrollY);
