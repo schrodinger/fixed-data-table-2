@@ -173,7 +173,8 @@ function calculateRenderedRowRange(state, scrollAnchor) {
 }
 
 /**
- * Walk the rows to render and compute the
+ * Walk the rows to render and compute the height offsets and
+ * positions in the row buffer.
  *
  * NOTE (jordan) This alters state so it shouldn't be called
  * without state having been cloned first.

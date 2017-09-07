@@ -101,8 +101,8 @@ var FixedDataTableBufferedRows = createReactClass({
       const currentSubRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
       const rowOffsetTop = baseOffsetTop + props.rowHeights[rowIndex];
       const rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
-      const hasBottomBorder =
-        rowIndex === props.rowSettings.rowsCount - 1 && props.showLastRowBorder;
+      const hasBottomBorder = (rowIndex === props.rowSettings.rowsCount - 1) &&
+        props.showLastRowBorder;
 
       this._staticRowArray[i] =
         <FixedDataTableRow

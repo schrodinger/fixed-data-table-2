@@ -81,7 +81,7 @@ describe('scrollbarsVisible', function() {
       roughHeights = {
         minAvailableHeight: 785,
         maxAvailableHeight: 800,
-        scrollStateX: ScrollbarState.IF_SCROLL_Y,
+        scrollStateX: ScrollbarState.JOINT_SCROLLBARS,
       };
 
       scrollFlags = {

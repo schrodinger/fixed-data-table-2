@@ -90,7 +90,7 @@ describe('roughHeights', function() {
         minAvailableHeight: 698,
         maxAvailableHeight: 713,
         reservedHeight: 87,
-        scrollStateX: ScrollbarState.IF_SCROLL_Y,
+        scrollStateX: ScrollbarState.JOINT_SCROLLBARS,
       });
     });
 
@@ -110,7 +110,7 @@ describe('roughHeights', function() {
         minAvailableHeight: 298,
         maxAvailableHeight: 313,
         reservedHeight: 87,
-        scrollStateX: ScrollbarState.IF_SCROLL_Y,
+        scrollStateX: ScrollbarState.JOINT_SCROLLBARS,
       });
     });
 
@@ -126,7 +126,7 @@ describe('roughHeights', function() {
         minAvailableHeight: 0,
         maxAvailableHeight: 0,
         reservedHeight: 87,
-        scrollStateX: ScrollbarState.IF_SCROLL_Y,
+        scrollStateX: ScrollbarState.JOINT_SCROLLBARS,
       });
     });
   });
@@ -155,7 +155,7 @@ describe('roughHeights', function() {
       const result = roughHeights.resultFunc(
         columnProps, elementHeights, rowSettings, scrollFlags, tableSize);
 
-      assert.strictEqual(result.scrollStateX, ScrollbarState.IF_SCROLL_Y);
+      assert.strictEqual(result.scrollStateX, ScrollbarState.JOINT_SCROLLBARS);
     });
 
     it('should show not show scrollbar if content width is less than width', function() {

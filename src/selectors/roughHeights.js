@@ -19,7 +19,7 @@ const MAX_BUFFER_ROWS = 6;
 
 export const ScrollbarState = {
   HIDDEN: 'hidden',
-  IF_SCROLL_Y: 'IF_SCROLL_Y',
+  JOINT_SCROLLBARS: 'JOINT_SCROLLBARS',
   VISIBLE: 'visible',
 };
 
@@ -40,7 +40,7 @@ export const ScrollbarState = {
  *
  * scrollStateX is the state of the horizontal scrollbar.
  * HIDDEN & VISIBLE are self explanatory, but
- * IF_SCROLL_Y mean the horizontal scroll will be shown if and
+ * JOINT_SCROLLBARS mean the horizontal scroll will be shown if and
  * only if the vertical scrollbar is shown.
  *
  * @param {!Array.<{
@@ -85,6 +85,14 @@ function roughHeights(columnProps, elementHeights, rowSettings,
   const roughAvailableHeight = maxComponentHeight - reservedHeight;
 
   const scrollStateX = getScrollStateX(columnProps, scrollFlags, width);
+
+  /*
+   * Early estimates of how much height we have to show rows.
+   * We won't know which one is real until we know about horizontal scrollbar which
+   * requires knowing about vertical scrollbar as well and that
+   * requires scrollContentHeight which
+   * requires us to have handled scrollTo / scrollToRow...
+   */
   let minAvailableHeight = roughAvailableHeight;
   let maxAvailableHeight = roughAvailableHeight;
   switch (scrollStateX) {
@@ -93,7 +101,7 @@ function roughHeights(columnProps, elementHeights, rowSettings,
       maxAvailableHeight -= Scrollbar.SIZE;
       break;
     }
-    case ScrollbarState.IF_SCROLL_Y: {
+    case ScrollbarState.JOINT_SCROLLBARS: {
       minAvailableHeight -= Scrollbar.SIZE;
       break;
     }
@@ -130,7 +138,7 @@ function getScrollStateX(columnProps, scrollFlags, width) {
 
   const scrollbarSpace = Scrollbar.SIZE + Scrollbar.OFFSET;
   if (minColWidth > width - scrollbarSpace) {
-    return ScrollbarState.IF_SCROLL_Y;
+    return ScrollbarState.JOINT_SCROLLBARS;
   }
   return ScrollbarState.HIDDEN;
 }

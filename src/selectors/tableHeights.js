@@ -42,9 +42,9 @@ import shallowEqualSelector from 'shallowEqualSelector';
 function tableHeights(elementHeights, ownerHeight, reservedHeight,
     scrollContentHeight, scrollbarsVisible, useMaxHeight) {
   const { availableHeight, scrollEnabledX } = scrollbarsVisible;
-  let reservedWScrollbar = reservedHeight;
+  let reservedWithScrollbar = reservedHeight;
   if (scrollEnabledX) {
-    reservedWScrollbar += Scrollbar.SIZE;
+    reservedWithScrollbar += Scrollbar.SIZE;
   }
 
   // If less content than space for rows (bodyHeight), then
@@ -54,13 +54,13 @@ function tableHeights(elementHeights, ownerHeight, reservedHeight,
   // If using max height, component should only be sized to content.
   // Otherwise use all available height.
   const rowContainerHeight = useMaxHeight ? bodyHeight : availableHeight;
-  const componentHeight = rowContainerHeight + reservedWScrollbar;
+  const componentHeight = rowContainerHeight + reservedWithScrollbar;
 
   // If we have an owner height and it's less than the component height,
   // adjust visible height so we show footer and scrollbar position at the bottom of owner.
   let visibleRowsHeight = rowContainerHeight;
   if (ownerHeight < componentHeight) {
-    visibleRowsHeight = ownerHeight - reservedWScrollbar;
+    visibleRowsHeight = ownerHeight - reservedWithScrollbar;
   }
 
   // If using max height, virtual row container is scrollContentHeight, otherwise
@@ -70,7 +70,7 @@ function tableHeights(elementHeights, ownerHeight, reservedHeight,
 
   // contentHeight is the virtual rows height and reserved height,
   // or ownerHeight if that's larger
-  let contentHeight = virtualRowContainerHeight + reservedWScrollbar;
+  let contentHeight = virtualRowContainerHeight + reservedWithScrollbar;
   if (ownerHeight) {
     contentHeight = Math.max(ownerHeight, contentHeight);
   }

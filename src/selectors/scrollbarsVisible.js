@@ -47,7 +47,7 @@ function scrollbarsVisible(roughHeights, scrollContentHeight, scrollFlags) {
   }
 
   // Handle case where vertical scrollbar makes horizontal scrollbar necessary
-  if (scrollEnabledY && scrollStateX === ScrollbarState.IF_SCROLL_Y) {
+  if (scrollEnabledY && scrollStateX === ScrollbarState.JOINT_SCROLLBARS) {
     scrollEnabledX = true;
   }
 
