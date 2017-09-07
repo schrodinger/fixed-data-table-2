@@ -14,7 +14,7 @@ if (!fs.existsSync(internalPath)) {
 
 var providesModuleRegex = /@providesModule ([^\s*]+)/;
 var moduleRequireRegex = /=\s+require\((?:'|")([\w\.\/]+)(?:'|")\);/gm;
-var excludePathRegex = /^(react|lodash|redux)($|\/)/;
+var excludePathRegex = /^(react|lodash|redux|reselect)($|\/)/;
 var findDEVRegex = /__DEV__/g;
 
 function replaceRequirePath(match, modulePath) {
