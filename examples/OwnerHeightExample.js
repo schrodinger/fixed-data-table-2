@@ -34,12 +34,12 @@ class OwnerExample extends React.Component {
 
   onScroll() {
     this.setState({
-      scrollY: window.scrollY,
-    })
+      pageYOffset: window.pageYOffset,
+    });
   }
 
   render() {
-    var {dataList} = this.state;
+    var { dataList, pageYOffset } = this.state;
     return (
       <Table
         rowHeight={50}
@@ -48,7 +48,7 @@ class OwnerExample extends React.Component {
         width={400}
         height={600}
         footerHeight={30}
-        ownerHeight={this.props.height + 60 + scrollY}>
+        ownerHeight={this.props.height + 60 + pageYOffset}>
         <Column
           columnKey="date"
           header={<Cell>DOB</Cell>}
