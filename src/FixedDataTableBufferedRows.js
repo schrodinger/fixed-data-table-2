@@ -23,9 +23,6 @@ var FixedDataTableBufferedRows = createReactClass({
 
   propTypes: {
     isScrolling: PropTypes.bool,
-    defaultRowHeight: PropTypes.number.isRequired,
-    firstRowIndex: PropTypes.number.isRequired,
-    firstRowOffset: PropTypes.number.isRequired,
     fixedColumns: PropTypes.array.isRequired,
     height: PropTypes.number.isRequired,
     offsetTop: PropTypes.number.isRequired,
@@ -39,15 +36,18 @@ var FixedDataTableBufferedRows = createReactClass({
       PropTypes.element,
       PropTypes.func,
     ]),
-    rowHeightGetter: PropTypes.func,
     rowHeights: PropTypes.object.isRequired,
     rowKeyGetter: PropTypes.func,
-    rowsCount: PropTypes.number.isRequired,
+    rowSettings: PropTypes.shape({
+      rowHeightGetter: PropTypes.func,
+      rowsCount: PropTypes.number.isRequired,
+      subRowHeightGetter: PropTypes.func,
+    }),
     rowsToRender: PropTypes.array.isRequired,
     scrollLeft: PropTypes.number.isRequired,
+    scrollTop: PropTypes.number.isRequired,
     scrollableColumns: PropTypes.array.isRequired,
     showLastRowBorder: PropTypes.bool,
-    subRowHeightGetter: PropTypes.func,
     width: PropTypes.number.isRequired,
   },
 
@@ -75,7 +75,7 @@ var FixedDataTableBufferedRows = createReactClass({
     var rowsToRender = this.props.rowsToRender || [];
 
     this._staticRowArray.length = rowsToRender.length;
-    var baseOffsetTop = props.firstRowOffset - props.rowHeights[props.firstRowIndex] + props.offsetTop;
+    var baseOffsetTop = props.offsetTop - props.scrollTop;
 
     for (let i = 0; i < rowsToRender.length; ++i) {
       const rowIndex = rowsToRender[i];
@@ -97,12 +97,12 @@ var FixedDataTableBufferedRows = createReactClass({
         continue;
       }
 
-      const currentRowHeight = this.props.rowHeightGetter(rowIndex);
-      const currentSubRowHeight = this.props.subRowHeightGetter(rowIndex);
+      const currentRowHeight = this.props.rowSettings.rowHeightGetter(rowIndex);
+      const currentSubRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
       const rowOffsetTop = baseOffsetTop + props.rowHeights[rowIndex];
       const rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
-      const hasBottomBorder =
-        rowIndex === props.rowsCount - 1 && props.showLastRowBorder;
+      const hasBottomBorder = (rowIndex === props.rowSettings.rowsCount - 1) &&
+        props.showLastRowBorder;
 
       this._staticRowArray[i] =
         <FixedDataTableRow

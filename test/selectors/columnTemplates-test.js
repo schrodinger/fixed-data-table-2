@@ -2,11 +2,11 @@
  * Copyright Schrodinger, LLC
  */
 import { assert } from 'chai';
-import columnDetails from 'columnDetails';
+import columnTemplates from 'columnTemplates';
 
-describe('columnDetails', function() {
+describe('columnTemplates', function() {
   it('should organize props and templates appropriately', function() {
-    const columnGroups = [{
+    const columnGroupProps = [{
       id: 10,
       fixed: true,
     }, {
@@ -14,7 +14,7 @@ describe('columnDetails', function() {
       fixed: false,
     }];
 
-    const allColumns = [{
+    const columnProps = [{
       id: 1,
       fixed: true,
     },{
@@ -24,6 +24,11 @@ describe('columnDetails', function() {
       id: 3,
       fixed: false,
     }];
+
+    const columnWidths = {
+      columnGroupProps,
+      columnProps,
+    };
 
     const templates = {
       cell: [{ id: 'c1' }, { id: 'c2' }, { id: 'c3' }],
@@ -37,7 +42,7 @@ describe('columnDetails', function() {
       fixedColumns,
       scrollableColumnGroups,
       scrollableColumns,
-    } = columnDetails.resultFunc(columnGroups, { allColumns }, templates);
+    } = columnTemplates.resultFunc(columnWidths, templates);
 
     assert.deepEqual(fixedColumnGroups, [{
       props: { id: 10, fixed: true },

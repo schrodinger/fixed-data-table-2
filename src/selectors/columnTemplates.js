@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule columnDetails
+ * @providesModule columnTemplates
  */
-import columnsSelector from 'columns';
-import { createSelector } from 'reselect';
+import columnWidths from 'columnWidths';
 import forEach from 'lodash/forEach';
+import shallowEqualSelector from 'shallowEqualSelector';
 
 /**
  * @typedef {{
@@ -18,7 +18,7 @@ import forEach from 'lodash/forEach';
  *   template: ReactElement,
  * }}
  */
-let cellTemplate;
+let cellDetails;
 
 /**
  * @typedef {{
@@ -27,43 +27,39 @@ let cellTemplate;
  *   header: !Array.<cellDetails>,
  * }}
  */
-let columnTemplates;
+let columnDetails;
 
 /**
+ * Lists of cell templates & component props for
+ * the fixed and scrollable columns and column groups
+ *
  * @param {{
- *   columnGroups: !Array.<{
- *     columns: !Array.<{
- *       flexGrow: number,
- *       width: number
- *     }>,
+ *   columnGroupProps: !Array.<!Object>,
+ *   columnProps: !Array.<!Object>,
  *   }>,
- *   elementTemplates: {
- *     cell: !Array.<ReactElement>,
- *     footer: !Array.<ReactElement>,
- *     groupHeader !Array.<ReactElement>,
- *     header !Array.<ReactElement>,
- *   },
- *   width: number,
- * }} state
+ * }} columnWidths
+ * @param {{
+ *   cell: !Array.<ReactElement>,
+ *   footer: !Array.<ReactElement>,
+ *   groupHeader !Array.<ReactElement>,
+ *   header !Array.<ReactElement>,
+ * }} elementTemplates
  * @return {{
- *   fixedColumnGroups: !Array.<cellTemplate>,
- *   scrollableColumnGroups: !Array.<cellTemplate>,
- *   fixedColumns: !Array.<columnTemplates>,
- *   scrollableColumns: !Array.<columnTemplates>,
- * }} Lists of details for the fixed and scrollable columns and column groups
+ *   fixedColumnGroups: !Array.<cellDetails>,
+ *   scrollableColumnGroups: !Array.<cellDetails>,
+ *   fixedColumns: !Array.<columnDetails>,
+ *   scrollableColumns: !Array.<columnDetails>,
+ * }}
  */
-export default createSelector([
-  state => state.columnGroups,
-  columnsSelector,
-  state => state.elementTemplates,
-], (columnGroups, columns, elementTemplates) => {
-  const { allColumns } = columns;
+function columnTemplates(columnWidths, elementTemplates) {
+  const { columnGroupProps, columnProps } = columnWidths;
 
   // Ugly transforms to extract data into a row consumable format.
-  // TODO (jordan) figure out if this can efficiently be merged with the result of convertColumnElementsToData.
+  // TODO (jordan) figure out if this can efficiently be merged with
+  // the result of convertColumnElementsToData.
   const fixedColumnGroups = [];
   const scrollableColumnGroups = [];
-  forEach(columnGroups, (columnGroup, index) => {
+  forEach(columnGroupProps, (columnGroup, index) => {
     const groupData = {
       props: columnGroup,
       template: elementTemplates.groupHeader[index],
@@ -85,7 +81,7 @@ export default createSelector([
     header: [],
     footer: [],
   };
-  forEach(allColumns, (column, index) => {
+  forEach(columnProps, (column, index) => {
     let columnContainer = scrollableColumns;
     if (column.fixed) {
       columnContainer = fixedColumns;
@@ -111,4 +107,9 @@ export default createSelector([
     scrollableColumnGroups,
     scrollableColumns,
   };
-});
+}
+
+export default shallowEqualSelector([
+  state => columnWidths(state),
+  state => state.elementTemplates,
+], columnTemplates);

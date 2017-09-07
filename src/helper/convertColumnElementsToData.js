@@ -42,9 +42,9 @@ function _extractTemplates(elementTemplates, columnElement) {
 /**
  * Converts React column / column group elements into props and cell rendering templates
  */
-function convertColumnElementsToData(props) {
+function convertColumnElementsToData(childComponents) {
   const children = [];
-  React.Children.forEach(props.children, (child, index) => {
+  React.Children.forEach(childComponents, (child, index) => {
     if (child == null) {
       return;
     }
@@ -61,40 +61,40 @@ function convertColumnElementsToData(props) {
     header: [],
   };
 
+  const columnProps = [];
   const hasGroupHeader = children.length && children[0].type.__TableColumnGroup__;
   if (hasGroupHeader) {
-    const columnGroups = map(children, _extractProps);
+    const columnGroupProps = map(children, _extractProps);
     forEach(children, (columnGroupElement, index) => {
       elementTemplates.groupHeader.push(columnGroupElement.props.header);
 
-      const columns = [];
       React.Children.forEach(columnGroupElement.props.children, (child) => {
-        columns.push(_extractProps(child));
+        const column = _extractProps(child);
+        column.groupIdx = index;
+        columnProps.push(column);
         _extractTemplates(elementTemplates, child);
       });
-      columnGroups[index].columns = columns;
     });
 
     return {
-      columnGroups,
-      elementTemplates: elementTemplates,
+      columnGroupProps,
+      columnProps,
+      elementTemplates,
       useGroupHeader: true,
     };
   }
 
   // Use a default column group
-  const columns = [];
   forEach(children, (child) => {
-    columns.push(_extractProps(child));
+    columnProps.push(_extractProps(child));
     _extractTemplates(elementTemplates, child);
   });
   return {
-    columnGroups: [{
-      columns: columns,
-    }],
-    elementTemplates: elementTemplates,
+    columnGroupProps: [],
+    columnProps,
+    elementTemplates,
     useGroupHeader: false,
   };
 };
 
-module.exports = convertColumnElementsToData;
+export default convertColumnElementsToData;

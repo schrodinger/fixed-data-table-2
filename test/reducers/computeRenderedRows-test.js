@@ -4,19 +4,27 @@
 import IntegerBufferSet from 'IntegerBufferSet';
 import PrefixIntervalTree from 'PrefixIntervalTree';
 import { assert } from 'chai';
-import scrollStateHelper from 'scrollStateHelper';
+import computeRenderedRows from 'computeRenderedRows';
 import sinon from 'sinon';
 
-describe('scrollStateHelper', function() {
+describe('computeRenderedRows', function() {
   beforeEach(function() {
-    scrollStateHelper.__Rewire__('verticalHeightsSelector', () => ({
+    computeRenderedRows.__Rewire__('roughHeightsSelector', () => ({
+      bufferRowCount: 2,
+      maxAvailableHeight: 600,
+    }));
+    computeRenderedRows.__Rewire__('scrollbarsVisibleSelector', () => ({
       availableHeight: 600,
+    }));
+    computeRenderedRows.__Rewire__('tableHeightsSelector', () => ({
       bodyHeight: 600,
     }));
   });
 
   afterEach(function() {
-    scrollStateHelper.__ResetDependency__('verticalHeightsSelector');
+    computeRenderedRows.__ResetDependency__('roughHeightsSelector');
+    computeRenderedRows.__ResetDependency__('scrollbarsVisibleSelector');
+    computeRenderedRows.__ResetDependency__('tableHeightsSelector');
   });
 
   describe('computeRenderedRows', function() {
@@ -24,7 +32,6 @@ describe('scrollStateHelper', function() {
     let oldState;
     beforeEach(function() {
       sandbox = sinon.sandbox.create();
-      scrollStateHelper.__Rewire__('bufferRowsCountSelector', () => 2);
 
       const initialStoredHeights = {};
       for (let rowIdx = 0; rowIdx < 80; rowIdx++) {
@@ -33,18 +40,19 @@ describe('scrollStateHelper', function() {
       oldState = {
         bufferSet: new IntegerBufferSet(),
         placeholder: 'temp',
-        rowsCount: 80,
-        rowHeightGetter: () => 125,
         rowOffsets: PrefixIntervalTree.uniform(80, 125),
+        rowSettings: {
+          rowsCount: 80,
+          rowHeightGetter: () => 125,
+          subRowHeightGetter: () => 0,
+        },
         storedHeights: initialStoredHeights,
         scrollContentHeight: 10000,
-        subRowHeightGetter: () => 0,
       };
     });
 
     afterEach(function() {
       sandbox.restore();
-      scrollStateHelper.__ResetDependency__('bufferRowsCountSelector');
     });
 
     it('should update bufferSet & row heights for buffered rows', function() {
@@ -54,7 +62,7 @@ describe('scrollStateHelper', function() {
         lastIndex: undefined,
       };
 
-      const newState = scrollStateHelper.computeRenderedRows(oldState, scrollAnchor);
+      const newState = computeRenderedRows(oldState, scrollAnchor);
 
       const expectedRowHeights = {};
       const expectedRows = [];
@@ -90,7 +98,7 @@ describe('scrollStateHelper', function() {
         lastIndex: 30,
       };
 
-      const newState = scrollStateHelper.computeRenderedRows(oldState, scrollAnchor);
+      const newState = computeRenderedRows(oldState, scrollAnchor);
 
       const expectedRowHeights = {};
       const expectedRows = [];
@@ -125,9 +133,9 @@ describe('scrollStateHelper', function() {
         firstOffset: -25,
         lastIndex: undefined,
       };
-      oldState.rowsCount = 0;
+      oldState.rowSettings.rowsCount = 0;
 
-      const newState = scrollStateHelper.computeRenderedRows(oldState, scrollAnchor);
+      const newState = computeRenderedRows(oldState, scrollAnchor);
 
       assert.deepEqual(newState, Object.assign(oldState, {
         maxScrollY: 9400,
@@ -144,7 +152,7 @@ describe('scrollStateHelper', function() {
         lastIndex: undefined,
       };
 
-      const newState = scrollStateHelper.computeRenderedRows(oldState, scrollAnchor);
+      const newState = computeRenderedRows(oldState, scrollAnchor);
 
       const expectedRowHeights = {};
       const expectedRows = [];
@@ -179,7 +187,7 @@ describe('scrollStateHelper', function() {
         firstOffset: -25,
         lastIndex: undefined,
       };
-      oldState.rowHeightGetter = () => 200;
+      oldState.rowSettings.rowHeightGetter = () => 200;
 
       const rowOffsetsMock = sandbox.mock(PrefixIntervalTree.prototype);
       oldState.rowOffsets = PrefixIntervalTree.uniform(80, 125);
@@ -187,7 +195,7 @@ describe('scrollStateHelper', function() {
         rowOffsetsMock.expects('set').once().withArgs(rowIdx, 200);
       }
 
-      const newState = scrollStateHelper.computeRenderedRows(oldState, scrollAnchor);
+      const newState = computeRenderedRows(oldState, scrollAnchor);
       sandbox.verify();
 
       let priorHeight = 1625;
@@ -211,156 +219,6 @@ describe('scrollStateHelper', function() {
         scrollContentHeight: 10600,
         scrollY: 2050,
       }));
-    });
-  });
-
-  describe('scrollTo', function() {
-    let oldState;
-    beforeEach(function() {
-      oldState = {
-        rowOffsets: {
-          greatestLowerBound: (scrollY) => Math.floor(scrollY / 100),
-          sumUntil: (idx) => idx * 100,
-        },
-        rowsCount: 100,
-        scrollContentHeight: 10000,
-      };
-    });
-
-    it('should scroll to row and offset of scrollY', function() {
-      const scrollAnchor = scrollStateHelper.scrollTo(oldState, 2150);
-      assert.deepEqual(scrollAnchor, {
-        firstIndex: 21,
-        firstOffset: -50,
-        lastIndex: undefined,
-        changed: true,
-      });
-    });
-
-    it('should scroll to first index if scrollY < 0', function() {
-      const scrollAnchor = scrollStateHelper.scrollTo(oldState, -200);
-      assert.deepEqual(scrollAnchor, {
-        firstIndex: 0,
-        firstOffset: 0,
-        lastIndex: undefined,
-        changed: true,
-      });
-    });
-
-    it('should scroll to last index if scrollY is larger than max scroll', function() {
-      const scrollAnchor = scrollStateHelper.scrollTo(oldState, 9500);
-      assert.deepEqual(scrollAnchor, {
-        firstIndex: undefined,
-        firstOffset: 0,
-        lastIndex: 99,
-        changed: true,
-      });
-    });
-
-    it('should scroll to first index if rowsCount is 0', function() {
-      oldState.rowsCount = 0;
-      const scrollAnchor = scrollStateHelper.scrollTo(oldState, 9500);
-      assert.deepEqual(scrollAnchor, {
-        firstIndex: 0,
-        firstOffset: 0,
-        lastIndex: undefined,
-        changed: true,
-      });
-    });
-  });
-
-  describe('scrollToRow', function() {
-    let oldState;
-    beforeEach(function() {
-      oldState = {
-        rowHeightGetter: () => 100,
-        rowOffsets: {
-          sumUntil: (idx) => idx * 100,
-        },
-        rowsCount: 100,
-        storedHeights: {
-          0: 100,
-          40: 100,
-          99: 100,
-        },
-        subRowHeightGetter: () => 0,
-      };
-    });
-
-    it('should scroll forward to row', function() {
-      oldState.scrollY = 2000;
-
-      const scrollAnchor = scrollStateHelper.scrollToRow(oldState, 40);
-      assert.deepEqual(scrollAnchor, {
-        firstIndex: undefined,
-        firstOffset: 0,
-        lastIndex: 40,
-        changed: true,
-      });
-    });
-
-    it('should scroll backward to row', function() {
-      oldState.scrollY = 5000;
-
-      const scrollAnchor = scrollStateHelper.scrollToRow(oldState, 40);
-      assert.deepEqual(scrollAnchor, {
-        firstIndex: 40,
-        firstOffset: 0,
-        lastIndex: undefined,
-        changed: true,
-      });
-    });
-
-    it('should not scroll if row already in viewport', function() {
-      oldState.scrollY = 3850;
-      oldState.firstRowIndex = 38;
-      oldState.firstRowOffset = 50;
-
-      const scrollAnchor = scrollStateHelper.scrollToRow(oldState, 40);
-      assert.deepEqual(scrollAnchor, {
-        firstIndex: 38,
-        firstOffset: 50,
-        lastIndex: undefined,
-        changed: false,
-      });
-    });
-
-    it('should return default anchor if rowsCount is 0', function() {
-      oldState.firstRowIndex = 0;
-      oldState.firstRowOffset = 50;
-      oldState.rowsCount = 0;
-
-      const scrollAnchor = scrollStateHelper.scrollToRow(oldState, 40);
-      assert.deepEqual(scrollAnchor, {
-        firstIndex: 0,
-        firstOffset: 0,
-        lastIndex: undefined,
-        changed: true,
-      });
-    });
-
-    it('should treat a negative row index as 0', function() {
-      oldState.scrollY = 2000;
-
-      const scrollAnchor = scrollStateHelper.scrollToRow(oldState, -20);
-      assert.deepEqual(scrollAnchor, {
-        firstIndex: 0,
-        firstOffset: 0,
-        lastIndex: undefined,
-        changed: true,
-      });
-    });
-
-    it('should clamp to the max row', function() {
-      oldState.scrollY = 2000;
-
-      const scrollAnchor = scrollStateHelper.scrollToRow(oldState, 200);
-      assert.deepEqual(scrollAnchor, {
-        firstIndex: undefined,
-        firstOffset: 0,
-        lastIndex: 99,
-        changed: true,
-      });
     });
   });
 });

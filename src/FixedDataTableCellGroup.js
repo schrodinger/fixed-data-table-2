@@ -14,13 +14,12 @@
 
 import FixedDataTableCell from 'FixedDataTableCell';
 import FixedDataTableHelper from 'FixedDataTableHelper';
-import FixedDataTableWidthHelper from 'FixedDataTableWidthHelper';
+import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 import PropTypes from 'prop-types';
 import React from 'React';
 import createReactClass from 'create-react-class';
-
 import cx from 'cx';
-import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
+import { sumPropWidths } from 'widthHelper';
 
 var DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
@@ -70,8 +69,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
     var props = this.props;
     var columns = props.columns;
     var cells = new Array(columns.length);
-
-    var contentWidth = FixedDataTableWidthHelper.sumPropWidths(columns);
+    var contentWidth = sumPropWidths(columns);
 
     var isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
       return acc || props.columnReorderingData.columnKey === column.props.columnKey;

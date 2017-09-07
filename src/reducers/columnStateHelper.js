@@ -11,12 +11,9 @@
 
 'use strict';
 
-import availableViewportWidth from 'availableViewportWidth';
-import columnsSelector from 'columns';
 import emptyFunction from 'emptyFunction';
 import isNil from 'lodash/isNil';
-import fixedColumnsWidthSelector from 'fixedColumnsWidth';
-import scrollContentWidthSelector from 'scrollContentWidth';
+import columnWidths from 'columnWidths';
 
 const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
@@ -31,17 +28,8 @@ const DRAG_SCROLL_BUFFER = 100;
  * @return {!Object}
  */
 function initialize(state, props, oldProps) {
-  const {
-    scrollLeft,
-    scrollToColumn,
-  } = props;
-
-  let {
-    columnResizingData,
-    isColumnResizing,
-    scrollX,
-    width,
-  } = state;
+  const { scrollLeft, scrollToColumn } = props;
+  let { columnResizingData, isColumnResizing, scrollX } = state;
 
   if (scrollLeft !== undefined &&
       (!oldProps || scrollLeft !== oldProps.scrollLeft)) {
@@ -49,7 +37,7 @@ function initialize(state, props, oldProps) {
   }
 
   scrollX = scrollTo(state, props, oldProps.scrollToColumn, scrollX);
-  const maxScrollX = Math.max(0, scrollContentWidthSelector(state) - availableViewportWidth(state));
+  const { maxScrollX } = columnWidths(state);
   scrollX = Math.min(scrollX, maxScrollX);
 
   // isColumnResizing should be overwritten by value from props if available
@@ -65,15 +53,7 @@ function initialize(state, props, oldProps) {
 };
 
 /**
- * @param {{
- *   columnGroups: {!Array.<{
- *     columns: !Array.{
- *       flexGrow: number,
- *       width: number,
- *     },
- *   }>},
- *   width: number,
- * }} state
+ * @param {!Object} state
  * @param {{
  *   scrollToColumn: number,
  *   width: number,
@@ -83,14 +63,12 @@ function initialize(state, props, oldProps) {
  * @return {number} The new scrollX
  */
 function scrollTo(state, props, oldScrollToColumn, scrollX) {
+  const { scrollToColumn } = props;
   const {
-    scrollToColumn,
-    width,
-  } = props;
-  const {
+    availableScrollWidth,
     fixedColumns,
     scrollableColumns,
-  } = columnsSelector(state);
+  } = columnWidths(state);
   const fixedColumnsCount = fixedColumns.length;
 
   const scrollToUnchanged = scrollToColumn === oldScrollToColumn
@@ -109,10 +87,6 @@ function scrollTo(state, props, oldScrollToColumn, scrollX) {
   for (let columnIdx = 0; columnIdx < clampedColumnIndex; ++columnIdx) {
     previousWidth += scrollableColumns[columnIdx].width;
   }
-
-  // Get width for scrollable columns in viewport
-  // TODO (jordan) replace fixedColumnsWidthSelector with selector for availableScrollWidth
-  const availableScrollWidth = availableViewportWidth(state) - fixedColumnsWidthSelector(state);
 
   // Get width of specified column
   const selectedColumnWidth = scrollableColumns[clampedColumnIndex].width;
@@ -173,16 +147,10 @@ function resizeColumn(state, resizeData) {
 };
 
 function reorderColumn(state, reorderData) {
-  let {
-    columnKey,
-    left,
-    scrollStart,
-    width
-  } = reorderData;
-
-  const { allColumns } = columnsSelector(state);
-  const isFixed = allColumns.some(function(column) {
-    return column.columnKey === columnKey && column.fixed;
+  let { columnKey, left, scrollStart, width } = reorderData;
+  const { fixedColumns } = columnWidths(state);
+  const isFixed = fixedColumns.some(function(column) {
+    return column.columnKey === columnKey;
   });
 
   return Object.assign({}, state, {
@@ -202,29 +170,16 @@ function reorderColumn(state, reorderData) {
 };
 
 function reorderColumnMove(state, deltaX) {
-  const {
-    isFixed,
-    originalLeft,
-    scrollStart,
-  } = state.columnReorderingData;
-
-  let {
-    maxScrollX,
-    scrollX,
-    width,
-  } = state;
+  const { isFixed, originalLeft, scrollStart } = state.columnReorderingData;
+  let { maxScrollX, scrollX } = state;
   if (!isFixed) {
     // Relative dragX position on scroll
     const dragX = originalLeft - scrollStart + deltaX;
-
-    const { allColumns } = columnsSelector(state);
-    const fixedColumnsWidth = allColumns.reduce(
-      (sum, column) => column.fixed ? sum + column.width : sum, 0);
-    const relativeWidth = width - fixedColumnsWidth;
+    const { availableScrollWidth } = columnWidths(state);
     deltaX += scrollX - scrollStart;
 
     // Scroll the table left or right if we drag near the edges of the table
-    if (dragX > relativeWidth - DRAG_SCROLL_BUFFER) {
+    if (dragX > availableScrollWidth - DRAG_SCROLL_BUFFER) {
       scrollX = Math.min(scrollX + DRAG_SCROLL_SPEED, maxScrollX);
     } else if (dragX <= DRAG_SCROLL_BUFFER) {
       scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
