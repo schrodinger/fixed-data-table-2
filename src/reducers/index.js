@@ -225,25 +225,25 @@ function setStateFromProps(state, props) {
   const newState = Object.assign({}, state,
     { columnGroupProps, columnProps, elementTemplates });
 
-  Object.assign(newState.elementHeights, pick(props,
-    ['footerHeight', 'groupHeaderHeight', 'headerHeight']));
+  newState.elementHeights = Object.assign({}, newState.elementHeights,
+    pick(props, ['footerHeight', 'groupHeaderHeight', 'headerHeight']));
   if (!useGroupHeader) {
     newState.elementHeights.groupHeaderHeight = 0;
   }
 
-  Object.assign(newState.rowSettings, pick(props,
-    ['bufferRowCount', 'rowHeight', 'rowsCount', 'subRowHeight']));
+  newState.rowSettings = Object.assign({}, newState.rowSettings,
+    pick(props, ['bufferRowCount', 'rowHeight', 'rowsCount', 'subRowHeight']));
   const { rowHeight, subRowHeight } = newState.rowSettings;
   newState.rowSettings.rowHeightGetter =
     props.rowHeightGetter || (() => rowHeight);
   newState.rowSettings.subRowHeightGetter =
     props.subRowHeightGetter || (() => subRowHeight || 0);
 
-  Object.assign(newState.scrollFlags, pick(props,
-    ['overflowX', 'overflowY', 'showScrollbarX', 'showScrollbarY']));
+  newState.scrollFlags = Object.assign({}, newState.scrollFlags,
+    pick(props, ['overflowX', 'overflowY', 'showScrollbarX', 'showScrollbarY']));
 
-  Object.assign(newState.tableSize, pick(props,
-    ['height', 'maxHeight', 'ownerHeight', 'width']));
+  newState.tableSize = Object.assign({}, newState.tableSize,
+    pick(props, ['height', 'maxHeight', 'ownerHeight', 'width']));
   newState.tableSize.useMaxHeight =
     newState.tableSize.height === undefined;
 
