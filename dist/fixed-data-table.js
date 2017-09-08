@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.2 
+ * FixedDataTable v1.0.0-beta.3 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -5390,7 +5390,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTableContainer2.default
 };
 
-FixedDataTableRoot.version = '1.0.0-beta.2';
+FixedDataTableRoot.version = '1.0.0-beta.3';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -14056,12 +14056,12 @@ function setStateFromProps(state, props) {
 
   var newState = _extends({}, state, { columnGroupProps: columnGroupProps, columnProps: columnProps, elementTemplates: elementTemplates });
 
-  _extends(newState.elementHeights, (0, _pick2.default)(props, ['footerHeight', 'groupHeaderHeight', 'headerHeight']));
+  newState.elementHeights = _extends({}, newState.elementHeights, (0, _pick2.default)(props, ['footerHeight', 'groupHeaderHeight', 'headerHeight']));
   if (!useGroupHeader) {
     newState.elementHeights.groupHeaderHeight = 0;
   }
 
-  _extends(newState.rowSettings, (0, _pick2.default)(props, ['bufferRowCount', 'rowHeight', 'rowsCount', 'subRowHeight']));
+  newState.rowSettings = _extends({}, newState.rowSettings, (0, _pick2.default)(props, ['bufferRowCount', 'rowHeight', 'rowsCount', 'subRowHeight']));
   var _newState$rowSettings = newState.rowSettings,
       rowHeight = _newState$rowSettings.rowHeight,
       subRowHeight = _newState$rowSettings.subRowHeight;
@@ -14073,9 +14073,9 @@ function setStateFromProps(state, props) {
     return subRowHeight || 0;
   };
 
-  _extends(newState.scrollFlags, (0, _pick2.default)(props, ['overflowX', 'overflowY', 'showScrollbarX', 'showScrollbarY']));
+  newState.scrollFlags = _extends({}, newState.scrollFlags, (0, _pick2.default)(props, ['overflowX', 'overflowY', 'showScrollbarX', 'showScrollbarY']));
 
-  _extends(newState.tableSize, (0, _pick2.default)(props, ['height', 'maxHeight', 'ownerHeight', 'width']));
+  newState.tableSize = _extends({}, newState.tableSize, (0, _pick2.default)(props, ['height', 'maxHeight', 'ownerHeight', 'width']));
   newState.tableSize.useMaxHeight = newState.tableSize.height === undefined;
 
   return newState;
