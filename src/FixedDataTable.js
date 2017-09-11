@@ -393,7 +393,7 @@ var FixedDataTable = createReactClass({
       props.subRowHeightGetter,
     );
 
-    this._didScrollStop = debounceCore(this._didScrollStop, 200, this);
+    this._didScrollStop = debounceCore(this._didScrollStopSync, 200, this);
 
     this._wheelHandler = new ReactWheelHandler(
       this._onScroll,
@@ -414,6 +414,10 @@ var FixedDataTable = createReactClass({
   componentWillUnmount() {
     this._wheelHandler = null;
     this._touchHandler = null;
+
+    // Cancel any pending debounced scroll handling and handle immediately.
+    this._didScrollStop.reset();
+    this._didScrollStopSync();
   },
 
   _shouldHandleTouchX(/*number*/ delta) /*boolean*/ {
@@ -490,7 +494,10 @@ var FixedDataTable = createReactClass({
         this.props.scrollLeft !== nextProps.scrollLeft) {
       this._didScrollStart();
     }
-    this._didScrollStop();
+
+    // Cancel any pending debounced scroll handling and handle immediately.
+    this._didScrollStop.reset();
+    this._didScrollStopSync();
 
     this.setState(this._calculateState(nextProps, this.state));
   },
@@ -1309,7 +1316,10 @@ var FixedDataTable = createReactClass({
     }
   },
 
-  _didScrollStop() {
+  // We need two versions of this function, one to finish up synchronously (for
+  // example, in componentWillUnmount), and a debounced version for normal
+  // scroll handling.
+  _didScrollStopSync() {
     if (!this._isScrolling) {
       return;
     }
