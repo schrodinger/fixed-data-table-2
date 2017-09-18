@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.0 
+ * FixedDataTable v0.8.1 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -55,7 +55,8 @@
   border-right-style: solid;
   border-right-width: 1px;
   border-width: 0 1px 0 0;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   display: block;
   overflow: hidden;
   position: absolute;
@@ -129,7 +130,8 @@
 .fixedDataTableColumnResizerLineLayout_main {
   border-right-style: solid;
   border-right-width: 1px;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   position: absolute;
   z-index: 10;
 }
@@ -159,7 +161,8 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 .fixedDataTableLayout_main {
   border-style: solid;
   border-width: 1px;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   overflow: hidden;
   position: relative;
 }
@@ -209,7 +212,8 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
  */
 
 .fixedDataTableRowLayout_main {
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   overflow: hidden;
   position: absolute;
   top: 0;
@@ -222,7 +226,8 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .fixedDataTableRowLayout_rowExpanded {
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   left: 0;
   position: absolute;
 }
@@ -263,7 +268,8 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
  */
 
 .ScrollbarLayout_main {
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   outline: none;
   overflow: hidden;
   position: absolute;
@@ -285,7 +291,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   height: 15px;
   left: 0;
   -webkit-transition-property: background-color height;
-          transition-property: background-color height;
+  transition-property: background-color height;
 }
 
 /* Touching the scroll-track directly makes the scroll-track bolder */
@@ -304,7 +310,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   -webkit-transition-timing-function: ease;
           transition-timing-function: ease;
   -webkit-transition-property: background-color width position;
-          transition-property: background-color width position;
+  transition-property: background-color width position;
 }
 
 /**
@@ -319,7 +325,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   display: block;
   position: absolute;
   -webkit-transition: background-color 250ms ease;
-          transition: background-color 250ms ease;
+  transition: background-color 250ms ease;
 }
 
 .ScrollbarLayout_faceHorizontal {
@@ -329,9 +335,9 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .ScrollbarLayout_faceHorizontal:after {
-  top: 4px;
   bottom: 4px;
   left: 0;
+  top: 4px;
   width: 100%;
 }
 
@@ -358,7 +364,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   left: calc(4px/2);
   right: calc(4px/2);
 }
-
 /**
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -390,7 +395,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 .public_fixedDataTable_header,
 .public_fixedDataTable_header .public_fixedDataTableCell_main {
   background-color: #f6f7f8;
-  background-image: -webkit-linear-gradient(#fff, #efefef);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#efefef));
   background-image: linear-gradient(#fff, #efefef);
 }
 

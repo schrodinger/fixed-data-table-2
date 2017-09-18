@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.0 
+ * FixedDataTable v0.8.1 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -40,7 +40,7 @@
 .public_fixedDataTable_header,
 .public_fixedDataTable_header .public_fixedDataTableCell_main {
   background-color: #f6f7f8;
-  background-image: -webkit-linear-gradient(#fff, #efefef);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#efefef));
   background-image: linear-gradient(#fff, #efefef);
 }
 
