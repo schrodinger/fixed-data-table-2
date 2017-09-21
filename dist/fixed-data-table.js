@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.3 
+ * FixedDataTable v1.0.0-beta.4 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -5390,7 +5390,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTableContainer2.default
 };
 
-FixedDataTableRoot.version = '1.0.0-beta.3';
+FixedDataTableRoot.version = '1.0.0-beta.4';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -6396,7 +6396,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
   },
   _onVerticalScroll: function _onVerticalScroll( /*number*/scrollPos) {
     var _props7 = this.props,
-        onHorizontalScroll = _props7.onHorizontalScroll,
+        onVerticalScroll = _props7.onVerticalScroll,
         scrollActions = _props7.scrollActions,
         scrollY = _props7.scrollY;
 
@@ -6409,7 +6409,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
       this._didScrollStart();
     }
 
-    if (onHorizontalScroll ? onHorizontalScroll(scrollPos) : true) {
+    if (onVerticalScroll ? onVerticalScroll(scrollPos) : true) {
       scrollActions.scrollToY(scrollPos);
     }
 
