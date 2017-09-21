@@ -858,7 +858,7 @@ const FixedDataTable = createReactClass({
 
   _onVerticalScroll(/*number*/ scrollPos) {
     const {
-      onHorizontalScroll,
+      onVerticalScroll,
       scrollActions,
       scrollY,
     } = this.props;
@@ -871,7 +871,7 @@ const FixedDataTable = createReactClass({
       this._didScrollStart();
     }
 
-    if (onHorizontalScroll ? onHorizontalScroll(scrollPos) : true) {
+    if (onVerticalScroll ? onVerticalScroll(scrollPos) : true) {
       scrollActions.scrollToY(scrollPos);
     }
 
