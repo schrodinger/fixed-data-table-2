@@ -35,6 +35,7 @@ var FixedDataTableBufferedRows = createReactClass({
     onRowClick: PropTypes.func,
     onRowDoubleClick: PropTypes.func,
     onRowMouseDown: PropTypes.func,
+    onRowMouseUp: PropTypes.func,
     onRowMouseEnter: PropTypes.func,
     onRowMouseLeave: PropTypes.func,
     rowClassNameGetter: PropTypes.func,
@@ -170,6 +171,7 @@ var FixedDataTableBufferedRows = createReactClass({
           onClick={props.onRowClick}
           onDoubleClick={props.onRowDoubleClick}
           onMouseDown={props.onRowMouseDown}
+          onMouseUp={props.onRowMouseUp}
           onMouseEnter={props.onRowMouseEnter}
           onMouseLeave={props.onRowMouseLeave}
           className={joinClasses(
