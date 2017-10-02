@@ -6,6 +6,7 @@ import { assert } from 'chai';
 import React from 'react';
 import FixedDataTable from './FixedDataTableRoot';
 import { createRenderer, isElement, renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
+import Scrollbar from 'Scrollbar';
 
 const { Table, Column } = FixedDataTable;
 
@@ -89,7 +90,7 @@ describe('FixedDataTableRoot', function() {
     it('should set scrollToColumn correctly', function() {
       let table = renderTable({scrollToColumn: 3});
       // extra 18 comes from Scrollbar.SIZE & Scrollbar.OFFSET
-      assert.equal(table.getTableState().scrollX, 300 * 2 + 18, 'should be third visible column');
+      assert.equal(table.getTableState().scrollX, 300 * 2 + Scrollbar.SIZE + Scrollbar.OFFSET, 'should be third visible column');
     });
 
     it('should set scrollToRow correctly', function() {
