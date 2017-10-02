@@ -1142,6 +1142,12 @@ var FixedDataTable = createReactClass({
       bodyHeight -= Scrollbar.SIZE;
       totalHeightNeeded += Scrollbar.SIZE;
       totalHeightReserved += Scrollbar.SIZE;
+      // If the horizontal scrollbar appears, the vertical scrollbar may now be needed
+      // since the bottom row might be partially obscured by the horizontal scrollbar.
+      maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
+      if (maxScrollY) {
+        adjustedWidth = adjustedWidth - Scrollbar.SIZE - 1;
+      }
     }
 
     var maxScrollX = Math.max(0, scrollContentWidth - adjustedWidth);
