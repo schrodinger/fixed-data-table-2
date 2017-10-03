@@ -126,6 +126,12 @@ exports.ExamplePages = {
     title: 'Tooltips',
     description: 'A table example that displays additional information in a tooltip.'
   },
+  LONG_CLICK_EXAMPLE: {
+    location: 'example-long-click.html',
+    fileName: 'LongClickExample.js',
+    title: 'Row Long Click',
+    description: 'A table example that highlights a row after a long click',
+  },
   CONTEXT_EXAMPLE: {
     location: 'example-context.html',
     fileName: 'ContextExample.js',
