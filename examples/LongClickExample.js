@@ -10,9 +10,10 @@ const { Table, Column, Cell } = require('fixed-data-table-2');
 const React = require('react');
 
 class LongClickExample extends React.Component {
-  
-  columns = [];
 
+  columns = [];
+  longClickTimer = null;
+  
   constructor(props) {
     super(props);
 
