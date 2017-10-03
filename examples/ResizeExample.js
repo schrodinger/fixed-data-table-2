@@ -14,7 +14,7 @@ class ResizeExample extends React.Component {
     super(props);
 
     this.state = {
-      dataList: new FakeObjectDataListStore(200),
+      dataList: new FakeObjectDataListStore(1000000),
       columnWidths: {
         firstName: 240,
         lastName: 150,
