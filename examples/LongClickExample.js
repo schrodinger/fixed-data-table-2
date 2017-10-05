@@ -11,45 +11,24 @@ const React = require('react');
 
 class LongClickExample extends React.Component {
 
-  columns = [];
   longClickTimer = null;
+  
+  displayColumns = {
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    city: 'City',
+    street: 'zipCode',
+  };
   
   constructor(props) {
     super(props);
 
     var dataList = new FakeObjectDataListStore(1000000);
-    var displayColumns = {
-      firstName: 'First Name',
-      lastName: 'Last Name',
-      city: 'City',
-      street: 'zipCode'
-    };
-
-    Object.keys(displayColumns).forEach(columnKey => {
-      this.columns.push(
-        <Column
-          key={columnKey}
-          columnKey={columnKey}
-          flexGrow={2}
-          header={<Cell>{this.columns[columnKey]}</Cell>}
-          cell={({ rowIndex, columnKey }) => {
-            let isRowHighlighted = this.state.longPressedRowIndex === rowIndex;
-            return <TextCell style={{
-              backgroundColor: isRowHighlighted ? 'yellow' : 'transparent',
-              width: '100%',
-              height: '100%'
-            }}
-              data={dataList}
-              rowIndex={rowIndex}
-              columnKey={columnKey} />;
-          }
-          }
-          width={100}
-        />);
-    });
 
     this.state = {
-      dataList
+      dataList,
+      columns: this.getColumns(),
+      longPressedRowIndex: -1,
     };
   }
 
@@ -73,6 +52,39 @@ class LongClickExample extends React.Component {
     }
   }
 
+  getColumns() {
+    let columns = [];
+
+    Object.keys(this.displayColumns).forEach(columnKey => {
+      columns.push(
+        <Column
+          key={columnKey}
+          columnKey={columnKey}
+          flexGrow={2}
+          header={<Cell>{columns[columnKey]}</Cell>}
+          cell={cell => this.getCell(cell.rowIndex, cell.columnKey)}
+          width={100}
+        />);
+    });
+
+    return columns;
+  }
+
+  getCell(rowIndex, columnKey) {
+    let isCellHighlighted = this.state.longPressedRowIndex === rowIndex;
+      
+    let rowStyle = {
+      backgroundColor: isCellHighlighted ? 'yellow' : 'transparent',
+      width: '100%',
+      height: '100%'
+    } 
+
+    return <TextCell style={rowStyle}
+      data={this.state.dataList}
+      rowIndex={rowIndex}
+      columnKey={columnKey} />;
+  }
+
   render() {
     return (
       <Table
@@ -84,7 +96,7 @@ class LongClickExample extends React.Component {
         onRowMouseDown={(event, rowIndex) => { this.handleRowMouseDown(rowIndex); }}
         onRowMouseUp={(event, rowIndex) => { this.handleRowMouseUp(rowIndex); }}
         {...this.props}>
-        {this.columns}
+        {this.state.columns}
       </Table>
     );
   }
