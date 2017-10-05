@@ -3,5 +3,5 @@ node_js:
   - "6"
   - "5"
   - "4"
-before_script:
-  - npm install react react-dom
+install:
+  - yarn install
