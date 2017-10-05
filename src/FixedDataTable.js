@@ -307,6 +307,11 @@ var FixedDataTable = createReactClass({
     onRowMouseDown: PropTypes.func,
 
     /**
+     * Callback that is called when a mouse-up event happens on a row.
+     */
+    onRowMouseUp: PropTypes.func,
+
+    /**
      * Callback that is called when a mouse-enter event happens on a row.
      */
     onRowMouseEnter: PropTypes.func,
@@ -739,6 +744,7 @@ var FixedDataTable = createReactClass({
         onRowClick={state.onRowClick}
         onRowDoubleClick={state.onRowDoubleClick}
         onRowMouseDown={state.onRowMouseDown}
+        onRowMouseUp={state.onRowMouseUp}
         onRowMouseEnter={state.onRowMouseEnter}
         onRowMouseLeave={state.onRowMouseLeave}
         onRowTouchStart={state.touchScrollEnabled ? state.onRowTouchStart : null}
