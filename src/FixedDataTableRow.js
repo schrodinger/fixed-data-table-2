@@ -191,6 +191,9 @@ class FixedDataTableRowImpl extends React.Component {
         onMouseUp={this.props.onMouseUp ? this._onMouseUp : null}
         onMouseEnter={this.props.onMouseEnter ? this._onMouseEnter : null}
         onMouseLeave={this.props.onMouseLeave ? this._onMouseLeave : null}
+        onTouchStart={this.props.onTouchStart ? this._onTouchStart : null}
+        onTouchEnd={this.props.onTouchEnd ? this._onTouchEnd : null}
+        onTouchMove={this.props.onTouchMove ? this._onTouchMove : null}
         style={style}>
         <div className={cx('fixedDataTableRowLayout/body')}>
           {fixedColumns}
@@ -285,6 +288,18 @@ class FixedDataTableRowImpl extends React.Component {
 
   _onMouseLeave = (/*object*/ event) => {
     this.props.onMouseLeave(event, this.props.index);
+  };
+
+  _onTouchStart = (/*object*/ event) => {
+    this.props.onTouchStart(event, this.props.index);
+  };
+
+  _onTouchEnd = (/*object*/ event) => {
+    this.props.onTouchEnd(event, this.props.index);
+  };
+
+  _onTouchMove = (/*object*/ event) => {
+    this.props.onTouchMove(event, this.props.index);
   };
 }
 
