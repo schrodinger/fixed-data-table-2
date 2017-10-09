@@ -243,6 +243,16 @@ var FixedDataTable = createReactClass({
     headerHeight: PropTypes.number.isRequired,
 
     /**
+     * Pixel height of fixedDataTableCellGroupLayout/cellGroupWrapper.
+     * Default is headerHeight and groupHeaderHeight.
+     * By being able to target this class specifically, we can do things
+     * like make some cells of a header smaller/bigger than those with
+     * the actual header height, with just a bit of additional css
+     * (override the overflow property of some other classes).
+     */
+    cellGroupWrapperHeight: PropTypes.number,
+
+    /**
      * Pixel height of footer.
      */
     footerHeight: PropTypes.number,
@@ -529,6 +539,7 @@ var FixedDataTable = createReactClass({
           )}
           width={state.width}
           height={state.groupHeaderHeight}
+          cellGroupWrapperHeight={state.cellGroupWrapperHeight}
           index={0}
           zIndex={1}
           offsetTop={0}
@@ -641,6 +652,7 @@ var FixedDataTable = createReactClass({
         )}
         width={state.width}
         height={state.headerHeight}
+        cellGroupWrapperHeight={state.cellGroupWrapperHeight}
         index={-1}
         zIndex={1}
         offsetTop={headerOffsetTop}
@@ -1170,6 +1182,8 @@ var FixedDataTable = createReactClass({
       scrollY = scrollState.position;
     }
 
+    var cellGroupWrapperHeight = props.cellGroupWrapperHeight;
+
     // The order of elements in this object metters and bringing bodyHeight,
     // height or useGroupHeader to the top can break various features
     var newState = {
@@ -1196,6 +1210,7 @@ var FixedDataTable = createReactClass({
       // columnInfo and props
       bodyHeight,
       height,
+      cellGroupWrapperHeight,
       groupHeaderHeight,
       useGroupHeader,
     };
