@@ -245,10 +245,6 @@ var FixedDataTable = createReactClass({
     /**
      * Pixel height of fixedDataTableCellGroupLayout/cellGroupWrapper.
      * Default is headerHeight and groupHeaderHeight.
-     * By being able to target this class specifically, we can do things
-     * like make some cells of a header smaller/bigger than those with
-     * the actual header height, with just a bit of additional css
-     * (override the overflow property of some other classes).
      */
     cellGroupWrapperHeight: PropTypes.number,
 

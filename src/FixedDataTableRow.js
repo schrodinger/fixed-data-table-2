@@ -248,7 +248,7 @@ class FixedDataTableRowImpl extends React.Component {
       'public/fixedDataTableRow/fixedColumnsDivider': left > 0,
       'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0,
      });
-     // Subtract 1 for the border
+     // Subtract 1 to account for .fixedDataTableLayout/header border-bottom-width
      var dividerHeight = this.props.cellGroupWrapperHeight ? this.props.cellGroupWrapperHeight - 1 : this.props.height;
      var style = {
        left: left,
