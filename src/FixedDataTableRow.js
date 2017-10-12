@@ -20,6 +20,9 @@ import cx from 'cx';
 import joinClasses from 'joinClasses';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
+// .fixedDataTableLayout/header border-bottom-width
+var HEADER_BORDER_BOTTOM_WIDTH = 1;
+
 /**
  * Component that renders the row for <FixedDataTable />.
  * This component should not be used directly by developer. Instead,
@@ -248,8 +251,8 @@ class FixedDataTableRowImpl extends React.Component {
       'public/fixedDataTableRow/fixedColumnsDivider': left > 0,
       'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0,
      });
-     // Subtract 1 to account for .fixedDataTableLayout/header border-bottom-width
-     var dividerHeight = this.props.cellGroupWrapperHeight ? this.props.cellGroupWrapperHeight - 1 : this.props.height;
+     var dividerHeight = this.props.cellGroupWrapperHeight ?
+       this.props.cellGroupWrapperHeight - HEADER_BORDER_BOTTOM_WIDTH : this.props.height;
      var style = {
        left: left,
        height: dividerHeight
