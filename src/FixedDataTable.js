@@ -243,6 +243,26 @@ var FixedDataTable = createReactClass({
     headerHeight: PropTypes.number.isRequired,
 
     /**
+     * Pixel height of fixedDataTableCellGroupLayout/cellGroupWrapper.
+     * Default is headerHeight and groupHeaderHeight.
+     *
+     * This can be used with CSS to make a header cell span both the group & normal header row.
+     * Setting this to a value larger than height will cause the content to
+     * overflow the height. This is useful when adding a 2nd table as the group
+     * header and vertically merging the 2 headers when a column is not part
+     * of a group. Here are the necessary CSS changes:
+     *
+     * Both headers:
+     *  - cellGroupWrapper needs overflow-x: hidden and pointer-events: none
+     *  - cellGroup needs pointer-events: auto to reenable them on child els
+     * Group header:
+     *  - Layout/main needs overflow: visible and a higher z-index
+     *  - CellLayout/main needs overflow-y: visible
+     *  - cellGroup needs overflow: visible
+     */
+    cellGroupWrapperHeight: PropTypes.number,
+
+    /**
      * Pixel height of footer.
      */
     footerHeight: PropTypes.number,
@@ -544,6 +564,7 @@ var FixedDataTable = createReactClass({
           )}
           width={state.width}
           height={state.groupHeaderHeight}
+          cellGroupWrapperHeight={state.cellGroupWrapperHeight}
           index={0}
           zIndex={1}
           offsetTop={0}
@@ -656,6 +677,7 @@ var FixedDataTable = createReactClass({
         )}
         width={state.width}
         height={state.headerHeight}
+        cellGroupWrapperHeight={state.cellGroupWrapperHeight}
         index={-1}
         zIndex={1}
         offsetTop={headerOffsetTop}
@@ -1188,6 +1210,8 @@ var FixedDataTable = createReactClass({
       scrollY = scrollState.position;
     }
 
+    var cellGroupWrapperHeight = props.cellGroupWrapperHeight;
+
     // The order of elements in this object metters and bringing bodyHeight,
     // height or useGroupHeader to the top can break various features
     var newState = {
@@ -1214,6 +1238,7 @@ var FixedDataTable = createReactClass({
       // columnInfo and props
       bodyHeight,
       height,
+      cellGroupWrapperHeight,
       groupHeaderHeight,
       useGroupHeader,
     };
