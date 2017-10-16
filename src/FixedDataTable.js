@@ -1144,8 +1144,10 @@ var FixedDataTable = createReactClass({
       totalHeightReserved += Scrollbar.SIZE;
       // If the horizontal scrollbar appears, the vertical scrollbar may now be needed
       // since the bottom row might be partially obscured by the horizontal scrollbar.
+      // We also need to make sure we don't double-dip and adjust the width twice
+      const notAdjusted = adjustedWidth === props.width;
       maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
-      if (maxScrollY) {
+      if (notAdjusted && maxScrollY) {
         adjustedWidth = adjustedWidth - Scrollbar.SIZE - 1;
       }
     }
