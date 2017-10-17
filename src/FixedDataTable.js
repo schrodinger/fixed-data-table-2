@@ -1010,12 +1010,29 @@ var FixedDataTable = createReactClass({
       children.push(child);
     });
 
-    // Allow room for the scrollbar, less 1px for the last column's border
-    var adjustedWidth = props.width - Scrollbar.SIZE - Scrollbar.OFFSET;
-
+    // Figure out if the vertical scrollbar will be visible first, 
+    // because it will determine the width of the table
     var useGroupHeader = false;
+    var groupHeaderHeight = 0;
+
     if (children.length && children[0].type.__TableColumnGroup__) {
       useGroupHeader = true;
+      groupHeaderHeight = props.groupHeaderHeight;
+    }
+
+    var useMaxHeight = props.height === undefined;
+    var height = Math.round(useMaxHeight ? props.maxHeight : props.height);
+    var totalHeightReserved = props.footerHeight + props.headerHeight +
+        groupHeaderHeight + 2 * BORDER_HEIGHT;
+    var bodyHeight = height - totalHeightReserved;
+    var scrollContentHeight = this._scrollHelper.getContentHeight();
+    var totalHeightNeeded = scrollContentHeight + totalHeightReserved;
+    var maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
+
+    // If vertical scrollbar is necessary, adjust the table width to give it room
+    var adjustedWidth = props.width; 
+    if (maxScrollY) {
+      adjustedWidth = adjustedWidth - Scrollbar.SIZE - 1;
     }
 
     var scrollState;
@@ -1028,8 +1045,6 @@ var FixedDataTable = createReactClass({
     if (props.scrollLeft !== undefined && props.scrollLeft !== lastScrollLeft) {
       scrollX = props.scrollLeft;
     }
-
-    var groupHeaderHeight = useGroupHeader ? props.groupHeaderHeight : 0;
 
     if (oldState && (props.rowsCount !== oldState.rowsCount || props.rowHeight !== oldState.rowHeight || props.height !== oldState.height)) {
       // Number of rows changed, try to scroll to the row from before the
@@ -1163,13 +1178,6 @@ var FixedDataTable = createReactClass({
       }
     }
 
-    var useMaxHeight = props.height === undefined;
-    var height = Math.round(useMaxHeight ? props.maxHeight : props.height);
-    var totalHeightReserved = props.footerHeight + props.headerHeight +
-      groupHeaderHeight + 2 * BORDER_HEIGHT;
-    var bodyHeight = height - totalHeightReserved;
-    var scrollContentHeight = this._scrollHelper.getContentHeight();
-    var totalHeightNeeded = scrollContentHeight + totalHeightReserved;
     var scrollContentWidth =
       FixedDataTableWidthHelper.getTotalWidth(columns);
 
@@ -1180,10 +1188,17 @@ var FixedDataTable = createReactClass({
       bodyHeight -= Scrollbar.SIZE;
       totalHeightNeeded += Scrollbar.SIZE;
       totalHeightReserved += Scrollbar.SIZE;
+      // If the horizontal scrollbar appears, the vertical scrollbar may now be needed
+      // since the bottom row might be partially obscured by the horizontal scrollbar.
+      // We also need to make sure we don't double-dip and adjust the width twice
+      const notAdjusted = adjustedWidth === props.width;
+      maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
+      if (notAdjusted && maxScrollY) {
+        adjustedWidth = adjustedWidth - Scrollbar.SIZE - 1;
+      }
     }
 
     var maxScrollX = Math.max(0, scrollContentWidth - adjustedWidth);
-    var maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
     scrollX = Math.min(scrollX, maxScrollX);
     scrollY = Math.min(scrollY, maxScrollY);
 
