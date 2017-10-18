@@ -1065,6 +1065,11 @@ var FixedDataTable = createReactClass({
         props.subRowHeight,
         props.subRowHeightGetter,
       );
+      // We need to recalculate these now, or we'll be operating on outdated height information
+      scrollContentHeight = this._scrollHelper.getContentHeight();
+      totalHeightNeeded = scrollContentHeight + totalHeightReserved;
+      maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
+
       scrollState = this._scrollHelper.scrollToRow(firstRowIndex, firstRowOffset);
       firstRowIndex = scrollState.index;
       firstRowOffset = scrollState.offset;
