@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.2 
+ * FixedDataTable v0.8.3 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -2664,7 +2664,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.2';
+FixedDataTableRoot.version = '0.8.3';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -3624,30 +3624,6 @@ var FixedDataTable = (0, _createReactClass2.default)({
       children.push(child);
     });
 
-    // Figure out if the vertical scrollbar will be visible first, 
-    // because it will determine the width of the table
-    var useGroupHeader = false;
-    var groupHeaderHeight = 0;
-
-    if (children.length && children[0].type.__TableColumnGroup__) {
-      useGroupHeader = true;
-      groupHeaderHeight = props.groupHeaderHeight;
-    }
-
-    var useMaxHeight = props.height === undefined;
-    var height = Math.round(useMaxHeight ? props.maxHeight : props.height);
-    var totalHeightReserved = props.footerHeight + props.headerHeight + groupHeaderHeight + 2 * BORDER_HEIGHT;
-    var bodyHeight = height - totalHeightReserved;
-    var scrollContentHeight = this._scrollHelper.getContentHeight();
-    var totalHeightNeeded = scrollContentHeight + totalHeightReserved;
-    var maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
-
-    // If vertical scrollbar is necessary, adjust the table width to give it room
-    var adjustedWidth = props.width;
-    if (maxScrollY) {
-      adjustedWidth = adjustedWidth - _Scrollbar2.default.SIZE - 1;
-    }
-
     var scrollState;
     var firstRowIndex = oldState && oldState.firstRowIndex || 0;
     var firstRowOffset = oldState && oldState.firstRowOffset || 0;
@@ -3678,6 +3654,30 @@ var FixedDataTable = (0, _createReactClass2.default)({
       if (props.subRowHeightGetter !== oldState.subRowHeightGetter) {
         this._scrollHelper.setSubRowHeightGetter(props.subRowHeightGetter);
       }
+    }
+
+    // Figure out if the vertical scrollbar will be visible first, 
+    // because it will determine the width of the table
+    var useGroupHeader = false;
+    var groupHeaderHeight = 0;
+
+    if (children.length && children[0].type.__TableColumnGroup__) {
+      useGroupHeader = true;
+      groupHeaderHeight = props.groupHeaderHeight;
+    }
+
+    var useMaxHeight = props.height === undefined;
+    var height = Math.round(useMaxHeight ? props.maxHeight : props.height);
+    var totalHeightReserved = props.footerHeight + props.headerHeight + groupHeaderHeight + 2 * BORDER_HEIGHT;
+    var bodyHeight = height - totalHeightReserved;
+    var scrollContentHeight = this._scrollHelper.getContentHeight();
+    var totalHeightNeeded = scrollContentHeight + totalHeightReserved;
+    var maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
+
+    // If vertical scrollbar is necessary, adjust the table width to give it room
+    var adjustedWidth = props.width;
+    if (maxScrollY) {
+      adjustedWidth = adjustedWidth - _Scrollbar2.default.SIZE - 1;
     }
 
     var lastScrollToRow = oldState ? oldState.scrollToRow : undefined;
