@@ -50,6 +50,7 @@
   right: 0px;
   width: 6px;
   z-index: 1;
+  touch-action: none;
 }
 
 .fixedDataTableCellLayout/columnResizerContainer:hover {

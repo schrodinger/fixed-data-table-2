@@ -62,6 +62,8 @@ var FixedDataTableCellGroupImpl = createReactClass({
     width: PropTypes.number.isRequired,
 
     zIndex: PropTypes.number.isRequired,
+
+    touchEnabled: PropTypes.bool
   },
 
   componentWillMount() {
@@ -149,6 +151,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
         key={key}
         maxWidth={columnProps.maxWidth}
         minWidth={columnProps.minWidth}
+        touchEnabled={this.props.touchEnabled}
         onColumnResize={onColumnResize}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}

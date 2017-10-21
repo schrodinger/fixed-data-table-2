@@ -23,6 +23,7 @@
 
 .public/fixedDataTableCell/cellContent {
   padding: 8px;
+  touch-action: none;
 }
 
 .public/fixedDataTableCell/columnResizerKnob {
