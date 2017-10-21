@@ -29,6 +29,18 @@ var HEADER_BORDER_BOTTOM_WIDTH = 1;
  * only <FixedDataTable /> should use the component internally.
  */
 class FixedDataTableRowImpl extends React.Component {
+
+  /**
+   * Whether the mouseEnter has been detected on this row and we
+   * are waiting for the mouseLeave event to be fired or not.
+   */
+  waitingForMouseLeave = false;
+
+  /**
+   * The index of a row for which to fire the onMouseLeave event.
+   */
+  mouseLeaveIndex = -1;
+
   static propTypes = {
 
     isScrolling: PropTypes.bool,
@@ -128,6 +140,19 @@ class FixedDataTableRowImpl extends React.Component {
      */
     onColumnReorderEnd: PropTypes.func,
   };
+
+  componentWillUpdate(nextProps, nextState){
+    if(this.waitingForMouseLeave &&
+      this.props.index !== nextProps.index){
+        /**
+         * This is necessary so that onMouseLeave is fired for the initial
+         * rowIndex and not for the one this row is replaced with.
+         */
+        if(this.mouseLeaveIndex === -1){
+          this.mouseLeaveIndex = this.props.index;
+        }
+    }
+  }
 
   render() /*object*/ {
     var subRowHeight = this.props.subRowHeight || 0;
@@ -295,11 +320,17 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   _onMouseEnter = (/*object*/ event) => {
+    this.waitingForMouseLeave = true;
     this.props.onMouseEnter(event, this.props.index);
   };
 
   _onMouseLeave = (/*object*/ event) => {
-    this.props.onMouseLeave(event, this.props.index);
+    this.waitingForMouseLeave = false;
+    var mouseLeaveRowIndex = this.props.index;
+    if(this.mouseLeaveIndex !== -1) {
+      mouseLeaveRowIndex = this.mouseLeaveIndex;
+    }
+    this.props.onMouseLeave(event, mouseLeaveRowIndex);
   };
 
   _onTouchStart = (/*object*/ event) => {
