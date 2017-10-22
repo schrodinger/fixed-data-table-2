@@ -66,7 +66,7 @@ class ReorderExample extends React.Component {
     } else {
       if (fixedColumns.indexOf(event.reorderColumn) !== -1) {
         columnOrder.splice(fixedColumns.length - 1, 0, event.reorderColumn)
-      } else if (event.reorderColumn) {
+      } else {
         columnOrder.push(event.reorderColumn);
       }
     }
