@@ -249,15 +249,10 @@ var FixedDataTableCell = createReactClass({
         <div
           className={cx('fixedDataTableCellLayout/columnResizerContainer')}
           style={columnResizerStyle}
-          /**
-           * Stop the event from being propagated when touching the handle.
-           * This prevents the rows from moving around when we resize the headers.
-           */
-          onTouchStart={e => e.stopPropagation()}
-          onTouchEnd={e => e.stopPropagation()}
-          onTouchMove={e => e.stopPropagation()}
           onMouseDown={this._onColumnResizerMouseDown}
-          onTouchStart={this._onColumnResizerMouseDown}>
+          onTouchStart={this.props.touchEnabled ? this._onColumnResizerMouseDown : null}
+          onTouchEnd={this.props.touchEnabled ? e => e.stopPropagation() : null}
+          onTouchMove={this.props.touchEnabled ? e => e.stopPropagation() : null}>
           <div
             className={joinClasses(
               cx('fixedDataTableCellLayout/columnResizerKnob'),
@@ -325,6 +320,13 @@ var FixedDataTableCell = createReactClass({
       this.props.columnKey,
       event
     );
+    /**
+     * This prevents the rows from moving around when we resize the
+     * headers on touch devices.
+     */
+    if(this.props.touchEnabled) {
+      event.stopPropagation();
+    }
   },
 
   _onColumnReorderMouseDown(/*object*/ event) {

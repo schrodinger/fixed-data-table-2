@@ -77,15 +77,10 @@ var FixedDataTableColumnReorderHandle = createReactClass({
           'fixedDataTableCellLayout/columnReorderContainer': true,
           'fixedDataTableCellLayout/columnReorderContainer/active': false,
         })}
-        /**
-         * Stop the event from being propagated when touching the handle.
-         * This prevents the rows from moving around when we drag the headers.
-         */
-        onTouchStart={e => e.stopPropagation()}
-        onTouchEnd={e => e.stopPropagation()}
-        onTouchMove={e => e.stopPropagation()}
         onMouseDown={this.onMouseDown}
-        onTouchStart={this.onMouseDown}
+        onTouchStart={this.props.touchEnabled ? this.onMouseDown : null}
+        onTouchEnd={this.props.touchEnabled ? e => e.stopPropagation() : null}
+        onTouchMove={this.props.touchEnabled ? e => e.stopPropagation() : null}
         style={style}>
       </div>
     );
@@ -120,6 +115,14 @@ var FixedDataTableColumnReorderHandle = createReactClass({
     this._distance = 0;
     this._animating = true;
     this.frameId = requestAnimationFrame(this._updateState);
+
+    /**
+     * This prevents the rows from moving around when we drag the
+     * headers on touch devices.
+     */
+    if(this.props.touchEnabled) {
+      event.stopPropagation();
+    }
   },
 
   _onMove(/*number*/ deltaX) {

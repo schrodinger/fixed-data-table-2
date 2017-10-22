@@ -54,29 +54,31 @@ class DOMMouseMoveTracker {
    * in order to grab inital state.
    */
   captureMouseMoves(/*object*/ event) {
-    if (!this._eventMoveToken && !this._eventUpToken && !this._eventLeaveToken && !this._eventOutToken) {
-      if (!this._isTouchEnabled) {
-        this._eventMoveToken = EventListener.listen(
-          this._domNode,
-          'mousemove',
-          this._onMouseMove
-        );
-        this._eventUpToken = EventListener.listen(
-          this._domNode,
-          'mouseup',
-          this._onMouseUp
-        );
-        this._eventLeaveToken = EventListener.listen(
-          this._domNode,
-          'mouseleave',
-          this._onMouseEnd
-        );
-        this._eventOutToken = EventListener.listen(
-          this._domNode,
-          'mouseout',
-          this.onMouseEnd
-        );
-      } else {
+    if (!this._eventMoveToken && !this._eventUpToken &&
+        !this._eventLeaveToken && !this._eventOutToken) {
+      this._eventMoveToken = EventListener.listen(
+        this._domNode,
+        'mousemove',
+        this._onMouseMove
+      );
+      this._eventUpToken = EventListener.listen(
+        this._domNode,
+        'mouseup',
+        this._onMouseUp
+      );
+      this._eventLeaveToken = EventListener.listen(
+        this._domNode,
+        'mouseleave',
+        this._onMouseEnd
+      );
+      this._eventOutToken = EventListener.listen(
+        this._domNode,
+        'mouseout',
+        this.onMouseEnd
+      );
+
+      if (this._isTouchEnabled && !this._eventTouchStartToken &&
+          !this._eventTouchMoveToken && !this._eventTouchEndToken){
         this._eventTouchStartToken = EventListener.listen(
           this._domNode,
           'touchstart',
@@ -112,7 +114,8 @@ class DOMMouseMoveTracker {
    * These releases all of the listeners on document.body.
    */
   releaseMouseMoves() {
-    if (this._eventMoveToken && this._eventUpToken && this._eventLeaveToken && this._eventOutToken) {
+    if (this._eventMoveToken && this._eventUpToken &&
+        this._eventLeaveToken && this._eventOutToken) {
       this._eventMoveToken.remove();
       this._eventMoveToken = null;
       this._eventUpToken.remove();
@@ -121,13 +124,16 @@ class DOMMouseMoveTracker {
       this._eventLeaveToken = null;
       this._eventOutToken.remove();
       this._eventOutToken = null;
-    } else if (this._eventTouchStartToken && this._eventTouchMoveToken && this._eventTouchEndToken) {
-      this._eventTouchStartToken.remove();
-      this._eventTouchStartToken = null;
-      this._eventTouchMoveToken.remove();
-      this._eventTouchMoveToken = null;
-      this._eventTouchEndToken.remove();
-      this._eventTouchEndToken = null;
+    }
+
+    if (this._isTouchEnabled && this._eventTouchStartToken &&
+        this._eventTouchMoveToken && this._eventTouchEndToken) {
+        this._eventTouchStartToken.remove();
+        this._eventTouchStartToken = null;
+        this._eventTouchMoveToken.remove();
+        this._eventTouchMoveToken = null;
+        this._eventTouchEndToken.remove();
+        this._eventTouchEndToken = null;
     }
 
     if (this._animationFrameID !== null) {

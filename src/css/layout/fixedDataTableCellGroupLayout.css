@@ -27,5 +27,4 @@
 .fixedDataTableCellGroupLayout/cellGroupWrapper {
   position: absolute;
   top: 0;
-  touch-action: none;
 }
