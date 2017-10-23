@@ -311,7 +311,7 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   _onMouseLeave = (/*object*/ event) => {
-    this.props.onMouseLeave(event, this.mouseLeaveIndex);
+    this.props.onMouseLeave(event, this.mouseLeaveIndex || this.props.index);
     this.mouseLeaveIndex = null;
   };
 
