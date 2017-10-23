@@ -76,25 +76,25 @@ class DOMMouseMoveTracker {
         'mouseout',
         this.onMouseEnd
       );
+    }
 
-      if (this._isTouchEnabled && !this._eventTouchStartToken &&
-          !this._eventTouchMoveToken && !this._eventTouchEndToken){
-        this._eventTouchStartToken = EventListener.listen(
-          this._domNode,
-          'touchstart',
-          this._onMouseMove
-        );
-        this._eventTouchMoveToken = EventListener.listen(
-          this._domNode,
-          'touchmove',
-          this._onMouseMove
-        );
-        this._eventTouchEndToken = EventListener.listen(
-          this._domNode,
-          'touchend',
-          this._onMouseUp
-        );
-      }
+    if (this._isTouchEnabled && !this._eventTouchStartToken &&
+        !this._eventTouchMoveToken && !this._eventTouchEndToken) {
+      this._eventTouchStartToken = EventListener.listen(
+        this._domNode,
+        'touchstart',
+        this._onMouseMove
+      );
+      this._eventTouchMoveToken = EventListener.listen(
+        this._domNode,
+        'touchmove',
+        this._onMouseMove
+      );
+      this._eventTouchEndToken = EventListener.listen(
+        this._domNode,
+        'touchend',
+        this._onMouseUp
+      );
     }
 
     if (!this._isDragging) {
