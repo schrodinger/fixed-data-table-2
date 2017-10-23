@@ -127,6 +127,8 @@ class FixedDataTableRowImpl extends React.Component {
      * @param number distance
      */
     onColumnReorderEnd: PropTypes.func,
+
+    touchEnabled: PropTypes.bool,
   };
 
   render() /*object*/ {
@@ -153,6 +155,7 @@ class FixedDataTableRowImpl extends React.Component {
         width={fixedColumnsWidth}
         zIndex={2}
         columns={this.props.fixedColumns}
+        touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
@@ -174,6 +177,7 @@ class FixedDataTableRowImpl extends React.Component {
         width={this.props.width - fixedColumnsWidth}
         zIndex={0}
         columns={this.props.scrollableColumns}
+        touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}

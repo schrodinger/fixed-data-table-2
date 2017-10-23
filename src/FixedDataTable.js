@@ -25,6 +25,7 @@ import FixedDataTableColumnResizeHandle from 'FixedDataTableColumnResizeHandle';
 import FixedDataTableRow from 'FixedDataTableRow';
 import FixedDataTableScrollHelper from 'FixedDataTableScrollHelper';
 import FixedDataTableWidthHelper from 'FixedDataTableWidthHelper';
+import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
 
 import cx from 'cx';
 import debounceCore from 'debounceCore';
@@ -642,6 +643,7 @@ var FixedDataTable = createReactClass({
         initialEvent={state.columnResizingData.initialEvent}
         onColumnResizeEnd={props.onColumnResizeEndCallback}
         columnKey={state.columnResizingData.key}
+        touchEnabled={state.touchScrollEnabled}
       />;
 
     var footer = null;
@@ -684,6 +686,7 @@ var FixedDataTable = createReactClass({
         scrollLeft={state.scrollX}
         fixedColumns={state.headFixedColumns}
         scrollableColumns={state.headScrollableColumns}
+        touchEnabled={state.touchScrollEnabled}
         onColumnResize={this._onColumnResize}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
@@ -804,6 +807,11 @@ var FixedDataTable = createReactClass({
     /*number|string*/ columnKey,
     /*object*/ event
   ) {
+
+    var coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
+    var x = coordinates.x;
+    var y = coordinates.y;
+
     this.setState({
       isColumnResizing: true,
       columnResizingData: {
@@ -812,8 +820,8 @@ var FixedDataTable = createReactClass({
         minWidth: cellMinWidth,
         maxWidth: cellMaxWidth,
         initialEvent: {
-          clientX: event.clientX,
-          clientY: event.clientY,
+          clientX: x,
+          clientY: y,
           preventDefault: emptyFunction
         },
         key: columnKey
