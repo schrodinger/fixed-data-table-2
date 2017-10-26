@@ -45,6 +45,7 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.TOOLTIP_EXAMPLE.location]: require('../../examples/TooltipExample'),
   [ExamplePages.LONG_CLICK_EXAMPLE.location]: require('../../examples/LongClickExample'),
   [ExamplePages.CONTEXT_EXAMPLE.location]: require('../../examples/ContextExample'),
+  [ExamplePages.FIXED_RIGHT_COLUMNS_EXAMPLE.location]: require('../../examples/FixedRightColumnsExample'),
 };
 
 class ExamplesPage extends React.Component {

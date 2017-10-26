@@ -571,6 +571,7 @@ var FixedDataTable = createReactClass({
           offsetTop={0}
           scrollLeft={state.scrollX}
           fixedColumns={state.groupHeaderFixedColumns}
+          fixedRightColumns={state.groupHeaderFixedRightColumns}
           scrollableColumns={state.groupHeaderScrollableColumns}
           onColumnResize={this._onColumnResize}
           onColumnReorder={onColumnReorder}
@@ -662,6 +663,7 @@ var FixedDataTable = createReactClass({
           zIndex={1}
           offsetTop={footOffsetTop}
           fixedColumns={state.footFixedColumns}
+          fixedRightColumns={state.footFixedRightColumns}
           scrollableColumns={state.footScrollableColumns}
           scrollLeft={state.scrollX}
         />;
@@ -685,6 +687,7 @@ var FixedDataTable = createReactClass({
         offsetTop={headerOffsetTop}
         scrollLeft={state.scrollX}
         fixedColumns={state.headFixedColumns}
+        fixedRightColumns={state.headFixedRightColumns}
         scrollableColumns={state.headScrollableColumns}
         touchEnabled={state.touchScrollEnabled}
         onColumnResize={this._onColumnResize}
@@ -764,6 +767,7 @@ var FixedDataTable = createReactClass({
         firstRowIndex={state.firstRowIndex}
         firstRowOffset={state.firstRowOffset}
         fixedColumns={state.bodyFixedColumns}
+        fixedRightColumns={state.bodyFixedRightColumns}
         height={state.bodyHeight}
         offsetTop={offsetTop}
         onRowClick={state.onRowClick}
@@ -957,31 +961,38 @@ var FixedDataTable = createReactClass({
     var columnInfo = {};
     if (canReuseColumnSettings) {
       columnInfo.bodyFixedColumns = oldState.bodyFixedColumns;
+      columnInfo.bodyFixedRightColumns = oldState.bodyFixedRightColumns;
       columnInfo.bodyScrollableColumns = oldState.bodyScrollableColumns;
       columnInfo.headFixedColumns = oldState.headFixedColumns;
+      columnInfo.headFixedRightColumns = oldState.headFixedRightColumns;
       columnInfo.headScrollableColumns = oldState.headScrollableColumns;
       columnInfo.footFixedColumns = oldState.footFixedColumns;
+      columnInfo.footFixedRightColumns = oldState.footFixedRightColumns;
       columnInfo.footScrollableColumns = oldState.footScrollableColumns;
     } else {
       var bodyColumnTypes = this._splitColumnTypes(columns);
       columnInfo.bodyFixedColumns = bodyColumnTypes.fixed;
+      columnInfo.bodyFixedRightColumns = bodyColumnTypes.fixedRight;
       columnInfo.bodyScrollableColumns = bodyColumnTypes.scrollable;
 
       var headColumnTypes = this._splitColumnTypes(
         this._selectColumnElement(HEADER, columns)
       );
       columnInfo.headFixedColumns = headColumnTypes.fixed;
+      columnInfo.headFixedRightColumns = headColumnTypes.fixedRight;
       columnInfo.headScrollableColumns = headColumnTypes.scrollable;
 
       var footColumnTypes = this._splitColumnTypes(
         this._selectColumnElement(FOOTER, columns)
       );
       columnInfo.footFixedColumns = footColumnTypes.fixed;
+      columnInfo.footFixedRightColumns = footColumnTypes.fixedRight;
       columnInfo.footScrollableColumns = footColumnTypes.scrollable;
     }
 
     if (canReuseColumnGroupSettings) {
       columnInfo.groupHeaderFixedColumns = oldState.groupHeaderFixedColumns;
+      columnInfo.groupHeaderFixedRightColumns = oldState.groupHeaderFixedRightColumns;
       columnInfo.groupHeaderScrollableColumns =
         oldState.groupHeaderScrollableColumns;
     } else {
@@ -990,6 +1001,7 @@ var FixedDataTable = createReactClass({
           this._selectColumnElement(HEADER, columnGroups)
         );
         columnInfo.groupHeaderFixedColumns = groupHeaderColumnTypes.fixed;
+        columnInfo.groupHeaderFixedRightColumns = groupHeaderColumnTypes.fixedRight;
         columnInfo.groupHeaderScrollableColumns =
           groupHeaderColumnTypes.scrollable;
       }
@@ -1285,16 +1297,20 @@ var FixedDataTable = createReactClass({
 
   _splitColumnTypes(/*array*/ columns) /*object*/ {
     var fixedColumns = [];
+    var fixedRightColumns = [];
     var scrollableColumns = [];
     for (var i = 0; i < columns.length; ++i) {
       if (columns[i].props.fixed) {
         fixedColumns.push(columns[i]);
+      } else if (columns[i].props.fixedRight) {
+        fixedRightColumns.push(columns[i]);
       } else {
         scrollableColumns.push(columns[i]);
       }
     }
     return {
       fixed: fixedColumns,
+      fixedRight: fixedRightColumns,
       scrollable: scrollableColumns,
     };
   },
