@@ -30,6 +30,7 @@ var FixedDataTableBufferedRows = createReactClass({
     firstRowIndex: PropTypes.number.isRequired,
     firstRowOffset: PropTypes.number.isRequired,
     fixedColumns: PropTypes.array.isRequired,
+    fixedRightColumns: PropTypes.array.isRequired,
     height: PropTypes.number.isRequired,
     offsetTop: PropTypes.number.isRequired,
     onRowClick: PropTypes.func,
@@ -170,6 +171,7 @@ var FixedDataTableBufferedRows = createReactClass({
           scrollLeft={Math.round(props.scrollLeft)}
           offsetTop={Math.round(rowOffsetTop)}
           fixedColumns={props.fixedColumns}
+          fixedRightColumns={props.fixedRightColumns}
           scrollableColumns={props.scrollableColumns}
           onClick={props.onRowClick}
           onDoubleClick={props.onRowDoubleClick}
