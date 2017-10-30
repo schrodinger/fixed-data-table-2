@@ -1157,6 +1157,12 @@ var FixedDataTable = createReactClass({
           totalFixedColumnsWidth += column.props.width;
         }
 
+        var j;
+        for(j = 0; j < columnInfo.bodyFixedRightColumns.length; ++j) {
+          column = columnInfo.bodyFixedRightColumns[j];
+          totalFixedColumnsWidth += column.props.width;
+        }
+
         // Convert column index (0 indexed) to scrollable index (0 indexed)
         // and clamp to max scrollable index
         var scrollableColumnIndex = Math.min(

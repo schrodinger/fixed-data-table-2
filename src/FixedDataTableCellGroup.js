@@ -89,7 +89,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
     for (var i = 0, j = columns.length; i < j; i++) {
       var columnProps = columns[i].props;
       var recycable = columnProps.allowCellsRecycling && !isColumnReordering;
-      if (!recycable || (
+      if (!recycable || columnProps.fixedRight || (
             currentPosition - props.left <= props.width &&
             currentPosition - props.left + columnProps.width >= 0)) {
         var key = columnProps.columnKey || 'cell_' + i;
@@ -255,7 +255,7 @@ var FixedDataTableCellGroup = createReactClass({
   ) {
     this.props.onColumnResize && this.props.onColumnResize(
       this.props.offsetLeft,
-      left - this.props.left + width,
+      left - (this.props.left || 0) + width,
       width,
       minWidth,
       maxWidth,
