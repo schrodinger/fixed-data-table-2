@@ -213,6 +213,7 @@ var FixedDataTableCellGroup = createReactClass({
 
   getDefaultProps() /*object*/ {
     return {
+      left: 0,
       offsetLeft: 0,
     };
   },
