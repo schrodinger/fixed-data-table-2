@@ -148,6 +148,12 @@ var FixedDataTable = createReactClass({
     touchScrollEnabled: PropTypes.bool,
 
     /**
+     * Boolean flags to control if scrolling with keys is enabled
+     */
+    keyboardScrollEnabled: PropTypes.bool,
+    keyboardPageEnabled: PropTypes.bool,
+
+    /**
      * Hide the scrollbar but still enable scroll functionality
      */
     showScrollbarX: PropTypes.bool,
@@ -373,6 +379,8 @@ var FixedDataTable = createReactClass({
       showScrollbarX: true,
       showScrollbarY: true,
       touchScrollEnabled: false,
+      keyboardScrollEnabled: false,
+      keyboardPageEnabled: false,
       stopScrollPropagation: false
     };
   },
@@ -458,39 +466,48 @@ var FixedDataTable = createReactClass({
   },
 
   _onKeyDown(event) {
-    switch (event.key) {
-      case 'PageDown':
-        this._onScroll(0, this._scrollbarYHeight);
-        event.preventDefault();
-        break;
+    if (this.props.keyboardPageEnabled) {
+      switch (event.key) {
+        case 'PageDown':
+          this._onScroll(0, this._scrollbarYHeight);
+          event.preventDefault();
+          break;
 
-      case 'PageUp':
-        this._onScroll(0, this._scrollbarYHeight * -1);
-        event.preventDefault();
-        break;
+        case 'PageUp':
+          this._onScroll(0, this._scrollbarYHeight * -1);
+          event.preventDefault();
+          break;
 
-      case 'ArrowDown':
-        this._onScroll(0, ARROW_SCROLL_SPEED);
-        event.preventDefault();
-        break;
+        default:
+          break;
+      }
+    }
+    if (this.props.keyboardScrollEnabled) {
+      switch (event.key) {
 
-      case 'ArrowUp':
-        this._onScroll(0, ARROW_SCROLL_SPEED * -1);
-        event.preventDefault();
-        break;
+        case 'ArrowDown':
+          this._onScroll(0, ARROW_SCROLL_SPEED);
+          event.preventDefault();
+          break;
 
-      case 'ArrowRight':
-        this._onScroll(ARROW_SCROLL_SPEED, 0);
-        event.preventDefault();
-        break;
+        case 'ArrowUp':
+          this._onScroll(0, ARROW_SCROLL_SPEED * -1);
+          event.preventDefault();
+          break;
 
-      case 'ArrowLeft':
-        this._onScroll(ARROW_SCROLL_SPEED * -1, 0);
-        event.preventDefault();
-        break;
+        case 'ArrowRight':
+          this._onScroll(ARROW_SCROLL_SPEED, 0);
+          event.preventDefault();
+          break;
 
-      default:
-        break;
+        case 'ArrowLeft':
+          this._onScroll(ARROW_SCROLL_SPEED * -1, 0);
+          event.preventDefault();
+          break;
+
+        default:
+          break;
+      }
     }
   },
 
