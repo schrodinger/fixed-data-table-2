@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.4 
+ * FixedDataTable v0.8.5 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -1816,7 +1816,7 @@ var FixedDataTableRowImpl = function (_React$Component) {
         isScrolling: this.props.isScrolling,
         height: this.props.height,
         cellGroupWrapperHeight: this.props.cellGroupWrapperHeight,
-        left: -this.props.width + fixedRightColumnsWidth,
+        offsetLeft: this.props.width - fixedRightColumnsWidth,
         width: fixedRightColumnsWidth,
         zIndex: 2,
         columns: this.props.fixedRightColumns,
@@ -2799,7 +2799,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.4';
+FixedDataTableRoot.version = '0.8.5';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -3883,6 +3883,12 @@ var FixedDataTable = (0, _createReactClass2.default)({
         var i, column;
         for (i = 0; i < columnInfo.bodyFixedColumns.length; ++i) {
           column = columnInfo.bodyFixedColumns[i];
+          totalFixedColumnsWidth += column.props.width;
+        }
+
+        var j;
+        for (j = 0; j < columnInfo.bodyFixedRightColumns.length; ++j) {
+          column = columnInfo.bodyFixedRightColumns[j];
           totalFixedColumnsWidth += column.props.width;
         }
 
@@ -8537,6 +8543,7 @@ var FixedDataTableCellGroup = (0, _createReactClass2.default)({
   },
   getDefaultProps: function getDefaultProps() /*object*/{
     return {
+      left: 0,
       offsetLeft: 0
     };
   },
