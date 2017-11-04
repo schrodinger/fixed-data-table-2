@@ -48,6 +48,13 @@ var FixedDataTableCellGroupImpl = createReactClass({
     onColumnReorderMove: PropTypes.func,
     onColumnReorderEnd: PropTypes.func,
 
+    height: PropTypes.number.isRequired,
+
+    /**
+     * Height of fixedDataTableCellGroupLayout/cellGroupWrapper.
+     */
+    cellGroupWrapperHeight: PropTypes.number,
+
     rowHeight: PropTypes.number.isRequired,
 
     rowIndex: PropTypes.number.isRequired,
@@ -55,6 +62,8 @@ var FixedDataTableCellGroupImpl = createReactClass({
     width: PropTypes.number.isRequired,
 
     zIndex: PropTypes.number.isRequired,
+
+    touchEnabled: PropTypes.bool
   },
 
   componentWillMount() {
@@ -142,6 +151,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
         key={key}
         maxWidth={columnProps.maxWidth}
         minWidth={columnProps.minWidth}
+        touchEnabled={this.props.touchEnabled}
         onColumnResize={onColumnResize}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
@@ -203,6 +213,7 @@ var FixedDataTableCellGroup = createReactClass({
 
   getDefaultProps() /*object*/ {
     return {
+      left: 0,
       offsetLeft: 0,
     };
   },
@@ -211,7 +222,7 @@ var FixedDataTableCellGroup = createReactClass({
     var {offsetLeft, ...props} = this.props;
 
     var style = {
-      height: props.height,
+      height: props.cellGroupWrapperHeight || props.height,
       width: props.width
     };
 

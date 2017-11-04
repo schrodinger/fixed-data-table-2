@@ -28,7 +28,11 @@ fi
 
 cd "$PROJECT_DIRECTORY"
 npm run site-build
-open __site__/index.html
+if [ "$(uname)" == "Darwin" ]; then
+  open __site__/index.html
+else
+  xdg-open __site__/index.html
+fi
 cd ../
 
 echo
@@ -54,4 +58,8 @@ git add --all
 git commit -m "Update website"
 git push
 sleep 1
-open $GH_PAGES_SITE
+if [ "$(uname)" == "Darwin" ]; then
+  open $GH_PAGES_SITE
+else
+  xdg-open $GH_PAGES_SITE
+fi

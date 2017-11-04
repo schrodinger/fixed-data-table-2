@@ -85,6 +85,11 @@ var FixedDataTableCell = createReactClass({
      * Flag for enhanced performance check
      */
     pureRendering: PropTypes.bool,
+
+    /**
+     * Whether touch is enabled or not.
+     */
+    touchEnabled: PropTypes.bool
   },
 
   getInitialState() {
@@ -244,7 +249,10 @@ var FixedDataTableCell = createReactClass({
         <div
           className={cx('fixedDataTableCellLayout/columnResizerContainer')}
           style={columnResizerStyle}
-          onMouseDown={this._onColumnResizerMouseDown}>
+          onMouseDown={this._onColumnResizerMouseDown}
+          onTouchStart={this.props.touchEnabled ? this._onColumnResizerMouseDown : null}
+          onTouchEnd={this.props.touchEnabled ? e => e.stopPropagation() : null}
+          onTouchMove={this.props.touchEnabled ? e => e.stopPropagation() : null}>
           <div
             className={joinClasses(
               cx('fixedDataTableCellLayout/columnResizerKnob'),
@@ -261,7 +269,9 @@ var FixedDataTableCell = createReactClass({
       columnReorderComponent = (
         <FixedDataTableColumnReorderHandle
           columnKey={this.columnKey}
+          touchEnabled={this.props.touchEnabled}
           onMouseDown={this._onColumnReorderMouseDown}
+          onTouchStart={this._onColumnReorderMouseDown}
           height={height}
           {...this.props}
         />
@@ -310,6 +320,13 @@ var FixedDataTableCell = createReactClass({
       this.props.columnKey,
       event
     );
+    /**
+     * This prevents the rows from moving around when we resize the
+     * headers on touch devices.
+     */
+    if(this.props.touchEnabled) {
+      event.stopPropagation();
+    }
   },
 
   _onColumnReorderMouseDown(/*object*/ event) {

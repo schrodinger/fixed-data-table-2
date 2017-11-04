@@ -43,7 +43,9 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.RESPONSIVE_EXAMPLE.location]: require('../../examples/ResponsiveExample'),
   [ExamplePages.STYLING_EXAMPLE.location]: require('../../examples/StylingExample'),
   [ExamplePages.TOOLTIP_EXAMPLE.location]: require('../../examples/TooltipExample'),
+  [ExamplePages.LONG_CLICK_EXAMPLE.location]: require('../../examples/LongClickExample'),
   [ExamplePages.CONTEXT_EXAMPLE.location]: require('../../examples/ContextExample'),
+  [ExamplePages.FIXED_RIGHT_COLUMNS_EXAMPLE.location]: require('../../examples/FixedRightColumnsExample'),
 };
 
 class ExamplesPage extends React.Component {

@@ -36,6 +36,12 @@ exports.ExamplePages = {
     title: 'With JSON Data',
     description: 'A basic table example with two fixed columns, fed in some JSON data.',
   },
+  FIXED_RIGHT_COLUMNS_EXAMPLE: {
+    location: 'fixed-right-columns.html',
+    fileName: 'FixedRightColumnsExample.js',
+    title: 'Fixed Right Columns',
+    description: 'A table example that has a columns fixed to the right side of the table.',
+  },
   FLEXGROW_EXAMPLE: {
     location: 'example-flexgrow.html',
     fileName: 'FlexGrowExample.js',
@@ -125,6 +131,12 @@ exports.ExamplePages = {
     fileName: 'TooltipExample.js',
     title: 'Tooltips',
     description: 'A table example that displays additional information in a tooltip.'
+  },
+  LONG_CLICK_EXAMPLE: {
+    location: 'example-long-click.html',
+    fileName: 'LongClickExample.js',
+    title: 'Row Long Click',
+    description: 'A table example that highlights a row after a long click',
   },
   CONTEXT_EXAMPLE: {
     location: 'example-context.html',

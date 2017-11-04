@@ -20,12 +20,21 @@ import cx from 'cx';
 import joinClasses from 'joinClasses';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
+// .fixedDataTableLayout/header border-bottom-width
+var HEADER_BORDER_BOTTOM_WIDTH = 1;
+
 /**
  * Component that renders the row for <FixedDataTable />.
  * This component should not be used directly by developer. Instead,
  * only <FixedDataTable /> should use the component internally.
  */
 class FixedDataTableRowImpl extends React.Component {
+
+  /**
+   * The index of a row for which to fire the onMouseLeave event.
+   */
+  mouseLeaveIndex = null;
+
   static propTypes = {
 
     isScrolling: PropTypes.bool,
@@ -36,9 +45,19 @@ class FixedDataTableRowImpl extends React.Component {
     fixedColumns: PropTypes.array.isRequired,
 
     /**
+     * Array of <FixedDataTableColumn /> for the fixed columns positioned at end of the table.
+     */
+    fixedRightColumns: PropTypes.array.isRequired,
+
+    /**
      * Height of the row.
      */
     height: PropTypes.number.isRequired,
+
+    /**
+     * Height of fixedDataTableCellGroupLayout/cellGroupWrapper.
+     */
+    cellGroupWrapperHeight: PropTypes.number,
 
     /**
      * Height of the content to be displayed below the row.
@@ -119,6 +138,8 @@ class FixedDataTableRowImpl extends React.Component {
      * @param number distance
      */
     onColumnReorderEnd: PropTypes.func,
+
+    touchEnabled: PropTypes.bool,
   };
 
   render() /*object*/ {
@@ -140,10 +161,12 @@ class FixedDataTableRowImpl extends React.Component {
         key="fixed_cells"
         isScrolling={this.props.isScrolling}
         height={this.props.height}
+        cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
         left={0}
         width={fixedColumnsWidth}
         zIndex={2}
         columns={this.props.fixedColumns}
+        touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
@@ -154,16 +177,42 @@ class FixedDataTableRowImpl extends React.Component {
         rowIndex={this.props.index}
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
+    var fixedRightColumnsWidth = this._getColumnsWidth(this.props.fixedRightColumns);
+    var fixedRightColumns = 
+      <FixedDataTableCellGroup
+        key="fixed_right_cells"
+        isScrolling={this.props.isScrolling}
+        height={this.props.height}
+        cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
+        offsetLeft={this.props.width - fixedRightColumnsWidth}
+        width={fixedRightColumnsWidth}
+        zIndex={2}
+        columns={this.props.fixedRightColumns}
+        touchEnabled={this.props.touchEnabled}
+        onColumnResize={this.props.onColumnResize}
+        onColumnReorder={this.props.onColumnReorder}
+        onColumnReorderMove={this.props.onColumnReorderMove}
+        onColumnReorderEnd={this.props.onColumnReorderEnd}
+        isColumnReordering={this.props.isColumnReordering}
+        columnReorderingData={this.props.columnReorderingData}
+        rowHeight={this.props.height}
+        rowIndex={this.props.index}
+      />;
+    var fixedRightColumnsShdadow = fixedRightColumnsWidth ?
+      this._renderFixedRightColumnsShadow(this.props.width - fixedRightColumnsWidth - 5) : null;
     var scrollableColumns =
       <FixedDataTableCellGroup
         key="scrollable_cells"
         isScrolling={this.props.isScrolling}
         height={this.props.height}
+        cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
+        align="right"
         left={this.props.scrollLeft}
         offsetLeft={fixedColumnsWidth}
-        width={this.props.width - fixedColumnsWidth}
+        width={this.props.width - fixedColumnsWidth - fixedRightColumnsWidth}
         zIndex={0}
         columns={this.props.scrollableColumns}
+        touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
@@ -188,13 +237,19 @@ class FixedDataTableRowImpl extends React.Component {
         onClick={this.props.onClick ? this._onClick : null}
         onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
         onMouseDown={this.props.onMouseDown ? this._onMouseDown : null}
-        onMouseEnter={this.props.onMouseEnter ? this._onMouseEnter : null}
+        onMouseUp={this.props.onMouseUp ? this._onMouseUp : null}
+        onMouseEnter={this.props.onMouseEnter || this.props.onMouseLeave ? this._onMouseEnter : null}
         onMouseLeave={this.props.onMouseLeave ? this._onMouseLeave : null}
+        onTouchStart={this.props.onTouchStart ? this._onTouchStart : null}
+        onTouchEnd={this.props.onTouchEnd ? this._onTouchEnd : null}
+        onTouchMove={this.props.onTouchMove ? this._onTouchMove : null}
         style={style}>
         <div className={cx('fixedDataTableRowLayout/body')}>
           {fixedColumns}
           {scrollableColumns}
           {columnsLeftShadow}
+          {fixedRightColumns}
+          {fixedRightColumnsShdadow}
         </div>
         {rowExpanded && <div
           className={cx('fixedDataTableRowLayout/rowExpanded')}
@@ -240,12 +295,30 @@ class FixedDataTableRowImpl extends React.Component {
       'public/fixedDataTableRow/fixedColumnsDivider': left > 0,
       'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0,
      });
+     var dividerHeight = this.props.cellGroupWrapperHeight ?
+       this.props.cellGroupWrapperHeight - HEADER_BORDER_BOTTOM_WIDTH : this.props.height;
      var style = {
        left: left,
-       height: this.props.height
+       height: dividerHeight
      };
      return <div className={className} style={style} />;
-   };
+  };
+
+  _renderFixedRightColumnsShadow = (/*number*/ left) => /*?object*/ {
+    var className = cx(
+      'fixedDataTableRowLayout/columnsShadow',
+      'fixedDataTableRowLayout/columnsRightShadow',
+      'fixedDataTableRowLayout/fixedColumnsDivider',
+      'public/fixedDataTableRow/columnsShadow',
+      'public/fixedDataTableRow/columnsRightShadow',
+      'public/fixedDataTableRow/fixedColumnsDivider'
+    );
+    var style = {
+      height: this.props.height,
+      left: left
+    };
+    return <div className={className} style={style} />;
+  };
 
   _renderColumnsRightShadow = (/*number*/ totalWidth) => /*?object*/ {
     if (Math.ceil(this.props.scrollLeft + this.props.width) < Math.floor(totalWidth)) {
@@ -270,16 +343,44 @@ class FixedDataTableRowImpl extends React.Component {
     this.props.onDoubleClick(event, this.props.index);
   };
 
+  _onMouseUp = (/*object*/ event) => {
+    this.props.onMouseUp(event, this.props.index);
+  };
+
   _onMouseDown = (/*object*/ event) => {
     this.props.onMouseDown(event, this.props.index);
   };
 
   _onMouseEnter = (/*object*/ event) => {
-    this.props.onMouseEnter(event, this.props.index);
+    /**
+     * This is necessary so that onMouseLeave is fired with the initial
+     * row index since this row could be updated with a different index
+     * when scrolling.
+     */
+    this.mouseLeaveIndex = this.props.index;
+    if (this.props.onMouseEnter) {
+      this.props.onMouseEnter(event, this.props.index);
+    }
   };
 
   _onMouseLeave = (/*object*/ event) => {
-    this.props.onMouseLeave(event, this.props.index);
+    if(this.mouseLeaveIndex === null) {
+      this.mouseLeaveIndex = this.props.index;
+    }
+    this.props.onMouseLeave(event, this.mouseLeaveIndex);
+    this.mouseLeaveIndex = null;
+  };
+
+  _onTouchStart = (/*object*/ event) => {
+    this.props.onTouchStart(event, this.props.index);
+  };
+
+  _onTouchEnd = (/*object*/ event) => {
+    this.props.onTouchEnd(event, this.props.index);
+  };
+
+  _onTouchMove = (/*object*/ event) => {
+    this.props.onTouchMove(event, this.props.index);
   };
 }
 

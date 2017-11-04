@@ -32,6 +32,11 @@ class FixedDataTableColumn extends React.Component {
    fixed: PropTypes.bool,
 
    /**
+    * Controls if the column is fixed to the right side of the table when scrolling in the X axis.
+    */
+   fixedRight: PropTypes.bool,
+
+   /**
     * The header cell for this column.
     * This can either be a string a React element, or a function that generates
     * a React Element. Passing in a string will render a default header cell
@@ -181,6 +186,7 @@ class FixedDataTableColumn extends React.Component {
  static defaultProps = {
    allowCellsRecycling: false,
    fixed: false,
+   fixedRight: false,
  };
 
  render() {
