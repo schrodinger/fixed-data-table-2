@@ -42,6 +42,7 @@ var BORDER_HEIGHT = 1;
 var HEADER = 'header';
 var FOOTER = 'footer';
 var CELL = 'cell';
+var ARROW_SCROLL_SPEED = 25;
 var DRAG_SCROLL_SPEED = 15;
 var DRAG_SCROLL_BUFFER = 100;
 
@@ -146,6 +147,12 @@ var FixedDataTable = createReactClass({
      * This feature is current in beta and may have bugs
      */
     touchScrollEnabled: PropTypes.bool,
+
+    /**
+     * Boolean flags to control if scrolling with keys is enabled
+     */
+    keyboardScrollEnabled: PropTypes.bool,
+    keyboardPageEnabled: PropTypes.bool,
 
     /**
      * Hide the scrollbar but still enable scroll functionality
@@ -413,6 +420,8 @@ var FixedDataTable = createReactClass({
       showScrollbarX: true,
       showScrollbarY: true,
       touchScrollEnabled: false,
+      keyboardScrollEnabled: false,
+      keyboardPageEnabled: false,
       stopScrollPropagation: false
     };
   },
@@ -499,6 +508,52 @@ var FixedDataTable = createReactClass({
       (delta < 0 && this.state.scrollY > 0) ||
       (delta >= 0 && this.state.scrollY < this.state.maxScrollY)
     );
+  },
+
+  _onKeyDown(event) {
+    if (this.props.keyboardPageEnabled) {
+      switch (event.key) {
+        case 'PageDown':
+          this._onScroll(0, this._scrollbarYHeight);
+          event.preventDefault();
+          break;
+
+        case 'PageUp':
+          this._onScroll(0, this._scrollbarYHeight * -1);
+          event.preventDefault();
+          break;
+
+        default:
+          break;
+      }
+    }
+    if (this.props.keyboardScrollEnabled) {
+      switch (event.key) {
+
+        case 'ArrowDown':
+          this._onScroll(0, ARROW_SCROLL_SPEED);
+          event.preventDefault();
+          break;
+
+        case 'ArrowUp':
+          this._onScroll(0, ARROW_SCROLL_SPEED * -1);
+          event.preventDefault();
+          break;
+
+        case 'ArrowRight':
+          this._onScroll(ARROW_SCROLL_SPEED, 0);
+          event.preventDefault();
+          break;
+
+        case 'ArrowLeft':
+          this._onScroll(ARROW_SCROLL_SPEED * -1, 0);
+          event.preventDefault();
+          break;
+
+        default:
+          break;
+      }
+    }
   },
 
   _reportContentHeight() {
@@ -606,6 +661,7 @@ var FixedDataTable = createReactClass({
 
       scrollbarYHeight = Math.max(0, footOffsetTop - bodyOffsetTop);
     }
+    this._scrollbarYHeight = scrollbarYHeight;
 
     var verticalScrollbar;
     if (showScrollbarY) {
@@ -734,6 +790,8 @@ var FixedDataTable = createReactClass({
           cx('fixedDataTableLayout/main'),
           cx('public/fixedDataTable/main'),
         )}
+        tabIndex={0}
+        onKeyDown={this._onKeyDown}
         onWheel={this._wheelHandler.onWheel}
         onTouchStart={this._touchHandler.onTouchStart}
         onTouchEnd={this._touchHandler.onTouchEnd}
