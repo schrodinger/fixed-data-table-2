@@ -182,6 +182,7 @@ var FixedDataTableBufferedRows = createReactClass({
           onTouchStart={props.onRowTouchStart}
           onTouchEnd={props.onRowTouchEnd}
           onTouchMove={props.onRowTouchMove}
+          showScrollbarY={props.showScrollbarY}
           className={joinClasses(
             rowClassNameGetter(rowIndex),
             cx('public/fixedDataTable/bodyRow'),

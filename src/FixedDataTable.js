@@ -631,6 +631,7 @@ var FixedDataTable = createReactClass({
           onColumnResize={this._onColumnResize}
           onColumnReorder={onColumnReorder}
           onColumnReorderMove={this._onColumnReorderMove}
+          showScrollbarY={showScrollbarY}
         />
       );
     }
@@ -722,6 +723,7 @@ var FixedDataTable = createReactClass({
           fixedRightColumns={state.footFixedRightColumns}
           scrollableColumns={state.footScrollableColumns}
           scrollLeft={state.scrollX}
+          showScrollbarY={showScrollbarY}
         />;
     }
 
@@ -752,6 +754,7 @@ var FixedDataTable = createReactClass({
         onColumnReorderEnd={this._onColumnReorderEnd}
         isColumnReordering={!!state.isColumnReordering}
         columnReorderingData={state.columnReorderingData}
+        showScrollbarY={showScrollbarY}
       />;
 
     var topShadow;
@@ -817,6 +820,7 @@ var FixedDataTable = createReactClass({
 
   _renderRows(/*number*/ offsetTop) /*object*/ {
     var state = this.state;
+    var showScrollbarY = state.maxScrollY > 0 && state.overflowY !== 'hidden' && state.showScrollbarY !== false;
 
     return (
       <FixedDataTableBufferedRows
@@ -851,6 +855,7 @@ var FixedDataTable = createReactClass({
         width={state.width}
         rowPositionGetter={this._scrollHelper.getRowPosition}
         bufferRowCount={this.state.bufferRowCount}
+        showScrollbarY={showScrollbarY}
       />
     );
   },
@@ -1100,8 +1105,7 @@ var FixedDataTable = createReactClass({
     }
 
     if (oldState && (props.rowsCount !== oldState.rowsCount || props.rowHeight !== oldState.rowHeight || props.height !== oldState.height)) {
-      // Number of rows changed, try to scroll to the row from before the
-      // change
+      // Number of rows changed, try to scroll to the row from before the change
       var viewportHeight =
         (props.height === undefined ? props.maxHeight : props.height) -
         (props.headerHeight || 0) -
