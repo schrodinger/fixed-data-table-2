@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.6 
+ * FixedDataTable v0.8.7 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -2799,7 +2799,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.6';
+FixedDataTableRoot.version = '0.8.7';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -4112,11 +4112,13 @@ var FixedDataTable = (0, _createReactClass2.default)({
       x = x < 0 ? 0 : x;
       x = x > this.state.maxScrollX ? this.state.maxScrollX : x;
 
+      var roundedX = Math.round(x);
+
       //NOTE (asif) This is a hacky workaround to prevent FDT from setting its internal state
       var onHorizontalScroll = this.props.onHorizontalScroll;
-      if (onHorizontalScroll ? onHorizontalScroll(x) : true) {
+      if (onHorizontalScroll ? onHorizontalScroll(roundedX) : true) {
         this.setState({
-          scrollX: x
+          scrollX: roundedX
         });
       }
     }
@@ -4131,10 +4133,13 @@ var FixedDataTable = (0, _createReactClass2.default)({
     if (!this._isScrolling) {
       this._didScrollStart();
     }
+
+    var roundedScrollPos = Math.round(scrollPos);
+
     var onHorizontalScroll = this.props.onHorizontalScroll;
-    if (onHorizontalScroll ? onHorizontalScroll(scrollPos) : true) {
+    if (onHorizontalScroll ? onHorizontalScroll(roundedScrollPos) : true) {
       this.setState({
-        scrollX: scrollPos
+        scrollX: roundedScrollPos
       });
     }
     this._didScrollStop();
