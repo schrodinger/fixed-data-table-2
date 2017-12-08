@@ -607,6 +607,9 @@ var FixedDataTable = createReactClass({
     var props = this.props;
 
     var onColumnReorder = props.onColumnReorderEndCallback ? this._onColumnReorder : null;
+    var maxScrollY = this.state.maxScrollY;
+    var showScrollbarX = state.maxScrollX > 0 && state.overflowX !== 'hidden' && state.showScrollbarX !== false;
+    var showScrollbarY = maxScrollY > 0 && state.overflowY !== 'hidden' && state.showScrollbarY !== false;
 
     var groupHeader;
     if (state.useGroupHeader) {
@@ -636,9 +639,6 @@ var FixedDataTable = createReactClass({
       );
     }
 
-    var maxScrollY = this.state.maxScrollY;
-    var showScrollbarX = state.maxScrollX > 0 && state.overflowX !== 'hidden' && state.showScrollbarX !== false;
-    var showScrollbarY = maxScrollY > 0 && state.overflowY !== 'hidden' && state.showScrollbarY !== false;
     var scrollbarXHeight = showScrollbarX ? Scrollbar.SIZE : 0;
     var scrollbarYHeight = state.height - scrollbarXHeight -
         (2 * BORDER_HEIGHT) - state.footerHeight;
