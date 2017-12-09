@@ -1173,7 +1173,7 @@ var FixedDataTable = createReactClass({
     }
 
     var columnResizingData;
-    if (props.isColumnResizing) {
+    if (props.isColumnResizing || (oldState && oldState.isColumnResizing)) {
       columnResizingData = oldState && oldState.columnResizingData;
     } else {
       columnResizingData = EMPTY_OBJECT;
