@@ -609,7 +609,7 @@ var FixedDataTable = createReactClass({
     var onColumnReorder = props.onColumnReorderEndCallback ? this._onColumnReorder : null;
     var maxScrollY = this.state.maxScrollY;
     var showScrollbarX = state.maxScrollX > 0 && state.overflowX !== 'hidden' && state.showScrollbarX !== false;
-    var showScrollbarY = maxScrollY > 0 && state.overflowY !== 'hidden' && state.showScrollbarY !== false;
+    var showScrollbarY = this._showScrollbarY(state);
 
     var groupHeader;
     if (state.useGroupHeader) {
@@ -820,7 +820,7 @@ var FixedDataTable = createReactClass({
 
   _renderRows(/*number*/ offsetTop) /*object*/ {
     var state = this.state;
-    var showScrollbarY = state.maxScrollY > 0 && state.overflowY !== 'hidden' && state.showScrollbarY !== false;
+    var showScrollbarY = this._showScrollbarY(state);
 
     return (
       <FixedDataTableBufferedRows
@@ -1347,6 +1347,10 @@ var FixedDataTable = createReactClass({
     };
 
     return newState;
+  },
+
+  _showScrollbarY(/*object*/ state) {
+    return state.maxScrollY > 0 && state.overflowY !== 'hidden' && state.showScrollbarY !== false;
   },
 
   _selectColumnElement(/*string*/ type, /*array*/ columns) /*array*/ {
