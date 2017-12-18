@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.7 
+ * FixedDataTable v0.8.8 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -81,7 +81,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 44);
+/******/ 	return __webpack_require__(__webpack_require__.s = 45);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -132,11 +132,11 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(50)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(51)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(52)();
+  module.exports = __webpack_require__(53)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
@@ -221,7 +221,7 @@ module.exports = cx;
 
 
 var React = __webpack_require__(32);
-var factory = __webpack_require__(47);
+var factory = __webpack_require__(48);
 
 if (typeof React === 'undefined') {
   throw Error(
@@ -1035,7 +1035,7 @@ var _emptyFunction = __webpack_require__(5);
 
 var _emptyFunction2 = _interopRequireDefault(_emptyFunction);
 
-var _nativeRequestAnimationFrame = __webpack_require__(56);
+var _nativeRequestAnimationFrame = __webpack_require__(57);
 
 var _nativeRequestAnimationFrame2 = _interopRequireDefault(_nativeRequestAnimationFrame);
 
@@ -1405,7 +1405,7 @@ var _emptyFunction = __webpack_require__(5);
 
 var _emptyFunction2 = _interopRequireDefault(_emptyFunction);
 
-var _normalizeWheel = __webpack_require__(53);
+var _normalizeWheel = __webpack_require__(54);
 
 var _normalizeWheel2 = _interopRequireDefault(_normalizeWheel);
 
@@ -1548,6 +1548,477 @@ module.exports = ExecutionEnvironment;
 "use strict";
 
 
+var _DOMMouseMoveTracker = __webpack_require__(29);
+
+var _DOMMouseMoveTracker2 = _interopRequireDefault(_DOMMouseMoveTracker);
+
+var _Keys = __webpack_require__(61);
+
+var _Keys2 = _interopRequireDefault(_Keys);
+
+var _React = __webpack_require__(0);
+
+var _React2 = _interopRequireDefault(_React);
+
+var _createReactClass = __webpack_require__(3);
+
+var _createReactClass2 = _interopRequireDefault(_createReactClass);
+
+var _propTypes = __webpack_require__(1);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _ReactDOM = __webpack_require__(62);
+
+var _ReactDOM2 = _interopRequireDefault(_ReactDOM);
+
+var _ReactComponentWithPureRenderMixin = __webpack_require__(10);
+
+var _ReactComponentWithPureRenderMixin2 = _interopRequireDefault(_ReactComponentWithPureRenderMixin);
+
+var _ReactWheelHandler = __webpack_require__(33);
+
+var _ReactWheelHandler2 = _interopRequireDefault(_ReactWheelHandler);
+
+var _cssVar = __webpack_require__(64);
+
+var _cssVar2 = _interopRequireDefault(_cssVar);
+
+var _cx = __webpack_require__(2);
+
+var _cx2 = _interopRequireDefault(_cx);
+
+var _emptyFunction = __webpack_require__(5);
+
+var _emptyFunction2 = _interopRequireDefault(_emptyFunction);
+
+var _FixedDataTableTranslateDOMPosition = __webpack_require__(11);
+
+var _FixedDataTableTranslateDOMPosition2 = _interopRequireDefault(_FixedDataTableTranslateDOMPosition);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Copyright Schrodinger, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule Scrollbar
+ * @typechecks
+ */
+
+var UNSCROLLABLE_STATE = {
+  position: 0,
+  scrollable: false
+};
+
+var FACE_MARGIN = parseInt((0, _cssVar2.default)('scrollbar-face-margin'), 10);
+var FACE_MARGIN_2 = FACE_MARGIN * 2;
+var FACE_SIZE_MIN = 30;
+var KEYBOARD_SCROLL_AMOUNT = 40;
+
+var _lastScrolledScrollbar = null;
+
+var Scrollbar = (0, _createReactClass2.default)({
+  displayName: 'Scrollbar',
+  mixins: [_ReactComponentWithPureRenderMixin2.default],
+
+  propTypes: {
+    contentSize: _propTypes2.default.number.isRequired,
+    defaultPosition: _propTypes2.default.number,
+    isOpaque: _propTypes2.default.bool,
+    orientation: _propTypes2.default.oneOf(['vertical', 'horizontal']),
+    onScroll: _propTypes2.default.func,
+    position: _propTypes2.default.number,
+    size: _propTypes2.default.number.isRequired,
+    trackColor: _propTypes2.default.oneOf(['gray']),
+    zIndex: _propTypes2.default.number,
+    verticalTop: _propTypes2.default.number
+  },
+
+  getInitialState: function getInitialState() /*object*/{
+    var props = this.props;
+    return this._calculateState(props.position || props.defaultPosition || 0, props.size, props.contentSize, props.orientation);
+  },
+  componentWillReceiveProps: function componentWillReceiveProps( /*object*/nextProps) {
+    var controlledPosition = nextProps.position;
+    if (controlledPosition === undefined) {
+      this._setNextState(this._calculateState(this.state.position, nextProps.size, nextProps.contentSize, nextProps.orientation));
+    } else {
+      this._setNextState(this._calculateState(controlledPosition, nextProps.size, nextProps.contentSize, nextProps.orientation), nextProps);
+    }
+  },
+  getDefaultProps: function getDefaultProps() /*object*/{
+    return {
+      defaultPosition: 0,
+      isOpaque: false,
+      onScroll: _emptyFunction2.default,
+      orientation: 'vertical',
+      zIndex: 99
+    };
+  },
+  render: function render() /*?object*/{
+    if (!this.state.scrollable) {
+      return null;
+    }
+
+    var size = this.props.size;
+    var mainStyle;
+    var faceStyle;
+    var isHorizontal = this.state.isHorizontal;
+    var isVertical = !isHorizontal;
+    var isActive = this.state.focused || this.state.isDragging;
+    var faceSize = this.state.faceSize;
+    var isOpaque = this.props.isOpaque;
+    var verticalTop = this.props.verticalTop || 0;
+
+    var mainClassName = (0, _cx2.default)({
+      'ScrollbarLayout/main': true,
+      'ScrollbarLayout/mainVertical': isVertical,
+      'ScrollbarLayout/mainHorizontal': isHorizontal,
+      'public/Scrollbar/main': true,
+      'public/Scrollbar/mainOpaque': isOpaque,
+      'public/Scrollbar/mainActive': isActive
+    });
+
+    var faceClassName = (0, _cx2.default)({
+      'ScrollbarLayout/face': true,
+      'ScrollbarLayout/faceHorizontal': isHorizontal,
+      'ScrollbarLayout/faceVertical': isVertical,
+      'public/Scrollbar/faceActive': isActive,
+      'public/Scrollbar/face': true
+    });
+
+    var position = this.state.position * this.state.scale + FACE_MARGIN;
+
+    if (isHorizontal) {
+      mainStyle = {
+        width: size
+      };
+      faceStyle = {
+        width: faceSize - FACE_MARGIN_2
+      };
+      (0, _FixedDataTableTranslateDOMPosition2.default)(faceStyle, position, 0, this._initialRender);
+    } else {
+      mainStyle = {
+        top: verticalTop,
+        height: size
+      };
+      faceStyle = {
+        height: faceSize - FACE_MARGIN_2
+      };
+      (0, _FixedDataTableTranslateDOMPosition2.default)(faceStyle, 0, position, this._initialRender);
+    }
+
+    mainStyle.zIndex = this.props.zIndex;
+
+    if (this.props.trackColor === 'gray') {
+      mainStyle.backgroundColor = (0, _cssVar2.default)('fbui-desktop-background-light');
+    }
+
+    return _React2.default.createElement(
+      'div',
+      {
+        onFocus: this._onFocus,
+        onBlur: this._onBlur,
+        onKeyDown: this._onKeyDown,
+        onMouseDown: this._onMouseDown,
+        onWheel: this._wheelHandler.onWheel,
+        className: mainClassName,
+        style: mainStyle,
+        tabIndex: 0 },
+      _React2.default.createElement('div', {
+        ref: 'face',
+        className: faceClassName,
+        style: faceStyle
+      })
+    );
+  },
+  componentWillMount: function componentWillMount() {
+    var isHorizontal = this.props.orientation === 'horizontal';
+    var onWheel = isHorizontal ? this._onWheelX : this._onWheelY;
+
+    this._wheelHandler = new _ReactWheelHandler2.default(onWheel, this._shouldHandleX, // Should hanlde horizontal scroll
+    this._shouldHandleY // Should handle vertical scroll
+    );
+    this._initialRender = true;
+  },
+  componentDidMount: function componentDidMount() {
+    this._mouseMoveTracker = new _DOMMouseMoveTracker2.default(this._onMouseMove, this._onMouseMoveEnd, document.documentElement);
+
+    if (this.props.position !== undefined && this.state.position !== this.props.position) {
+      this._didScroll();
+    }
+    this._initialRender = false;
+  },
+  componentWillUnmount: function componentWillUnmount() {
+    this._nextState = null;
+    this._mouseMoveTracker.releaseMouseMoves();
+    if (_lastScrolledScrollbar === this) {
+      _lastScrolledScrollbar = null;
+    }
+    delete this._mouseMoveTracker;
+  },
+  scrollBy: function scrollBy( /*number*/delta) {
+    this._onWheel(delta);
+  },
+  _shouldHandleX: function _shouldHandleX( /*number*/delta) /*boolean*/{
+    return this.props.orientation === 'horizontal' ? this._shouldHandleChange(delta) : false;
+  },
+  _shouldHandleY: function _shouldHandleY( /*number*/delta) /*boolean*/{
+    return this.props.orientation !== 'horizontal' ? this._shouldHandleChange(delta) : false;
+  },
+  _shouldHandleChange: function _shouldHandleChange( /*number*/delta) /*boolean*/{
+    var nextState = this._calculateState(this.state.position + delta, this.props.size, this.props.contentSize, this.props.orientation);
+    return nextState.position !== this.state.position;
+  },
+  _calculateState: function _calculateState(
+  /*number*/position,
+  /*number*/size,
+  /*number*/contentSize,
+  /*string*/orientation) /*object*/{
+    if (size < 1 || contentSize <= size) {
+      return UNSCROLLABLE_STATE;
+    }
+
+    var stateKey = position + '_' + size + '_' + contentSize + '_' + orientation;
+    if (this._stateKey === stateKey) {
+      return this._stateForKey;
+    }
+
+    // There are two types of positions here.
+    // 1) Phisical position: changed by mouse / keyboard
+    // 2) Logical position: changed by props.
+    // The logical position will be kept as as internal state and the `render()`
+    // function will translate it into physical position to render.
+
+    var isHorizontal = orientation === 'horizontal';
+    var scale = size / contentSize;
+    var faceSize = size * scale;
+
+    if (faceSize < FACE_SIZE_MIN) {
+      scale = (size - FACE_SIZE_MIN) / (contentSize - size);
+      faceSize = FACE_SIZE_MIN;
+    }
+
+    var scrollable = true;
+    var maxPosition = contentSize - size;
+
+    if (position < 0) {
+      position = 0;
+    } else if (position > maxPosition) {
+      position = maxPosition;
+    }
+
+    var isDragging = this._mouseMoveTracker ? this._mouseMoveTracker.isDragging() : false;
+
+    // This function should only return flat values that can be compared quiclky
+    // by `ReactComponentWithPureRenderMixin`.
+    var state = {
+      faceSize: faceSize,
+      isDragging: isDragging,
+      isHorizontal: isHorizontal,
+      position: position,
+      scale: scale,
+      scrollable: scrollable
+    };
+
+    // cache the state for later use.
+    this._stateKey = stateKey;
+    this._stateForKey = state;
+    return state;
+  },
+  _onWheelY: function _onWheelY( /*number*/deltaX, /*number*/deltaY) {
+    this._onWheel(deltaY);
+  },
+  _onWheelX: function _onWheelX( /*number*/deltaX, /*number*/deltaY) {
+    this._onWheel(deltaX);
+  },
+  _onWheel: function _onWheel( /*number*/delta) {
+    var props = this.props;
+
+    // The mouse may move faster then the animation frame does.
+    // Use `requestAnimationFrame` to avoid over-updating.
+    this._setNextState(this._calculateState(this.state.position + delta, props.size, props.contentSize, props.orientation));
+  },
+  _onMouseDown: function _onMouseDown( /*object*/event) {
+    var nextState;
+
+    if (event.target !== _ReactDOM2.default.findDOMNode(this.refs.face)) {
+      // Both `offsetX` and `layerX` are non-standard DOM property but they are
+      // magically available for browsers somehow.
+      var nativeEvent = event.nativeEvent;
+      var position = this.state.isHorizontal ? nativeEvent.offsetX || nativeEvent.layerX : nativeEvent.offsetY || nativeEvent.layerY;
+
+      // MouseDown on the scroll-track directly, move the center of the
+      // scroll-face to the mouse position.
+      var props = this.props;
+      position /= this.state.scale;
+      nextState = this._calculateState(position - this.state.faceSize * 0.5 / this.state.scale, props.size, props.contentSize, props.orientation);
+    } else {
+      nextState = {};
+    }
+
+    nextState.focused = true;
+    this._setNextState(nextState);
+
+    this._mouseMoveTracker.captureMouseMoves(event);
+    // Focus the node so it may receive keyboard event.
+    _ReactDOM2.default.findDOMNode(this).focus();
+  },
+  _onMouseMove: function _onMouseMove( /*number*/deltaX, /*number*/deltaY) {
+    var props = this.props;
+    var delta = this.state.isHorizontal ? deltaX : deltaY;
+    delta /= this.state.scale;
+
+    this._setNextState(this._calculateState(this.state.position + delta, props.size, props.contentSize, props.orientation));
+  },
+  _onMouseMoveEnd: function _onMouseMoveEnd() {
+    this._nextState = null;
+    this._mouseMoveTracker.releaseMouseMoves();
+    this.setState({ isDragging: false });
+  },
+  _onKeyDown: function _onKeyDown( /*object*/event) {
+    var keyCode = event.keyCode;
+
+    if (keyCode === _Keys2.default.TAB) {
+      // Let focus move off the scrollbar.
+      return;
+    }
+
+    var distance = KEYBOARD_SCROLL_AMOUNT;
+    var direction = 0;
+
+    if (this.state.isHorizontal) {
+      switch (keyCode) {
+        case _Keys2.default.HOME:
+          direction = -1;
+          distance = this.props.contentSize;
+          break;
+
+        case _Keys2.default.LEFT:
+          direction = -1;
+          break;
+
+        case _Keys2.default.RIGHT:
+          direction = 1;
+          break;
+
+        default:
+          return;
+      }
+    }
+
+    if (!this.state.isHorizontal) {
+      switch (keyCode) {
+        case _Keys2.default.SPACE:
+          if (event.shiftKey) {
+            direction = -1;
+          } else {
+            direction = 1;
+          }
+          break;
+
+        case _Keys2.default.HOME:
+          direction = -1;
+          distance = this.props.contentSize;
+          break;
+
+        case _Keys2.default.UP:
+          direction = -1;
+          break;
+
+        case _Keys2.default.DOWN:
+          direction = 1;
+          break;
+
+        case _Keys2.default.PAGE_UP:
+          direction = -1;
+          distance = this.props.size;
+          break;
+
+        case _Keys2.default.PAGE_DOWN:
+          direction = 1;
+          distance = this.props.size;
+          break;
+
+        default:
+          return;
+      }
+    }
+
+    event.preventDefault();
+
+    var props = this.props;
+    this._setNextState(this._calculateState(this.state.position + distance * direction, props.size, props.contentSize, props.orientation));
+  },
+  _onFocus: function _onFocus() {
+    this.setState({
+      focused: true
+    });
+  },
+  _onBlur: function _onBlur() {
+    this.setState({
+      focused: false
+    });
+  },
+  _blur: function _blur() {
+    var el = _ReactDOM2.default.findDOMNode(this);
+    if (!el) {
+      return;
+    }
+
+    try {
+      this._onBlur();
+      el.blur();
+    } catch (oops) {
+      // pass
+    }
+  },
+  _setNextState: function _setNextState( /*object*/nextState, /*?object*/props) {
+    props = props || this.props;
+    var controlledPosition = props.position;
+    var willScroll = this.state.position !== nextState.position;
+    if (controlledPosition === undefined) {
+      var callback = willScroll ? this._didScroll : undefined;
+      this.setState(nextState, callback);
+    } else if (controlledPosition === nextState.position) {
+      this.setState(nextState);
+    } else {
+      // Scrolling is controlled. Don't update the state and let the owner
+      // to update the scrollbar instead.
+      if (nextState.position !== undefined && nextState.position !== this.state.position) {
+        this.props.onScroll(nextState.position);
+      }
+      return;
+    }
+
+    if (willScroll && _lastScrolledScrollbar !== this) {
+      _lastScrolledScrollbar && _lastScrolledScrollbar._blur();
+      _lastScrolledScrollbar = this;
+    }
+  },
+  _didScroll: function _didScroll() {
+    this.props.onScroll(this.state.position);
+  }
+});
+
+Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;
+Scrollbar.SIZE = parseInt((0, _cssVar2.default)('scrollbar-size'), 10);
+Scrollbar.OFFSET = 1;
+
+module.exports = Scrollbar;
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _ExecutionEnvironment = __webpack_require__(34);
 
 var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
@@ -1608,7 +2079,7 @@ function getVendorPrefixedName(property) {
 module.exports = getVendorPrefixedName;
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1641,6 +2112,10 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 var _FixedDataTableCellGroup = __webpack_require__(72);
 
 var _FixedDataTableCellGroup2 = _interopRequireDefault(_FixedDataTableCellGroup);
+
+var _Scrollbar = __webpack_require__(35);
+
+var _Scrollbar2 = _interopRequireDefault(_Scrollbar);
 
 var _cx = __webpack_require__(2);
 
@@ -1811,12 +2286,13 @@ var FixedDataTableRowImpl = function (_React$Component) {
       });
       var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
       var fixedRightColumnsWidth = this._getColumnsWidth(this.props.fixedRightColumns);
+      var scrollbarOffset = this.props.showScrollbarY ? _Scrollbar2.default.SIZE : 0;
       var fixedRightColumns = _React2.default.createElement(_FixedDataTableCellGroup2.default, {
         key: 'fixed_right_cells',
         isScrolling: this.props.isScrolling,
         height: this.props.height,
         cellGroupWrapperHeight: this.props.cellGroupWrapperHeight,
-        offsetLeft: this.props.width - fixedRightColumnsWidth,
+        offsetLeft: this.props.width - fixedRightColumnsWidth - scrollbarOffset,
         width: fixedRightColumnsWidth,
         zIndex: 2,
         columns: this.props.fixedRightColumns,
@@ -1830,7 +2306,7 @@ var FixedDataTableRowImpl = function (_React$Component) {
         rowHeight: this.props.height,
         rowIndex: this.props.index
       });
-      var fixedRightColumnsShdadow = fixedRightColumnsWidth ? this._renderFixedRightColumnsShadow(this.props.width - fixedRightColumnsWidth - 5) : null;
+      var fixedRightColumnsShadow = fixedRightColumnsWidth ? this._renderFixedRightColumnsShadow(this.props.width - fixedRightColumnsWidth - scrollbarOffset - 5) : null;
       var scrollableColumns = _React2.default.createElement(_FixedDataTableCellGroup2.default, {
         key: 'scrollable_cells',
         isScrolling: this.props.isScrolling,
@@ -1839,7 +2315,7 @@ var FixedDataTableRowImpl = function (_React$Component) {
         align: 'right',
         left: this.props.scrollLeft,
         offsetLeft: fixedColumnsWidth,
-        width: this.props.width - fixedColumnsWidth - fixedRightColumnsWidth,
+        width: this.props.width - fixedColumnsWidth - fixedRightColumnsWidth - scrollbarOffset,
         zIndex: 0,
         columns: this.props.scrollableColumns,
         touchEnabled: this.props.touchEnabled,
@@ -1860,6 +2336,19 @@ var FixedDataTableRowImpl = function (_React$Component) {
         top: this.props.height,
         width: this.props.width
       };
+
+      var scrollbarSpacer;
+      if (this.props.showScrollbarY) {
+        var spacerStyles = {
+          width: scrollbarOffset,
+          height: this.props.height,
+          left: this.props.width - scrollbarOffset
+        };
+        scrollbarSpacer = _React2.default.createElement('div', {
+          style: spacerStyles,
+          className: (0, _cx2.default)('public/fixedDataTable/scrollbarSpacer')
+        });
+      }
 
       return _React2.default.createElement(
         'div',
@@ -1882,7 +2371,8 @@ var FixedDataTableRowImpl = function (_React$Component) {
           scrollableColumns,
           columnsLeftShadow,
           fixedRightColumns,
-          fixedRightColumnsShdadow
+          fixedRightColumnsShadow,
+          scrollbarSpacer
         ),
         rowExpanded && _React2.default.createElement(
           'div',
@@ -2078,7 +2568,7 @@ FixedDataTableRow.propTypes = {
 module.exports = FixedDataTableRow;
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2104,11 +2594,11 @@ var _React = __webpack_require__(0);
 
 var _React2 = _interopRequireDefault(_React);
 
-var _FixedDataTableColumnGroup = __webpack_require__(38);
+var _FixedDataTableColumnGroup = __webpack_require__(39);
 
 var _FixedDataTableColumnGroup2 = _interopRequireDefault(_FixedDataTableColumnGroup);
 
-var _FixedDataTableColumn = __webpack_require__(39);
+var _FixedDataTableColumn = __webpack_require__(40);
 
 var _FixedDataTableColumn2 = _interopRequireDefault(_FixedDataTableColumn);
 
@@ -2201,7 +2691,7 @@ var FixedDataTableHelper = {
 module.exports = FixedDataTableHelper;
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2302,7 +2792,7 @@ FixedDataTableColumnGroup.defaultProps = {
 module.exports = FixedDataTableColumnGroup;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2522,7 +3012,7 @@ FixedDataTableColumn.defaultProps = {
 module.exports = FixedDataTableColumn;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2679,7 +3169,7 @@ FixedDataTableCellDefault.propTypes = {
 module.exports = FixedDataTableCellDefault;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2736,9 +3226,9 @@ function shallowEqual(objA, objB) {
 module.exports = shallowEqual;
 
 /***/ }),
-/* 42 */,
 /* 43 */,
-/* 44 */
+/* 44 */,
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(13);
@@ -2753,11 +3243,11 @@ __webpack_require__(21);
 __webpack_require__(22);
 __webpack_require__(23);
 __webpack_require__(24);
-module.exports = __webpack_require__(45);
+module.exports = __webpack_require__(46);
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2774,19 +3264,19 @@ module.exports = __webpack_require__(45);
 
 
 
-var _FixedDataTable = __webpack_require__(46);
+var _FixedDataTable = __webpack_require__(47);
 
 var _FixedDataTable2 = _interopRequireDefault(_FixedDataTable);
 
-var _FixedDataTableCellDefault = __webpack_require__(40);
+var _FixedDataTableCellDefault = __webpack_require__(41);
 
 var _FixedDataTableCellDefault2 = _interopRequireDefault(_FixedDataTableCellDefault);
 
-var _FixedDataTableColumn = __webpack_require__(39);
+var _FixedDataTableColumn = __webpack_require__(40);
 
 var _FixedDataTableColumn2 = _interopRequireDefault(_FixedDataTableColumn);
 
-var _FixedDataTableColumnGroup = __webpack_require__(38);
+var _FixedDataTableColumnGroup = __webpack_require__(39);
 
 var _FixedDataTableColumnGroup2 = _interopRequireDefault(_FixedDataTableColumnGroup);
 
@@ -2799,11 +3289,11 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.7';
+FixedDataTableRoot.version = '0.8.8';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2844,11 +3334,11 @@ var _ReactWheelHandler = __webpack_require__(33);
 
 var _ReactWheelHandler2 = _interopRequireDefault(_ReactWheelHandler);
 
-var _ReactTouchHandler = __webpack_require__(57);
+var _ReactTouchHandler = __webpack_require__(58);
 
 var _ReactTouchHandler2 = _interopRequireDefault(_ReactTouchHandler);
 
-var _Scrollbar = __webpack_require__(58);
+var _Scrollbar = __webpack_require__(35);
 
 var _Scrollbar2 = _interopRequireDefault(_Scrollbar);
 
@@ -2860,7 +3350,7 @@ var _FixedDataTableColumnResizeHandle = __webpack_require__(75);
 
 var _FixedDataTableColumnResizeHandle2 = _interopRequireDefault(_FixedDataTableColumnResizeHandle);
 
-var _FixedDataTableRow = __webpack_require__(36);
+var _FixedDataTableRow = __webpack_require__(37);
 
 var _FixedDataTableRow2 = _interopRequireDefault(_FixedDataTableRow);
 
@@ -2896,7 +3386,7 @@ var _joinClasses = __webpack_require__(8);
 
 var _joinClasses2 = _interopRequireDefault(_joinClasses);
 
-var _shallowEqual = __webpack_require__(41);
+var _shallowEqual = __webpack_require__(42);
 
 var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
@@ -3433,6 +3923,9 @@ var FixedDataTable = (0, _createReactClass2.default)({
     var props = this.props;
 
     var onColumnReorder = props.onColumnReorderEndCallback ? this._onColumnReorder : null;
+    var maxScrollY = this.state.maxScrollY;
+    var showScrollbarX = state.maxScrollX > 0 && state.overflowX !== 'hidden' && state.showScrollbarX !== false;
+    var showScrollbarY = this._showScrollbarY(state);
 
     var groupHeader;
     if (state.useGroupHeader) {
@@ -3452,13 +3945,11 @@ var FixedDataTable = (0, _createReactClass2.default)({
         scrollableColumns: state.groupHeaderScrollableColumns,
         onColumnResize: this._onColumnResize,
         onColumnReorder: onColumnReorder,
-        onColumnReorderMove: this._onColumnReorderMove
+        onColumnReorderMove: this._onColumnReorderMove,
+        showScrollbarY: showScrollbarY
       });
     }
 
-    var maxScrollY = this.state.maxScrollY;
-    var showScrollbarX = state.maxScrollX > 0 && state.overflowX !== 'hidden' && state.showScrollbarX !== false;
-    var showScrollbarY = maxScrollY > 0 && state.overflowY !== 'hidden' && state.showScrollbarY !== false;
     var scrollbarXHeight = showScrollbarX ? _Scrollbar2.default.SIZE : 0;
     var scrollbarYHeight = state.height - scrollbarXHeight - 2 * BORDER_HEIGHT - state.footerHeight;
 
@@ -3529,7 +4020,8 @@ var FixedDataTable = (0, _createReactClass2.default)({
         fixedColumns: state.footFixedColumns,
         fixedRightColumns: state.footFixedRightColumns,
         scrollableColumns: state.footScrollableColumns,
-        scrollLeft: state.scrollX
+        scrollLeft: state.scrollX,
+        showScrollbarY: showScrollbarY
       });
     }
 
@@ -3555,7 +4047,8 @@ var FixedDataTable = (0, _createReactClass2.default)({
       onColumnReorderMove: this._onColumnReorderMove,
       onColumnReorderEnd: this._onColumnReorderEnd,
       isColumnReordering: !!state.isColumnReordering,
-      columnReorderingData: state.columnReorderingData
+      columnReorderingData: state.columnReorderingData,
+      showScrollbarY: showScrollbarY
     });
 
     var topShadow;
@@ -3605,6 +4098,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
   },
   _renderRows: function _renderRows( /*number*/offsetTop) /*object*/{
     var state = this.state;
+    var showScrollbarY = this._showScrollbarY(state);
 
     return _React2.default.createElement(_FixedDataTableBufferedRows2.default, {
       isScrolling: this._isScrolling,
@@ -3637,7 +4131,8 @@ var FixedDataTable = (0, _createReactClass2.default)({
       showLastRowBorder: true,
       width: state.width,
       rowPositionGetter: this._scrollHelper.getRowPosition,
-      bufferRowCount: this.state.bufferRowCount
+      bufferRowCount: this.state.bufferRowCount,
+      showScrollbarY: showScrollbarY
     });
   },
 
@@ -3851,8 +4346,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
     }
 
     if (oldState && (props.rowsCount !== oldState.rowsCount || props.rowHeight !== oldState.rowHeight || props.height !== oldState.height)) {
-      // Number of rows changed, try to scroll to the row from before the
-      // change
+      // Number of rows changed, try to scroll to the row from before the change
       var viewportHeight = (props.height === undefined ? props.maxHeight : props.height) - (props.headerHeight || 0) - (props.footerHeight || 0) - (props.groupHeaderHeight || 0);
 
       var oldViewportHeight = this._scrollHelper._viewportHeight;
@@ -3912,7 +4406,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
     }
 
     var columnResizingData;
-    if (props.isColumnResizing) {
+    if (props.isColumnResizing || oldState && oldState.isColumnResizing) {
       columnResizingData = oldState && oldState.columnResizingData;
     } else {
       columnResizingData = EMPTY_OBJECT;
@@ -3932,7 +4426,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
     var columnInfo = this._populateColumnsAndColumnData(columns, columnGroups, oldState);
 
     var lastScrollToColumn = oldState ? oldState.scrollToColumn : undefined;
-    if (props.scrollToColumn !== null && props.scrollToColumn !== lastScrollToColumn) {
+    if (props.scrollToColumn !== null && props.scrollToColumn !== lastScrollToColumn && columnInfo.bodyScrollableColumns.length > 0) {
       // If selected column is a fixed column, don't scroll
       var fixedColumnsCount = columnInfo.bodyFixedColumns.length;
       if (props.scrollToColumn >= fixedColumnsCount) {
@@ -4059,6 +4553,9 @@ var FixedDataTable = (0, _createReactClass2.default)({
     });
 
     return newState;
+  },
+  _showScrollbarY: function _showScrollbarY( /*object*/state) {
+    return state.maxScrollY > 0 && state.overflowY !== 'hidden' && state.showScrollbarY !== false;
   },
   _selectColumnElement: function _selectColumnElement( /*string*/type, /*array*/columns) /*array*/{
     var newColumns = [];
@@ -4245,7 +4742,7 @@ var HorizontalScrollbar = (0, _createReactClass2.default)({
 module.exports = FixedDataTable;
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4261,9 +4758,9 @@ module.exports = FixedDataTable;
 
 
 
-var _assign = __webpack_require__(48);
+var _assign = __webpack_require__(49);
 
-var emptyObject = __webpack_require__(49);
+var emptyObject = __webpack_require__(50);
 var _invariant = __webpack_require__(9);
 
 if (process.env.NODE_ENV !== 'production') {
@@ -5125,7 +5622,7 @@ module.exports = factory;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5222,7 +5719,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5248,7 +5745,7 @@ module.exports = emptyObject;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5268,7 +5765,7 @@ var invariant = __webpack_require__(9);
 var warning = __webpack_require__(25);
 
 var ReactPropTypesSecret = __webpack_require__(27);
-var checkPropTypes = __webpack_require__(51);
+var checkPropTypes = __webpack_require__(52);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -5768,7 +6265,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5837,7 +6334,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5903,7 +6400,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5921,11 +6418,11 @@ module.exports = function() {
 
 
 
-var _UserAgent_DEPRECATED = __webpack_require__(54);
+var _UserAgent_DEPRECATED = __webpack_require__(55);
 
 var _UserAgent_DEPRECATED2 = _interopRequireDefault(_UserAgent_DEPRECATED);
 
-var _isEventSupported = __webpack_require__(55);
+var _isEventSupported = __webpack_require__(56);
 
 var _isEventSupported2 = _interopRequireDefault(_isEventSupported);
 
@@ -6111,7 +6608,7 @@ normalizeWheel.getEventType = function () /*string*/{
 module.exports = normalizeWheel;
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6395,7 +6892,7 @@ var UserAgent_DEPRECATED = {
 module.exports = UserAgent_DEPRECATED;
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6465,7 +6962,7 @@ function isEventSupported(eventNameSuffix, capture) {
 module.exports = isEventSupported;
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6488,7 +6985,7 @@ module.exports = nativeRequestAnimationFrame;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6801,477 +7298,6 @@ var ReactTouchHandler = function () {
 module.exports = ReactTouchHandler;
 
 /***/ }),
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _DOMMouseMoveTracker = __webpack_require__(29);
-
-var _DOMMouseMoveTracker2 = _interopRequireDefault(_DOMMouseMoveTracker);
-
-var _Keys = __webpack_require__(61);
-
-var _Keys2 = _interopRequireDefault(_Keys);
-
-var _React = __webpack_require__(0);
-
-var _React2 = _interopRequireDefault(_React);
-
-var _createReactClass = __webpack_require__(3);
-
-var _createReactClass2 = _interopRequireDefault(_createReactClass);
-
-var _propTypes = __webpack_require__(1);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _ReactDOM = __webpack_require__(62);
-
-var _ReactDOM2 = _interopRequireDefault(_ReactDOM);
-
-var _ReactComponentWithPureRenderMixin = __webpack_require__(10);
-
-var _ReactComponentWithPureRenderMixin2 = _interopRequireDefault(_ReactComponentWithPureRenderMixin);
-
-var _ReactWheelHandler = __webpack_require__(33);
-
-var _ReactWheelHandler2 = _interopRequireDefault(_ReactWheelHandler);
-
-var _cssVar = __webpack_require__(64);
-
-var _cssVar2 = _interopRequireDefault(_cssVar);
-
-var _cx = __webpack_require__(2);
-
-var _cx2 = _interopRequireDefault(_cx);
-
-var _emptyFunction = __webpack_require__(5);
-
-var _emptyFunction2 = _interopRequireDefault(_emptyFunction);
-
-var _FixedDataTableTranslateDOMPosition = __webpack_require__(11);
-
-var _FixedDataTableTranslateDOMPosition2 = _interopRequireDefault(_FixedDataTableTranslateDOMPosition);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Copyright Schrodinger, LLC
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule Scrollbar
- * @typechecks
- */
-
-var UNSCROLLABLE_STATE = {
-  position: 0,
-  scrollable: false
-};
-
-var FACE_MARGIN = parseInt((0, _cssVar2.default)('scrollbar-face-margin'), 10);
-var FACE_MARGIN_2 = FACE_MARGIN * 2;
-var FACE_SIZE_MIN = 30;
-var KEYBOARD_SCROLL_AMOUNT = 40;
-
-var _lastScrolledScrollbar = null;
-
-var Scrollbar = (0, _createReactClass2.default)({
-  displayName: 'Scrollbar',
-  mixins: [_ReactComponentWithPureRenderMixin2.default],
-
-  propTypes: {
-    contentSize: _propTypes2.default.number.isRequired,
-    defaultPosition: _propTypes2.default.number,
-    isOpaque: _propTypes2.default.bool,
-    orientation: _propTypes2.default.oneOf(['vertical', 'horizontal']),
-    onScroll: _propTypes2.default.func,
-    position: _propTypes2.default.number,
-    size: _propTypes2.default.number.isRequired,
-    trackColor: _propTypes2.default.oneOf(['gray']),
-    zIndex: _propTypes2.default.number,
-    verticalTop: _propTypes2.default.number
-  },
-
-  getInitialState: function getInitialState() /*object*/{
-    var props = this.props;
-    return this._calculateState(props.position || props.defaultPosition || 0, props.size, props.contentSize, props.orientation);
-  },
-  componentWillReceiveProps: function componentWillReceiveProps( /*object*/nextProps) {
-    var controlledPosition = nextProps.position;
-    if (controlledPosition === undefined) {
-      this._setNextState(this._calculateState(this.state.position, nextProps.size, nextProps.contentSize, nextProps.orientation));
-    } else {
-      this._setNextState(this._calculateState(controlledPosition, nextProps.size, nextProps.contentSize, nextProps.orientation), nextProps);
-    }
-  },
-  getDefaultProps: function getDefaultProps() /*object*/{
-    return {
-      defaultPosition: 0,
-      isOpaque: false,
-      onScroll: _emptyFunction2.default,
-      orientation: 'vertical',
-      zIndex: 99
-    };
-  },
-  render: function render() /*?object*/{
-    if (!this.state.scrollable) {
-      return null;
-    }
-
-    var size = this.props.size;
-    var mainStyle;
-    var faceStyle;
-    var isHorizontal = this.state.isHorizontal;
-    var isVertical = !isHorizontal;
-    var isActive = this.state.focused || this.state.isDragging;
-    var faceSize = this.state.faceSize;
-    var isOpaque = this.props.isOpaque;
-    var verticalTop = this.props.verticalTop || 0;
-
-    var mainClassName = (0, _cx2.default)({
-      'ScrollbarLayout/main': true,
-      'ScrollbarLayout/mainVertical': isVertical,
-      'ScrollbarLayout/mainHorizontal': isHorizontal,
-      'public/Scrollbar/main': true,
-      'public/Scrollbar/mainOpaque': isOpaque,
-      'public/Scrollbar/mainActive': isActive
-    });
-
-    var faceClassName = (0, _cx2.default)({
-      'ScrollbarLayout/face': true,
-      'ScrollbarLayout/faceHorizontal': isHorizontal,
-      'ScrollbarLayout/faceVertical': isVertical,
-      'public/Scrollbar/faceActive': isActive,
-      'public/Scrollbar/face': true
-    });
-
-    var position = this.state.position * this.state.scale + FACE_MARGIN;
-
-    if (isHorizontal) {
-      mainStyle = {
-        width: size
-      };
-      faceStyle = {
-        width: faceSize - FACE_MARGIN_2
-      };
-      (0, _FixedDataTableTranslateDOMPosition2.default)(faceStyle, position, 0, this._initialRender);
-    } else {
-      mainStyle = {
-        top: verticalTop,
-        height: size
-      };
-      faceStyle = {
-        height: faceSize - FACE_MARGIN_2
-      };
-      (0, _FixedDataTableTranslateDOMPosition2.default)(faceStyle, 0, position, this._initialRender);
-    }
-
-    mainStyle.zIndex = this.props.zIndex;
-
-    if (this.props.trackColor === 'gray') {
-      mainStyle.backgroundColor = (0, _cssVar2.default)('fbui-desktop-background-light');
-    }
-
-    return _React2.default.createElement(
-      'div',
-      {
-        onFocus: this._onFocus,
-        onBlur: this._onBlur,
-        onKeyDown: this._onKeyDown,
-        onMouseDown: this._onMouseDown,
-        onWheel: this._wheelHandler.onWheel,
-        className: mainClassName,
-        style: mainStyle,
-        tabIndex: 0 },
-      _React2.default.createElement('div', {
-        ref: 'face',
-        className: faceClassName,
-        style: faceStyle
-      })
-    );
-  },
-  componentWillMount: function componentWillMount() {
-    var isHorizontal = this.props.orientation === 'horizontal';
-    var onWheel = isHorizontal ? this._onWheelX : this._onWheelY;
-
-    this._wheelHandler = new _ReactWheelHandler2.default(onWheel, this._shouldHandleX, // Should hanlde horizontal scroll
-    this._shouldHandleY // Should handle vertical scroll
-    );
-    this._initialRender = true;
-  },
-  componentDidMount: function componentDidMount() {
-    this._mouseMoveTracker = new _DOMMouseMoveTracker2.default(this._onMouseMove, this._onMouseMoveEnd, document.documentElement);
-
-    if (this.props.position !== undefined && this.state.position !== this.props.position) {
-      this._didScroll();
-    }
-    this._initialRender = false;
-  },
-  componentWillUnmount: function componentWillUnmount() {
-    this._nextState = null;
-    this._mouseMoveTracker.releaseMouseMoves();
-    if (_lastScrolledScrollbar === this) {
-      _lastScrolledScrollbar = null;
-    }
-    delete this._mouseMoveTracker;
-  },
-  scrollBy: function scrollBy( /*number*/delta) {
-    this._onWheel(delta);
-  },
-  _shouldHandleX: function _shouldHandleX( /*number*/delta) /*boolean*/{
-    return this.props.orientation === 'horizontal' ? this._shouldHandleChange(delta) : false;
-  },
-  _shouldHandleY: function _shouldHandleY( /*number*/delta) /*boolean*/{
-    return this.props.orientation !== 'horizontal' ? this._shouldHandleChange(delta) : false;
-  },
-  _shouldHandleChange: function _shouldHandleChange( /*number*/delta) /*boolean*/{
-    var nextState = this._calculateState(this.state.position + delta, this.props.size, this.props.contentSize, this.props.orientation);
-    return nextState.position !== this.state.position;
-  },
-  _calculateState: function _calculateState(
-  /*number*/position,
-  /*number*/size,
-  /*number*/contentSize,
-  /*string*/orientation) /*object*/{
-    if (size < 1 || contentSize <= size) {
-      return UNSCROLLABLE_STATE;
-    }
-
-    var stateKey = position + '_' + size + '_' + contentSize + '_' + orientation;
-    if (this._stateKey === stateKey) {
-      return this._stateForKey;
-    }
-
-    // There are two types of positions here.
-    // 1) Phisical position: changed by mouse / keyboard
-    // 2) Logical position: changed by props.
-    // The logical position will be kept as as internal state and the `render()`
-    // function will translate it into physical position to render.
-
-    var isHorizontal = orientation === 'horizontal';
-    var scale = size / contentSize;
-    var faceSize = size * scale;
-
-    if (faceSize < FACE_SIZE_MIN) {
-      scale = (size - FACE_SIZE_MIN) / (contentSize - size);
-      faceSize = FACE_SIZE_MIN;
-    }
-
-    var scrollable = true;
-    var maxPosition = contentSize - size;
-
-    if (position < 0) {
-      position = 0;
-    } else if (position > maxPosition) {
-      position = maxPosition;
-    }
-
-    var isDragging = this._mouseMoveTracker ? this._mouseMoveTracker.isDragging() : false;
-
-    // This function should only return flat values that can be compared quiclky
-    // by `ReactComponentWithPureRenderMixin`.
-    var state = {
-      faceSize: faceSize,
-      isDragging: isDragging,
-      isHorizontal: isHorizontal,
-      position: position,
-      scale: scale,
-      scrollable: scrollable
-    };
-
-    // cache the state for later use.
-    this._stateKey = stateKey;
-    this._stateForKey = state;
-    return state;
-  },
-  _onWheelY: function _onWheelY( /*number*/deltaX, /*number*/deltaY) {
-    this._onWheel(deltaY);
-  },
-  _onWheelX: function _onWheelX( /*number*/deltaX, /*number*/deltaY) {
-    this._onWheel(deltaX);
-  },
-  _onWheel: function _onWheel( /*number*/delta) {
-    var props = this.props;
-
-    // The mouse may move faster then the animation frame does.
-    // Use `requestAnimationFrame` to avoid over-updating.
-    this._setNextState(this._calculateState(this.state.position + delta, props.size, props.contentSize, props.orientation));
-  },
-  _onMouseDown: function _onMouseDown( /*object*/event) {
-    var nextState;
-
-    if (event.target !== _ReactDOM2.default.findDOMNode(this.refs.face)) {
-      // Both `offsetX` and `layerX` are non-standard DOM property but they are
-      // magically available for browsers somehow.
-      var nativeEvent = event.nativeEvent;
-      var position = this.state.isHorizontal ? nativeEvent.offsetX || nativeEvent.layerX : nativeEvent.offsetY || nativeEvent.layerY;
-
-      // MouseDown on the scroll-track directly, move the center of the
-      // scroll-face to the mouse position.
-      var props = this.props;
-      position /= this.state.scale;
-      nextState = this._calculateState(position - this.state.faceSize * 0.5 / this.state.scale, props.size, props.contentSize, props.orientation);
-    } else {
-      nextState = {};
-    }
-
-    nextState.focused = true;
-    this._setNextState(nextState);
-
-    this._mouseMoveTracker.captureMouseMoves(event);
-    // Focus the node so it may receive keyboard event.
-    _ReactDOM2.default.findDOMNode(this).focus();
-  },
-  _onMouseMove: function _onMouseMove( /*number*/deltaX, /*number*/deltaY) {
-    var props = this.props;
-    var delta = this.state.isHorizontal ? deltaX : deltaY;
-    delta /= this.state.scale;
-
-    this._setNextState(this._calculateState(this.state.position + delta, props.size, props.contentSize, props.orientation));
-  },
-  _onMouseMoveEnd: function _onMouseMoveEnd() {
-    this._nextState = null;
-    this._mouseMoveTracker.releaseMouseMoves();
-    this.setState({ isDragging: false });
-  },
-  _onKeyDown: function _onKeyDown( /*object*/event) {
-    var keyCode = event.keyCode;
-
-    if (keyCode === _Keys2.default.TAB) {
-      // Let focus move off the scrollbar.
-      return;
-    }
-
-    var distance = KEYBOARD_SCROLL_AMOUNT;
-    var direction = 0;
-
-    if (this.state.isHorizontal) {
-      switch (keyCode) {
-        case _Keys2.default.HOME:
-          direction = -1;
-          distance = this.props.contentSize;
-          break;
-
-        case _Keys2.default.LEFT:
-          direction = -1;
-          break;
-
-        case _Keys2.default.RIGHT:
-          direction = 1;
-          break;
-
-        default:
-          return;
-      }
-    }
-
-    if (!this.state.isHorizontal) {
-      switch (keyCode) {
-        case _Keys2.default.SPACE:
-          if (event.shiftKey) {
-            direction = -1;
-          } else {
-            direction = 1;
-          }
-          break;
-
-        case _Keys2.default.HOME:
-          direction = -1;
-          distance = this.props.contentSize;
-          break;
-
-        case _Keys2.default.UP:
-          direction = -1;
-          break;
-
-        case _Keys2.default.DOWN:
-          direction = 1;
-          break;
-
-        case _Keys2.default.PAGE_UP:
-          direction = -1;
-          distance = this.props.size;
-          break;
-
-        case _Keys2.default.PAGE_DOWN:
-          direction = 1;
-          distance = this.props.size;
-          break;
-
-        default:
-          return;
-      }
-    }
-
-    event.preventDefault();
-
-    var props = this.props;
-    this._setNextState(this._calculateState(this.state.position + distance * direction, props.size, props.contentSize, props.orientation));
-  },
-  _onFocus: function _onFocus() {
-    this.setState({
-      focused: true
-    });
-  },
-  _onBlur: function _onBlur() {
-    this.setState({
-      focused: false
-    });
-  },
-  _blur: function _blur() {
-    var el = _ReactDOM2.default.findDOMNode(this);
-    if (!el) {
-      return;
-    }
-
-    try {
-      this._onBlur();
-      el.blur();
-    } catch (oops) {
-      // pass
-    }
-  },
-  _setNextState: function _setNextState( /*object*/nextState, /*?object*/props) {
-    props = props || this.props;
-    var controlledPosition = props.position;
-    var willScroll = this.state.position !== nextState.position;
-    if (controlledPosition === undefined) {
-      var callback = willScroll ? this._didScroll : undefined;
-      this.setState(nextState, callback);
-    } else if (controlledPosition === nextState.position) {
-      this.setState(nextState);
-    } else {
-      // Scrolling is controlled. Don't update the state and let the owner
-      // to update the scrollbar instead.
-      if (nextState.position !== undefined && nextState.position !== this.state.position) {
-        this.props.onScroll(nextState.position);
-      }
-      return;
-    }
-
-    if (willScroll && _lastScrolledScrollbar !== this) {
-      _lastScrolledScrollbar && _lastScrolledScrollbar._blur();
-      _lastScrolledScrollbar = this;
-    }
-  },
-  _didScroll: function _didScroll() {
-    this.props.onScroll(this.state.position);
-  }
-});
-
-Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;
-Scrollbar.SIZE = parseInt((0, _cssVar2.default)('scrollbar-size'), 10);
-Scrollbar.OFFSET = 1;
-
-module.exports = Scrollbar;
-
-/***/ }),
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7524,7 +7550,7 @@ var _BrowserSupportCore = __webpack_require__(66);
 
 var _BrowserSupportCore2 = _interopRequireDefault(_BrowserSupportCore);
 
-var _getVendorPrefixedName = __webpack_require__(35);
+var _getVendorPrefixedName = __webpack_require__(36);
 
 var _getVendorPrefixedName2 = _interopRequireDefault(_getVendorPrefixedName);
 
@@ -7569,7 +7595,7 @@ module.exports = translateDOMPositionXY;
 "use strict";
 
 
-var _getVendorPrefixedName = __webpack_require__(35);
+var _getVendorPrefixedName = __webpack_require__(36);
 
 var _getVendorPrefixedName2 = _interopRequireDefault(_getVendorPrefixedName);
 
@@ -7677,7 +7703,7 @@ var _FixedDataTableRowBuffer = __webpack_require__(69);
 
 var _FixedDataTableRowBuffer2 = _interopRequireDefault(_FixedDataTableRowBuffer);
 
-var _FixedDataTableRow = __webpack_require__(36);
+var _FixedDataTableRow = __webpack_require__(37);
 
 var _FixedDataTableRow2 = _interopRequireDefault(_FixedDataTableRow);
 
@@ -7837,6 +7863,7 @@ var FixedDataTableBufferedRows = (0, _createReactClass2.default)({
         onTouchStart: props.onRowTouchStart,
         onTouchEnd: props.onRowTouchEnd,
         onTouchMove: props.onRowTouchMove,
+        showScrollbarY: props.showScrollbarY,
         className: (0, _joinClasses2.default)(rowClassNameGetter(rowIndex), (0, _cx2.default)('public/fixedDataTable/bodyRow'), (0, _cx2.default)({
           'fixedDataTableLayout/hasBottomBorder': hasBottomBorder,
           'public/fixedDataTable/hasBottomBorder': hasBottomBorder
@@ -8404,7 +8431,7 @@ module.exports = Heap;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _FixedDataTableHelper = __webpack_require__(37);
+var _FixedDataTableHelper = __webpack_require__(38);
 
 var _FixedDataTableHelper2 = _interopRequireDefault(_FixedDataTableHelper);
 
@@ -8659,7 +8686,7 @@ module.exports = FixedDataTableCellGroup;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _FixedDataTableCellDefault = __webpack_require__(40);
+var _FixedDataTableCellDefault = __webpack_require__(41);
 
 var _FixedDataTableCellDefault2 = _interopRequireDefault(_FixedDataTableCellDefault);
 
@@ -8667,7 +8694,7 @@ var _FixedDataTableColumnReorderHandle = __webpack_require__(74);
 
 var _FixedDataTableColumnReorderHandle2 = _interopRequireDefault(_FixedDataTableColumnReorderHandle);
 
-var _FixedDataTableHelper = __webpack_require__(37);
+var _FixedDataTableHelper = __webpack_require__(38);
 
 var _FixedDataTableHelper2 = _interopRequireDefault(_FixedDataTableHelper);
 
@@ -8691,7 +8718,7 @@ var _joinClasses = __webpack_require__(8);
 
 var _joinClasses2 = _interopRequireDefault(_joinClasses);
 
-var _shallowEqual = __webpack_require__(41);
+var _shallowEqual = __webpack_require__(42);
 
 var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
