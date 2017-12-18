@@ -1177,7 +1177,7 @@ var FixedDataTable = createReactClass({
     }
 
     var columnResizingData;
-    if (props.isColumnResizing) {
+    if (props.isColumnResizing || (oldState && oldState.isColumnResizing)) {
       columnResizingData = oldState && oldState.columnResizingData;
     } else {
       columnResizingData = EMPTY_OBJECT;
@@ -1208,7 +1208,9 @@ var FixedDataTable = createReactClass({
     );
 
     var lastScrollToColumn = oldState ? oldState.scrollToColumn : undefined;
-    if (props.scrollToColumn !== null && props.scrollToColumn !== lastScrollToColumn) {
+    if (props.scrollToColumn !== null 
+        && props.scrollToColumn !== lastScrollToColumn
+        && columnInfo.bodyScrollableColumns.length > 0) {
       // If selected column is a fixed column, don't scroll
       var fixedColumnsCount = columnInfo.bodyFixedColumns.length;
       if (props.scrollToColumn >= fixedColumnsCount) {
@@ -1414,11 +1416,13 @@ var FixedDataTable = createReactClass({
       x = x < 0 ? 0 : x;
       x = x > this.state.maxScrollX ? this.state.maxScrollX : x;
 
+      var roundedX = Math.round(x);
+
       //NOTE (asif) This is a hacky workaround to prevent FDT from setting its internal state
       var onHorizontalScroll = this.props.onHorizontalScroll;
-      if (onHorizontalScroll ? onHorizontalScroll(x) : true) {
+      if (onHorizontalScroll ? onHorizontalScroll(roundedX) : true) {
         this.setState({
-          scrollX: x,
+          scrollX: roundedX,
         });
       }
     }
@@ -1434,10 +1438,13 @@ var FixedDataTable = createReactClass({
     if (!this._isScrolling) {
       this._didScrollStart();
     }
+
+    var roundedScrollPos = Math.round(scrollPos);
+
     var onHorizontalScroll = this.props.onHorizontalScroll;
-    if (onHorizontalScroll ? onHorizontalScroll(scrollPos) : true) {
+    if (onHorizontalScroll ? onHorizontalScroll(roundedScrollPos) : true) {
       this.setState({
-        scrollX: scrollPos,
+        scrollX: roundedScrollPos,
       });
     }
     this._didScrollStop();
