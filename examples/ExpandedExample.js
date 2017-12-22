@@ -25,19 +25,19 @@ class ExpandedExample extends React.Component {
   }
 
   _handleCollapseClick(rowIndex) {
-    let {collapsedRows} = this.state;
-
+    const {collapsedRows} = this.state;
+    const shallowCopyOfCollapsedRows = new Set([...collapsedRows]);
     let scrollToRow = rowIndex;
-    if (collapsedRows.has(rowIndex)) {
-      collapsedRows.delete(rowIndex);
+    if (shallowCopyOfCollapsedRows.has(rowIndex)) {
+      shallowCopyOfCollapsedRows.delete(rowIndex);
       scrollToRow = null
     } else {
-      collapsedRows.add(rowIndex);
+      shallowCopyOfCollapsedRows.add(rowIndex);
     }
 
     this.setState({
       scrollToRow: scrollToRow,
-      collapsedRows: collapsedRows
+      collapsedRows: shallowCopyOfCollapsedRows
     });
   }
 

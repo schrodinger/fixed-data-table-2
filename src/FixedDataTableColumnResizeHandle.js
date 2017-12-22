@@ -82,6 +82,11 @@ var FixedDataTableColumnResizeHandle = createReactClass({
       PropTypes.string,
       PropTypes.number
     ]),
+
+    /**
+     * Whether the resize handle should respond to touch events or not.
+     */
+    touchEnabled: PropTypes.bool,
   },
 
   getInitialState() /*object*/ {
@@ -105,7 +110,8 @@ var FixedDataTableColumnResizeHandle = createReactClass({
     this._mouseMoveTracker = new DOMMouseMoveTracker(
       this._onMove,
       this._onColumnResizeEnd,
-      document.body
+      document.body,
+      this.props.touchEnabled
     );
   },
 

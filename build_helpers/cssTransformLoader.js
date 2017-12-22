@@ -14,11 +14,6 @@ function slashTransform(content) {
 }
 
 module.exports = function(content) {
-  if (this && this.cacheable) {
-    // Webpack specific call
-    this.cacheable();
-  }
-
   content = slashTransform(content);
   content = postcss()
     .use(customProperties({variables: cssVars.CSS_VARS}))

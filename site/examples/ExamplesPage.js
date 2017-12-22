@@ -31,7 +31,8 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.RESIZE_EXAMPLE.location]: require('../../examples/ResizeExample'),
   [ExamplePages.REORDER_EXAMPLE.location]: require('../../examples/ReorderExample'),
   [ExamplePages.HIDE_COLUMN_EXAMPLE.location]: require('../../examples/HideColumnExample'),
-  [ExamplePages.SCROLL_TO_EXAMPLE.location]: require('../../examples/ScrollToExample'),
+  [ExamplePages.SCROLL_TO_ROW_EXAMPLE.location]: require('../../examples/ScrollToRowExample'),
+  [ExamplePages.SCROLL_TO_COLUMN_EXAMPLE.location]: require('../../examples/ScrollToColumnExample'),
   [ExamplePages.TOUCH_SCROLL_EXAMPLE.location]: require('../../examples/TouchScrollExample'),
   [ExamplePages.EXPANDED_EXAMPLE.location]: require('../../examples/ExpandedExample'),
   [ExamplePages.FLEXGROW_EXAMPLE.location]: require('../../examples/FlexGrowExample'),
@@ -42,7 +43,9 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.RESPONSIVE_EXAMPLE.location]: require('../../examples/ResponsiveExample'),
   [ExamplePages.STYLING_EXAMPLE.location]: require('../../examples/StylingExample'),
   [ExamplePages.TOOLTIP_EXAMPLE.location]: require('../../examples/TooltipExample'),
+  [ExamplePages.LONG_CLICK_EXAMPLE.location]: require('../../examples/LongClickExample'),
   [ExamplePages.CONTEXT_EXAMPLE.location]: require('../../examples/ContextExample'),
+  [ExamplePages.FIXED_RIGHT_COLUMNS_EXAMPLE.location]: require('../../examples/FixedRightColumnsExample'),
 };
 
 class ExamplesPage extends React.Component {

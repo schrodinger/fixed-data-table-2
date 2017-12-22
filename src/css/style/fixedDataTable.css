@@ -14,12 +14,12 @@
  * Table.
  */
 .public/fixedDataTable/main {
-  border-color: #d3d3d3;
+  border-color: var(--border-color);
 }
 
 .public/fixedDataTable/header,
 .public/fixedDataTable/hasBottomBorder {
-  border-color: #d3d3d3;
+  border-color: var(--border-color);
 }
 
 .public/fixedDataTable/header .public/fixedDataTableCell/main {
@@ -27,14 +27,20 @@
 }
 
 .public/fixedDataTable/header,
+.public/fixedDataTable/scrollbarSpacer,
 .public/fixedDataTable/header .public/fixedDataTableCell/main {
-  background-color: var(fbui-desktop-background-light);
+  background-color: var(--fbui-desktop-background-light);
   background-image: linear-gradient(#fff, #efefef);
 }
 
+.public/fixedDataTable/scrollbarSpacer {
+  position: absolute;
+  z-index: 99;
+}
+
 .public/fixedDataTable/footer .public/fixedDataTableCell/main {
-  background-color: var(fbui-desktop-background-light);
-  border-color: #d3d3d3;
+  background-color: var(--fbui-desktop-background-light);
+  border-color: var(--border-color);
 }
 
 .public/fixedDataTable/topShadow {
@@ -46,5 +52,5 @@
 }
 
 .public/fixedDataTable/horizontalScrollbar .public/Scrollbar/mainHorizontal {
-  background-color: var(fbui-white);
+  background-color: var(--fbui-white);
 }

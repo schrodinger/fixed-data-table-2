@@ -36,6 +36,12 @@ exports.ExamplePages = {
     title: 'With JSON Data',
     description: 'A basic table example with two fixed columns, fed in some JSON data.',
   },
+  FIXED_RIGHT_COLUMNS_EXAMPLE: {
+    location: 'fixed-right-columns.html',
+    fileName: 'FixedRightColumnsExample.js',
+    title: 'Fixed Right Columns',
+    description: 'A table example that has its columns fixed to the right side of the table.',
+  },
   FLEXGROW_EXAMPLE: {
     location: 'example-flexgrow.html',
     fileName: 'FlexGrowExample.js',
@@ -54,11 +60,17 @@ exports.ExamplePages = {
     title: 'Reorderable columns',
     description: 'Table with drag and drop column reordering and a dummy "store" for persistence.',
   },
-  SCROLL_TO_EXAMPLE: {
-    location: 'example-scroll-to.html',
-    fileName: 'ScrollToExample.js',
+  SCROLL_TO_ROW_EXAMPLE: {
+    location: 'example-scroll-to-row.html',
+    fileName: 'ScrollToRowExample.js',
     title: 'Jump to row',
     description: 'A table example that will list search matches and jump to specified row',
+  },
+  SCROLL_TO_COLUMN_EXAMPLE: {
+    location: 'example-scroll-to-column.html',
+    fileName: 'ScrollToColumnExample.js',
+    title: 'Jump to column',
+    description: 'A table example that will jump to a specified column',
   },
   TOUCH_SCROLL_EXAMPLE: {
     location: 'example-touch-scroll.html',
@@ -119,6 +131,12 @@ exports.ExamplePages = {
     fileName: 'TooltipExample.js',
     title: 'Tooltips',
     description: 'A table example that displays additional information in a tooltip.'
+  },
+  LONG_CLICK_EXAMPLE: {
+    location: 'example-long-click.html',
+    fileName: 'LongClickExample.js',
+    title: 'Row Long Click',
+    description: 'A table example that highlights a row after a long click',
   },
   CONTEXT_EXAMPLE: {
     location: 'example-context.html',
