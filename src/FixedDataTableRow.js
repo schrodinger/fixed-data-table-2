@@ -195,6 +195,7 @@ class FixedDataTableRow extends React.Component {
     var fixedRightColumns =
       <FixedDataTableCellGroup
         key="fixed_right_cells"
+        className="fixedDataTable_fixed_right_cells"
         isScrolling={this.props.isScrolling}
         height={this.props.height}
         cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
