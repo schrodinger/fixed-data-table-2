@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.8 
+ * FixedDataTable v0.8.9 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -3289,7 +3289,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.8';
+FixedDataTableRoot.version = '0.8.9';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -4365,7 +4365,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
       }
     }
 
-    // Figure out if the vertical scrollbar will be visible first, 
+    // Figure out if the vertical scrollbar will be visible first,
     // because it will determine the width of the table
     var useGroupHeader = false;
     var groupHeaderHeight = 0;
@@ -4406,7 +4406,8 @@ var FixedDataTable = (0, _createReactClass2.default)({
     }
 
     var columnResizingData;
-    if (props.isColumnResizing || oldState && oldState.isColumnResizing) {
+    var continuingResizing = props.isColumnResizing === undefined && oldState && oldState.isColumnResizing;
+    if (props.isColumnResizing || continuingResizing) {
       columnResizingData = oldState && oldState.columnResizingData;
     } else {
       columnResizingData = EMPTY_OBJECT;
