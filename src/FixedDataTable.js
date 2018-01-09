@@ -1135,7 +1135,7 @@ var FixedDataTable = createReactClass({
       }
     }
 
-    // Figure out if the vertical scrollbar will be visible first, 
+    // Figure out if the vertical scrollbar will be visible first,
     // because it will determine the width of the table
     var useGroupHeader = false;
     var groupHeaderHeight = 0;
@@ -1155,7 +1155,7 @@ var FixedDataTable = createReactClass({
     var maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
 
     // If vertical scrollbar is necessary, adjust the table width to give it room
-    var adjustedWidth = props.width; 
+    var adjustedWidth = props.width;
     if (maxScrollY) {
       adjustedWidth = adjustedWidth - Scrollbar.SIZE - 1;
     }
@@ -1177,7 +1177,9 @@ var FixedDataTable = createReactClass({
     }
 
     var columnResizingData;
-    if (props.isColumnResizing || (oldState && oldState.isColumnResizing)) {
+    var continuingResizing = props.isColumnResizing === undefined &&
+      oldState && oldState.isColumnResizing;
+    if (props.isColumnResizing || continuingResizing) {
       columnResizingData = oldState && oldState.columnResizingData;
     } else {
       columnResizingData = EMPTY_OBJECT;
@@ -1208,7 +1210,7 @@ var FixedDataTable = createReactClass({
     );
 
     var lastScrollToColumn = oldState ? oldState.scrollToColumn : undefined;
-    if (props.scrollToColumn !== null 
+    if (props.scrollToColumn !== null
         && props.scrollToColumn !== lastScrollToColumn
         && columnInfo.bodyScrollableColumns.length > 0) {
       // If selected column is a fixed column, don't scroll
