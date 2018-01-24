@@ -410,6 +410,13 @@ var FixedDataTable = createReactClass({
      * half of the number of visible rows.
      */
     bufferRowCount: PropTypes.number,
+
+    /**
+     * Renderer used in case of data is empty
+     *
+     * Usefull when data gets filtered globally or column based
+     */
+    noDataRenderer: PropTypes.func,
   },
 
   getDefaultProps() /*object*/ {
@@ -784,6 +791,23 @@ var FixedDataTable = createReactClass({
           )}
           style={{top: footOffsetTop}}
         />;
+    }
+
+    /**
+     * Show indicator in case of no data is available
+     */
+    if (props.rowsCount === 0 && props.noDataRenderer) {
+      // Calculate total header height
+      const totalHeaderHeight = props.headerHeight * (state.useGroupHeader ? 2 : 1);
+
+      rows = (
+        <div style={{
+          marginTop: totalHeaderHeight,
+          height: (props.height - props.footerHeight - totalHeaderHeight)
+        }}>
+          { this.props.noDataRenderer() }
+        </div>
+      );
     }
 
     return (
