@@ -271,6 +271,13 @@ Callback that is called when a row is double clicked.
 type: `func`
 
 
+### `onRowContextMenu`
+
+Callback that is called when a contextual-menu event happens on a row.
+
+type: `func`
+
+
 ### `onRowMouseDown`
 
 Callback that is called when a mouse-down event happens on a row.
