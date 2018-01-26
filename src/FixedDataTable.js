@@ -330,6 +330,11 @@ var FixedDataTable = createReactClass({
     onRowDoubleClick: PropTypes.func,
 
     /**
+     * Callback that is called when a contextual-menu event happens on a row.
+     */
+    onRowContextMenu: PropTypes.func,
+
+    /**
      * Callback that is called when a mouse-down event happens on a row.
      */
     onRowMouseDown: PropTypes.func,
@@ -834,6 +839,7 @@ var FixedDataTable = createReactClass({
         offsetTop={offsetTop}
         onRowClick={state.onRowClick}
         onRowDoubleClick={state.onRowDoubleClick}
+        onRowContextMenu={state.onRowContextMenu}
         onRowMouseDown={state.onRowMouseDown}
         onRowMouseUp={state.onRowMouseUp}
         onRowMouseEnter={state.onRowMouseEnter}
