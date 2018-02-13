@@ -14,28 +14,20 @@ import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
 import FixedDataTableHelper from 'FixedDataTableHelper';
 import React from 'React';
-import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
 import shallowEqual from 'shallowEqual';
 
-var DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
+const DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
-var DEFAULT_PROPS = {
-  align: 'left',
-  highlighted: false,
-};
-
-var FixedDataTableCell = createReactClass({
-  displayName: 'FixedDataTableCell',
-
+class FixedDataTableCell extends React.Component {
   /**
    * PropTypes are disabled in this component, because having them on slows
    * down the FixedDataTable hugely in DEV mode. You can enable them back for
    * development, but please don't commit this component with enabled propTypes.
    */
-  propTypes_DISABLED_FOR_PERFORMANCE: {
+  static propTypes_DISABLED_FOR_PERFORMANCE = {
     isScrolling: PropTypes.bool,
     align: PropTypes.oneOf(['left', 'center', 'right']),
     className: PropTypes.string,
@@ -85,15 +77,13 @@ var FixedDataTableCell = createReactClass({
      * Flag for enhanced performance check
      */
     pureRendering: PropTypes.bool,
-  },
+  }
 
-  getInitialState() {
-    return {
-      isReorderingThisColumn: false,
-      displacement: 0,
-      reorderingDisplacement: 0
-    };
-  },
+  state = {
+    isReorderingThisColumn: false,
+    displacement: 0,
+    reorderingDisplacement: 0
+  }
 
   shouldComponentUpdate(nextProps) {
     if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
@@ -121,7 +111,7 @@ var FixedDataTableCell = createReactClass({
     }
 
     return false;
-  },
+  }
 
   componentWillReceiveProps(props) {
     var left = props.left + this.state.displacement;
@@ -194,15 +184,16 @@ var FixedDataTableCell = createReactClass({
     }
 
     this.setState(newState);
-  },
+  }
 
-  getDefaultProps() /*object*/ {
-    return DEFAULT_PROPS;
-  },
+  static defaultProps = /*object*/ {
+    align: 'left',
+    highlighted: false,
+  }
 
   render() /*object*/ {
 
-    var {height, width, columnKey, ...props} = this.props;
+    var { height, width, columnKey, ...props } = this.props;
 
     var style = {
       height,
@@ -299,9 +290,9 @@ var FixedDataTableCell = createReactClass({
         {content}
       </div>
     );
-  },
+  }
 
-  _onColumnResizerMouseDown(/*object*/ event) {
+  _onColumnResizerMouseDown = (/*object*/ event) => {
     this.props.onColumnResize(
       this.props.left,
       this.props.width,
@@ -310,16 +301,16 @@ var FixedDataTableCell = createReactClass({
       this.props.columnKey,
       event
     );
-  },
+  }
 
-  _onColumnReorderMouseDown(/*object*/ event) {
+  _onColumnReorderMouseDown = (/*object*/ event) => {
     this.props.onColumnReorder(
       this.props.columnKey,
       this.props.width,
       this.props.left,
       event
     );
-  },
-});
+  }
+};
 
 module.exports = FixedDataTableCell;

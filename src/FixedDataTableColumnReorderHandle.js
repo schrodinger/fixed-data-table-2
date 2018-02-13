@@ -16,18 +16,13 @@
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import Locale from 'Locale';
 import React from 'React';
-import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
-import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
 
 import clamp from 'clamp';
 import cx from 'cx';
 
-var FixedDataTableColumnReorderHandle = createReactClass({
-  displayName: 'FixedDataTableColumnReorderHandle',
-  mixins: [ReactComponentWithPureRenderMixin],
-
-  propTypes: {
+class FixedDataTableColumnReorderHandle extends React.PureComponent {
+  static propTypes = {
 
     /**
      * When resizing is complete this is called.
@@ -41,16 +36,14 @@ var FixedDataTableColumnReorderHandle = createReactClass({
       PropTypes.string,
       PropTypes.number
     ]),
-  },
+  }
 
-  getInitialState() /*object*/ {
-    return {
-      dragDistance: 0
-    };
-  },
+  state = /*object*/ {
+    dragDistance: 0
+  }
 
   componentWillReceiveProps(/*object*/ newProps) {
-  },
+  }
 
   componentWillUnmount() {
     if (this._mouseMoveTracker) {
@@ -59,7 +52,7 @@ var FixedDataTableColumnReorderHandle = createReactClass({
       this._mouseMoveTracker.releaseMouseMoves();
       this._mouseMoveTracker = null;
     }
-  },
+  }
 
   render() /*object*/ {
     var style = {
@@ -75,9 +68,9 @@ var FixedDataTableColumnReorderHandle = createReactClass({
         style={style}>
       </div>
     );
-  },
+  }
 
-  onMouseDown(event) {
+  onMouseDown = (event) => {
     var targetRect = event.target.getBoundingClientRect();
 
     var mouseLocationInElement = event.clientX - targetRect.left;
@@ -104,22 +97,22 @@ var FixedDataTableColumnReorderHandle = createReactClass({
     this._distance = 0;
     this._animating = true;
     this.frameId = requestAnimationFrame(this._updateState);
-  },
+  }
 
-  _onMove(/*number*/ deltaX) {
+  _onMove = (/*number*/ deltaX) => {
     this._distance = this.state.dragDistance + deltaX;
-  },
+  }
 
-  _onColumnReorderEnd(/*boolean*/ cancelReorder) {
+  _onColumnReorderEnd = (/*boolean*/ cancelReorder) => {
     this._animating = false;
     cancelAnimationFrame(this.frameId);
     this.frameId = null;
     this._mouseMoveTracker.releaseMouseMoves();
     this.props.columnReorderingData.cancelReorder = cancelReorder;
     this.props.onColumnReorderEnd();
-  },
+  }
 
-  _updateState() {
+  _updateState = () => {
     if (this._animating) {
       this.frameId = requestAnimationFrame(this._updateState)
     }
@@ -127,7 +120,7 @@ var FixedDataTableColumnReorderHandle = createReactClass({
       dragDistance: this._distance
     });
     this.props.onColumnReorderMove(this._distance);
-  },
-});
+  }
+};
 
 module.exports = FixedDataTableColumnReorderHandle;

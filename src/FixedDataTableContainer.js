@@ -21,7 +21,7 @@ import invariant from 'invariant';
 import pick from 'lodash/pick';
 import * as scrollActions from 'scrollActions';
 
-export default class FixedDataTableContainer extends React.Component {
+class FixedDataTableContainer extends React.Component {
   constructor(props) {
     super(props);
 
@@ -104,3 +104,5 @@ export default class FixedDataTableContainer extends React.Component {
     this.setState(boundState);
   }
 }
+
+module.exports = FixedDataTableContainer;
