@@ -290,6 +290,11 @@ class FixedDataTableRow extends React.Component {
     isScrolling: PropTypes.bool,
 
     /**
+     * Array of data for the fixed columns.
+     */
+    fixedColumns: PropTypes.array.isRequired,
+
+    /**
      * Height of the row.
      */
     height: PropTypes.number.isRequired,
@@ -299,6 +304,28 @@ class FixedDataTableRow extends React.Component {
      * header and footer in front of other rows.
      */
     zIndex: PropTypes.number,
+
+    /**
+     * The row index.
+     */
+    index: PropTypes.number.isRequired,
+
+    /**
+     * Array of data for the scrollable columns.
+     */
+    scrollableColumns: PropTypes.array.isRequired,
+
+    /**
+     * The distance between the left edge of the table and the leftmost portion
+     * of the row currently visible in the table.
+     */
+    scrollLeft: PropTypes.number.isRequired,
+
+    /**
+     * Pass false to hide the row.  This is used internally for buffering rows
+     */
+    visible: PropTypes.bool.isRequired,
+
 
     /**
      * The vertical position where the row should render itself

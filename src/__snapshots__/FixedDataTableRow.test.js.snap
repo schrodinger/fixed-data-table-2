@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  className="fixedDataTableRowLayout_rowWrapper"
+  style={
+    Object {
+      "height": 100,
+      "left": "0px",
+      "top": "0px",
+      "width": 100,
+      "zIndex": 0,
+    }
+  }
+>
+  <FixedDataTableRowImpl
+    fixedColumns={Array []}
+    height={100}
+    index={0}
+    offsetTop={undefined}
+    rowHeight={20}
+    rowsCount={0}
+    scrollLeft={10}
+    scrollTop={20}
+    scrollableColumns={0}
+    width={100}
+    zIndex={undefined}
+  />
+</div>
+`;

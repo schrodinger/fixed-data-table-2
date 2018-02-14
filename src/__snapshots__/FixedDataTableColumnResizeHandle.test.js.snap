@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  className="fixedDataTableColumnResizerLineLayout_main public_fixedDataTableColumnResizerLine_main"
+  style={
+    Object {
+      "height": 100,
+      "left": 0,
+      "width": 0,
+    }
+  }
+>
+  <div
+    className="fixedDataTableColumnResizerLineLayout_mouseArea"
+    style={
+      Object {
+        "height": 100,
+      }
+    }
+  />
+</div>
+`;

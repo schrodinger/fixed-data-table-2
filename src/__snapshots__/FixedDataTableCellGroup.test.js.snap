@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  className="fixedDataTableCellGroupLayout_cellGroupWrapper"
+  style={
+    Object {
+      "height": undefined,
+      "left": 0,
+      "width": undefined,
+    }
+  }
+>
+  <FixedDataTableCellGroupImpl
+    onColumnResize={null}
+  />
+</div>
+`;

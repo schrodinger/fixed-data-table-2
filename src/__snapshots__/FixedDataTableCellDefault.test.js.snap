@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  className="fixedDataTableCellLayout_wrap1 public_fixedDataTableCell_wrap1"
+  style={
+    Object {
+      "height": undefined,
+      "width": undefined,
+    }
+  }
+>
+  <div
+    className="fixedDataTableCellLayout_wrap2 public_fixedDataTableCell_wrap2"
+  >
+    <div
+      className="fixedDataTableCellLayout_wrap3 public_fixedDataTableCell_wrap3"
+    >
+      <div
+        className="public_fixedDataTableCell_cellContent"
+      />
+    </div>
+  </div>
+</div>
+`;

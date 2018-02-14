@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<div
+  className="fixedDataTableCellLayout_columnReorderContainer"
+  onMouseDown={[Function]}
+  style={
+    Object {
+      "height": undefined,
+    }
+  }
+/>
+`;

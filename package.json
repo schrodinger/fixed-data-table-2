@@ -18,6 +18,7 @@
     "aphrodite": "^0.5.0",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.11.4",
+    "babel-jest": "^21.2.0",
     "babel-loader": "^7.1.1",
     "babel-plugin-rewire": "^1.0.0-rc-4",
     "babel-plugin-syntax-trailing-function-commas": "^6.8.0",
@@ -35,6 +36,7 @@
     "file-loader": "^0.11.2",
     "glob": "^4.3.5",
     "html-loader": "^0.2.3",
+    "jest": "^21.2.1",
     "jsdom": "^9.6.0",
     "less": "^2.2.0",
     "less-loader": "^2.0.0",
@@ -50,8 +52,10 @@
     "react-dimensions": "^1.3.0",
     "react-docgen": "^2.15.0",
     "react-dom": "^15.3.2",
+    "react-test-renderer": "^15.5.0",
     "react-tools": "^0.12.2",
     "react-tooltip": "^3.2.1",
+    "regenerator-runtime": "^0.11.1",
     "sinon": "^2.0.0-pre.2",
     "style-loader": "^0.8.3",
     "url-loader": "^0.5.5",
@@ -67,7 +71,8 @@
     "publish-site": "./build_helpers/publishStaticSite.sh",
     "publish-package": "./build_helpers/publishPackage.sh",
     "publish-beta": "./build_helpers/publishPackage.sh --beta 1",
-    "test": "mocha-webpack --webpack-config webpack.config-test.js \"test/**/*-test.js\" --require build_helpers/test-globals.js",
+    "test": "mocha-webpack --webpack-config webpack.config-test.js \"test/**/*-test.js\" --require build_helpers/test-globals.js && jest",
+    "test:snapshots": "jest --watch",
     "test:watch": "mocha-webpack --webpack-config webpack.config-test.js --watch \"test/**/*-test.js\" --require build_helpers/test-globals.js",
     "test:server": "webpack-dev-server --config webpack.config-test.js --hot --inline"
   },
@@ -90,5 +95,11 @@
     "table",
     "data-table",
     "fixed-table"
-  ]
+  ],
+  "jest": {
+    "globals": {
+      "__DEV__": true
+    },
+    "collectCoverage": false
+  }
 }

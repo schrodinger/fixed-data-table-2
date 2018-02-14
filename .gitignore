@@ -11,3 +11,4 @@ docs/api
 dist
 .tmp
 *.swp
+coverage
