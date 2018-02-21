@@ -7,8 +7,8 @@ exports[`renders correctly 1`] = `
     Object {
       "height": 100,
       "left": "0px",
-      "top": "0px",
-      "width": 100,
+      "top": "40px",
+      "width": 220,
       "zIndex": 0,
     }
   }
@@ -18,12 +18,10 @@ exports[`renders correctly 1`] = `
     height={100}
     index={0}
     offsetTop={undefined}
-    rowHeight={20}
-    rowsCount={0}
-    scrollLeft={10}
-    scrollTop={20}
-    scrollableColumns={0}
-    width={100}
+    scrollLeft={30}
+    scrollableColumns={Array []}
+    visible={true}
+    width={220}
     zIndex={undefined}
   />
 </div>

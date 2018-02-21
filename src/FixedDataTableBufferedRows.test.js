@@ -6,11 +6,13 @@ it('renders correctly', () => {
   const props = {
     fixedColumns: [],
     height: 200,
-    offsetTop: 0,
+    offsetTop: 10,
     rowHeights: { '0': 20 },
-    rowsToRender: 1,
+    rowsToRender: [],
     scrollLeft: 10,
     scrollTop: 20,
+    scrollableColumns: [],
+    width: 100,
   }
 
   const renderer = new ShallowRenderer();

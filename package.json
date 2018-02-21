@@ -97,6 +97,7 @@
     "fixed-table"
   ],
   "jest": {
+    "rootDir": "src",
     "globals": {
       "__DEV__": true
     },
