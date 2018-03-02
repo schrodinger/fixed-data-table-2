@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.9 
+ * FixedDataTable v0.8.10 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -1156,11 +1156,10 @@ var DOMMouseMoveTracker = function () {
   _createClass(DOMMouseMoveTracker, [{
     key: 'captureMouseMoves',
     value: function captureMouseMoves( /*object*/event) {
-      if (!this._eventMoveToken && !this._eventUpToken && !this._eventLeaveToken && !this._eventOutToken) {
+      if (!this._eventMoveToken && !this._eventUpToken && !this._eventLeaveToken) {
         this._eventMoveToken = _EventListener2.default.listen(this._domNode, 'mousemove', this._onMouseMove);
         this._eventUpToken = _EventListener2.default.listen(this._domNode, 'mouseup', this._onMouseUp);
         this._eventLeaveToken = _EventListener2.default.listen(this._domNode, 'mouseleave', this._onMouseEnd);
-        this._eventOutToken = _EventListener2.default.listen(this._domNode, 'mouseout', this.onMouseEnd);
       }
 
       if (this._isTouchEnabled && !this._eventTouchStartToken && !this._eventTouchMoveToken && !this._eventTouchEndToken) {
@@ -1183,21 +1182,19 @@ var DOMMouseMoveTracker = function () {
     }
 
     /**
-     * These releases all of the listeners on document.body.
+     * This releases all of the listeners on document.body.
      */
 
   }, {
     key: 'releaseMouseMoves',
     value: function releaseMouseMoves() {
-      if (this._eventMoveToken && this._eventUpToken && this._eventLeaveToken && this._eventOutToken) {
+      if (this._eventMoveToken && this._eventUpToken && this._eventLeaveToken) {
         this._eventMoveToken.remove();
         this._eventMoveToken = null;
         this._eventUpToken.remove();
         this._eventUpToken = null;
         this._eventLeaveToken.remove();
         this._eventLeaveToken = null;
-        this._eventOutToken.remove();
-        this._eventOutToken = null;
       }
 
       if (this._isTouchEnabled && this._eventTouchStartToken && this._eventTouchMoveToken && this._eventTouchEndToken) {
@@ -3289,7 +3286,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.9';
+FixedDataTableRoot.version = '0.8.10';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -8951,9 +8948,15 @@ var FixedDataTableCell = (0, _createReactClass2.default)({
 
     var columnResizerComponent;
     if (props.onColumnResize) {
+      var suppress = function suppress(event) {
+        event.preventDefault();
+        event.stopPropagation();
+      };
+
       var columnResizerStyle = {
         height: height
       };
+      ;
       columnResizerComponent = _React2.default.createElement(
         'div',
         {
@@ -8961,12 +8964,8 @@ var FixedDataTableCell = (0, _createReactClass2.default)({
           style: columnResizerStyle,
           onMouseDown: this._onColumnResizerMouseDown,
           onTouchStart: this.props.touchEnabled ? this._onColumnResizerMouseDown : null,
-          onTouchEnd: this.props.touchEnabled ? function (e) {
-            return e.stopPropagation();
-          } : null,
-          onTouchMove: this.props.touchEnabled ? function (e) {
-            return e.stopPropagation();
-          } : null },
+          onTouchEnd: this.props.touchEnabled ? suppress : null,
+          onTouchMove: this.props.touchEnabled ? suppress : null },
         _React2.default.createElement('div', {
           className: (0, _joinClasses2.default)((0, _cx2.default)('fixedDataTableCellLayout/columnResizerKnob'), (0, _cx2.default)('public/fixedDataTableCell/columnResizerKnob')),
           style: columnResizerStyle
@@ -9024,6 +9023,7 @@ var FixedDataTableCell = (0, _createReactClass2.default)({
      * headers on touch devices.
      */
     if (this.props.touchEnabled) {
+      event.preventDefault();
       event.stopPropagation();
     }
   },

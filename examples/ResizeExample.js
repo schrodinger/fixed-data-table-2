@@ -44,6 +44,7 @@ class ResizeExample extends React.Component {
         rowsCount={dataList.getSize()}
         onColumnResizeEndCallback={this._onColumnResizeEndCallback}
         isColumnResizing={false}
+        touchScrollEnabled={true}
         width={1000}
         height={500}
         {...this.props}>
