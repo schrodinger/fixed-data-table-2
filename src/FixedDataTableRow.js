@@ -185,7 +185,7 @@ class FixedDataTableRowImpl extends React.Component {
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
     var fixedRightColumnsWidth = this._getColumnsWidth(this.props.fixedRightColumns);
     var scrollbarOffset = this.props.showScrollbarY ? Scrollbar.SIZE : 0;
-    var fixedRightColumns = 
+    var fixedRightColumns =
       <FixedDataTableCellGroup
         key="fixed_right_cells"
         isScrolling={this.props.isScrolling}
@@ -246,8 +246,8 @@ class FixedDataTableRowImpl extends React.Component {
         left: this.props.width - scrollbarOffset,
       };
       scrollbarSpacer =
-        <div 
-          style={spacerStyles} 
+        <div
+          style={spacerStyles}
           className={cx('public/fixedDataTable/scrollbarSpacer')}
         />;
     }
