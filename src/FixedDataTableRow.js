@@ -105,6 +105,11 @@ class FixedDataTableRowImpl extends React.Component {
     onDoubleClick: PropTypes.func,
 
     /**
+     * Fire when a contextual-menu is requested above a row.
+     */
+    onContextMenu: PropTypes.func,
+
+    /**
      * Callback for when resizer knob (in FixedDataTableCell) is clicked
      * to initialize resizing. Please note this is only on the cells
      * in the header.
@@ -252,6 +257,7 @@ class FixedDataTableRowImpl extends React.Component {
         className={joinClasses(className, this.props.className)}
         onClick={this.props.onClick ? this._onClick : null}
         onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
+        onContextMenu={this.props.onContextMenu ? this._onContextMenu : null}
         onMouseDown={this.props.onMouseDown ? this._onMouseDown : null}
         onMouseUp={this.props.onMouseUp ? this._onMouseUp : null}
         onMouseEnter={this.props.onMouseEnter || this.props.onMouseLeave ? this._onMouseEnter : null}
@@ -358,6 +364,10 @@ class FixedDataTableRowImpl extends React.Component {
 
   _onDoubleClick = (/*object*/ event) => {
     this.props.onDoubleClick(event, this.props.index);
+  };
+
+  _onContextMenu = (/*object*/ event) => {
+    this.props.onContextMenu(event, this.props.index)
   };
 
   _onMouseUp = (/*object*/ event) => {
