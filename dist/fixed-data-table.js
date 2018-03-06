@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.10 
+ * FixedDataTable v0.8.11 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -2212,6 +2212,8 @@ var FixedDataTableRowImpl = function (_React$Component) {
       _this.props.onClick(event, _this.props.index);
     }, _this._onDoubleClick = function ( /*object*/event) {
       _this.props.onDoubleClick(event, _this.props.index);
+    }, _this._onContextMenu = function ( /*object*/event) {
+      _this.props.onContextMenu(event, _this.props.index);
     }, _this._onMouseUp = function ( /*object*/event) {
       _this.props.onMouseUp(event, _this.props.index);
     }, _this._onMouseDown = function ( /*object*/event) {
@@ -2353,6 +2355,7 @@ var FixedDataTableRowImpl = function (_React$Component) {
           className: (0, _joinClasses2.default)(className, this.props.className),
           onClick: this.props.onClick ? this._onClick : null,
           onDoubleClick: this.props.onDoubleClick ? this._onDoubleClick : null,
+          onContextMenu: this.props.onContextMenu ? this._onContextMenu : null,
           onMouseDown: this.props.onMouseDown ? this._onMouseDown : null,
           onMouseUp: this.props.onMouseUp ? this._onMouseUp : null,
           onMouseEnter: this.props.onMouseEnter || this.props.onMouseLeave ? this._onMouseEnter : null,
@@ -2450,6 +2453,11 @@ FixedDataTableRowImpl.propTypes = {
    * Fire when a row is double clicked.
    */
   onDoubleClick: _propTypes2.default.func,
+
+  /**
+   * Fire when a contextual-menu is requested above a row.
+   */
+  onContextMenu: _propTypes2.default.func,
 
   /**
    * Callback for when resizer knob (in FixedDataTableCell) is clicked
@@ -3286,7 +3294,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.10';
+FixedDataTableRoot.version = '0.8.11';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -3683,6 +3691,11 @@ var FixedDataTable = (0, _createReactClass2.default)({
      * Callback that is called when a row is double clicked.
      */
     onRowDoubleClick: _propTypes2.default.func,
+
+    /**
+     * Callback that is called when a contextual-menu event happens on a row.
+     */
+    onRowContextMenu: _propTypes2.default.func,
 
     /**
      * Callback that is called when a mouse-down event happens on a row.
@@ -4108,6 +4121,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
       offsetTop: offsetTop,
       onRowClick: state.onRowClick,
       onRowDoubleClick: state.onRowDoubleClick,
+      onRowContextMenu: state.onRowContextMenu,
       onRowMouseDown: state.onRowMouseDown,
       onRowMouseUp: state.onRowMouseUp,
       onRowMouseEnter: state.onRowMouseEnter,
@@ -7746,6 +7760,7 @@ var FixedDataTableBufferedRows = (0, _createReactClass2.default)({
     offsetTop: _propTypes2.default.number.isRequired,
     onRowClick: _propTypes2.default.func,
     onRowDoubleClick: _propTypes2.default.func,
+    onRowContextMenu: _propTypes2.default.func,
     onRowMouseDown: _propTypes2.default.func,
     onRowMouseUp: _propTypes2.default.func,
     onRowMouseEnter: _propTypes2.default.func,
@@ -7854,6 +7869,7 @@ var FixedDataTableBufferedRows = (0, _createReactClass2.default)({
         scrollableColumns: props.scrollableColumns,
         onClick: props.onRowClick,
         onDoubleClick: props.onRowDoubleClick,
+        onContextMenu: props.onRowContextMenu,
         onMouseDown: props.onRowMouseDown,
         onMouseUp: props.onRowMouseUp,
         onMouseEnter: props.onRowMouseEnter,
