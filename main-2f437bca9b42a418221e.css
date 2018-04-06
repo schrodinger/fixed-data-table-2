@@ -678,10 +678,16 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .public_fixedDataTable_header,
+.public_fixedDataTable_scrollbarSpacer,
 .public_fixedDataTable_header .public_fixedDataTableCell_main {
   background-color: #f6f7f8;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#efefef));
   background-image: linear-gradient(#fff, #efefef);
+}
+
+.public_fixedDataTable_scrollbarSpacer {
+  position: absolute;
+  z-index: 99;
 }
 
 .public_fixedDataTable_footer .public_fixedDataTableCell_main {
@@ -1642,4 +1648,4 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   width: 50px;
 }
 
-/*# sourceMappingURL=main-1f132077ca632ef43758.css.map*/
+/*# sourceMappingURL=main-2f437bca9b42a418221e.css.map*/
