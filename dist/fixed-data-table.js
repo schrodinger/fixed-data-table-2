@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.11 
+ * FixedDataTable v0.8.12 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -1657,6 +1657,9 @@ var Scrollbar = (0, _createReactClass2.default)({
       zIndex: 99
     };
   },
+  faceRef: function faceRef(ref) {
+    this.face = ref;
+  },
   render: function render() /*?object*/{
     if (!this.state.scrollable) {
       return null;
@@ -1728,7 +1731,7 @@ var Scrollbar = (0, _createReactClass2.default)({
         style: mainStyle,
         tabIndex: 0 },
       _React2.default.createElement('div', {
-        ref: 'face',
+        ref: this.faceRef,
         className: faceClassName,
         style: faceStyle
       })
@@ -1844,7 +1847,7 @@ var Scrollbar = (0, _createReactClass2.default)({
   _onMouseDown: function _onMouseDown( /*object*/event) {
     var nextState;
 
-    if (event.target !== _ReactDOM2.default.findDOMNode(this.refs.face)) {
+    if (event.target !== _ReactDOM2.default.findDOMNode(this.face)) {
       // Both `offsetX` and `layerX` are non-standard DOM property but they are
       // magically available for browsers somehow.
       var nativeEvent = event.nativeEvent;
@@ -3294,7 +3297,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.11';
+FixedDataTableRoot.version = '0.8.12';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
