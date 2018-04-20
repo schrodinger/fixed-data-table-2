@@ -804,7 +804,7 @@ var FixedDataTable = createReactClass({
         )}
         tabIndex={0}
         onKeyDown={this._onKeyDown}
-        onWheel={this.state._wheelHandler.onWheel}
+        onWheel={this._wheelHandler.onWheel}
         onTouchStart={this._touchHandler.onTouchStart}
         onTouchEnd={this._touchHandler.onTouchEnd}
         onTouchMove={this._touchHandler.onTouchMove}
