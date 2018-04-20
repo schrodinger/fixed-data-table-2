@@ -450,12 +450,7 @@ var FixedDataTable = createReactClass({
 
     this._didScrollStop = debounceCore(this._didScrollStopSync, 200, this);
 
-    this._wheelHandler = new ReactWheelHandler(
-      this._onScroll,
-      this._shouldHandleWheelX,
-      this._shouldHandleWheelY,
-      props.stopScrollPropagation
-    );
+    this._wheelHandler = null;
     this._touchHandler = new ReactTouchHandler(
       this._onScroll,
       this._shouldHandleTouchX,
@@ -605,6 +600,18 @@ var FixedDataTable = createReactClass({
 
   componentDidUpdate() {
     this._reportContentHeight();
+  },
+
+  _onRef(div) {
+    this.setState({
+      _wheelHandler: new ReactWheelHandler(
+        this._onScroll,
+        this._shouldHandleWheelX,
+        this._shouldHandleWheelY,
+        props.stopScrollPropagation,
+        div
+      )
+    });
   },
 
   render() /*object*/ {
@@ -800,11 +807,12 @@ var FixedDataTable = createReactClass({
         )}
         tabIndex={0}
         onKeyDown={this._onKeyDown}
-        onWheel={this._wheelHandler.onWheel}
+        onWheel={this.state._wheelHandler.onWheel}
         onTouchStart={this._touchHandler.onTouchStart}
         onTouchEnd={this._touchHandler.onTouchEnd}
         onTouchMove={this._touchHandler.onTouchMove}
         onTouchCancel={this._touchHandler.onTouchCancel}
+        ref={this._onRef}
         style={{height: state.height, width: state.width}}>
         <div
           className={cx('fixedDataTableLayout/rowsContainer')}
