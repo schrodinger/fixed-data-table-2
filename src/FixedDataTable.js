@@ -450,7 +450,12 @@ var FixedDataTable = createReactClass({
 
     this._didScrollStop = debounceCore(this._didScrollStopSync, 200, this);
 
-    this._wheelHandler = null;
+    this._wheelHandler = new ReactWheelHandler(
+      this._onScroll,
+      this._shouldHandleWheelX,
+      this._shouldHandleWheelY,
+      props.stopScrollPropagation
+    );
     this._touchHandler = new ReactTouchHandler(
       this._onScroll,
       this._shouldHandleTouchX,
@@ -603,15 +608,7 @@ var FixedDataTable = createReactClass({
   },
 
   _onRef(div) {
-    this.setState({
-      _wheelHandler: new ReactWheelHandler(
-        this._onScroll,
-        this._shouldHandleWheelX,
-        this._shouldHandleWheelY,
-        props.stopScrollPropagation,
-        div
-      )
-    });
+    this._wheelHandler.setRoot(div);
   },
 
   render() /*object*/ {

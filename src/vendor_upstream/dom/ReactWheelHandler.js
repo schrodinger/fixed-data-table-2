@@ -30,14 +30,13 @@ class ReactWheelHandler {
     /*function*/ onWheel,
     /*boolean|function*/ handleScrollX,
     /*boolean|function*/ handleScrollY,
-    /*?boolean|?function*/ stopPropagation,
-    /*?HTMLElement*/ rootRef
+    /*?boolean|?function*/ stopPropagation
   ) {
     this._animationFrameID = null;
     this._deltaX = 0;
     this._deltaY = 0;
     this._didWheel = this._didWheel.bind(this);
-    this._rootRef = rootRef || null;
+    this._rootRef = null;
     if (typeof handleScrollX !== 'function') {
       handleScrollX = handleScrollX ?
         emptyFunction.thatReturnsTrue :
@@ -103,6 +102,10 @@ class ReactWheelHandler {
     if (changed === true && this._animationFrameID === null) {
       this._animationFrameID = requestAnimationFramePolyfill(this._didWheel);
     }
+  }
+
+  setRoot(rootRef) {
+    this._rootRef = rootRef;
   }
 
   _didWheel() {
