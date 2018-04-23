@@ -54,8 +54,7 @@ class DOMMouseMoveTracker {
    * in order to grab inital state.
    */
   captureMouseMoves(/*object*/ event) {
-    if (!this._eventMoveToken && !this._eventUpToken &&
-        !this._eventLeaveToken && !this._eventOutToken) {
+    if (!this._eventMoveToken && !this._eventUpToken && !this._eventLeaveToken) {
       this._eventMoveToken = EventListener.listen(
         this._domNode,
         'mousemove',
@@ -70,11 +69,6 @@ class DOMMouseMoveTracker {
         this._domNode,
         'mouseleave',
         this._onMouseEnd
-      );
-      this._eventOutToken = EventListener.listen(
-        this._domNode,
-        'mouseout',
-        this.onMouseEnd
       );
     }
 
@@ -111,29 +105,26 @@ class DOMMouseMoveTracker {
   }
 
   /**
-   * These releases all of the listeners on document.body.
+   * This releases all of the listeners on document.body.
    */
   releaseMouseMoves() {
-    if (this._eventMoveToken && this._eventUpToken &&
-        this._eventLeaveToken && this._eventOutToken) {
+    if (this._eventMoveToken && this._eventUpToken && this._eventLeaveToken) {
       this._eventMoveToken.remove();
       this._eventMoveToken = null;
       this._eventUpToken.remove();
       this._eventUpToken = null;
       this._eventLeaveToken.remove();
       this._eventLeaveToken = null;
-      this._eventOutToken.remove();
-      this._eventOutToken = null;
     }
 
     if (this._isTouchEnabled && this._eventTouchStartToken &&
         this._eventTouchMoveToken && this._eventTouchEndToken) {
-        this._eventTouchStartToken.remove();
-        this._eventTouchStartToken = null;
-        this._eventTouchMoveToken.remove();
-        this._eventTouchMoveToken = null;
-        this._eventTouchEndToken.remove();
-        this._eventTouchEndToken = null;
+      this._eventTouchStartToken.remove();
+      this._eventTouchStartToken = null;
+      this._eventTouchMoveToken.remove();
+      this._eventTouchMoveToken = null;
+      this._eventTouchEndToken.remove();
+      this._eventTouchEndToken = null;
     }
 
     if (this._animationFrameID !== null) {

@@ -15,6 +15,7 @@
 import React from 'React';
 import PropTypes from 'prop-types';
 import FixedDataTableCellGroup from 'FixedDataTableCellGroup';
+import Scrollbar from 'Scrollbar';
 
 import cx from 'cx';
 import joinClasses from 'joinClasses';
@@ -104,6 +105,11 @@ class FixedDataTableRowImpl extends React.Component {
     onDoubleClick: PropTypes.func,
 
     /**
+     * Fire when a contextual-menu is requested above a row.
+     */
+    onContextMenu: PropTypes.func,
+
+    /**
      * Callback for when resizer knob (in FixedDataTableCell) is clicked
      * to initialize resizing. Please note this is only on the cells
      * in the header.
@@ -178,13 +184,14 @@ class FixedDataTableRowImpl extends React.Component {
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
     var fixedRightColumnsWidth = this._getColumnsWidth(this.props.fixedRightColumns);
+    var scrollbarOffset = this.props.showScrollbarY ? Scrollbar.SIZE : 0;
     var fixedRightColumns = 
       <FixedDataTableCellGroup
         key="fixed_right_cells"
         isScrolling={this.props.isScrolling}
         height={this.props.height}
         cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
-        offsetLeft={this.props.width - fixedRightColumnsWidth}
+        offsetLeft={this.props.width - fixedRightColumnsWidth - scrollbarOffset}
         width={fixedRightColumnsWidth}
         zIndex={2}
         columns={this.props.fixedRightColumns}
@@ -198,8 +205,8 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
       />;
-    var fixedRightColumnsShdadow = fixedRightColumnsWidth ?
-      this._renderFixedRightColumnsShadow(this.props.width - fixedRightColumnsWidth - 5) : null;
+    var fixedRightColumnsShadow = fixedRightColumnsWidth ?
+      this._renderFixedRightColumnsShadow(this.props.width - fixedRightColumnsWidth - scrollbarOffset - 5) : null;
     var scrollableColumns =
       <FixedDataTableCellGroup
         key="scrollable_cells"
@@ -209,7 +216,7 @@ class FixedDataTableRowImpl extends React.Component {
         align="right"
         left={this.props.scrollLeft}
         offsetLeft={fixedColumnsWidth}
-        width={this.props.width - fixedColumnsWidth - fixedRightColumnsWidth}
+        width={this.props.width - fixedColumnsWidth - fixedRightColumnsWidth - scrollbarOffset}
         zIndex={0}
         columns={this.props.scrollableColumns}
         touchEnabled={this.props.touchEnabled}
@@ -231,11 +238,26 @@ class FixedDataTableRowImpl extends React.Component {
       width: this.props.width,
     };
 
+    var scrollbarSpacer;
+    if (this.props.showScrollbarY) {
+      var spacerStyles = {
+        width: scrollbarOffset,
+        height: this.props.height,
+        left: this.props.width - scrollbarOffset,
+      };
+      scrollbarSpacer =
+        <div 
+          style={spacerStyles} 
+          className={cx('public/fixedDataTable/scrollbarSpacer')}
+        />;
+    }
+
     return (
       <div
         className={joinClasses(className, this.props.className)}
         onClick={this.props.onClick ? this._onClick : null}
         onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
+        onContextMenu={this.props.onContextMenu ? this._onContextMenu : null}
         onMouseDown={this.props.onMouseDown ? this._onMouseDown : null}
         onMouseUp={this.props.onMouseUp ? this._onMouseUp : null}
         onMouseEnter={this.props.onMouseEnter || this.props.onMouseLeave ? this._onMouseEnter : null}
@@ -249,7 +271,8 @@ class FixedDataTableRowImpl extends React.Component {
           {scrollableColumns}
           {columnsLeftShadow}
           {fixedRightColumns}
-          {fixedRightColumnsShdadow}
+          {fixedRightColumnsShadow}
+          {scrollbarSpacer}
         </div>
         {rowExpanded && <div
           className={cx('fixedDataTableRowLayout/rowExpanded')}
@@ -341,6 +364,10 @@ class FixedDataTableRowImpl extends React.Component {
 
   _onDoubleClick = (/*object*/ event) => {
     this.props.onDoubleClick(event, this.props.index);
+  };
+
+  _onContextMenu = (/*object*/ event) => {
+    this.props.onContextMenu(event, this.props.index)
   };
 
   _onMouseUp = (/*object*/ event) => {
