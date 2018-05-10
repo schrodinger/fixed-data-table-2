@@ -607,6 +607,12 @@ var FixedDataTable = createReactClass({
     this._reportContentHeight();
   },
 
+  _onRef(div) {
+    if (this.props.stopReactWheelPropagation) {
+      this._wheelHandler.setRoot(div);
+    }
+  },
+
   render() /*object*/ {
     var state = this.state;
     var props = this.props;
@@ -805,6 +811,7 @@ var FixedDataTable = createReactClass({
         onTouchEnd={this._touchHandler.onTouchEnd}
         onTouchMove={this._touchHandler.onTouchMove}
         onTouchCancel={this._touchHandler.onTouchCancel}
+        ref={this._onRef}
         style={{height: state.height, width: state.width}}>
         <div
           className={cx('fixedDataTableLayout/rowsContainer')}
