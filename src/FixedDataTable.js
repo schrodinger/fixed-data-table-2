@@ -608,6 +608,7 @@ var FixedDataTable = createReactClass({
   },
 
   _onRef(div) {
+    this._touchHandler.setRoot(div);
     if (this.props.stopReactWheelPropagation) {
       this._wheelHandler.setRoot(div);
     }
@@ -681,6 +682,8 @@ var FixedDataTable = createReactClass({
         <Scrollbar
           size={scrollbarYHeight}
           contentSize={scrollbarYHeight + maxScrollY}
+          onRef={this._onScrollbarRef}
+          onUnref={this._onScrollbarUnref}
           onScroll={this._onVerticalScroll}
           verticalTop={bodyOffsetTop}
           position={state.scrollY}
@@ -694,6 +697,8 @@ var FixedDataTable = createReactClass({
         <HorizontalScrollbar
           contentSize={scrollbarXWidth + state.maxScrollX}
           offset={bottomSectionOffset}
+          onRef={this._onScrollbarRef}
+          onUnref={this._onScrollbarUnref}
           onScroll={this._onHorizontalScroll}
           position={state.scrollX}
           size={scrollbarXWidth}
@@ -1485,6 +1490,14 @@ var FixedDataTable = createReactClass({
       });
       this._didScrollStop();
     }
+  },
+
+  _onScrollbarRef(ref) {
+    this._touchHandler.ignore(ref);
+  },
+
+  _onScrollbarUnref(ref) {
+    this._touchHandler.unignore(ref);
   },
 
   _didScrollStart() {

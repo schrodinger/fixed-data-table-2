@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-// -*- mode: js -*-
 "use strict";
 
 var glob = require('glob');
