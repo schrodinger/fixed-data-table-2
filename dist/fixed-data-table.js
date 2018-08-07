@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.12 
+ * FixedDataTable v0.8.13 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -3404,7 +3404,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.12';
+FixedDataTableRoot.version = '0.8.13';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -4039,7 +4039,9 @@ var FixedDataTable = (0, _createReactClass2.default)({
     this._reportContentHeight();
   },
   _onRef: function _onRef(div) {
-    this._wheelHandler.setRoot(div);
+    if (this.props.stopReactWheelPropagation) {
+      this._wheelHandler.setRoot(div);
+    }
   },
   render: function render() /*object*/{
     var state = this.state;
