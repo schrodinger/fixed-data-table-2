@@ -117,16 +117,18 @@ class ReactTouchHandler {
     // Skip elements that have their own touch handlers (e.g. internal scrollbars).
     var el = event.target;
     var ignoredLength = this._ignored.length;
-    while (
-      el !== document.body &&
-      el !== this._rootRef
-    ) {
-      for (var x = 0; x < ignoredLength; x++) {
-        if (el === this._ignored[x]) {
-          return true;
+    if (el && ignoredLength) {
+      while (
+        el !== document.body &&
+        el !== this._rootRef
+      ) {
+        for (var x = 0; x < ignoredLength; x++) {
+          if (el === this._ignored[x]) {
+            return true;
+          }
         }
+        el = el.parentNode;
       }
-      el = el.parentNode;
     }
     return false;
   }
@@ -134,7 +136,11 @@ class ReactTouchHandler {
   onTouchStart(/*object*/ event) {
 
     if (this.isIgnored(event)) {
-      return false;
+      if (this._stopPropagation()) {
+        event.stopPropagation();
+        return false;
+      }
+      return true;
     }
 
     // Start tracking drag delta for scrolling
@@ -159,13 +165,17 @@ class ReactTouchHandler {
 
   onTouchEnd(/*object*/ event) {
 
-    if (this.isIgnored(event)) {
-      return false;
-    }
-
     // Stop tracking velocity
     clearInterval(this._trackerId);
     this._trackerId = null;
+
+    if (this.isIgnored(event)) {
+      if (this._stopPropagation()) {
+        event.stopPropagation();
+        return false;
+      }
+      return true;
+    }
 
     // Initialize decelerating autoscroll on drag stop
     requestAnimationFramePolyfill(this._startAutoScroll);
@@ -178,7 +188,11 @@ class ReactTouchHandler {
   onTouchCancel(/*object*/ event) {
 
     if (this.isIgnored(event)) {
-      return false;
+      if (this._stopPropagation()) {
+        event.stopPropagation();
+        return false;
+      }
+      return true;
     }
 
     // Stop tracking velocity
@@ -193,7 +207,11 @@ class ReactTouchHandler {
   onTouchMove(/*object*/ event) {
 
     if (this.isIgnored(event)) {
-      return false;
+      if (this._stopPropagation()) {
+        event.stopPropagation();
+        return false;
+      }
+      return true;
     }
 
     var moveX = event.touches[0].pageX;
