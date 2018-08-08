@@ -87,8 +87,6 @@ class ReactTouchHandler {
 
     this._handleScrollX = handleScrollX;
     this._handleScrollY = handleScrollY;
-    this._ignored = [];
-    this._rootRef = null;
     this._stopPropagation = stopPropagation;
     this._onTouchScrollCallback = onTouchScroll;
 
@@ -102,46 +100,7 @@ class ReactTouchHandler {
     this.onTouchCancel = this.onTouchCancel.bind(this);
   }
 
-  ignore(el) {
-    this._ignored.push(el);
-  }
-
-  unignore(el) {
-    this._ignored = this._ignored.filter(function(e) {
-      return e !== el;
-    });
-  }
-
-  isIgnored(/*object*/ event) {
-
-    // Skip elements that have their own touch handlers (e.g. internal scrollbars).
-    var el = event.target;
-    var ignoredLength = this._ignored.length;
-    if (el && ignoredLength) {
-      while (
-        el !== document.body &&
-        el !== this._rootRef
-      ) {
-        for (var x = 0; x < ignoredLength; x++) {
-          if (el === this._ignored[x]) {
-            return true;
-          }
-        }
-        el = el.parentNode;
-      }
-    }
-    return false;
-  }
-
   onTouchStart(/*object*/ event) {
-
-    if (this.isIgnored(event)) {
-      if (this._stopPropagation()) {
-        event.stopPropagation();
-        return false;
-      }
-      return true;
-    }
 
     // Start tracking drag delta for scrolling
     this._lastTouchX = event.touches[0].pageX;
@@ -169,14 +128,6 @@ class ReactTouchHandler {
     clearInterval(this._trackerId);
     this._trackerId = null;
 
-    if (this.isIgnored(event)) {
-      if (this._stopPropagation()) {
-        event.stopPropagation();
-        return false;
-      }
-      return true;
-    }
-
     // Initialize decelerating autoscroll on drag stop
     requestAnimationFramePolyfill(this._startAutoScroll);
 
@@ -186,14 +137,6 @@ class ReactTouchHandler {
   }
 
   onTouchCancel(/*object*/ event) {
-
-    if (this.isIgnored(event)) {
-      if (this._stopPropagation()) {
-        event.stopPropagation();
-        return false;
-      }
-      return true;
-    }
 
     // Stop tracking velocity
     clearInterval(this._trackerId);
@@ -205,14 +148,6 @@ class ReactTouchHandler {
   }
 
   onTouchMove(/*object*/ event) {
-
-    if (this.isIgnored(event)) {
-      if (this._stopPropagation()) {
-        event.stopPropagation();
-        return false;
-      }
-      return true;
-    }
 
     var moveX = event.touches[0].pageX;
     var moveY = event.touches[0].pageY;
@@ -255,10 +190,6 @@ class ReactTouchHandler {
     if (changed === true && this._dragAnimationId === null) {
       this._dragAnimationId = requestAnimationFramePolyfill(this._didTouchMove);
     }
-  }
-
-  setRoot(rootRef) {
-    this._rootRef = rootRef;
   }
 
   /**

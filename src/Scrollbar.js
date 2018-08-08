@@ -110,13 +110,7 @@ var Scrollbar = createReactClass({
   },
 
   rootRef(ref) {
-    if (this.root && this.props.onUnref) {
-      this.props.onUnref(this.root);
-    }
     this.root = ref;
-    if (this.root && this.props.onRef) {
-      this.props.onRef(this.root);
-    }
   },
 
   render() /*?object*/ {
@@ -172,6 +166,7 @@ var Scrollbar = createReactClass({
       FixedDataTableTranslateDOMPosition(faceStyle, 0, position, this._initialRender);
     }
 
+    mainStyle.touchAction = 'none';
     mainStyle.zIndex = this.props.zIndex;
 
     if (this.props.trackColor === 'gray') {
@@ -184,7 +179,7 @@ var Scrollbar = createReactClass({
         onBlur={this._onBlur}
         onKeyDown={this._onKeyDown}
         onMouseDown={this._onMouseDown}
-        onTouchStart={this._onMouseDown}
+        onTouchStart={this._onTouchStart}
         onWheel={this._wheelHandler.onWheel}
         className={mainClassName}
         ref={this.rootRef}
@@ -375,6 +370,11 @@ var Scrollbar = createReactClass({
     this._mouseMoveTracker.captureMouseMoves(event);
     // Focus the node so it may receive keyboard event.
     this.root.focus();
+  },
+
+  _onTouchStart(/*object*/ event) {
+    event.stopPropagation();
+    this._onMouseDown(event);
   },
 
   _onMouseMove(/*number*/ deltaX, /*number*/ deltaY) {
