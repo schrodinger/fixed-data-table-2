@@ -179,6 +179,9 @@ var Scrollbar = createReactClass({
         onBlur={this._onBlur}
         onKeyDown={this._onKeyDown}
         onMouseDown={this._onMouseDown}
+        onTouchCancel={this._onTouchCancel}
+        onTouchEnd={this._onTouchEnd}
+        onTouchMove={this._onTouchMove}
         onTouchStart={this._onTouchStart}
         onWheel={this._wheelHandler.onWheel}
         className={mainClassName}
@@ -370,6 +373,18 @@ var Scrollbar = createReactClass({
     this._mouseMoveTracker.captureMouseMoves(event);
     // Focus the node so it may receive keyboard event.
     this.root.focus();
+  },
+
+  _onTouchCancel(/*object*/ event) {
+    event.stopPropagation();
+  },
+
+  _onTouchEnd(/*object*/ event) {
+    event.stopPropagation();
+  },
+
+  _onTouchMove(/*object*/ event) {
+    event.stopPropagation();
   },
 
   _onTouchStart(/*object*/ event) {
