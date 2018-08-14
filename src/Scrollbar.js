@@ -214,7 +214,7 @@ var Scrollbar = createReactClass({
       this._onMouseMove,
       this._onMouseMoveEnd,
       document.documentElement,
-      true
+      this.props.touchEnabled
     );
 
     if (this.props.position !== undefined &&

@@ -684,6 +684,7 @@ var FixedDataTable = createReactClass({
           onScroll={this._onVerticalScroll}
           verticalTop={bodyOffsetTop}
           position={state.scrollY}
+          touchEnabled={state.touchScrollEnabled}
         />;
     }
 
@@ -697,6 +698,7 @@ var FixedDataTable = createReactClass({
           onScroll={this._onHorizontalScroll}
           position={state.scrollX}
           size={scrollbarXWidth}
+          touchEnabled={state.touchScrollEnabled}
         />;
     }
 
