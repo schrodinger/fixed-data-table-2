@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.13 
+ * FixedDataTable v0.8.14 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -1641,6 +1641,14 @@ var KEYBOARD_SCROLL_AMOUNT = 40;
 
 var _lastScrolledScrollbar = null;
 
+var getTouchX = function getTouchX(e) {
+  return Math.round(e.targetTouches[0].pageX - e.target.getBoundingClientRect().x);
+};
+
+var getTouchY = function getTouchY(e) {
+  return Math.round(e.targetTouches[0].pageY - e.target.getBoundingClientRect().y);
+};
+
 var Scrollbar = (0, _createReactClass2.default)({
   displayName: 'Scrollbar',
   mixins: [_ReactComponentWithPureRenderMixin2.default],
@@ -1681,6 +1689,9 @@ var Scrollbar = (0, _createReactClass2.default)({
   },
   faceRef: function faceRef(ref) {
     this.face = ref;
+  },
+  rootRef: function rootRef(ref) {
+    this.root = ref;
   },
   render: function render() /*?object*/{
     if (!this.state.scrollable) {
@@ -1735,6 +1746,7 @@ var Scrollbar = (0, _createReactClass2.default)({
       (0, _FixedDataTableTranslateDOMPosition2.default)(faceStyle, 0, position, this._initialRender);
     }
 
+    mainStyle.touchAction = 'none';
     mainStyle.zIndex = this.props.zIndex;
 
     if (this.props.trackColor === 'gray') {
@@ -1748,8 +1760,13 @@ var Scrollbar = (0, _createReactClass2.default)({
         onBlur: this._onBlur,
         onKeyDown: this._onKeyDown,
         onMouseDown: this._onMouseDown,
+        onTouchCancel: this._onTouchCancel,
+        onTouchEnd: this._onTouchEnd,
+        onTouchMove: this._onTouchMove,
+        onTouchStart: this._onTouchStart,
         onWheel: this._wheelHandler.onWheel,
         className: mainClassName,
+        ref: this.rootRef,
         style: mainStyle,
         tabIndex: 0 },
       _React2.default.createElement('div', {
@@ -1769,7 +1786,7 @@ var Scrollbar = (0, _createReactClass2.default)({
     this._initialRender = true;
   },
   componentDidMount: function componentDidMount() {
-    this._mouseMoveTracker = new _DOMMouseMoveTracker2.default(this._onMouseMove, this._onMouseMoveEnd, document.documentElement);
+    this._mouseMoveTracker = new _DOMMouseMoveTracker2.default(this._onMouseMove, this._onMouseMoveEnd, document.documentElement, this.props.touchEnabled);
 
     if (this.props.position !== undefined && this.state.position !== this.props.position) {
       this._didScroll();
@@ -1873,7 +1890,7 @@ var Scrollbar = (0, _createReactClass2.default)({
       // Both `offsetX` and `layerX` are non-standard DOM property but they are
       // magically available for browsers somehow.
       var nativeEvent = event.nativeEvent;
-      var position = this.state.isHorizontal ? nativeEvent.offsetX || nativeEvent.layerX : nativeEvent.offsetY || nativeEvent.layerY;
+      var position = this.state.isHorizontal ? nativeEvent.offsetX || nativeEvent.layerX || getTouchX(nativeEvent) : nativeEvent.offsetY || nativeEvent.layerY || getTouchY(nativeEvent);
 
       // MouseDown on the scroll-track directly, move the center of the
       // scroll-face to the mouse position.
@@ -1889,7 +1906,20 @@ var Scrollbar = (0, _createReactClass2.default)({
 
     this._mouseMoveTracker.captureMouseMoves(event);
     // Focus the node so it may receive keyboard event.
-    _ReactDOM2.default.findDOMNode(this).focus();
+    this.root.focus();
+  },
+  _onTouchCancel: function _onTouchCancel( /*object*/event) {
+    event.stopPropagation();
+  },
+  _onTouchEnd: function _onTouchEnd( /*object*/event) {
+    event.stopPropagation();
+  },
+  _onTouchMove: function _onTouchMove( /*object*/event) {
+    event.stopPropagation();
+  },
+  _onTouchStart: function _onTouchStart( /*object*/event) {
+    event.stopPropagation();
+    this._onMouseDown(event);
   },
   _onMouseMove: function _onMouseMove( /*number*/deltaX, /*number*/deltaY) {
     var props = this.props;
@@ -3319,7 +3349,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.13';
+FixedDataTableRoot.version = '0.8.14';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -4016,7 +4046,8 @@ var FixedDataTable = (0, _createReactClass2.default)({
         contentSize: scrollbarYHeight + maxScrollY,
         onScroll: this._onVerticalScroll,
         verticalTop: bodyOffsetTop,
-        position: state.scrollY
+        position: state.scrollY,
+        touchEnabled: state.touchScrollEnabled
       });
     }
 
@@ -4028,7 +4059,8 @@ var FixedDataTable = (0, _createReactClass2.default)({
         offset: bottomSectionOffset,
         onScroll: this._onHorizontalScroll,
         position: state.scrollX,
-        size: scrollbarXWidth
+        size: scrollbarXWidth,
+        touchEnabled: state.touchScrollEnabled
       });
     }
 
@@ -7142,6 +7174,7 @@ var ReactTouchHandler = function () {
   _createClass(ReactTouchHandler, [{
     key: 'onTouchStart',
     value: function onTouchStart( /*object*/event) {
+
       // Start tracking drag delta for scrolling
       this._lastTouchX = event.touches[0].pageX;
       this._lastTouchY = event.touches[0].pageY;
@@ -7191,6 +7224,7 @@ var ReactTouchHandler = function () {
   }, {
     key: 'onTouchMove',
     value: function onTouchMove( /*object*/event) {
+
       var moveX = event.touches[0].pageX;
       var moveY = event.touches[0].pageY;
 
