@@ -56,6 +56,7 @@
     "webpack-dev-server": "^2.6.1"
   },
   "scripts": {
+    "webpack": "webpack",
     "site-dev-server": "./build_helpers/startSiteDevServer.sh",
     "site-build": "./build_helpers/buildStaticSite.sh",
     "build-dist": "./build_helpers/buildDist.sh",
