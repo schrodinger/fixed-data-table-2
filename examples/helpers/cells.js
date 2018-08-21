@@ -139,7 +139,7 @@ class TooltipCell extends React.PureComponent {
         {...props}
         onMouseEnter={() => { ReactTooltip.show(); }}
         onMouseLeave={() => { ReactTooltip.hide(); }}>
-        <div ref='valueDiv' data-tip={value}>
+        <div ref={(r) => this._valueDivRef = r} data-tip={value}>
           {value}
         </div>
       </Cell>
