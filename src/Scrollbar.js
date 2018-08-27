@@ -160,7 +160,7 @@ class Scrollbar extends React.PureComponent {
         style={mainStyle}
         tabIndex={0}>
         <div
-          ref="face"
+          ref={(r) => this._faceRef = r}
           className={faceClassName}
           style={faceStyle}
         />
@@ -315,7 +315,7 @@ class Scrollbar extends React.PureComponent {
   _onMouseDown = (/*object*/ event) => {
     var nextState;
 
-    if (event.target !== ReactDOM.findDOMNode(this.refs.face)) {
+    if (event.target !== this._faceRef) {
       // Both `offsetX` and `layerX` are non-standard DOM property but they are
       // magically available for browsers somehow.
       var nativeEvent = event.nativeEvent;

@@ -45,13 +45,13 @@ describe('FixedDataTableRoot', function() {
      * @return {!Object}
      */
     getTableState() {
-      return this.refs['table'].state;
+      return this._tableRef.state;
     }
 
     render() {
       return (
         <Table
-          ref="table"
+          ref={(r) => this._tableRef = r}
           width={600}
           height={400}
           rowsCount={50}
