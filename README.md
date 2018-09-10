@@ -38,7 +38,7 @@ Add the default stylesheet `dist/fixed-data-table.css` using a link tag or impor
 
 Implementing a table involves three component types- `<Table/>`,`<Column/>`, and `<Cell/>`.
 
-`<Table />` contains configuration information for the entire table, like dimensions and row count. It's also where you pass down the data to be rendered in the table. 
+`<Table />` contains configuration information for the entire table, like dimensions and row count.
 
 ```javascript
 
@@ -50,7 +50,6 @@ Implementing a table involves three component types- `<Table/>`,`<Column/>`, and
     width={5000}
     height={5050}
     headerHeight={50}
-    data={rows}>
     ...
   </Table>
 ```    
