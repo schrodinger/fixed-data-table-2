@@ -186,8 +186,7 @@ var Scrollbar = createReactClass({
         onWheel={this._wheelHandler.onWheel}
         className={mainClassName}
         ref={this.rootRef}
-        style={mainStyle}
-        tabIndex={0}>
+        style={mainStyle}>
         <div
           ref={this.faceRef}
           className={faceClassName}

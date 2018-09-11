@@ -798,7 +798,10 @@ var FixedDataTable = createReactClass({
           style={{top: footOffsetTop}}
         />;
     }
-
+    var tabIndex = null
+    if (this.props.keyboardPageEnabled || this.props.keyboardScrollEnabled) {
+      tabIndex = 0
+    }
     return (
       <div
         className={joinClasses(
@@ -806,7 +809,7 @@ var FixedDataTable = createReactClass({
           cx('fixedDataTableLayout/main'),
           cx('public/fixedDataTable/main'),
         )}
-        tabIndex={0}
+        tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
         onWheel={this._wheelHandler.onWheel}
         onTouchStart={this._touchHandler.onTouchStart}
