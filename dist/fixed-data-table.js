@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.14 
+ * FixedDataTable v0.8.15 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -1767,8 +1767,7 @@ var Scrollbar = (0, _createReactClass2.default)({
         onWheel: this._wheelHandler.onWheel,
         className: mainClassName,
         ref: this.rootRef,
-        style: mainStyle,
-        tabIndex: 0 },
+        style: mainStyle },
       _React2.default.createElement('div', {
         ref: this.faceRef,
         className: faceClassName,
@@ -3349,7 +3348,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.14';
+FixedDataTableRoot.version = '0.8.15';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -4138,12 +4137,15 @@ var FixedDataTable = (0, _createReactClass2.default)({
         style: { top: footOffsetTop }
       });
     }
-
+    var tabIndex = null;
+    if (this.props.keyboardPageEnabled || this.props.keyboardScrollEnabled) {
+      tabIndex = 0;
+    }
     return _React2.default.createElement(
       'div',
       {
         className: (0, _joinClasses2.default)(this.state.className, (0, _cx2.default)('fixedDataTableLayout/main'), (0, _cx2.default)('public/fixedDataTable/main')),
-        tabIndex: 0,
+        tabIndex: tabIndex,
         onKeyDown: this._onKeyDown,
         onWheel: this._wheelHandler.onWheel,
         onTouchStart: this._touchHandler.onTouchStart,
