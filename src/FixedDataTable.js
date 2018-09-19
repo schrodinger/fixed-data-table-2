@@ -244,6 +244,11 @@ class FixedDataTable extends React.Component {
     footerHeight: PropTypes.number,
 
     /**
+     * Class name to be passed into scrollbar container
+     */
+    scrollbarClassName: PropTypes.string,
+
+    /**
      * Value of horizontal scroll.
      */
     scrollLeft: PropTypes.number,
@@ -538,6 +543,7 @@ class FixedDataTable extends React.Component {
       scrollbarY =
         <Scrollbar
           size={visibleRowsHeight}
+          className={this.props.scrollbarClassName}
           contentSize={scrollContentHeight}
           onScroll={this._onVerticalScroll}
           verticalTop={bodyOffsetTop}
@@ -549,6 +555,7 @@ class FixedDataTable extends React.Component {
     if (scrollEnabledX) {
       scrollbarX =
         <HorizontalScrollbar
+          className={this.props.scrollbarClassName}
           contentSize={width + maxScrollX}
           offset={scrollbarXOffsetTop}
           onScroll={this._onHorizontalScroll}

@@ -20,6 +20,7 @@ import ReactWheelHandler from 'ReactWheelHandler';
 import cssVar from 'cssVar';
 import cx from 'cx';
 import emptyFunction from 'emptyFunction';
+import joinClasses from 'joinClasses';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 
 var UNSCROLLABLE_STATE = {
@@ -36,6 +37,7 @@ var _lastScrolledScrollbar = null;
 
 class Scrollbar extends React.PureComponent {
   static propTypes = {
+    className: PropTypes.string,
     contentSize: PropTypes.number.isRequired,
     defaultPosition: PropTypes.number,
     isOpaque: PropTypes.bool,
@@ -83,6 +85,7 @@ class Scrollbar extends React.PureComponent {
   }
 
   static defaultProps = /*object*/ {
+    className: '',
     defaultPosition: 0,
     isOpaque: false,
     onScroll: emptyFunction,
@@ -105,14 +108,17 @@ class Scrollbar extends React.PureComponent {
     var isOpaque = this.props.isOpaque;
     var verticalTop = this.props.verticalTop || 0;
 
-    var mainClassName = cx({
-      'ScrollbarLayout/main': true,
-      'ScrollbarLayout/mainVertical': isVertical,
-      'ScrollbarLayout/mainHorizontal': isHorizontal,
-      'public/Scrollbar/main': true,
-      'public/Scrollbar/mainOpaque': isOpaque,
-      'public/Scrollbar/mainActive': isActive,
-    });
+    var mainClassName = joinClasses(
+      this.props.className,
+      cx({
+        'ScrollbarLayout/main': true,
+        'ScrollbarLayout/mainVertical': isVertical,
+        'ScrollbarLayout/mainHorizontal': isHorizontal,
+        'public/Scrollbar/main': true,
+        'public/Scrollbar/mainOpaque': isOpaque,
+        'public/Scrollbar/mainActive': isActive,
+      })
+    );
 
     var faceClassName = cx({
       'ScrollbarLayout/face': true,
