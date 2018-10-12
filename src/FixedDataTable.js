@@ -1357,6 +1357,8 @@ var FixedDataTable = createReactClass({
       maxScrollY,
       reservedHeight: totalHeightReserved,
       scrollContentHeight,
+      lastScrollLeft,
+      lastScrollTop,
       scrollX,
       scrollY,
       // These properties may overwrite properties defined in
@@ -1451,7 +1453,7 @@ var FixedDataTable = createReactClass({
   },
 
   _onHorizontalScroll(/*number*/ scrollPos) {
-    if (scrollPos === this.state.scrollX) {
+    if (scrollPos === this.state.lastScrollLeft) {
       return;
     }
 
@@ -1471,7 +1473,7 @@ var FixedDataTable = createReactClass({
   },
 
   _onVerticalScroll(/*number*/ scrollPos) {
-    if (scrollPos === this.state.scrollY) {
+    if (scrollPos === this.state.lastScrollTop) {
       return;
     }
 
