@@ -101,6 +101,7 @@ class FixedDataTableContainer extends React.Component {
       'tableSize',
     ]);
 
+    this.setState({lastScrollX: this.state && this.state.scrollX, lastScrollY: this.state && this.state.scrollY});
     this.setState(boundState);
   }
 }

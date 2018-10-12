@@ -482,6 +482,10 @@ class Scrollbar extends React.PureComponent {
       var callback = willScroll ? this._didScroll : undefined;
       this.setState(nextState, callback);
     } else if (controlledPosition === nextState.position) {
+      // Also notify owner when code-triggered scrolling occurs
+      if (willScroll) {
+        this.props.onScroll(nextState.position);
+      }
       this.setState(nextState);
     } else {
       // Scrolling is controlled. Don't update the state and let the owner

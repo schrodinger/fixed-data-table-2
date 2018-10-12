@@ -837,9 +837,10 @@ class FixedDataTable extends React.Component {
       onHorizontalScroll,
       scrollActions,
       scrollX,
+      lastScrollX,
     } = this.props;
 
-    if (scrollPos === scrollX) {
+    if (scrollPos === lastScrollX) {
       return;
     }
 
@@ -858,9 +859,10 @@ class FixedDataTable extends React.Component {
       onVerticalScroll,
       scrollActions,
       scrollY,
+      lastScrollY,
     } = this.props;
 
-    if (scrollPos === scrollY) {
+    if (scrollPos === lastScrollY) {
       return;
     }
 
