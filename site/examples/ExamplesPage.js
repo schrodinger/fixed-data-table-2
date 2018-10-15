@@ -37,7 +37,7 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.EXPANDED_EXAMPLE.location]: require('../../examples/ExpandedExample'),
   [ExamplePages.FLEXGROW_EXAMPLE.location]: require('../../examples/FlexGrowExample'),
   [ExamplePages.COLUMN_GROUPS_EXAMPLE.location]: require('../../examples/ColumnGroupsExample'),
-  [ExamplePages.PAGINATION_EXAMPLE.location]: require('../../examples/PaginationExample'),
+  [ExamplePages.INFINITE_SCROLL_EXAMPLE.location]: require('../../examples/InfiniteScrollExample'),
   [ExamplePages.FILTER_EXAMPLE.location]: require('../../examples/FilterExample'),
   [ExamplePages.SORT_EXAMPLE.location]: require('../../examples/SortExample'),
   [ExamplePages.RESPONSIVE_EXAMPLE.location]: require('../../examples/ResponsiveExample'),
