@@ -42,8 +42,9 @@
   overflow: hidden;
   position: absolute;
   z-index: 1;
+  transition-duration: 250ms;
   transition-timing-function: ease;
-  transition-property: background-color width position;
+  transition-property: width;
 }
 
 /**
