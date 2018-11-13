@@ -36,6 +36,7 @@ class ReactWheelHandler {
     this._deltaX = 0;
     this._deltaY = 0;
     this._didWheel = this._didWheel.bind(this);
+    this._rootRef = null;
     if (typeof handleScrollX !== 'function') {
       handleScrollX = handleScrollX ?
         emptyFunction.thatReturnsTrue :
@@ -61,6 +62,17 @@ class ReactWheelHandler {
     this.onWheel = this.onWheel.bind(this);
   }
 
+  contains(target) {
+    var parent = target;
+    while (parent != document.body) {
+      if (parent === this._rootRef) {
+        return true;
+      }
+      parent = parent.parentNode;
+    }
+    return false;
+  }
+
   onWheel(/*object*/ event) {
     var normalizedEvent = normalizeWheel(event);
     var deltaX = this._deltaX + normalizedEvent.pixelX;
@@ -68,6 +80,10 @@ class ReactWheelHandler {
     var handleScrollX = this._handleScrollX(deltaX, deltaY);
     var handleScrollY = this._handleScrollY(deltaY, deltaX);
     if (!handleScrollX && !handleScrollY) {
+      return;
+    }
+
+    if (this._rootRef && !this.contains(event.target)) {
       return;
     }
 
@@ -86,6 +102,10 @@ class ReactWheelHandler {
     if (changed === true && this._animationFrameID === null) {
       this._animationFrameID = requestAnimationFramePolyfill(this._didWheel);
     }
+  }
+
+  setRoot(rootRef) {
+    this._rootRef = rootRef;
   }
 
   _didWheel() {

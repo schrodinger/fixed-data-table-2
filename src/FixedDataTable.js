@@ -607,6 +607,12 @@ var FixedDataTable = createReactClass({
     this._reportContentHeight();
   },
 
+  _onRef(div) {
+    if (this.props.stopReactWheelPropagation) {
+      this._wheelHandler.setRoot(div);
+    }
+  },
+
   render() /*object*/ {
     var state = this.state;
     var props = this.props;
@@ -678,6 +684,7 @@ var FixedDataTable = createReactClass({
           onScroll={this._onVerticalScroll}
           verticalTop={bodyOffsetTop}
           position={state.scrollY}
+          touchEnabled={state.touchScrollEnabled}
         />;
     }
 
@@ -691,6 +698,7 @@ var FixedDataTable = createReactClass({
           onScroll={this._onHorizontalScroll}
           position={state.scrollX}
           size={scrollbarXWidth}
+          touchEnabled={state.touchScrollEnabled}
         />;
     }
 
@@ -790,7 +798,10 @@ var FixedDataTable = createReactClass({
           style={{top: footOffsetTop}}
         />;
     }
-
+    var tabIndex = null
+    if (this.props.keyboardPageEnabled || this.props.keyboardScrollEnabled) {
+      tabIndex = 0
+    }
     return (
       <div
         className={joinClasses(
@@ -798,13 +809,14 @@ var FixedDataTable = createReactClass({
           cx('fixedDataTableLayout/main'),
           cx('public/fixedDataTable/main'),
         )}
-        tabIndex={0}
+        tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
         onWheel={this._wheelHandler.onWheel}
         onTouchStart={this._touchHandler.onTouchStart}
         onTouchEnd={this._touchHandler.onTouchEnd}
         onTouchMove={this._touchHandler.onTouchMove}
         onTouchCancel={this._touchHandler.onTouchCancel}
+        ref={this._onRef}
         style={{height: state.height, width: state.width}}>
         <div
           className={cx('fixedDataTableLayout/rowsContainer')}

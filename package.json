@@ -1,6 +1,6 @@
 {
   "name": "fixed-data-table-2",
-  "version": "0.8.11",
+  "version": "0.8.15",
   "description": "A React table component designed to allow presenting thousands of rows of data.",
   "main": "main.js",
   "peerDependencies": {
@@ -36,7 +36,7 @@
     "less": "^2.2.0",
     "less-loader": "^2.0.0",
     "marked": "^0.3.2",
-    "mocha": "^2.5.3",
+    "mocha": "5.2.0",
     "mocha-loader": "^1.0.0",
     "mocha-webpack": "1.0.0-rc.1",
     "null-loader": "^0.1.0",
@@ -56,6 +56,7 @@
     "webpack-dev-server": "^2.6.1"
   },
   "scripts": {
+    "webpack": "webpack",
     "site-dev-server": "./build_helpers/startSiteDevServer.sh",
     "site-build": "./build_helpers/buildStaticSite.sh",
     "build-dist": "./build_helpers/buildDist.sh",

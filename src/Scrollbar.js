@@ -36,6 +36,14 @@ var KEYBOARD_SCROLL_AMOUNT = 40;
 
 var _lastScrolledScrollbar = null;
 
+var getTouchX = function(e) {
+  return Math.round(e.targetTouches[0].pageX - e.target.getBoundingClientRect().x);
+};
+
+var getTouchY = function(e) {
+  return Math.round(e.targetTouches[0].pageY - e.target.getBoundingClientRect().y);
+};
+
 var Scrollbar = createReactClass({
   displayName: 'Scrollbar',
   mixins: [ReactComponentWithPureRenderMixin],
@@ -97,6 +105,14 @@ var Scrollbar = createReactClass({
     };
   },
 
+  faceRef(ref) {
+    this.face = ref;
+  },
+
+  rootRef(ref) {
+    this.root = ref;
+  },
+
   render() /*?object*/ {
     if (!this.state.scrollable) {
       return null;
@@ -150,6 +166,7 @@ var Scrollbar = createReactClass({
       FixedDataTableTranslateDOMPosition(faceStyle, 0, position, this._initialRender);
     }
 
+    mainStyle.touchAction = 'none';
     mainStyle.zIndex = this.props.zIndex;
 
     if (this.props.trackColor === 'gray') {
@@ -162,12 +179,16 @@ var Scrollbar = createReactClass({
         onBlur={this._onBlur}
         onKeyDown={this._onKeyDown}
         onMouseDown={this._onMouseDown}
+        onTouchCancel={this._onTouchCancel}
+        onTouchEnd={this._onTouchEnd}
+        onTouchMove={this._onTouchMove}
+        onTouchStart={this._onTouchStart}
         onWheel={this._wheelHandler.onWheel}
         className={mainClassName}
-        style={mainStyle}
-        tabIndex={0}>
+        ref={this.rootRef}
+        style={mainStyle}>
         <div
-          ref="face"
+          ref={this.faceRef}
           className={faceClassName}
           style={faceStyle}
         />
@@ -191,7 +212,8 @@ var Scrollbar = createReactClass({
     this._mouseMoveTracker = new DOMMouseMoveTracker(
       this._onMouseMove,
       this._onMouseMoveEnd,
-      document.documentElement
+      document.documentElement,
+      this.props.touchEnabled
     );
 
     if (this.props.position !== undefined &&
@@ -322,13 +344,13 @@ var Scrollbar = createReactClass({
   _onMouseDown(/*object*/ event) {
     var nextState;
 
-    if (event.target !== ReactDOM.findDOMNode(this.refs.face)) {
+    if (event.target !== ReactDOM.findDOMNode(this.face)) {
       // Both `offsetX` and `layerX` are non-standard DOM property but they are
       // magically available for browsers somehow.
       var nativeEvent = event.nativeEvent;
       var position = this.state.isHorizontal ?
-        nativeEvent.offsetX || nativeEvent.layerX :
-        nativeEvent.offsetY || nativeEvent.layerY;
+        nativeEvent.offsetX || nativeEvent.layerX || getTouchX(nativeEvent) :
+        nativeEvent.offsetY || nativeEvent.layerY || getTouchY(nativeEvent);
 
       // MouseDown on the scroll-track directly, move the center of the
       // scroll-face to the mouse position.
@@ -349,7 +371,24 @@ var Scrollbar = createReactClass({
 
     this._mouseMoveTracker.captureMouseMoves(event);
     // Focus the node so it may receive keyboard event.
-    ReactDOM.findDOMNode(this).focus();
+    this.root.focus();
+  },
+
+  _onTouchCancel(/*object*/ event) {
+    event.stopPropagation();
+  },
+
+  _onTouchEnd(/*object*/ event) {
+    event.stopPropagation();
+  },
+
+  _onTouchMove(/*object*/ event) {
+    event.stopPropagation();
+  },
+
+  _onTouchStart(/*object*/ event) {
+    event.stopPropagation();
+    this._onMouseDown(event);
   },
 
   _onMouseMove(/*number*/ deltaX, /*number*/ deltaY) {
