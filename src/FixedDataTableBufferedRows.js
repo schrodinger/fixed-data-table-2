@@ -29,6 +29,9 @@ class FixedDataTableBufferedRows extends React.Component {
     onRowMouseUp: PropTypes.func,
     onRowMouseEnter: PropTypes.func,
     onRowMouseLeave: PropTypes.func,
+    onRowTouchStart: PropTypes.func,
+    onRowTouchEnd: PropTypes.func,
+    onRowTouchMove: PropTypes.func,
     rowClassNameGetter: PropTypes.func,
     rowExpanded: PropTypes.oneOfType([
       PropTypes.element,
@@ -122,6 +125,9 @@ class FixedDataTableBufferedRows extends React.Component {
           onMouseUp={props.onRowMouseUp}
           onMouseEnter={props.onRowMouseEnter}
           onMouseLeave={props.onRowMouseLeave}
+          onTouchStart={props.onRowTouchStart}
+          onTouchEnd={props.onRowTouchEnd}
+          onTouchMove={props.onRowTouchMove}
           className={joinClasses(
             rowClassNameGetter(rowIndex),
             cx('public/fixedDataTable/bodyRow'),

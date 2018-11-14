@@ -319,6 +319,21 @@ class FixedDataTable extends React.Component {
     onRowMouseLeave: PropTypes.func,
 
     /**
+     * Callback that is called when a touch-start event happens on a row.
+     */
+    onRowTouchStart: PropTypes.func,
+
+    /**
+     * Callback that is called when a touch-end event happens on a row.
+     */
+    onRowTouchEnd: PropTypes.func,
+
+    /**
+     * Callback that is called when a touch-move event happens on a row.
+     */
+    onRowTouchMove: PropTypes.func,
+
+    /**
      * Callback that is called when resizer has been released
      * and column needs to be updated.
      *
@@ -712,6 +727,9 @@ class FixedDataTable extends React.Component {
         onRowMouseDown={props.onRowMouseDown}
         onRowMouseEnter={props.onRowMouseEnter}
         onRowMouseLeave={props.onRowMouseLeave}
+        onRowTouchStart={state.touchScrollEnabled ? state.onRowTouchStart : null}
+        onRowTouchEnd={state.touchScrollEnabled ? state.onRowTouchEnd : null}
+        onRowTouchMove={state.touchScrollEnabled ? state.onRowTouchMove : null}
         rowClassNameGetter={props.rowClassNameGetter}
         rowExpanded={props.rowExpanded}
         rowKeyGetter={props.rowKeyGetter}
