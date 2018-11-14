@@ -373,7 +373,7 @@ class FixedDataTable extends React.Component {
   }
 
   componentWillMount() {
-    this._didScrollStop = debounceCore(this._didScrollStop, 200, this);
+    this._didScrollStop = debounceCore(this._didScrollStopSync, 200, this);
 
     this._wheelHandler = new ReactWheelHandler(
       this._onScroll,
@@ -393,7 +393,11 @@ class FixedDataTable extends React.Component {
   componentWillUnmount() {
     this._wheelHandler = null;
     this._touchHandler = null;
-  }
+
+    // Cancel any pending debounced scroll handling and handle immediately.
+    this._didScrollStop.reset();
+    this._didScrollStopSync();
+  },
 
   _shouldHandleTouchX = (/*number*/ delta) /*boolean*/ =>
     this.props.touchScrollEnabled && this._shouldHandleWheelX(delta)
@@ -461,8 +465,11 @@ class FixedDataTable extends React.Component {
       this.props.scrollLeft !== nextProps.scrollLeft) {
       this._didScrollStart();
     }
-    this._didScrollStop();
-  }
+
+    // Cancel any pending debounced scroll handling and handle immediately.
+    this._didScrollStop.reset();
+    this._didScrollStopSync();
+  },
 
   componentDidUpdate() {
     this._reportContentHeight();
@@ -896,7 +903,10 @@ class FixedDataTable extends React.Component {
     }
   }
 
-  _didScrollStop = () => {
+  // We need two versions of this function, one to finish up synchronously (for
+  // example, in componentWillUnmount), and a debounced version for normal
+  // scroll handling.
+  _didScrollStopSync() {
     const {
       firstRowIndex,
       onScrollEnd,
