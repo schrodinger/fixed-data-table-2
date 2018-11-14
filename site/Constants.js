@@ -144,6 +144,12 @@ exports.ExamplePages = {
     title: 'Owner Height',
     description: 'A table example that displays a table footer sticking to the screen.'
   },
+  LONG_CLICK_EXAMPLE: {
+    location: 'example-long-click.html',
+    fileName: 'LongClickExample.js',
+    title: 'Row Long Click',
+    description: 'A table example that highlights a row after a long click',
+  },
   CONTEXT_EXAMPLE: {
     location: 'example-context.html',
     fileName: 'ContextExample.js',

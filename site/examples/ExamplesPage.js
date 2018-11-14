@@ -46,13 +46,14 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.FOOTER_EXAMPLE.location]: require('../../examples/FooterExample'),
   [ExamplePages.MAX_HEIGHT_EXAMPLE.location]: require('../../examples/MaxHeightExample'),
   [ExamplePages.OWNER_HEIGHT_EXAMPLE.location]: require('../../examples/OwnerHeightExample'),
+  [ExamplePages.LONG_CLICK_EXAMPLE.location]: require('../../examples/LongClickExample'),
   [ExamplePages.CONTEXT_EXAMPLE.location]: require('../../examples/ContextExample'),
 };
 
 class ExamplesPage extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       renderPage: false
     };

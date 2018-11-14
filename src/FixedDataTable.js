@@ -304,6 +304,11 @@ class FixedDataTable extends React.Component {
     onRowMouseDown: PropTypes.func,
 
     /**
+     * Callback that is called when a mouse-up event happens on a row.
+     */
+    onRowMouseUp: PropTypes.func,
+
+    /**
      * Callback that is called when a mouse-enter event happens on a row.
      */
     onRowMouseEnter: PropTypes.func,
@@ -703,6 +708,7 @@ class FixedDataTable extends React.Component {
         offsetTop={offsetTop}
         onRowClick={props.onRowClick}
         onRowDoubleClick={props.onRowDoubleClick}
+        onRowMouseUp={props.onRowMouseUp}
         onRowMouseDown={props.onRowMouseDown}
         onRowMouseEnter={props.onRowMouseEnter}
         onRowMouseLeave={props.onRowMouseLeave}
