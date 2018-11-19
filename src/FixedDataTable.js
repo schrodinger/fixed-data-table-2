@@ -1174,7 +1174,7 @@ var FixedDataTable = createReactClass({
 
     // If vertical scrollbar is necessary, adjust the table width to give it room
     var adjustedWidth = props.width;
-    if (maxScrollY) {
+    if (maxScrollY && props.showScrollbarY) {
       adjustedWidth = adjustedWidth - Scrollbar.SIZE - 1;
     }
 
@@ -1303,7 +1303,7 @@ var FixedDataTable = createReactClass({
       // We also need to make sure we don't double-dip and adjust the width twice
       const notAdjusted = adjustedWidth === props.width;
       maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
-      if (notAdjusted && maxScrollY) {
+      if (notAdjusted && maxScrollY && props.showScrollbarY) {
         adjustedWidth = adjustedWidth - Scrollbar.SIZE - 1;
       }
     }
