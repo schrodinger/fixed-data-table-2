@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.15 
+ * FixedDataTable v0.8.16 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -3348,7 +3348,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.15';
+FixedDataTableRoot.version = '0.8.16';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -4461,7 +4461,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
 
     // If vertical scrollbar is necessary, adjust the table width to give it room
     var adjustedWidth = props.width;
-    if (maxScrollY) {
+    if (maxScrollY && props.showScrollbarY) {
       adjustedWidth = adjustedWidth - _Scrollbar2.default.SIZE - 1;
     }
 
@@ -4568,7 +4568,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
       // We also need to make sure we don't double-dip and adjust the width twice
       var notAdjusted = adjustedWidth === props.width;
       maxScrollY = Math.max(0, scrollContentHeight - bodyHeight);
-      if (notAdjusted && maxScrollY) {
+      if (notAdjusted && maxScrollY && props.showScrollbarY) {
         adjustedWidth = adjustedWidth - _Scrollbar2.default.SIZE - 1;
       }
     }
@@ -7649,7 +7649,6 @@ var translateDOMPositionXY = function () {
     if (!isSafari && _BrowserSupportCore2.default.hasCSS3DTransforms()) {
       return function ( /*object*/style, /*number*/x, /*number*/y) {
         style[TRANSFORM] = 'translate3d(' + x + 'px,' + y + 'px,0)';
-        style[BACKFACE_VISIBILITY] = 'hidden';
       };
     } else {
       return function ( /*object*/style, /*number*/x, /*number*/y) {
