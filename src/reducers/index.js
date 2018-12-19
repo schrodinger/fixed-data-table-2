@@ -21,11 +21,18 @@ import convertColumnElementsToData from 'convertColumnElementsToData';
 import pick from 'lodash/pick';
 import shallowEqual from 'shallowEqual';
 
+/**
+ * Returns the default initial state for the redux store.
+ * This must be a brand new, independent object for each table instance
+ * or issues may occur due to multiple tables sharing data.
+ *
+ * @return {!Object}
+ */
 function getInitialState() {
-  /**
-   * Input state set from props
-   */
-  const DEFAULT_INPUT_STATE = {
+  return {
+    /*
+     * Input state set from props
+     */
     columnProps: [],
     columnGroupProps: [],
     elementTemplates: {
@@ -60,13 +67,11 @@ function getInitialState() {
       useMaxHeight: false,
       width: 0,
     },
-  };
 
-  /**
-   * Output state passed as props to the the rendered FixedDataTable
-   * NOTE (jordan) rows may contain undefineds if we don't need all the buffer positions
-   */
-  const DEFAULT_OUTPUT_STATE = {
+    /*
+     * Output state passed as props to the the rendered FixedDataTable
+     * NOTE (jordan) rows may contain undefineds if we don't need all the buffer positions
+     */
     columnReorderingData: {},
     columnResizingData: {},
     firstRowIndex: 0,
@@ -80,24 +85,17 @@ function getInitialState() {
     scrollContentHeight: 0,
     scrollX: 0,
     scrollY: 0,
-  };
 
-  /**
-   * Internal state only used by this file
-   * NOTE (jordan) internal state is altered in place
-   * so don't trust it for redux history or immutability checks
-   * TODO (jordan) investigate if we want to move this to local or scoped state
-   */
-  const DEFAULT_INTERNAL_STATE = {
+    /*
+     * Internal state only used by this file
+     * NOTE (jordan) internal state is altered in place
+     * so don't trust it for redux history or immutability checks
+     * TODO (jordan) investigate if we want to move this to local or scoped state
+     */
     bufferSet: new IntegerBufferSet(),
     storedHeights: [],
     rowOffsets: null, // PrefixIntervalTree
   };
-
-  return Object.assign({},
-    DEFAULT_INPUT_STATE,
-    DEFAULT_OUTPUT_STATE,
-    DEFAULT_INTERNAL_STATE);
 }
 
 function reducers(state = getInitialState(), action) {
