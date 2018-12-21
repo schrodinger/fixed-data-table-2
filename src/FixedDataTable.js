@@ -404,7 +404,7 @@ class FixedDataTable extends React.Component {
 
   static defaultProps = /*object*/ {
     elementHeights: {
-      cellGroupWrapperHeight: 0,
+      cellGroupWrapperHeight: undefined,
       footerHeight: 0,
       groupHeaderHeight: 0,
       headerHeight: 0,
