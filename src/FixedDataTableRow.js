@@ -20,6 +20,9 @@ import cx from 'cx';
 import joinClasses from 'joinClasses';
 import { sumPropWidths } from 'widthHelper';
 
+// .fixedDataTableLayout/header border-bottom-width
+var HEADER_BORDER_BOTTOM_WIDTH = 1;
+
 /**
  * Component that renders the row for <FixedDataTable />.
  * This component should not be used directly by developer. Instead,
@@ -39,6 +42,11 @@ class FixedDataTableRowImpl extends React.Component {
      * Height of the row.
      */
     height: PropTypes.number.isRequired,
+
+    /**
+     * Height of fixedDataTableCellGroupLayout/cellGroupWrapper.
+     */
+    cellGroupWrapperHeight: PropTypes.number,
 
     /**
      * Height of the content to be displayed below the row.
@@ -149,6 +157,7 @@ class FixedDataTableRowImpl extends React.Component {
         key="fixed_cells"
         isScrolling={this.props.isScrolling}
         height={this.props.height}
+        cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
         left={0}
         width={fixedColumnsWidth}
         zIndex={2}
@@ -168,6 +177,7 @@ class FixedDataTableRowImpl extends React.Component {
         key="scrollable_cells"
         isScrolling={this.props.isScrolling}
         height={this.props.height}
+        cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
         left={this.props.scrollLeft}
         offsetLeft={fixedColumnsWidth}
         width={this.props.width - fixedColumnsWidth}
@@ -245,9 +255,11 @@ class FixedDataTableRowImpl extends React.Component {
       'public/fixedDataTableRow/fixedColumnsDivider': left > 0,
       'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0,
      });
+     var dividerHeight = this.props.cellGroupWrapperHeight ?
+       this.props.cellGroupWrapperHeight - HEADER_BORDER_BOTTOM_WIDTH : this.props.height;
      var style = {
        left: left,
-       height: this.props.height
+       height: dividerHeight
      };
      return <div className={className} style={style} />;
   };

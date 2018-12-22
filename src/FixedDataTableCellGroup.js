@@ -45,6 +45,13 @@ class FixedDataTableCellGroupImpl extends React.Component {
     onColumnReorderMove: PropTypes.func,
     onColumnReorderEnd: PropTypes.func,
 
+    height: PropTypes.number.isRequired,
+
+    /**
+     * Height of fixedDataTableCellGroupLayout/cellGroupWrapper.
+     */
+    cellGroupWrapperHeight: PropTypes.number,
+
     rowHeight: PropTypes.number.isRequired,
 
     rowIndex: PropTypes.number.isRequired,
@@ -198,7 +205,7 @@ class FixedDataTableCellGroup extends React.Component {
     var {offsetLeft, ...props} = this.props;
 
     var style = {
-      height: props.height,
+      height: props.cellGroupWrapperHeight || props.height,
       width: props.width
     };
 
