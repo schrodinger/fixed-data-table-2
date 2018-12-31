@@ -17,6 +17,7 @@ import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import Locale from 'Locale';
 import React from 'React';
 import PropTypes from 'prop-types';
+import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
 
 import clamp from 'clamp';
 import cx from 'cx';
@@ -36,6 +37,11 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
       PropTypes.string,
       PropTypes.number
     ]),
+
+    /**
+     * Whether the reorder handle should respond to touch events or not.
+     */
+    touchEnabled: PropTypes.bool,
   }
 
   state = /*object*/ {
@@ -65,6 +71,9 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
           'fixedDataTableCellLayout/columnReorderContainer/active': false,
         })}
         onMouseDown={this.onMouseDown}
+        onTouchStart={this.props.touchEnabled ? this.onMouseDown : null}
+        onTouchEnd={this.props.touchEnabled ? e => e.stopPropagation() : null}
+        onTouchMove={this.props.touchEnabled ? e => e.stopPropagation() : null}
         style={style}>
       </div>
     );
@@ -72,14 +81,16 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
 
   onMouseDown = (event) => {
     var targetRect = event.target.getBoundingClientRect();
+    var coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
 
-    var mouseLocationInElement = event.clientX - targetRect.left;
+    var mouseLocationInElement = coordinates.x - targetRect.left;
     var mouseLocationInRelationToColumnGroup = mouseLocationInElement + event.target.parentElement.offsetLeft;
 
     this._mouseMoveTracker = new DOMMouseMoveTracker(
       this._onMove,
       this._onColumnReorderEnd,
-      document.body
+      document.body,
+      this.props.touchEnabled
     );
     this._mouseMoveTracker.captureMouseMoves(event);
     this.setState({
@@ -97,6 +108,14 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
     this._distance = 0;
     this._animating = true;
     this.frameId = requestAnimationFrame(this._updateState);
+
+    /**
+     * This prevents the rows from moving around when we drag the
+     * headers on touch devices.
+     */
+    if(this.props.touchEnabled) {
+      event.stopPropagation();
+    }
   }
 
   _onMove = (/*number*/ deltaX) => {

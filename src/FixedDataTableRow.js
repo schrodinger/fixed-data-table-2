@@ -29,6 +29,12 @@ var HEADER_BORDER_BOTTOM_WIDTH = 1;
  * only <FixedDataTable /> should use the component internally.
  */
 class FixedDataTableRowImpl extends React.Component {
+
+  /**
+   * The index of a row for which to fire the onMouseLeave event.
+   */
+  mouseLeaveIndex = null;
+
   static propTypes = {
 
     isScrolling: PropTypes.bool,
@@ -132,6 +138,8 @@ class FixedDataTableRowImpl extends React.Component {
      * @param number distance
      */
     onColumnReorderEnd: PropTypes.func,
+
+    touchEnabled: PropTypes.bool,
   };
 
   render() /*object*/ {
@@ -162,6 +170,7 @@ class FixedDataTableRowImpl extends React.Component {
         width={fixedColumnsWidth}
         zIndex={2}
         columns={this.props.fixedColumns}
+        touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
@@ -183,6 +192,7 @@ class FixedDataTableRowImpl extends React.Component {
         width={this.props.width - fixedColumnsWidth}
         zIndex={0}
         columns={this.props.scrollableColumns}
+        touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
@@ -208,7 +218,7 @@ class FixedDataTableRowImpl extends React.Component {
         onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
         onMouseDown={this.props.onMouseDown ? this._onMouseDown : null}
         onMouseUp={this.props.onMouseUp ? this._onMouseUp : null}
-        onMouseEnter={this.props.onMouseEnter ? this._onMouseEnter : null}
+        onMouseEnter={this.props.onMouseEnter || this.props.onMouseLeave ? this._onMouseEnter : null}
         onMouseLeave={this.props.onMouseLeave ? this._onMouseLeave : null}
         onTouchStart={this.props.onTouchStart ? this._onTouchStart : null}
         onTouchEnd={this.props.onTouchEnd ? this._onTouchEnd : null}
@@ -296,11 +306,23 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   _onMouseEnter = (/*object*/ event) => {
-    this.props.onMouseEnter(event, this.props.index);
+    /**
+     * This is necessary so that onMouseLeave is fired with the initial
+     * row index since this row could be updated with a different index
+     * when scrolling.
+     */
+    this.mouseLeaveIndex = this.props.index;
+    if (this.props.onMouseEnter) {
+      this.props.onMouseEnter(event, this.props.index);
+    }
   };
 
   _onMouseLeave = (/*object*/ event) => {
-    this.props.onMouseLeave(event, this.props.index);
+    if(this.mouseLeaveIndex === null) {
+      this.mouseLeaveIndex = this.props.index;
+    }
+    this.props.onMouseLeave(event, this.mouseLeaveIndex);
+    this.mouseLeaveIndex = null;
   };
 
   _onTouchStart = (/*object*/ event) => {
