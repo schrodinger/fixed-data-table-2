@@ -23,6 +23,7 @@ import EventListener from 'EventListener';
 
 import cancelAnimationFramePolyfill from 'cancelAnimationFramePolyfill';
 import requestAnimationFramePolyfill from 'requestAnimationFramePolyfill';
+import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
 
 class DOMMouseMoveTracker {
   /**
@@ -32,8 +33,10 @@ class DOMMouseMoveTracker {
   constructor(
     /*function*/ onMove,
     /*function*/ onMoveEnd,
-    /*DOMElement*/ domNode) {
+    /*DOMElement*/ domNode,
+    /*boolean*/ touchEnabled) {
     this._isDragging = false;
+    this._isTouchEnabled = touchEnabled;
     this._animationFrameID = null;
     this._domNode = domNode;
     this._onMove = onMove;
@@ -51,7 +54,8 @@ class DOMMouseMoveTracker {
    * in order to grab inital state.
    */
   captureMouseMoves(/*object*/ event) {
-    if (!this._eventMoveToken && !this._eventUpToken && !this._eventLeaveToken && !this._eventOutToken) {
+    if (!this._eventMoveToken && !this._eventUpToken &&
+        !this._eventLeaveToken && !this._eventOutToken) {
       this._eventMoveToken = EventListener.listen(
         this._domNode,
         'mousemove',
@@ -74,12 +78,34 @@ class DOMMouseMoveTracker {
       );
     }
 
+    if (this._isTouchEnabled && !this._eventTouchStartToken &&
+        !this._eventTouchMoveToken && !this._eventTouchEndToken) {
+      this._eventTouchStartToken = EventListener.listen(
+        this._domNode,
+        'touchstart',
+        this._onMouseMove
+      );
+      this._eventTouchMoveToken = EventListener.listen(
+        this._domNode,
+        'touchmove',
+        this._onMouseMove
+      );
+      this._eventTouchEndToken = EventListener.listen(
+        this._domNode,
+        'touchend',
+        this._onMouseUp
+      );
+    }
+
     if (!this._isDragging) {
       this._deltaX = 0;
       this._deltaY = 0;
       this._isDragging = true;
-      this._x = event.clientX;
-      this._y = event.clientY;
+      var coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
+      var x = coordinates.x;
+      var y = coordinates.y;
+      this._x = x;
+      this._y = y;
     }
     event.preventDefault();
   }
@@ -88,7 +114,8 @@ class DOMMouseMoveTracker {
    * These releases all of the listeners on document.body.
    */
   releaseMouseMoves() {
-    if (this._eventMoveToken && this._eventUpToken && this._eventLeaveToken && this._eventOutToken) {
+    if (this._eventMoveToken && this._eventUpToken &&
+        this._eventLeaveToken && this._eventOutToken) {
       this._eventMoveToken.remove();
       this._eventMoveToken = null;
       this._eventUpToken.remove();
@@ -97,6 +124,16 @@ class DOMMouseMoveTracker {
       this._eventLeaveToken = null;
       this._eventOutToken.remove();
       this._eventOutToken = null;
+    }
+
+    if (this._isTouchEnabled && this._eventTouchStartToken &&
+        this._eventTouchMoveToken && this._eventTouchEndToken) {
+        this._eventTouchStartToken.remove();
+        this._eventTouchStartToken = null;
+        this._eventTouchMoveToken.remove();
+        this._eventTouchMoveToken = null;
+        this._eventTouchEndToken.remove();
+        this._eventTouchEndToken = null;
     }
 
     if (this._animationFrameID !== null) {
@@ -122,8 +159,9 @@ class DOMMouseMoveTracker {
    * Calls onMove passed into constructor and updates internal state.
    */
   _onMouseMove(/*object*/ event) {
-    var x = event.clientX;
-    var y = event.clientY;
+    var coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
+    var x = coordinates.x;
+    var y = coordinates.y;
 
     this._deltaX += (x - this._x);
     this._deltaY += (y - this._y);

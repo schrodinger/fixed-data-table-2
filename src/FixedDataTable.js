@@ -15,6 +15,7 @@
 
 import FixedDataTableBufferedRows from 'FixedDataTableBufferedRows';
 import FixedDataTableColumnResizeHandle from 'FixedDataTableColumnResizeHandle';
+import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
 import FixedDataTableRow from 'FixedDataTableRow';
 import React from 'React';
 import PropTypes from 'prop-types';
@@ -548,6 +549,7 @@ class FixedDataTable extends React.Component {
       scrollX,
       scrollY,
       tableSize,
+      touchScrollEnabled,
     } = this.props;
 
     const { ownerHeight, width } = tableSize;
@@ -618,6 +620,7 @@ class FixedDataTable extends React.Component {
         initialEvent={columnResizingData.initialEvent}
         onColumnResizeEnd={onColumnResizeEndCallback}
         columnKey={columnResizingData.key}
+        touchEnabled={touchScrollEnabled}
       />;
 
     let footer = null;
@@ -663,6 +666,7 @@ class FixedDataTable extends React.Component {
         visible={true}
         fixedColumns={fixedColumns.header}
         scrollableColumns={scrollableColumns.header}
+        touchEnabled={touchScrollEnabled}
         onColumnResize={this._onColumnResize}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
@@ -782,8 +786,9 @@ class FixedDataTable extends React.Component {
     /*number|string*/ columnKey,
     /*object*/ event
   ) => {
-    let clientX = event.clientX;
-    let clientY = event.clientY;
+    const coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
+    const clientX = coordinates.x;
+    const clientY = coordinates.y;
     this.props.columnActions.resizeColumn({
       cellMinWidth,
       cellMaxWidth,
@@ -792,7 +797,7 @@ class FixedDataTable extends React.Component {
       combinedWidth,
       clientX,
       clientY,
-      leftOffset
+      leftOffset,
     });
   }
 
