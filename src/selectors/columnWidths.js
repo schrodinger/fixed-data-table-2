@@ -11,7 +11,6 @@
 import { getTotalFlexGrow, getTotalWidth } from 'widthHelper';
 import Scrollbar from 'Scrollbar';
 import forEach from 'lodash/forEach';
-import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
 import scrollbarsVisible from 'scrollbarsVisible';
 import shallowEqualSelector from 'shallowEqualSelector';
@@ -36,6 +35,7 @@ let columnDefinition;
  *   columnProps: !Array.<columnDefinition>,
  *   availableScrollWidth: number,
  *   fixedColumns: !Array.<columnDefinition>,
+ *   fixedRightColumns: !Array.<columnDefinition>,
  *   scrollableColumns: !Array.<columnDefinition>,
  *   maxScrollX: number,
  * }} The total width of all columns.
@@ -52,7 +52,7 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     fixedColumns,
     fixedRightColumns,
     scrollableColumns,
-  } = groupBy(newColumnProps, getColumnCategory);
+  } = groupColumns(newColumnProps);
 
   const availableScrollWidth = viewportWidth - getTotalWidth(fixedColumns);
   const maxScrollX = Math.max(0, getTotalWidth(newColumnProps) - viewportWidth);
@@ -124,17 +124,33 @@ function flexWidths(columnGroupProps, columnProps, viewportWidth) {
 }
 
 /**
- * @param {!columnDefinition} columnProp
- * @return {!string}
+ * @param {!Array.<columnDefinition>} columnProps
+ * @return {{
+ *   fixedColumns: !Array.<columnDefinition>,
+ *   fixedRightColumns: !Array.<columnDefinition>,
+ *   scrollableColumns: !Array.<columnDefinition>
+ * }}
  */
-function getColumnCategory(columnProp) {
-  if (columnProp.fixed) {
-    return 'fixedColumns';
-  } else if (columnProp.fixedRight) {
-    return 'fixedRightColumns';
-  } else {
-    return 'scrollableColumns';
-  }
+function groupColumns(columnProps) {
+  const fixedColumns = [];
+  const fixedRightColumns = [];
+  const scrollableColumns = [];
+
+  forEach(columnProps, columnProp => {
+    let container = scrollableColumns;
+    if (columnProp.fixed) {
+      container = fixedColumns;
+    } else if (columnProp.fixedRight) {
+      container = fixedRightColumns;
+    }
+    container.push(columnProp);
+  });
+
+  return {
+    fixedColumns,
+    fixedRightColumns,
+    scrollableColumns,
+  };
 }
 
 export default shallowEqualSelector([
