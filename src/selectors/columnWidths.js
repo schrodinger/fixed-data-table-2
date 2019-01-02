@@ -11,14 +11,15 @@
 import { getTotalFlexGrow, getTotalWidth } from 'widthHelper';
 import Scrollbar from 'Scrollbar';
 import forEach from 'lodash/forEach';
+import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
-import partition from 'lodash/partition';
 import scrollbarsVisible from 'scrollbarsVisible';
 import shallowEqualSelector from 'shallowEqualSelector';
 
 /**
  * @typedef {{
  *   fixed: boolean,
+ *   fixedRight: boolean,
  *   flexGrow: number,
  *   width: number,
  * }}
@@ -47,10 +48,11 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     newColumnGroupProps,
     newColumnProps,
   } = flexWidths(columnGroupProps, columnProps, viewportWidth);
-  const [
+  const {
     fixedColumns,
+    fixedRightColumns,
     scrollableColumns,
-  ] = partition(newColumnProps, column => column.fixed);
+  } = groupBy(newColumnProps, getColumnCategory);
 
   const availableScrollWidth = viewportWidth - getTotalWidth(fixedColumns);
   const maxScrollX = Math.max(0, getTotalWidth(newColumnProps) - viewportWidth);
@@ -59,6 +61,7 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     columnProps: newColumnProps,
     availableScrollWidth,
     fixedColumns,
+    fixedRightColumns,
     scrollableColumns,
     maxScrollX,
   };
@@ -118,6 +121,20 @@ function flexWidths(columnGroupProps, columnProps, viewportWidth) {
     newColumnGroupProps,
     newColumnProps,
   };
+}
+
+/**
+ * @param {!columnDefinition} columnProp
+ * @return {!string}
+ */
+function getColumnCategory(columnProp) {
+  if (columnProp.fixed) {
+    return 'fixedColumns';
+  } else if (columnProp.fixedRight) {
+    return 'fixedRightColumns';
+  } else {
+    return 'scrollableColumns';
+  }
 }
 
 export default shallowEqualSelector([

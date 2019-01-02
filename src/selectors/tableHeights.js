@@ -36,6 +36,7 @@ import shallowEqualSelector from 'shallowEqualSelector';
  *   contentHeight: number,
  *   footOffsetTop: number,
  *   scrollbarXOffsetTop: number,
+ *   scrollbarYHeight: number,
  *   visibleRowsHeight: number,
  * }}
  */
@@ -80,6 +81,7 @@ function tableHeights(elementHeights, ownerHeight, reservedHeight,
   const bodyOffsetTop = groupHeaderHeight + headerHeight;
   const footOffsetTop = bodyOffsetTop + visibleRowsHeight;
   const scrollbarXOffsetTop = footOffsetTop + footerHeight;
+  const scrollbarYHeight = Math.max(0, footOffsetTop - bodyOffsetTop);
 
   return {
     bodyHeight,
@@ -88,6 +90,7 @@ function tableHeights(elementHeights, ownerHeight, reservedHeight,
     contentHeight,
     footOffsetTop,
     scrollbarXOffsetTop,
+    scrollbarYHeight,
     visibleRowsHeight,
   };
 }

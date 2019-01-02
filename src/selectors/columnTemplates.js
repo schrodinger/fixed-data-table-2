@@ -36,7 +36,6 @@ let columnDetails;
  * @param {{
  *   columnGroupProps: !Array.<!Object>,
  *   columnProps: !Array.<!Object>,
- *   }>,
  * }} columnWidths
  * @param {{
  *   cell: !Array.<ReactElement>,
@@ -46,8 +45,10 @@ let columnDetails;
  * }} elementTemplates
  * @return {{
  *   fixedColumnGroups: !Array.<cellDetails>,
+ *   fixedRightColumnGroups: !Array.<cellDetails>,
  *   scrollableColumnGroups: !Array.<cellDetails>,
  *   fixedColumns: !Array.<columnDetails>,
+ *   fixedRightColumns: !Array.<columnDetails>,
  *   scrollableColumns: !Array.<columnDetails>,
  * }}
  */
@@ -58,6 +59,7 @@ function columnTemplates(columnWidths, elementTemplates) {
   // TODO (jordan) figure out if this can efficiently be merged with
   // the result of convertColumnElementsToData.
   const fixedColumnGroups = [];
+  const fixedRightColumnGroups = [];
   const scrollableColumnGroups = [];
   forEach(columnGroupProps, (columnGroup, index) => {
     const groupData = {
@@ -66,12 +68,19 @@ function columnTemplates(columnWidths, elementTemplates) {
     };
     if (columnGroup.fixed) {
       fixedColumnGroups.push(groupData);
+    } else if (columnGroup.fixedRight) {
+      fixedRightColumnGroups.push(groupData);
     } else {
       scrollableColumnGroups.push(groupData);
     }
   });
 
   const fixedColumns = {
+    cell: [],
+    header: [],
+    footer: [],
+  };
+  const fixedRightColumns = {
     cell: [],
     header: [],
     footer: [],
@@ -85,6 +94,8 @@ function columnTemplates(columnWidths, elementTemplates) {
     let columnContainer = scrollableColumns;
     if (column.fixed) {
       columnContainer = fixedColumns;
+    } else if (column.fixedRight) {
+      columnContainer = fixedRightColumns;
     }
 
     columnContainer.cell.push({
@@ -104,6 +115,8 @@ function columnTemplates(columnWidths, elementTemplates) {
   return {
     fixedColumnGroups,
     fixedColumns,
+    fixedRightColumnGroups,
+    fixedRightColumns,
     scrollableColumnGroups,
     scrollableColumns,
   };

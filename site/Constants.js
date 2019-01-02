@@ -36,6 +36,12 @@ exports.ExamplePages = {
     title: 'With JSON Data',
     description: 'A basic table example with two fixed columns, fed in some JSON data.',
   },
+  FIXED_RIGHT_COLUMNS_EXAMPLE: {
+    location: 'fixed-right-columns.html',
+    fileName: 'FixedRightColumnsExample.js',
+    title: 'Fixed Right Columns',
+    description: 'A table example that has a columns fixed to the right side of the table.',
+  },
   FLEXGROW_EXAMPLE: {
     location: 'example-flexgrow.html',
     fileName: 'FlexGrowExample.js',

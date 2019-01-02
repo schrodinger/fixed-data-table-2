@@ -201,6 +201,7 @@ class FixedDataTableCellGroup extends React.Component {
   }
 
   static defaultProps = /*object*/ {
+    left: 0,
     offsetLeft: 0,
   }
 
