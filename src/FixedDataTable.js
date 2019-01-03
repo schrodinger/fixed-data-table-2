@@ -498,15 +498,16 @@ class FixedDataTable extends React.Component {
   }
 
   _onKeyDown(event) {
+    const { scrollbarYHeight } = tableHeightsSelector(this.props);
     if (this.props.keyboardPageEnabled) {
       switch (event.key) {
         case 'PageDown':
-          this._onScroll(0, this._scrollbarYHeight);
+          this._onScroll(0, scrollbarYHeight);
           event.preventDefault();
           break;
 
         case 'PageUp':
-          this._onScroll(0, this._scrollbarYHeight * -1);
+          this._onScroll(0, scrollbarYHeight * -1);
           event.preventDefault();
           break;
 
@@ -591,7 +592,6 @@ class FixedDataTable extends React.Component {
       componentHeight,
       footOffsetTop,
       scrollbarXOffsetTop,
-      scrollbarYHeight,
       visibleRowsHeight,
     } = tableHeightsSelector(this.props);
 
@@ -617,8 +617,6 @@ class FixedDataTable extends React.Component {
     const { cellGroupWrapperHeight, footerHeight, groupHeaderHeight, headerHeight } = elementHeights;
     const { scrollEnabledX, scrollEnabledY } = scrollbarsVisible(this.props);
     const onColumnReorder = onColumnReorderEndCallback ? this._onColumnReorder : null;
-
-    this._scrollbarYHeight = scrollbarYHeight;
 
     let groupHeader;
     if (groupHeaderHeight > 0) {
