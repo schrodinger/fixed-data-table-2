@@ -48,6 +48,7 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.OWNER_HEIGHT_EXAMPLE.location]: require('../../examples/OwnerHeightExample'),
   [ExamplePages.LONG_CLICK_EXAMPLE.location]: require('../../examples/LongClickExample'),
   [ExamplePages.CONTEXT_EXAMPLE.location]: require('../../examples/ContextExample'),
+  [ExamplePages.FIXED_RIGHT_COLUMNS_EXAMPLE.location]: require('../../examples/FixedRightColumnsExample'),
 };
 
 class ExamplesPage extends React.Component {

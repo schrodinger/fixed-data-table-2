@@ -12,13 +12,13 @@ import { getTotalFlexGrow, getTotalWidth } from 'widthHelper';
 import Scrollbar from 'Scrollbar';
 import forEach from 'lodash/forEach';
 import map from 'lodash/map';
-import partition from 'lodash/partition';
 import scrollbarsVisible from 'scrollbarsVisible';
 import shallowEqualSelector from 'shallowEqualSelector';
 
 /**
  * @typedef {{
  *   fixed: boolean,
+ *   fixedRight: boolean,
  *   flexGrow: number,
  *   width: number,
  * }}
@@ -35,6 +35,7 @@ let columnDefinition;
  *   columnProps: !Array.<columnDefinition>,
  *   availableScrollWidth: number,
  *   fixedColumns: !Array.<columnDefinition>,
+ *   fixedRightColumns: !Array.<columnDefinition>,
  *   scrollableColumns: !Array.<columnDefinition>,
  *   maxScrollX: number,
  * }} The total width of all columns.
@@ -47,10 +48,11 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     newColumnGroupProps,
     newColumnProps,
   } = flexWidths(columnGroupProps, columnProps, viewportWidth);
-  const [
+  const {
     fixedColumns,
+    fixedRightColumns,
     scrollableColumns,
-  ] = partition(newColumnProps, column => column.fixed);
+  } = groupColumns(newColumnProps);
 
   const availableScrollWidth = viewportWidth - getTotalWidth(fixedColumns);
   const maxScrollX = Math.max(0, getTotalWidth(newColumnProps) - viewportWidth);
@@ -59,6 +61,7 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     columnProps: newColumnProps,
     availableScrollWidth,
     fixedColumns,
+    fixedRightColumns,
     scrollableColumns,
     maxScrollX,
   };
@@ -117,6 +120,36 @@ function flexWidths(columnGroupProps, columnProps, viewportWidth) {
   return {
     newColumnGroupProps,
     newColumnProps,
+  };
+}
+
+/**
+ * @param {!Array.<columnDefinition>} columnProps
+ * @return {{
+ *   fixedColumns: !Array.<columnDefinition>,
+ *   fixedRightColumns: !Array.<columnDefinition>,
+ *   scrollableColumns: !Array.<columnDefinition>
+ * }}
+ */
+function groupColumns(columnProps) {
+  const fixedColumns = [];
+  const fixedRightColumns = [];
+  const scrollableColumns = [];
+
+  forEach(columnProps, columnProp => {
+    let container = scrollableColumns;
+    if (columnProp.fixed) {
+      container = fixedColumns;
+    } else if (columnProp.fixedRight) {
+      container = fixedRightColumns;
+    }
+    container.push(columnProp);
+  });
+
+  return {
+    fixedColumns,
+    fixedRightColumns,
+    scrollableColumns,
   };
 }
 

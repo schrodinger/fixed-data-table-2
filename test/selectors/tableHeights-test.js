@@ -39,6 +39,7 @@ describe('tableHeights', function() {
       contentHeight: 2087,
       footOffsetTop: 788,
       scrollbarXOffsetTop: 798,
+      scrollbarYHeight: 713,
       visibleRowsHeight: 713,
     });
   });
@@ -59,6 +60,7 @@ describe('tableHeights', function() {
       contentHeight: 2102,
       footOffsetTop: 773,
       scrollbarXOffsetTop: 783,
+      scrollbarYHeight: 698,
       visibleRowsHeight: 698,
     });
   });
@@ -76,6 +78,7 @@ describe('tableHeights', function() {
       contentHeight: 800,
       footOffsetTop: 788,
       scrollbarXOffsetTop: 798,
+      scrollbarYHeight: 713,
       visibleRowsHeight: 713,
     });
   });
@@ -93,6 +96,7 @@ describe('tableHeights', function() {
       contentHeight: 2087,
       footOffsetTop: 788,
       scrollbarXOffsetTop: 798,
+      scrollbarYHeight: 713,
       visibleRowsHeight: 713,
     });
   });
@@ -111,6 +115,7 @@ describe('tableHeights', function() {
       contentHeight: 187,
       footOffsetTop: 175,
       scrollbarXOffsetTop: 185,
+      scrollbarYHeight: 100,
       visibleRowsHeight: 100,
     });
   });
@@ -128,6 +133,7 @@ describe('tableHeights', function() {
       contentHeight: 2087,
       footOffsetTop: 288,
       scrollbarXOffsetTop: 298,
+      scrollbarYHeight: 213,
       visibleRowsHeight: 213,
     });
   });
@@ -147,6 +153,7 @@ describe('tableHeights', function() {
       contentHeight: 300,
       footOffsetTop: 175,
       scrollbarXOffsetTop: 185,
+      scrollbarYHeight: 100,
       visibleRowsHeight: 100,
     });
   });

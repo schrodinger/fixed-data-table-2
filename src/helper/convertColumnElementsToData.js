@@ -25,6 +25,7 @@ function _extractProps(column) {
     'columnKey',
     'flexGrow',
     'fixed',
+    'fixedRight',
     'maxWidth',
     'minWidth',
     'isReorderable',
