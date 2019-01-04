@@ -64,17 +64,23 @@ function initialize(state, props, oldProps) {
  */
 function scrollTo(state, props, oldScrollToColumn, scrollX) {
   const { scrollToColumn } = props;
+  if (isNil(scrollToColumn)) {
+    return scrollX;
+  }
+
   const {
     availableScrollWidth,
     fixedColumns,
     scrollableColumns,
   } = columnWidths(state);
   const fixedColumnsCount = fixedColumns.length;
+  const scrollableColumnsCount = scrollableColumns.length;
 
-  const noScrollableColumns = scrollableColumns.length === 0;
+  const noScrollableColumns = scrollableColumnsCount === 0;
   const scrollToUnchanged = scrollToColumn === oldScrollToColumn;
   const selectedColumnFixed = scrollToColumn < fixedColumnsCount;
-  if (isNil(scrollToColumn) || scrollToUnchanged || selectedColumnFixed || noScrollableColumns) {
+  const selectedColumnFixedRight = scrollToColumn >= fixedColumnsCount + scrollableColumnsCount;
+  if (scrollToUnchanged || selectedColumnFixed || selectedColumnFixedRight || noScrollableColumns) {
     return scrollX;
   }
 
