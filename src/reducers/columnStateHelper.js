@@ -71,9 +71,10 @@ function scrollTo(state, props, oldScrollToColumn, scrollX) {
   } = columnWidths(state);
   const fixedColumnsCount = fixedColumns.length;
 
-  const scrollToUnchanged = scrollToColumn === oldScrollToColumn
+  const noScrollableColumns = scrollableColumns.length === 0;
+  const scrollToUnchanged = scrollToColumn === oldScrollToColumn;
   const selectedColumnFixed = scrollToColumn < fixedColumnsCount;
-  if (isNil(scrollToColumn) || scrollToUnchanged || selectedColumnFixed) {
+  if (isNil(scrollToColumn) || scrollToUnchanged || selectedColumnFixed || noScrollableColumns) {
     return scrollX;
   }
 

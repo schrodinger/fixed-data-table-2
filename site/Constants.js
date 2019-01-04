@@ -40,7 +40,7 @@ exports.ExamplePages = {
     location: 'fixed-right-columns.html',
     fileName: 'FixedRightColumnsExample.js',
     title: 'Fixed Right Columns',
-    description: 'A table example that has a columns fixed to the right side of the table.',
+    description: 'A table example that has its columns fixed to the right side of the table.',
   },
   FLEXGROW_EXAMPLE: {
     location: 'example-flexgrow.html',
