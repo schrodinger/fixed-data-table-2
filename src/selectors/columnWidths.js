@@ -54,7 +54,7 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     scrollableColumns,
   } = groupColumns(newColumnProps);
 
-  const availableScrollWidth = viewportWidth - getTotalWidth(fixedColumns);
+  const availableScrollWidth = viewportWidth - getTotalWidth(fixedColumns) - getTotalWidth(fixedRightColumns);
   const maxScrollX = Math.max(0, getTotalWidth(newColumnProps) - viewportWidth);
   return {
     columnGroupProps: newColumnGroupProps,

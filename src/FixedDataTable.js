@@ -642,6 +642,7 @@ class FixedDataTable extends React.Component {
           onColumnResize={this._onColumnResize}
           onColumnReorder={onColumnReorder}
           onColumnReorderMove={this._onColumnReorderMove}
+          showScrollbarY={scrollEnabledY}
         />
       );
     }
@@ -705,6 +706,7 @@ class FixedDataTable extends React.Component {
           fixedRightColumns={fixedRightColumns.footer}
           scrollableColumns={scrollableColumns.footer}
           scrollLeft={scrollX}
+          showScrollbarY={scrollEnabledY}
         />;
     }
 
@@ -737,6 +739,7 @@ class FixedDataTable extends React.Component {
         onColumnReorderEnd={this._onColumnReorderEnd}
         isColumnReordering={!!isColumnReordering}
         columnReorderingData={columnReorderingData}
+        showScrollbarY={scrollEnabledY}
       />;
 
     let topShadow;
@@ -807,6 +810,7 @@ class FixedDataTable extends React.Component {
 
   _renderRows = (/*number*/ offsetTop, fixedCellTemplates, fixedRightCellTemplates, scrollableCellTemplates,
     bodyHeight) /*object*/ => {
+    const { scrollEnabledY } = scrollbarsVisible(this.props);
     const props = this.props;
     return (
       <FixedDataTableBufferedRows
@@ -835,6 +839,7 @@ class FixedDataTable extends React.Component {
         width={props.tableSize.width}
         rowsToRender={props.rows}
         rowHeights={props.rowHeights}
+        showScrollbarY={scrollEnabledY}
       />
     );
   }
@@ -949,9 +954,13 @@ class FixedDataTable extends React.Component {
       x = x < 0 ? 0 : x;
       x = x > maxScrollX ? maxScrollX : x;
 
+      // This is a workaround to prevent content blurring. This happens when translate3d
+      // is applied with non-rounded values to elements having text.
+      var roundedX = Math.round(x);
+
       //NOTE (asif) This is a hacky workaround to prevent FDT from setting its internal state
-      if (onHorizontalScroll ? onHorizontalScroll(x) : true) {
-        scrollActions.scrollToX(x);
+      if (onHorizontalScroll ? onHorizontalScroll(roundedX) : true) {
+        scrollActions.scrollToX(roundedX);
       }
     }
 
@@ -973,8 +982,12 @@ class FixedDataTable extends React.Component {
       this._didScrollStart();
     }
 
-    if (onHorizontalScroll ? onHorizontalScroll(scrollPos) : true) {
-      scrollActions.scrollToX(scrollPos);
+    // This is a workaround to prevent content blurring. This happens when translate3d
+    // is applied with non-rounded values to elements having text.
+    var roundedScrollPos = Math.round(scrollPos);
+
+    if (onHorizontalScroll ? onHorizontalScroll(roundedScrollPos) : true) {
+      scrollActions.scrollToX(roundedScrollPos);
     }
     this._didScrollStop();
   }

@@ -27,9 +27,15 @@
 }
 
 .public/fixedDataTable/header,
+.public/fixedDataTable/scrollbarSpacer,
 .public/fixedDataTable/header .public/fixedDataTableCell/main {
   background-color: var(--fbui-desktop-background-light);
   background-image: linear-gradient(#fff, #efefef);
+}
+
+.public/fixedDataTable/scrollbarSpacer {
+  position: absolute;
+  z-index: 99;
 }
 
 .public/fixedDataTable/footer .public/fixedDataTableCell/main {

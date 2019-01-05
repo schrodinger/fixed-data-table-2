@@ -50,6 +50,7 @@ class FixedDataTableBufferedRows extends React.Component {
     scrollTop: PropTypes.number.isRequired,
     scrollableColumns: PropTypes.array.isRequired,
     showLastRowBorder: PropTypes.bool,
+    showScrollbarY: PropTypes.bool,
     width: PropTypes.number.isRequired,
   }
 
@@ -130,6 +131,7 @@ class FixedDataTableBufferedRows extends React.Component {
           onTouchStart={props.onRowTouchStart}
           onTouchEnd={props.onRowTouchEnd}
           onTouchMove={props.onRowTouchMove}
+          showScrollbarY={props.showScrollbarY}
           className={joinClasses(
             rowClassNameGetter(rowIndex),
             cx('public/fixedDataTable/bodyRow'),
