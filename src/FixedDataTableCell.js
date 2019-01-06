@@ -242,8 +242,8 @@ class FixedDataTableCell extends React.Component {
           style={columnResizerStyle}
           onMouseDown={this._onColumnResizerMouseDown}
           onTouchStart={this.props.touchEnabled ? this._onColumnResizerMouseDown : null}
-          onTouchEnd={this.props.touchEnabled ? e => e.stopPropagation() : null}
-          onTouchMove={this.props.touchEnabled ? e => e.stopPropagation() : null}>
+          onTouchEnd={this.props.touchEnabled ? _suppressEvent : null}
+          onTouchMove={this.props.touchEnabled ? _suppressEvent : null}>
           <div
             className={joinClasses(
               cx('fixedDataTableCellLayout/columnResizerKnob'),
@@ -315,7 +315,8 @@ class FixedDataTableCell extends React.Component {
      * This prevents the rows from moving around when we resize the
      * headers on touch devices.
      */
-    if(this.props.touchEnabled) {
+    if (this.props.touchEnabled) {
+      event.preventDefault();
       event.stopPropagation();
     }
   }
@@ -327,6 +328,11 @@ class FixedDataTableCell extends React.Component {
       this.props.left,
       event
     );
+  }
+
+  _suppressEvent = (/*object*/ event) => {
+    event.preventDefault();
+    event.stopPropagation();
   }
 };
 

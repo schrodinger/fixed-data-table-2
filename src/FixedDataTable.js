@@ -309,6 +309,11 @@ class FixedDataTable extends React.Component {
     /**
      * If enabled scroll events will not be propagated outside of the table.
      */
+    stopReactWheelPropagation: PropTypes.bool,
+
+    /**
+     * If enabled scroll events will not be propagated outside of the table.
+     */
     stopScrollPropagation: PropTypes.bool,
 
     /**
@@ -322,6 +327,11 @@ class FixedDataTable extends React.Component {
      * Callback that is called when a row is clicked.
      */
     onRowClick: PropTypes.func,
+
+    /**
+     * Callback that is called when a contextual-menu event happens on a row.
+     */
+    onRowContextMenu: PropTypes.func,
 
     /**
      * Callback that is called when a row is double clicked.
@@ -784,6 +794,7 @@ class FixedDataTable extends React.Component {
         onTouchEnd={this._touchHandler.onTouchEnd}
         onTouchMove={this._touchHandler.onTouchMove}
         onTouchCancel={this._touchHandler.onTouchCancel}
+        ref={this._onRef}
         style={{
           height: componentHeight,
           width
@@ -820,6 +831,7 @@ class FixedDataTable extends React.Component {
         height={bodyHeight}
         offsetTop={offsetTop}
         onRowClick={props.onRowClick}
+        onRowContextMenu={props.onRowContextMenu}
         onRowDoubleClick={props.onRowDoubleClick}
         onRowMouseUp={props.onRowMouseUp}
         onRowMouseDown={props.onRowMouseDown}
@@ -842,6 +854,12 @@ class FixedDataTable extends React.Component {
         showScrollbarY={scrollEnabledY}
       />
     );
+  }
+
+  _onRef = (div) => {
+    if (this.props.stopReactWheelPropagation) {
+      this._wheelHandler.setRoot(div);
+    }
   }
 
   /**
