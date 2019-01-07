@@ -25,6 +25,7 @@ class FixedDataTableBufferedRows extends React.Component {
     height: PropTypes.number.isRequired,
     offsetTop: PropTypes.number.isRequired,
     onRowClick: PropTypes.func,
+    onRowContextMenu: PropTypes.func,
     onRowDoubleClick: PropTypes.func,
     onRowMouseDown: PropTypes.func,
     onRowMouseUp: PropTypes.func,
@@ -94,6 +95,7 @@ class FixedDataTableBufferedRows extends React.Component {
             scrollLeft={Math.round(props.scrollLeft)}
             visible={false}
             fixedColumns={props.fixedColumns}
+            fixedRightColumns={props.fixedRightColumns}
             scrollableColumns={props.scrollableColumns}
           />
         );
@@ -123,6 +125,7 @@ class FixedDataTableBufferedRows extends React.Component {
           fixedRightColumns={props.fixedRightColumns}
           scrollableColumns={props.scrollableColumns}
           onClick={props.onRowClick}
+          onContextMenu={props.onRowContextMenu}
           onDoubleClick={props.onRowDoubleClick}
           onMouseDown={props.onRowMouseDown}
           onMouseUp={props.onRowMouseUp}

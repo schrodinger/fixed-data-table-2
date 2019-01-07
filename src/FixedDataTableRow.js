@@ -105,6 +105,11 @@ class FixedDataTableRowImpl extends React.Component {
     onClick: PropTypes.func,
 
     /**
+     * Fire when a contextual-menu is requested above a row.
+     */
+    onContextMenu: PropTypes.func,
+
+    /**
      * Fire when a row is double clicked.
      */
     onDoubleClick: PropTypes.func,
@@ -260,6 +265,7 @@ class FixedDataTableRowImpl extends React.Component {
       <div
         className={joinClasses(className, this.props.className)}
         onClick={this.props.onClick ? this._onClick : null}
+        onContextMenu={this.props.onContextMenu ? this._onContextMenu : null}
         onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
         onMouseDown={this.props.onMouseDown ? this._onMouseDown : null}
         onMouseUp={this.props.onMouseUp ? this._onMouseUp : null}
@@ -355,6 +361,10 @@ class FixedDataTableRowImpl extends React.Component {
 
   _onClick = (/*object*/ event) => {
     this.props.onClick(event, this.props.index);
+  };
+
+  _onContextMenu = (/*object*/ event) => {
+    this.props.onContextMenu(event, this.props.index)
   };
 
   _onDoubleClick = (/*object*/ event) => {

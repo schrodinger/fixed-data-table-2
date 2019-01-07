@@ -90,6 +90,8 @@ class Scrollbar extends React.PureComponent {
     zIndex: 99,
   }
 
+  _onRefFace = (ref) => this._faceRef = ref;
+
   render() /*?object*/ {
     if (!this.state.scrollable) {
       return null;
@@ -160,7 +162,7 @@ class Scrollbar extends React.PureComponent {
         style={mainStyle}
         tabIndex={0}>
         <div
-          ref={(r) => this._faceRef = r}
+          ref={this._onRefFace}
           className={faceClassName}
           style={faceStyle}
         />

@@ -99,7 +99,7 @@ class SortExample extends React.Component {
       if (valueA < valueB) {
         sortVal = -1;
       }
-      if (sortVal !== 0 && sortDir === SortTypes.ASC) {
+      if (sortVal !== 0 && sortDir === SortTypes.DESC) {
         sortVal = sortVal * -1;
       }
 
