@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.9 
+ * FixedDataTable v1.0.0-beta.10 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -18,7 +18,7 @@
 		exports["FixedDataTable"] = factory(require("react"), require("react-dom"));
 	else
 		root["FixedDataTable"] = factory(root["React"], root["ReactDOM"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_106__, __WEBPACK_EXTERNAL_MODULE_206__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_106__, __WEBPACK_EXTERNAL_MODULE_201__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -750,6 +750,523 @@ module.exports = toKey;
 "use strict";
 
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _DOMMouseMoveTracker = __webpack_require__(42);
+
+var _DOMMouseMoveTracker2 = _interopRequireDefault(_DOMMouseMoveTracker);
+
+var _Keys = __webpack_require__(199);
+
+var _Keys2 = _interopRequireDefault(_Keys);
+
+var _React = __webpack_require__(0);
+
+var _React2 = _interopRequireDefault(_React);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _ReactDOM = __webpack_require__(200);
+
+var _ReactDOM2 = _interopRequireDefault(_ReactDOM);
+
+var _ReactWheelHandler = __webpack_require__(85);
+
+var _ReactWheelHandler2 = _interopRequireDefault(_ReactWheelHandler);
+
+var _cssVar = __webpack_require__(205);
+
+var _cssVar2 = _interopRequireDefault(_cssVar);
+
+var _cx = __webpack_require__(3);
+
+var _cx2 = _interopRequireDefault(_cx);
+
+var _emptyFunction = __webpack_require__(7);
+
+var _emptyFunction2 = _interopRequireDefault(_emptyFunction);
+
+var _FixedDataTableTranslateDOMPosition = __webpack_require__(47);
+
+var _FixedDataTableTranslateDOMPosition2 = _interopRequireDefault(_FixedDataTableTranslateDOMPosition);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Copyright Schrodinger, LLC
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * All rights reserved.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * This source code is licensed under the BSD-style license found in the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * LICENSE file in the root directory of this source tree. An additional grant
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * of patent rights can be found in the PATENTS file in the same directory.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @providesModule Scrollbar
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @typechecks
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+var UNSCROLLABLE_STATE = {
+  position: 0,
+  scrollable: false
+};
+
+var FACE_MARGIN = parseInt((0, _cssVar2.default)('scrollbar-face-margin'), 10);
+var FACE_MARGIN_2 = FACE_MARGIN * 2;
+var FACE_SIZE_MIN = 30;
+var KEYBOARD_SCROLL_AMOUNT = 40;
+
+var _lastScrolledScrollbar = null;
+
+var Scrollbar = function (_React$PureComponent) {
+  _inherits(Scrollbar, _React$PureComponent);
+
+  function Scrollbar(props) /*object*/{
+    _classCallCheck(this, Scrollbar);
+
+    var _this = _possibleConstructorReturn(this, (Scrollbar.__proto__ || Object.getPrototypeOf(Scrollbar)).call(this, props));
+
+    _initialiseProps.call(_this);
+
+    _this.state = _this._calculateState(props.position || props.defaultPosition || 0, props.size, props.contentSize, props.orientation);
+    return _this;
+  }
+
+  _createClass(Scrollbar, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps( /*object*/nextProps) {
+      var controlledPosition = nextProps.position;
+      if (controlledPosition === undefined) {
+        this._setNextState(this._calculateState(this.state.position, nextProps.size, nextProps.contentSize, nextProps.orientation));
+      } else {
+        this._setNextState(this._calculateState(controlledPosition, nextProps.size, nextProps.contentSize, nextProps.orientation), nextProps);
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() /*?object*/{
+      if (!this.state.scrollable) {
+        return null;
+      }
+
+      var size = this.props.size;
+      var mainStyle;
+      var faceStyle;
+      var isHorizontal = this.state.isHorizontal;
+      var isVertical = !isHorizontal;
+      var isActive = this.state.focused || this.state.isDragging;
+      var faceSize = this.state.faceSize;
+      var isOpaque = this.props.isOpaque;
+      var verticalTop = this.props.verticalTop || 0;
+
+      var mainClassName = (0, _cx2.default)({
+        'ScrollbarLayout/main': true,
+        'ScrollbarLayout/mainVertical': isVertical,
+        'ScrollbarLayout/mainHorizontal': isHorizontal,
+        'public/Scrollbar/main': true,
+        'public/Scrollbar/mainOpaque': isOpaque,
+        'public/Scrollbar/mainActive': isActive
+      });
+
+      var faceClassName = (0, _cx2.default)({
+        'ScrollbarLayout/face': true,
+        'ScrollbarLayout/faceHorizontal': isHorizontal,
+        'ScrollbarLayout/faceVertical': isVertical,
+        'public/Scrollbar/faceActive': isActive,
+        'public/Scrollbar/face': true
+      });
+
+      var position = this.state.position * this.state.scale + FACE_MARGIN;
+
+      if (isHorizontal) {
+        mainStyle = {
+          width: size
+        };
+        faceStyle = {
+          width: faceSize - FACE_MARGIN_2
+        };
+        (0, _FixedDataTableTranslateDOMPosition2.default)(faceStyle, position, 0, this._initialRender);
+      } else {
+        mainStyle = {
+          top: verticalTop,
+          height: size
+        };
+        faceStyle = {
+          height: faceSize - FACE_MARGIN_2
+        };
+        (0, _FixedDataTableTranslateDOMPosition2.default)(faceStyle, 0, position, this._initialRender);
+      }
+
+      mainStyle.zIndex = this.props.zIndex;
+
+      if (this.props.trackColor === 'gray') {
+        mainStyle.backgroundColor = (0, _cssVar2.default)('fbui-desktop-background-light');
+      }
+
+      return _React2.default.createElement(
+        'div',
+        {
+          onFocus: this._onFocus,
+          onBlur: this._onBlur,
+          onKeyDown: this._onKeyDown,
+          onMouseDown: this._onMouseDown,
+          onWheel: this._wheelHandler.onWheel,
+          className: mainClassName,
+          style: mainStyle,
+          tabIndex: 0 },
+        _React2.default.createElement('div', {
+          ref: this._onRefFace,
+          className: faceClassName,
+          style: faceStyle
+        })
+      );
+    }
+  }, {
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      var isHorizontal = this.props.orientation === 'horizontal';
+      var onWheel = isHorizontal ? this._onWheelX : this._onWheelY;
+
+      this._wheelHandler = new _ReactWheelHandler2.default(onWheel, this._shouldHandleX, // Should hanlde horizontal scroll
+      this._shouldHandleY // Should handle vertical scroll
+      );
+      this._initialRender = true;
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this._mouseMoveTracker = new _DOMMouseMoveTracker2.default(this._onMouseMove, this._onMouseMoveEnd, document.documentElement);
+
+      if (this.props.position !== undefined && this.state.position !== this.props.position) {
+        this._didScroll();
+      }
+      this._initialRender = false;
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      this._nextState = null;
+      this._mouseMoveTracker.releaseMouseMoves();
+      if (_lastScrolledScrollbar === this) {
+        _lastScrolledScrollbar = null;
+      }
+      delete this._mouseMoveTracker;
+    }
+  }]);
+
+  return Scrollbar;
+}(_React2.default.PureComponent);
+
+Scrollbar.propTypes = {
+  contentSize: _propTypes2.default.number.isRequired,
+  defaultPosition: _propTypes2.default.number,
+  isOpaque: _propTypes2.default.bool,
+  orientation: _propTypes2.default.oneOf(['vertical', 'horizontal']),
+  onScroll: _propTypes2.default.func,
+  position: _propTypes2.default.number,
+  size: _propTypes2.default.number.isRequired,
+  trackColor: _propTypes2.default.oneOf(['gray']),
+  zIndex: _propTypes2.default.number,
+  verticalTop: _propTypes2.default.number
+};
+Scrollbar.defaultProps = /*object*/{
+  defaultPosition: 0,
+  isOpaque: false,
+  onScroll: _emptyFunction2.default,
+  orientation: 'vertical',
+  zIndex: 99
+};
+
+var _initialiseProps = function _initialiseProps() {
+  var _this2 = this;
+
+  this._onRefFace = function (ref) {
+    return _this2._faceRef = ref;
+  };
+
+  this.scrollBy = function ( /*number*/delta) {
+    _this2._onWheel(delta);
+  };
+
+  this._shouldHandleX = function ( /*number*/delta) {
+    return (/*boolean*/_this2.props.orientation === 'horizontal' ? _this2._shouldHandleChange(delta) : false
+    );
+  };
+
+  this._shouldHandleY = function ( /*number*/delta) {
+    return (/*boolean*/_this2.props.orientation !== 'horizontal' ? _this2._shouldHandleChange(delta) : false
+    );
+  };
+
+  this._shouldHandleChange = function ( /*number*/delta) /*boolean*/{
+    var nextState = _this2._calculateState(_this2.state.position + delta, _this2.props.size, _this2.props.contentSize, _this2.props.orientation);
+    return nextState.position !== _this2.state.position;
+  };
+
+  this._calculateState = function (
+  /*number*/position,
+  /*number*/size,
+  /*number*/contentSize,
+  /*string*/orientation) /*object*/{
+
+    var clampedSize = Math.max(1, size);
+    if (contentSize <= clampedSize) {
+      return UNSCROLLABLE_STATE;
+    }
+
+    var stateKey = position + '_' + clampedSize + '_' + contentSize + '_' + orientation;
+    if (_this2._stateKey === stateKey) {
+      return _this2._stateForKey;
+    }
+
+    // There are two types of positions here.
+    // 1) Phisical position: changed by mouse / keyboard
+    // 2) Logical position: changed by props.
+    // The logical position will be kept as as internal state and the `render()`
+    // function will translate it into physical position to render.
+
+    var isHorizontal = orientation === 'horizontal';
+    var scale = clampedSize / contentSize;
+    var faceSize = clampedSize * scale;
+
+    if (faceSize < FACE_SIZE_MIN) {
+      scale = (clampedSize - FACE_SIZE_MIN) / (contentSize - clampedSize);
+      faceSize = FACE_SIZE_MIN;
+    }
+
+    var scrollable = true;
+    var maxPosition = contentSize - clampedSize;
+
+    if (position < 0) {
+      position = 0;
+    } else if (position > maxPosition) {
+      position = maxPosition;
+    }
+
+    var isDragging = _this2._mouseMoveTracker ? _this2._mouseMoveTracker.isDragging() : false;
+
+    // This function should only return flat values that can be compared quiclky
+    // by `ReactComponentWithPureRenderMixin`.
+    var state = {
+      faceSize: faceSize,
+      isDragging: isDragging,
+      isHorizontal: isHorizontal,
+      position: position,
+      scale: scale,
+      scrollable: scrollable
+    };
+
+    // cache the state for later use.
+    _this2._stateKey = stateKey;
+    _this2._stateForKey = state;
+    return state;
+  };
+
+  this._onWheelY = function ( /*number*/deltaX, /*number*/deltaY) {
+    _this2._onWheel(deltaY);
+  };
+
+  this._onWheelX = function ( /*number*/deltaX, /*number*/deltaY) {
+    _this2._onWheel(deltaX);
+  };
+
+  this._onWheel = function ( /*number*/delta) {
+    var props = _this2.props;
+
+    // The mouse may move faster then the animation frame does.
+    // Use `requestAnimationFrame` to avoid over-updating.
+    _this2._setNextState(_this2._calculateState(_this2.state.position + delta, props.size, props.contentSize, props.orientation));
+  };
+
+  this._onMouseDown = function ( /*object*/event) {
+    var nextState;
+
+    if (event.target !== _this2._faceRef) {
+      // Both `offsetX` and `layerX` are non-standard DOM property but they are
+      // magically available for browsers somehow.
+      var nativeEvent = event.nativeEvent;
+      var position = _this2.state.isHorizontal ? nativeEvent.offsetX || nativeEvent.layerX : nativeEvent.offsetY || nativeEvent.layerY;
+
+      // MouseDown on the scroll-track directly, move the center of the
+      // scroll-face to the mouse position.
+      var props = _this2.props;
+      position /= _this2.state.scale;
+      nextState = _this2._calculateState(position - _this2.state.faceSize * 0.5 / _this2.state.scale, props.size, props.contentSize, props.orientation);
+    } else {
+      nextState = {};
+    }
+
+    nextState.focused = true;
+    _this2._setNextState(nextState);
+
+    _this2._mouseMoveTracker.captureMouseMoves(event);
+    // Focus the node so it may receive keyboard event.
+    _ReactDOM2.default.findDOMNode(_this2).focus();
+  };
+
+  this._onMouseMove = function ( /*number*/deltaX, /*number*/deltaY) {
+    var props = _this2.props;
+    var delta = _this2.state.isHorizontal ? deltaX : deltaY;
+    delta /= _this2.state.scale;
+
+    _this2._setNextState(_this2._calculateState(_this2.state.position + delta, props.size, props.contentSize, props.orientation));
+  };
+
+  this._onMouseMoveEnd = function () {
+    _this2._nextState = null;
+    _this2._mouseMoveTracker.releaseMouseMoves();
+    _this2.setState({ isDragging: false });
+  };
+
+  this._onKeyDown = function ( /*object*/event) {
+    var keyCode = event.keyCode;
+
+    if (keyCode === _Keys2.default.TAB) {
+      // Let focus move off the scrollbar.
+      return;
+    }
+
+    var distance = KEYBOARD_SCROLL_AMOUNT;
+    var direction = 0;
+
+    if (_this2.state.isHorizontal) {
+      switch (keyCode) {
+        case _Keys2.default.HOME:
+          direction = -1;
+          distance = _this2.props.contentSize;
+          break;
+
+        case _Keys2.default.LEFT:
+          direction = -1;
+          break;
+
+        case _Keys2.default.RIGHT:
+          direction = 1;
+          break;
+
+        default:
+          return;
+      }
+    }
+
+    if (!_this2.state.isHorizontal) {
+      switch (keyCode) {
+        case _Keys2.default.SPACE:
+          if (event.shiftKey) {
+            direction = -1;
+          } else {
+            direction = 1;
+          }
+          break;
+
+        case _Keys2.default.HOME:
+          direction = -1;
+          distance = _this2.props.contentSize;
+          break;
+
+        case _Keys2.default.UP:
+          direction = -1;
+          break;
+
+        case _Keys2.default.DOWN:
+          direction = 1;
+          break;
+
+        case _Keys2.default.PAGE_UP:
+          direction = -1;
+          distance = _this2.props.size;
+          break;
+
+        case _Keys2.default.PAGE_DOWN:
+          direction = 1;
+          distance = _this2.props.size;
+          break;
+
+        default:
+          return;
+      }
+    }
+
+    event.preventDefault();
+
+    var props = _this2.props;
+    _this2._setNextState(_this2._calculateState(_this2.state.position + distance * direction, props.size, props.contentSize, props.orientation));
+  };
+
+  this._onFocus = function () {
+    _this2.setState({
+      focused: true
+    });
+  };
+
+  this._onBlur = function () {
+    _this2.setState({
+      focused: false
+    });
+  };
+
+  this._blur = function () {
+    var el = _ReactDOM2.default.findDOMNode(_this2);
+    if (!el) {
+      return;
+    }
+
+    try {
+      _this2._onBlur();
+      el.blur();
+    } catch (oops) {
+      // pass
+    }
+  };
+
+  this._setNextState = function ( /*object*/nextState, /*?object*/props) {
+    props = props || _this2.props;
+    var controlledPosition = props.position;
+    var willScroll = _this2.state.position !== nextState.position;
+    if (controlledPosition === undefined) {
+      var callback = willScroll ? _this2._didScroll : undefined;
+      _this2.setState(nextState, callback);
+    } else if (controlledPosition === nextState.position) {
+      _this2.setState(nextState);
+    } else {
+      // Scrolling is controlled. Don't update the state and let the owner
+      // to update the scrollbar instead.
+      if (nextState.position !== undefined && nextState.position !== _this2.state.position) {
+        _this2.props.onScroll(nextState.position);
+      }
+      return;
+    }
+
+    if (willScroll && _lastScrolledScrollbar !== _this2) {
+      _lastScrolledScrollbar && _lastScrolledScrollbar._blur();
+      _lastScrolledScrollbar = _this2;
+    }
+  };
+
+  this._didScroll = function () {
+    _this2.props.onScroll(_this2.state.position);
+  };
+};
+
+;
+
+Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;
+Scrollbar.SIZE = parseInt((0, _cssVar2.default)('scrollbar-size'), 10);
+Scrollbar.OFFSET = 1;
+
+module.exports = Scrollbar;
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -758,7 +1275,7 @@ var _roughHeights = __webpack_require__(63);
 
 var _roughHeights2 = _interopRequireDefault(_roughHeights);
 
-var _shallowEqualSelector = __webpack_require__(16);
+var _shallowEqualSelector = __webpack_require__(17);
 
 var _shallowEqualSelector2 = _interopRequireDefault(_shallowEqualSelector);
 
@@ -837,7 +1354,7 @@ exports.default = (0, _shallowEqualSelector2.default)([_roughHeights2.default, f
 }], scrollbarsVisible);
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -869,7 +1386,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = (0, _reselect.createSelectorCreator)(_reselect.defaultMemoize, _shallowEqual2.default);
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -897,7 +1414,7 @@ var SCROLL_TO_X = exports.SCROLL_TO_X = 'SCROLL_TO_X';
 var SCROLL_TO_Y = exports.SCROLL_TO_Y = 'SCROLL_TO_Y';
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -935,7 +1452,7 @@ function clamp(value, min, max) {
 module.exports = clamp;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -985,7 +1502,7 @@ function getTotalFlexGrow(columns) {
 }
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 /**
@@ -1022,7 +1539,7 @@ module.exports = isObject;
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var listCacheClear = __webpack_require__(138),
@@ -1060,7 +1577,7 @@ module.exports = ListCache;
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var eq = __webpack_require__(55);
@@ -1087,7 +1604,7 @@ module.exports = assocIndexOf;
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(8);
@@ -1099,7 +1616,7 @@ module.exports = nativeCreate;
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isKeyable = __webpack_require__(160);
@@ -1123,7 +1640,7 @@ module.exports = getMapData;
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isArray = __webpack_require__(1),
@@ -1148,523 +1665,6 @@ function castPath(value, object) {
 
 module.exports = castPath;
 
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _DOMMouseMoveTracker = __webpack_require__(42);
-
-var _DOMMouseMoveTracker2 = _interopRequireDefault(_DOMMouseMoveTracker);
-
-var _Keys = __webpack_require__(204);
-
-var _Keys2 = _interopRequireDefault(_Keys);
-
-var _React = __webpack_require__(0);
-
-var _React2 = _interopRequireDefault(_React);
-
-var _propTypes = __webpack_require__(2);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _ReactDOM = __webpack_require__(205);
-
-var _ReactDOM2 = _interopRequireDefault(_ReactDOM);
-
-var _ReactWheelHandler = __webpack_require__(85);
-
-var _ReactWheelHandler2 = _interopRequireDefault(_ReactWheelHandler);
-
-var _cssVar = __webpack_require__(207);
-
-var _cssVar2 = _interopRequireDefault(_cssVar);
-
-var _cx = __webpack_require__(3);
-
-var _cx2 = _interopRequireDefault(_cx);
-
-var _emptyFunction = __webpack_require__(7);
-
-var _emptyFunction2 = _interopRequireDefault(_emptyFunction);
-
-var _FixedDataTableTranslateDOMPosition = __webpack_require__(47);
-
-var _FixedDataTableTranslateDOMPosition2 = _interopRequireDefault(_FixedDataTableTranslateDOMPosition);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Copyright Schrodinger, LLC
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * All rights reserved.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * This source code is licensed under the BSD-style license found in the
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * LICENSE file in the root directory of this source tree. An additional grant
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * of patent rights can be found in the PATENTS file in the same directory.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @providesModule Scrollbar
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @typechecks
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
-
-var UNSCROLLABLE_STATE = {
-  position: 0,
-  scrollable: false
-};
-
-var FACE_MARGIN = parseInt((0, _cssVar2.default)('scrollbar-face-margin'), 10);
-var FACE_MARGIN_2 = FACE_MARGIN * 2;
-var FACE_SIZE_MIN = 30;
-var KEYBOARD_SCROLL_AMOUNT = 40;
-
-var _lastScrolledScrollbar = null;
-
-var Scrollbar = function (_React$PureComponent) {
-  _inherits(Scrollbar, _React$PureComponent);
-
-  function Scrollbar(props) /*object*/{
-    _classCallCheck(this, Scrollbar);
-
-    var _this = _possibleConstructorReturn(this, (Scrollbar.__proto__ || Object.getPrototypeOf(Scrollbar)).call(this, props));
-
-    _initialiseProps.call(_this);
-
-    _this.state = _this._calculateState(props.position || props.defaultPosition || 0, props.size, props.contentSize, props.orientation);
-    return _this;
-  }
-
-  _createClass(Scrollbar, [{
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps( /*object*/nextProps) {
-      var controlledPosition = nextProps.position;
-      if (controlledPosition === undefined) {
-        this._setNextState(this._calculateState(this.state.position, nextProps.size, nextProps.contentSize, nextProps.orientation));
-      } else {
-        this._setNextState(this._calculateState(controlledPosition, nextProps.size, nextProps.contentSize, nextProps.orientation), nextProps);
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render() /*?object*/{
-      var _this2 = this;
-
-      if (!this.state.scrollable) {
-        return null;
-      }
-
-      var size = this.props.size;
-      var mainStyle;
-      var faceStyle;
-      var isHorizontal = this.state.isHorizontal;
-      var isVertical = !isHorizontal;
-      var isActive = this.state.focused || this.state.isDragging;
-      var faceSize = this.state.faceSize;
-      var isOpaque = this.props.isOpaque;
-      var verticalTop = this.props.verticalTop || 0;
-
-      var mainClassName = (0, _cx2.default)({
-        'ScrollbarLayout/main': true,
-        'ScrollbarLayout/mainVertical': isVertical,
-        'ScrollbarLayout/mainHorizontal': isHorizontal,
-        'public/Scrollbar/main': true,
-        'public/Scrollbar/mainOpaque': isOpaque,
-        'public/Scrollbar/mainActive': isActive
-      });
-
-      var faceClassName = (0, _cx2.default)({
-        'ScrollbarLayout/face': true,
-        'ScrollbarLayout/faceHorizontal': isHorizontal,
-        'ScrollbarLayout/faceVertical': isVertical,
-        'public/Scrollbar/faceActive': isActive,
-        'public/Scrollbar/face': true
-      });
-
-      var position = this.state.position * this.state.scale + FACE_MARGIN;
-
-      if (isHorizontal) {
-        mainStyle = {
-          width: size
-        };
-        faceStyle = {
-          width: faceSize - FACE_MARGIN_2
-        };
-        (0, _FixedDataTableTranslateDOMPosition2.default)(faceStyle, position, 0, this._initialRender);
-      } else {
-        mainStyle = {
-          top: verticalTop,
-          height: size
-        };
-        faceStyle = {
-          height: faceSize - FACE_MARGIN_2
-        };
-        (0, _FixedDataTableTranslateDOMPosition2.default)(faceStyle, 0, position, this._initialRender);
-      }
-
-      mainStyle.zIndex = this.props.zIndex;
-
-      if (this.props.trackColor === 'gray') {
-        mainStyle.backgroundColor = (0, _cssVar2.default)('fbui-desktop-background-light');
-      }
-
-      return _React2.default.createElement(
-        'div',
-        {
-          onFocus: this._onFocus,
-          onBlur: this._onBlur,
-          onKeyDown: this._onKeyDown,
-          onMouseDown: this._onMouseDown,
-          onWheel: this._wheelHandler.onWheel,
-          className: mainClassName,
-          style: mainStyle,
-          tabIndex: 0 },
-        _React2.default.createElement('div', {
-          ref: function ref(r) {
-            return _this2._faceRef = r;
-          },
-          className: faceClassName,
-          style: faceStyle
-        })
-      );
-    }
-  }, {
-    key: 'componentWillMount',
-    value: function componentWillMount() {
-      var isHorizontal = this.props.orientation === 'horizontal';
-      var onWheel = isHorizontal ? this._onWheelX : this._onWheelY;
-
-      this._wheelHandler = new _ReactWheelHandler2.default(onWheel, this._shouldHandleX, // Should hanlde horizontal scroll
-      this._shouldHandleY // Should handle vertical scroll
-      );
-      this._initialRender = true;
-    }
-  }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      this._mouseMoveTracker = new _DOMMouseMoveTracker2.default(this._onMouseMove, this._onMouseMoveEnd, document.documentElement);
-
-      if (this.props.position !== undefined && this.state.position !== this.props.position) {
-        this._didScroll();
-      }
-      this._initialRender = false;
-    }
-  }, {
-    key: 'componentWillUnmount',
-    value: function componentWillUnmount() {
-      this._nextState = null;
-      this._mouseMoveTracker.releaseMouseMoves();
-      if (_lastScrolledScrollbar === this) {
-        _lastScrolledScrollbar = null;
-      }
-      delete this._mouseMoveTracker;
-    }
-  }]);
-
-  return Scrollbar;
-}(_React2.default.PureComponent);
-
-Scrollbar.propTypes = {
-  contentSize: _propTypes2.default.number.isRequired,
-  defaultPosition: _propTypes2.default.number,
-  isOpaque: _propTypes2.default.bool,
-  orientation: _propTypes2.default.oneOf(['vertical', 'horizontal']),
-  onScroll: _propTypes2.default.func,
-  position: _propTypes2.default.number,
-  size: _propTypes2.default.number.isRequired,
-  trackColor: _propTypes2.default.oneOf(['gray']),
-  zIndex: _propTypes2.default.number,
-  verticalTop: _propTypes2.default.number
-};
-Scrollbar.defaultProps = /*object*/{
-  defaultPosition: 0,
-  isOpaque: false,
-  onScroll: _emptyFunction2.default,
-  orientation: 'vertical',
-  zIndex: 99
-};
-
-var _initialiseProps = function _initialiseProps() {
-  var _this3 = this;
-
-  this.scrollBy = function ( /*number*/delta) {
-    _this3._onWheel(delta);
-  };
-
-  this._shouldHandleX = function ( /*number*/delta) {
-    return (/*boolean*/_this3.props.orientation === 'horizontal' ? _this3._shouldHandleChange(delta) : false
-    );
-  };
-
-  this._shouldHandleY = function ( /*number*/delta) {
-    return (/*boolean*/_this3.props.orientation !== 'horizontal' ? _this3._shouldHandleChange(delta) : false
-    );
-  };
-
-  this._shouldHandleChange = function ( /*number*/delta) /*boolean*/{
-    var nextState = _this3._calculateState(_this3.state.position + delta, _this3.props.size, _this3.props.contentSize, _this3.props.orientation);
-    return nextState.position !== _this3.state.position;
-  };
-
-  this._calculateState = function (
-  /*number*/position,
-  /*number*/size,
-  /*number*/contentSize,
-  /*string*/orientation) /*object*/{
-
-    var clampedSize = Math.max(1, size);
-    if (contentSize <= clampedSize) {
-      return UNSCROLLABLE_STATE;
-    }
-
-    var stateKey = position + '_' + clampedSize + '_' + contentSize + '_' + orientation;
-    if (_this3._stateKey === stateKey) {
-      return _this3._stateForKey;
-    }
-
-    // There are two types of positions here.
-    // 1) Phisical position: changed by mouse / keyboard
-    // 2) Logical position: changed by props.
-    // The logical position will be kept as as internal state and the `render()`
-    // function will translate it into physical position to render.
-
-    var isHorizontal = orientation === 'horizontal';
-    var scale = clampedSize / contentSize;
-    var faceSize = clampedSize * scale;
-
-    if (faceSize < FACE_SIZE_MIN) {
-      scale = (clampedSize - FACE_SIZE_MIN) / (contentSize - clampedSize);
-      faceSize = FACE_SIZE_MIN;
-    }
-
-    var scrollable = true;
-    var maxPosition = contentSize - clampedSize;
-
-    if (position < 0) {
-      position = 0;
-    } else if (position > maxPosition) {
-      position = maxPosition;
-    }
-
-    var isDragging = _this3._mouseMoveTracker ? _this3._mouseMoveTracker.isDragging() : false;
-
-    // This function should only return flat values that can be compared quiclky
-    // by `ReactComponentWithPureRenderMixin`.
-    var state = {
-      faceSize: faceSize,
-      isDragging: isDragging,
-      isHorizontal: isHorizontal,
-      position: position,
-      scale: scale,
-      scrollable: scrollable
-    };
-
-    // cache the state for later use.
-    _this3._stateKey = stateKey;
-    _this3._stateForKey = state;
-    return state;
-  };
-
-  this._onWheelY = function ( /*number*/deltaX, /*number*/deltaY) {
-    _this3._onWheel(deltaY);
-  };
-
-  this._onWheelX = function ( /*number*/deltaX, /*number*/deltaY) {
-    _this3._onWheel(deltaX);
-  };
-
-  this._onWheel = function ( /*number*/delta) {
-    var props = _this3.props;
-
-    // The mouse may move faster then the animation frame does.
-    // Use `requestAnimationFrame` to avoid over-updating.
-    _this3._setNextState(_this3._calculateState(_this3.state.position + delta, props.size, props.contentSize, props.orientation));
-  };
-
-  this._onMouseDown = function ( /*object*/event) {
-    var nextState;
-
-    if (event.target !== _this3._faceRef) {
-      // Both `offsetX` and `layerX` are non-standard DOM property but they are
-      // magically available for browsers somehow.
-      var nativeEvent = event.nativeEvent;
-      var position = _this3.state.isHorizontal ? nativeEvent.offsetX || nativeEvent.layerX : nativeEvent.offsetY || nativeEvent.layerY;
-
-      // MouseDown on the scroll-track directly, move the center of the
-      // scroll-face to the mouse position.
-      var props = _this3.props;
-      position /= _this3.state.scale;
-      nextState = _this3._calculateState(position - _this3.state.faceSize * 0.5 / _this3.state.scale, props.size, props.contentSize, props.orientation);
-    } else {
-      nextState = {};
-    }
-
-    nextState.focused = true;
-    _this3._setNextState(nextState);
-
-    _this3._mouseMoveTracker.captureMouseMoves(event);
-    // Focus the node so it may receive keyboard event.
-    _ReactDOM2.default.findDOMNode(_this3).focus();
-  };
-
-  this._onMouseMove = function ( /*number*/deltaX, /*number*/deltaY) {
-    var props = _this3.props;
-    var delta = _this3.state.isHorizontal ? deltaX : deltaY;
-    delta /= _this3.state.scale;
-
-    _this3._setNextState(_this3._calculateState(_this3.state.position + delta, props.size, props.contentSize, props.orientation));
-  };
-
-  this._onMouseMoveEnd = function () {
-    _this3._nextState = null;
-    _this3._mouseMoveTracker.releaseMouseMoves();
-    _this3.setState({ isDragging: false });
-  };
-
-  this._onKeyDown = function ( /*object*/event) {
-    var keyCode = event.keyCode;
-
-    if (keyCode === _Keys2.default.TAB) {
-      // Let focus move off the scrollbar.
-      return;
-    }
-
-    var distance = KEYBOARD_SCROLL_AMOUNT;
-    var direction = 0;
-
-    if (_this3.state.isHorizontal) {
-      switch (keyCode) {
-        case _Keys2.default.HOME:
-          direction = -1;
-          distance = _this3.props.contentSize;
-          break;
-
-        case _Keys2.default.LEFT:
-          direction = -1;
-          break;
-
-        case _Keys2.default.RIGHT:
-          direction = 1;
-          break;
-
-        default:
-          return;
-      }
-    }
-
-    if (!_this3.state.isHorizontal) {
-      switch (keyCode) {
-        case _Keys2.default.SPACE:
-          if (event.shiftKey) {
-            direction = -1;
-          } else {
-            direction = 1;
-          }
-          break;
-
-        case _Keys2.default.HOME:
-          direction = -1;
-          distance = _this3.props.contentSize;
-          break;
-
-        case _Keys2.default.UP:
-          direction = -1;
-          break;
-
-        case _Keys2.default.DOWN:
-          direction = 1;
-          break;
-
-        case _Keys2.default.PAGE_UP:
-          direction = -1;
-          distance = _this3.props.size;
-          break;
-
-        case _Keys2.default.PAGE_DOWN:
-          direction = 1;
-          distance = _this3.props.size;
-          break;
-
-        default:
-          return;
-      }
-    }
-
-    event.preventDefault();
-
-    var props = _this3.props;
-    _this3._setNextState(_this3._calculateState(_this3.state.position + distance * direction, props.size, props.contentSize, props.orientation));
-  };
-
-  this._onFocus = function () {
-    _this3.setState({
-      focused: true
-    });
-  };
-
-  this._onBlur = function () {
-    _this3.setState({
-      focused: false
-    });
-  };
-
-  this._blur = function () {
-    var el = _ReactDOM2.default.findDOMNode(_this3);
-    if (!el) {
-      return;
-    }
-
-    try {
-      _this3._onBlur();
-      el.blur();
-    } catch (oops) {
-      // pass
-    }
-  };
-
-  this._setNextState = function ( /*object*/nextState, /*?object*/props) {
-    props = props || _this3.props;
-    var controlledPosition = props.position;
-    var willScroll = _this3.state.position !== nextState.position;
-    if (controlledPosition === undefined) {
-      var callback = willScroll ? _this3._didScroll : undefined;
-      _this3.setState(nextState, callback);
-    } else if (controlledPosition === nextState.position) {
-      _this3.setState(nextState);
-    } else {
-      // Scrolling is controlled. Don't update the state and let the owner
-      // to update the scrollbar instead.
-      if (nextState.position !== undefined && nextState.position !== _this3.state.position) {
-        _this3.props.onScroll(nextState.position);
-      }
-      return;
-    }
-
-    if (willScroll && _lastScrolledScrollbar !== _this3) {
-      _lastScrolledScrollbar && _lastScrolledScrollbar._blur();
-      _lastScrolledScrollbar = _this3;
-    }
-  };
-
-  this._didScroll = function () {
-    _this3.props.onScroll(_this3.state.position);
-  };
-};
-
-;
-
-Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;
-Scrollbar.SIZE = parseInt((0, _cssVar2.default)('scrollbar-size'), 10);
-Scrollbar.OFFSET = 1;
-
-module.exports = Scrollbar;
 
 /***/ }),
 /* 27 */
@@ -1948,11 +1948,10 @@ var DOMMouseMoveTracker = function () {
   _createClass(DOMMouseMoveTracker, [{
     key: 'captureMouseMoves',
     value: function captureMouseMoves( /*object*/event) {
-      if (!this._eventMoveToken && !this._eventUpToken && !this._eventLeaveToken && !this._eventOutToken) {
+      if (!this._eventMoveToken && !this._eventUpToken && !this._eventLeaveToken) {
         this._eventMoveToken = _EventListener2.default.listen(this._domNode, 'mousemove', this._onMouseMove);
         this._eventUpToken = _EventListener2.default.listen(this._domNode, 'mouseup', this._onMouseUp);
         this._eventLeaveToken = _EventListener2.default.listen(this._domNode, 'mouseleave', this._onMouseEnd);
-        this._eventOutToken = _EventListener2.default.listen(this._domNode, 'mouseout', this.onMouseEnd);
       }
 
       if (this._isTouchEnabled && !this._eventTouchStartToken && !this._eventTouchMoveToken && !this._eventTouchEndToken) {
@@ -1975,21 +1974,19 @@ var DOMMouseMoveTracker = function () {
     }
 
     /**
-     * These releases all of the listeners on document.body.
+     * This releases all of the listeners on document.body.
      */
 
   }, {
     key: 'releaseMouseMoves',
     value: function releaseMouseMoves() {
-      if (this._eventMoveToken && this._eventUpToken && this._eventLeaveToken && this._eventOutToken) {
+      if (this._eventMoveToken && this._eventUpToken && this._eventLeaveToken) {
         this._eventMoveToken.remove();
         this._eventMoveToken = null;
         this._eventUpToken.remove();
         this._eventUpToken = null;
         this._eventLeaveToken.remove();
         this._eventLeaveToken = null;
-        this._eventOutToken.remove();
-        this._eventOutToken = null;
       }
 
       if (this._isTouchEnabled && this._eventTouchStartToken && this._eventTouchMoveToken && this._eventTouchEndToken) {
@@ -2644,7 +2641,7 @@ module.exports = MapCache;
 /* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var castPath = __webpack_require__(25),
+var castPath = __webpack_require__(26),
     toKey = __webpack_require__(14);
 
 /**
@@ -2826,17 +2823,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ScrollbarState = undefined;
 
-var _widthHelper = __webpack_require__(19);
+var _widthHelper = __webpack_require__(20);
 
-var _Scrollbar = __webpack_require__(26);
+var _Scrollbar = __webpack_require__(15);
 
 var _Scrollbar2 = _interopRequireDefault(_Scrollbar);
 
-var _clamp = __webpack_require__(18);
+var _clamp = __webpack_require__(19);
 
 var _clamp2 = _interopRequireDefault(_clamp);
 
-var _shallowEqualSelector = __webpack_require__(16);
+var _shallowEqualSelector = __webpack_require__(17);
 
 var _shallowEqualSelector2 = _interopRequireDefault(_shallowEqualSelector);
 
@@ -3101,6 +3098,10 @@ var _React = __webpack_require__(0);
 
 var _React2 = _interopRequireDefault(_React);
 
+var _Scrollbar = __webpack_require__(15);
+
+var _Scrollbar2 = _interopRequireDefault(_Scrollbar);
+
 var _cx = __webpack_require__(3);
 
 var _cx2 = _interopRequireDefault(_cx);
@@ -3109,7 +3110,7 @@ var _joinClasses = __webpack_require__(9);
 
 var _joinClasses2 = _interopRequireDefault(_joinClasses);
 
-var _widthHelper = __webpack_require__(19);
+var _widthHelper = __webpack_require__(20);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3189,6 +3190,8 @@ var FixedDataTableRowImpl = function (_React$Component) {
       }
     }, _this._onClick = function ( /*object*/event) {
       _this.props.onClick(event, _this.props.index);
+    }, _this._onContextMenu = function ( /*object*/event) {
+      _this.props.onContextMenu(event, _this.props.index);
     }, _this._onDoubleClick = function ( /*object*/event) {
       _this.props.onDoubleClick(event, _this.props.index);
     }, _this._onMouseUp = function ( /*object*/event) {
@@ -3266,12 +3269,13 @@ var FixedDataTableRowImpl = function (_React$Component) {
       });
       var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
       var fixedRightColumnsWidth = (0, _widthHelper.sumPropWidths)(this.props.fixedRightColumns);
+      var scrollbarOffset = this.props.showScrollbarY ? _Scrollbar2.default.SIZE : 0;
       var fixedRightColumns = _React2.default.createElement(_FixedDataTableCellGroup2.default, {
         key: 'fixed_right_cells',
         isScrolling: this.props.isScrolling,
         height: this.props.height,
         cellGroupWrapperHeight: this.props.cellGroupWrapperHeight,
-        offsetLeft: this.props.width - fixedRightColumnsWidth,
+        offsetLeft: this.props.width - fixedRightColumnsWidth - scrollbarOffset,
         width: fixedRightColumnsWidth,
         zIndex: 2,
         columns: this.props.fixedRightColumns,
@@ -3285,7 +3289,7 @@ var FixedDataTableRowImpl = function (_React$Component) {
         rowHeight: this.props.height,
         rowIndex: this.props.index
       });
-      var fixedRightColumnsShdadow = fixedRightColumnsWidth ? this._renderFixedRightColumnsShadow(this.props.width - fixedRightColumnsWidth - 5) : null;
+      var fixedRightColumnsShadow = fixedRightColumnsWidth ? this._renderFixedRightColumnsShadow(this.props.width - fixedRightColumnsWidth - scrollbarOffset - 5) : null;
       var scrollableColumns = _React2.default.createElement(_FixedDataTableCellGroup2.default, {
         key: 'scrollable_cells',
         isScrolling: this.props.isScrolling,
@@ -3294,7 +3298,7 @@ var FixedDataTableRowImpl = function (_React$Component) {
         align: 'right',
         left: this.props.scrollLeft,
         offsetLeft: fixedColumnsWidth,
-        width: this.props.width - fixedColumnsWidth - fixedRightColumnsWidth,
+        width: this.props.width - fixedColumnsWidth - fixedRightColumnsWidth - scrollbarOffset,
         zIndex: 0,
         columns: this.props.scrollableColumns,
         touchEnabled: this.props.touchEnabled,
@@ -3316,11 +3320,25 @@ var FixedDataTableRowImpl = function (_React$Component) {
         width: this.props.width
       };
 
+      var scrollbarSpacer = null;
+      if (this.props.showScrollbarY) {
+        var spacerStyles = {
+          width: scrollbarOffset,
+          height: this.props.height,
+          left: this.props.width - scrollbarOffset
+        };
+        scrollbarSpacer = _React2.default.createElement('div', {
+          style: spacerStyles,
+          className: (0, _cx2.default)('public/fixedDataTable/scrollbarSpacer')
+        });
+      }
+
       return _React2.default.createElement(
         'div',
         {
           className: (0, _joinClasses2.default)(className, this.props.className),
           onClick: this.props.onClick ? this._onClick : null,
+          onContextMenu: this.props.onContextMenu ? this._onContextMenu : null,
           onDoubleClick: this.props.onDoubleClick ? this._onDoubleClick : null,
           onMouseDown: this.props.onMouseDown ? this._onMouseDown : null,
           onMouseUp: this.props.onMouseUp ? this._onMouseUp : null,
@@ -3337,7 +3355,8 @@ var FixedDataTableRowImpl = function (_React$Component) {
           scrollableColumns,
           columnsLeftShadow,
           fixedRightColumns,
-          fixedRightColumnsShdadow
+          fixedRightColumnsShadow,
+          scrollbarSpacer
         ),
         rowExpanded && _React2.default.createElement(
           'div',
@@ -3418,6 +3437,11 @@ FixedDataTableRowImpl.propTypes = {
    * Fire when a row is clicked.
    */
   onClick: _propTypes2.default.func,
+
+  /**
+   * Fire when a contextual-menu is requested above a row.
+   */
+  onContextMenu: _propTypes2.default.func,
 
   /**
    * Fire when a row is double clicked.
@@ -4001,7 +4025,7 @@ module.exports = isTypedArray;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(11),
-    isObject = __webpack_require__(20);
+    isObject = __webpack_require__(21);
 
 /** `Object#toString` result references. */
 var asyncTag = '[object AsyncFunction]',
@@ -4080,7 +4104,7 @@ module.exports = baseIteratee;
 /* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ListCache = __webpack_require__(21),
+var ListCache = __webpack_require__(22),
     stackClear = __webpack_require__(143),
     stackDelete = __webpack_require__(144),
     stackGet = __webpack_require__(145),
@@ -4294,7 +4318,7 @@ module.exports = arrayPush;
 /* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(20);
+var isObject = __webpack_require__(21);
 
 /**
  * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
@@ -4432,7 +4456,7 @@ var _emptyFunction = __webpack_require__(7);
 
 var _emptyFunction2 = _interopRequireDefault(_emptyFunction);
 
-var _normalizeWheel = __webpack_require__(201);
+var _normalizeWheel = __webpack_require__(202);
 
 var _normalizeWheel2 = _interopRequireDefault(_normalizeWheel);
 
@@ -4462,6 +4486,8 @@ var ReactWheelHandler = function () {
     this._deltaX = 0;
     this._deltaY = 0;
     this._didWheel = this._didWheel.bind(this);
+    this._rootRef = null;
+
     if (typeof handleScrollX !== 'function') {
       handleScrollX = handleScrollX ? _emptyFunction2.default.thatReturnsTrue : _emptyFunction2.default.thatReturnsFalse;
     }
@@ -4493,6 +4519,10 @@ var ReactWheelHandler = function () {
         return;
       }
 
+      if (this._rootRef && !this._contains(event.target)) {
+        return;
+      }
+
       this._deltaX += handleScrollX ? normalizedEvent.pixelX : 0;
       this._deltaY += handleScrollY ? normalizedEvent.pixelY : 0;
       event.preventDefault();
@@ -4510,12 +4540,29 @@ var ReactWheelHandler = function () {
       }
     }
   }, {
+    key: 'setRoot',
+    value: function setRoot(rootRef) {
+      this._rootRef = rootRef;
+    }
+  }, {
     key: '_didWheel',
     value: function _didWheel() {
       this._animationFrameID = null;
       this._onWheelCallback(this._deltaX, this._deltaY);
       this._deltaX = 0;
       this._deltaY = 0;
+    }
+  }, {
+    key: '_contains',
+    value: function _contains(target) {
+      var parent = target;
+      while (parent != document.body) {
+        if (parent === this._rootRef) {
+          return true;
+        }
+        parent = parent.parentNode;
+      }
+      return false;
     }
   }]);
 
@@ -4547,9 +4594,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                                                                                                                                                                                                                                                                    */
 
 
-var _widthHelper = __webpack_require__(19);
+var _widthHelper = __webpack_require__(20);
 
-var _Scrollbar = __webpack_require__(26);
+var _Scrollbar = __webpack_require__(15);
 
 var _Scrollbar2 = _interopRequireDefault(_Scrollbar);
 
@@ -4561,11 +4608,11 @@ var _map = __webpack_require__(87);
 
 var _map2 = _interopRequireDefault(_map);
 
-var _scrollbarsVisible = __webpack_require__(15);
+var _scrollbarsVisible = __webpack_require__(16);
 
 var _scrollbarsVisible2 = _interopRequireDefault(_scrollbarsVisible);
 
-var _shallowEqualSelector = __webpack_require__(16);
+var _shallowEqualSelector = __webpack_require__(17);
 
 var _shallowEqualSelector2 = _interopRequireDefault(_shallowEqualSelector);
 
@@ -4609,7 +4656,7 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
       fixedRightColumns = _groupColumns.fixedRightColumns,
       scrollableColumns = _groupColumns.scrollableColumns;
 
-  var availableScrollWidth = viewportWidth - (0, _widthHelper.getTotalWidth)(fixedColumns);
+  var availableScrollWidth = viewportWidth - (0, _widthHelper.getTotalWidth)(fixedColumns) - (0, _widthHelper.getTotalWidth)(fixedRightColumns);
   var maxScrollX = Math.max(0, (0, _widthHelper.getTotalWidth)(newColumnProps) - viewportWidth);
   return {
     columnGroupProps: newColumnGroupProps,
@@ -4790,7 +4837,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _Scrollbar = __webpack_require__(26);
+var _Scrollbar = __webpack_require__(15);
 
 var _Scrollbar2 = _interopRequireDefault(_Scrollbar);
 
@@ -4798,11 +4845,11 @@ var _roughHeights = __webpack_require__(63);
 
 var _roughHeights2 = _interopRequireDefault(_roughHeights);
 
-var _scrollbarsVisible = __webpack_require__(15);
+var _scrollbarsVisible = __webpack_require__(16);
 
 var _scrollbarsVisible2 = _interopRequireDefault(_scrollbarsVisible);
 
-var _shallowEqualSelector = __webpack_require__(16);
+var _shallowEqualSelector = __webpack_require__(17);
 
 var _shallowEqualSelector2 = _interopRequireDefault(_shallowEqualSelector);
 
@@ -5498,7 +5545,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTableContainer2.default
 };
 
-FixedDataTableRoot.version = '1.0.0-beta.9';
+FixedDataTableRoot.version = '1.0.0-beta.10';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -5512,7 +5559,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _ActionTypes = __webpack_require__(17);
+var _ActionTypes = __webpack_require__(18);
 
 var ActionTypes = _interopRequireWildcard(_ActionTypes);
 
@@ -5655,7 +5702,7 @@ var _FixedDataTableBufferedRows = __webpack_require__(103);
 
 var _FixedDataTableBufferedRows2 = _interopRequireDefault(_FixedDataTableBufferedRows);
 
-var _FixedDataTableColumnResizeHandle = __webpack_require__(199);
+var _FixedDataTableColumnResizeHandle = __webpack_require__(206);
 
 var _FixedDataTableColumnResizeHandle2 = _interopRequireDefault(_FixedDataTableColumnResizeHandle);
 
@@ -5675,7 +5722,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _ReactTouchHandler = __webpack_require__(200);
+var _ReactTouchHandler = __webpack_require__(207);
 
 var _ReactTouchHandler2 = _interopRequireDefault(_ReactTouchHandler);
 
@@ -5683,7 +5730,7 @@ var _ReactWheelHandler = __webpack_require__(85);
 
 var _ReactWheelHandler2 = _interopRequireDefault(_ReactWheelHandler);
 
-var _Scrollbar = __webpack_require__(26);
+var _Scrollbar = __webpack_require__(15);
 
 var _Scrollbar2 = _interopRequireDefault(_Scrollbar);
 
@@ -5703,9 +5750,9 @@ var _joinClasses = __webpack_require__(9);
 
 var _joinClasses2 = _interopRequireDefault(_joinClasses);
 
-var _scrollbarsVisible2 = __webpack_require__(15);
+var _scrollbarsVisible3 = __webpack_require__(16);
 
-var _scrollbarsVisible3 = _interopRequireDefault(_scrollbarsVisible2);
+var _scrollbarsVisible4 = _interopRequireDefault(_scrollbarsVisible3);
 
 var _tableHeights = __webpack_require__(88);
 
@@ -5849,6 +5896,9 @@ var FixedDataTable = function (_React$Component) {
       }
       _this._contentHeight = contentHeight;
     }, _this._renderRows = function ( /*number*/offsetTop, fixedCellTemplates, fixedRightCellTemplates, scrollableCellTemplates, bodyHeight) /*object*/{
+      var _scrollbarsVisible = (0, _scrollbarsVisible4.default)(_this.props),
+          scrollEnabledY = _scrollbarsVisible.scrollEnabledY;
+
       var props = _this.props;
       return _React2.default.createElement(_FixedDataTableBufferedRows2.default, {
         isScrolling: _this._isScrolling,
@@ -5857,6 +5907,7 @@ var FixedDataTable = function (_React$Component) {
         height: bodyHeight,
         offsetTop: offsetTop,
         onRowClick: props.onRowClick,
+        onRowContextMenu: props.onRowContextMenu,
         onRowDoubleClick: props.onRowDoubleClick,
         onRowMouseUp: props.onRowMouseUp,
         onRowMouseDown: props.onRowMouseDown,
@@ -5875,8 +5926,13 @@ var FixedDataTable = function (_React$Component) {
         showLastRowBorder: true,
         width: props.tableSize.width,
         rowsToRender: props.rows,
-        rowHeights: props.rowHeights
+        rowHeights: props.rowHeights,
+        showScrollbarY: scrollEnabledY
       });
+    }, _this._onRef = function (div) {
+      if (_this.props.stopReactWheelPropagation) {
+        _this._wheelHandler.setRoot(div);
+      }
     }, _this._onColumnResize = function (
     /*number*/combinedWidth,
     /*number*/leftOffset,
@@ -5972,9 +6028,13 @@ var FixedDataTable = function (_React$Component) {
         x = x < 0 ? 0 : x;
         x = x > maxScrollX ? maxScrollX : x;
 
+        // This is a workaround to prevent content blurring. This happens when translate3d
+        // is applied with non-rounded values to elements having text.
+        var roundedX = Math.round(x);
+
         //NOTE (asif) This is a hacky workaround to prevent FDT from setting its internal state
-        if (onHorizontalScroll ? onHorizontalScroll(x) : true) {
-          scrollActions.scrollToX(x);
+        if (onHorizontalScroll ? onHorizontalScroll(roundedX) : true) {
+          scrollActions.scrollToX(roundedX);
         }
       }
 
@@ -5994,8 +6054,12 @@ var FixedDataTable = function (_React$Component) {
         _this._didScrollStart();
       }
 
-      if (onHorizontalScroll ? onHorizontalScroll(scrollPos) : true) {
-        scrollActions.scrollToX(scrollPos);
+      // This is a workaround to prevent content blurring. This happens when translate3d
+      // is applied with non-rounded values to elements having text.
+      var roundedScrollPos = Math.round(scrollPos);
+
+      if (onHorizontalScroll ? onHorizontalScroll(roundedScrollPos) : true) {
+        scrollActions.scrollToX(roundedScrollPos);
       }
       _this._didScrollStop();
     }, _this._onVerticalScroll = function ( /*number*/scrollPos) {
@@ -6194,9 +6258,9 @@ var FixedDataTable = function (_React$Component) {
           groupHeaderHeight = elementHeights.groupHeaderHeight,
           headerHeight = elementHeights.headerHeight;
 
-      var _scrollbarsVisible = (0, _scrollbarsVisible3.default)(this.props),
-          scrollEnabledX = _scrollbarsVisible.scrollEnabledX,
-          scrollEnabledY = _scrollbarsVisible.scrollEnabledY;
+      var _scrollbarsVisible2 = (0, _scrollbarsVisible4.default)(this.props),
+          scrollEnabledX = _scrollbarsVisible2.scrollEnabledX,
+          scrollEnabledY = _scrollbarsVisible2.scrollEnabledY;
 
       var onColumnReorder = onColumnReorderEndCallback ? this._onColumnReorder : null;
 
@@ -6219,7 +6283,8 @@ var FixedDataTable = function (_React$Component) {
           visible: true,
           onColumnResize: this._onColumnResize,
           onColumnReorder: onColumnReorder,
-          onColumnReorderMove: this._onColumnReorderMove
+          onColumnReorderMove: this._onColumnReorderMove,
+          showScrollbarY: scrollEnabledY
         });
       }
 
@@ -6274,7 +6339,8 @@ var FixedDataTable = function (_React$Component) {
           fixedColumns: fixedColumns.footer,
           fixedRightColumns: fixedRightColumns.footer,
           scrollableColumns: scrollableColumns.footer,
-          scrollLeft: scrollX
+          scrollLeft: scrollX,
+          showScrollbarY: scrollEnabledY
         });
       }
 
@@ -6301,7 +6367,8 @@ var FixedDataTable = function (_React$Component) {
         onColumnReorderMove: this._onColumnReorderMove,
         onColumnReorderEnd: this._onColumnReorderEnd,
         isColumnReordering: !!isColumnReordering,
-        columnReorderingData: columnReorderingData
+        columnReorderingData: columnReorderingData,
+        showScrollbarY: scrollEnabledY
       });
 
       var topShadow = void 0;
@@ -6334,6 +6401,7 @@ var FixedDataTable = function (_React$Component) {
           onTouchEnd: this._touchHandler.onTouchEnd,
           onTouchMove: this._touchHandler.onTouchMove,
           onTouchCancel: this._touchHandler.onTouchCancel,
+          ref: this._onRef,
           style: {
             height: componentHeight,
             width: width
@@ -6602,6 +6670,11 @@ FixedDataTable.propTypes = {
   /**
    * If enabled scroll events will not be propagated outside of the table.
    */
+  stopReactWheelPropagation: _propTypes2.default.bool,
+
+  /**
+   * If enabled scroll events will not be propagated outside of the table.
+   */
   stopScrollPropagation: _propTypes2.default.bool,
 
   /**
@@ -6615,6 +6688,11 @@ FixedDataTable.propTypes = {
    * Callback that is called when a row is clicked.
    */
   onRowClick: _propTypes2.default.func,
+
+  /**
+   * Callback that is called when a contextual-menu event happens on a row.
+   */
+  onRowContextMenu: _propTypes2.default.func,
 
   /**
    * Callback that is called when a row is double clicked.
@@ -6893,6 +6971,7 @@ var FixedDataTableBufferedRows = function (_React$Component) {
             scrollLeft: Math.round(props.scrollLeft),
             visible: false,
             fixedColumns: props.fixedColumns,
+            fixedRightColumns: props.fixedRightColumns,
             scrollableColumns: props.scrollableColumns
           });
           continue;
@@ -6919,6 +6998,7 @@ var FixedDataTableBufferedRows = function (_React$Component) {
           fixedRightColumns: props.fixedRightColumns,
           scrollableColumns: props.scrollableColumns,
           onClick: props.onRowClick,
+          onContextMenu: props.onRowContextMenu,
           onDoubleClick: props.onRowDoubleClick,
           onMouseDown: props.onRowMouseDown,
           onMouseUp: props.onRowMouseUp,
@@ -6927,6 +7007,7 @@ var FixedDataTableBufferedRows = function (_React$Component) {
           onTouchStart: props.onRowTouchStart,
           onTouchEnd: props.onRowTouchEnd,
           onTouchMove: props.onRowTouchMove,
+          showScrollbarY: props.showScrollbarY,
           className: (0, _joinClasses2.default)(rowClassNameGetter(rowIndex), (0, _cx2.default)('public/fixedDataTable/bodyRow'), (0, _cx2.default)({
             'fixedDataTableLayout/hasBottomBorder': hasBottomBorder,
             'public/fixedDataTable/hasBottomBorder': hasBottomBorder
@@ -6952,6 +7033,7 @@ FixedDataTableBufferedRows.propTypes = {
   height: _propTypes2.default.number.isRequired,
   offsetTop: _propTypes2.default.number.isRequired,
   onRowClick: _propTypes2.default.func,
+  onRowContextMenu: _propTypes2.default.func,
   onRowDoubleClick: _propTypes2.default.func,
   onRowMouseDown: _propTypes2.default.func,
   onRowMouseUp: _propTypes2.default.func,
@@ -6974,6 +7056,7 @@ FixedDataTableBufferedRows.propTypes = {
   scrollTop: _propTypes2.default.number.isRequired,
   scrollableColumns: _propTypes2.default.array.isRequired,
   showLastRowBorder: _propTypes2.default.bool,
+  showScrollbarY: _propTypes2.default.bool,
   width: _propTypes2.default.number.isRequired
 };
 ;
@@ -7027,7 +7110,7 @@ var _cx = __webpack_require__(3);
 
 var _cx2 = _interopRequireDefault(_cx);
 
-var _widthHelper = __webpack_require__(19);
+var _widthHelper = __webpack_require__(20);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7381,10 +7464,14 @@ var FixedDataTableCell = function (_React$Component) {
        * headers on touch devices.
        */
       if (_this.props.touchEnabled) {
+        event.preventDefault();
         event.stopPropagation();
       }
     }, _this._onColumnReorderMouseDown = function ( /*object*/event) {
       _this.props.onColumnReorder(_this.props.columnKey, _this.props.width, _this.props.left, event);
+    }, _this._suppressEvent = function ( /*object*/event) {
+      event.preventDefault();
+      event.stopPropagation();
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
   /**
@@ -7549,12 +7636,8 @@ var FixedDataTableCell = function (_React$Component) {
             style: columnResizerStyle,
             onMouseDown: this._onColumnResizerMouseDown,
             onTouchStart: this.props.touchEnabled ? this._onColumnResizerMouseDown : null,
-            onTouchEnd: this.props.touchEnabled ? function (e) {
-              return e.stopPropagation();
-            } : null,
-            onTouchMove: this.props.touchEnabled ? function (e) {
-              return e.stopPropagation();
-            } : null },
+            onTouchEnd: this.props.touchEnabled ? this._suppressEvent : null,
+            onTouchMove: this.props.touchEnabled ? this._suppressEvent : null },
           _React2.default.createElement('div', {
             className: (0, _joinClasses2.default)((0, _cx2.default)('fixedDataTableCellLayout/columnResizerKnob'), (0, _cx2.default)('public/fixedDataTableCell/columnResizerKnob')),
             style: columnResizerStyle
@@ -8357,7 +8440,7 @@ var _FixedDataTableEventHelper = __webpack_require__(44);
 
 var _FixedDataTableEventHelper2 = _interopRequireDefault(_FixedDataTableEventHelper);
 
-var _clamp = __webpack_require__(18);
+var _clamp = __webpack_require__(19);
 
 var _clamp2 = _interopRequireDefault(_clamp);
 
@@ -9540,7 +9623,7 @@ module.exports = listCacheClear;
 /* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assocIndexOf = __webpack_require__(22);
+var assocIndexOf = __webpack_require__(23);
 
 /** Used for built-in method references. */
 var arrayProto = Array.prototype;
@@ -9581,7 +9664,7 @@ module.exports = listCacheDelete;
 /* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assocIndexOf = __webpack_require__(22);
+var assocIndexOf = __webpack_require__(23);
 
 /**
  * Gets the list cache value for `key`.
@@ -9606,7 +9689,7 @@ module.exports = listCacheGet;
 /* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assocIndexOf = __webpack_require__(22);
+var assocIndexOf = __webpack_require__(23);
 
 /**
  * Checks if a list cache value for `key` exists.
@@ -9628,7 +9711,7 @@ module.exports = listCacheHas;
 /* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assocIndexOf = __webpack_require__(22);
+var assocIndexOf = __webpack_require__(23);
 
 /**
  * Sets the list cache `key` to `value`.
@@ -9660,7 +9743,7 @@ module.exports = listCacheSet;
 /* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ListCache = __webpack_require__(21);
+var ListCache = __webpack_require__(22);
 
 /**
  * Removes all key-value entries from the stack.
@@ -9745,7 +9828,7 @@ module.exports = stackHas;
 /* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ListCache = __webpack_require__(21),
+var ListCache = __webpack_require__(22),
     Map = __webpack_require__(56),
     MapCache = __webpack_require__(57);
 
@@ -9787,7 +9870,7 @@ module.exports = stackSet;
 
 var isFunction = __webpack_require__(74),
     isMasked = __webpack_require__(149),
-    isObject = __webpack_require__(20),
+    isObject = __webpack_require__(21),
     toSource = __webpack_require__(77);
 
 /**
@@ -9896,7 +9979,7 @@ module.exports = getValue;
 /***/ (function(module, exports, __webpack_require__) {
 
 var Hash = __webpack_require__(153),
-    ListCache = __webpack_require__(21),
+    ListCache = __webpack_require__(22),
     Map = __webpack_require__(56);
 
 /**
@@ -9960,7 +10043,7 @@ module.exports = Hash;
 /* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var nativeCreate = __webpack_require__(23);
+var nativeCreate = __webpack_require__(24);
 
 /**
  * Removes all key-value entries from the hash.
@@ -10004,7 +10087,7 @@ module.exports = hashDelete;
 /* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var nativeCreate = __webpack_require__(23);
+var nativeCreate = __webpack_require__(24);
 
 /** Used to stand-in for `undefined` hash values. */
 var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -10040,7 +10123,7 @@ module.exports = hashGet;
 /* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var nativeCreate = __webpack_require__(23);
+var nativeCreate = __webpack_require__(24);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -10069,7 +10152,7 @@ module.exports = hashHas;
 /* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var nativeCreate = __webpack_require__(23);
+var nativeCreate = __webpack_require__(24);
 
 /** Used to stand-in for `undefined` hash values. */
 var HASH_UNDEFINED = '__lodash_hash_undefined__';
@@ -10098,7 +10181,7 @@ module.exports = hashSet;
 /* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(24);
+var getMapData = __webpack_require__(25);
 
 /**
  * Removes `key` and its value from the map.
@@ -10143,7 +10226,7 @@ module.exports = isKeyable;
 /* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(24);
+var getMapData = __webpack_require__(25);
 
 /**
  * Gets the map value for `key`.
@@ -10165,7 +10248,7 @@ module.exports = mapCacheGet;
 /* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(24);
+var getMapData = __webpack_require__(25);
 
 /**
  * Checks if a map value for `key` exists.
@@ -10187,7 +10270,7 @@ module.exports = mapCacheHas;
 /* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getMapData = __webpack_require__(24);
+var getMapData = __webpack_require__(25);
 
 /**
  * Sets the map `key` to `value`.
@@ -11312,7 +11395,7 @@ module.exports = baseHasIn;
 /* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var castPath = __webpack_require__(25),
+var castPath = __webpack_require__(26),
     isArguments = __webpack_require__(50),
     isArray = __webpack_require__(1),
     isIndex = __webpack_require__(52),
@@ -11469,6 +11552,686 @@ module.exports = baseReduce;
 "use strict";
 
 
+/**
+ * Copyright Schrodinger, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule Keys
+ */
+
+module.exports = {
+  BACKSPACE: 8,
+  TAB: 9,
+  RETURN: 13,
+  ALT: 18,
+  ESC: 27,
+  SPACE: 32,
+  PAGE_UP: 33,
+  PAGE_DOWN: 34,
+  END: 35,
+  HOME: 36,
+  LEFT: 37,
+  UP: 38,
+  RIGHT: 39,
+  DOWN: 40,
+  DELETE: 46,
+  COMMA: 188,
+  PERIOD: 190,
+  A: 65,
+  Z: 90,
+  ZERO: 48,
+  NUMPAD_0: 96,
+  NUMPAD_9: 105
+};
+
+/***/ }),
+/* 200 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Copyright Schrodinger, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule ReactDOM
+ */
+
+module.exports = __webpack_require__(201);
+
+/***/ }),
+/* 201 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_201__;
+
+/***/ }),
+/* 202 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright Schrodinger, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule normalizeWheel
+ * @typechecks
+ */
+
+
+
+var _UserAgent_DEPRECATED = __webpack_require__(203);
+
+var _UserAgent_DEPRECATED2 = _interopRequireDefault(_UserAgent_DEPRECATED);
+
+var _isEventSupported = __webpack_require__(204);
+
+var _isEventSupported2 = _interopRequireDefault(_isEventSupported);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Reasonable defaults
+var PIXEL_STEP = 10;
+var LINE_HEIGHT = 40;
+var PAGE_HEIGHT = 800;
+
+/**
+ * Mouse wheel (and 2-finger trackpad) support on the web sucks.  It is
+ * complicated, thus this doc is long and (hopefully) detailed enough to answer
+ * your questions.
+ *
+ * If you need to react to the mouse wheel in a predictable way, this code is
+ * like your bestest friend. * hugs *
+ *
+ * As of today, there are 4 DOM event types you can listen to:
+ *
+ *   'wheel'                -- Chrome(31+), FF(17+), IE(9+)
+ *   'mousewheel'           -- Chrome, IE(6+), Opera, Safari
+ *   'MozMousePixelScroll'  -- FF(3.5 only!) (2010-2013) -- don't bother!
+ *   'DOMMouseScroll'       -- FF(0.9.7+) since 2003
+ *
+ * So what to do?  The is the best:
+ *
+ *   normalizeWheel.getEventType();
+ *
+ * In your event callback, use this code to get sane interpretation of the
+ * deltas.  This code will return an object with properties:
+ *
+ *   spinX   -- normalized spin speed (use for zoom) - x plane
+ *   spinY   -- " - y plane
+ *   pixelX  -- normalized distance (to pixels) - x plane
+ *   pixelY  -- " - y plane
+ *
+ * Wheel values are provided by the browser assuming you are using the wheel to
+ * scroll a web page by a number of lines or pixels (or pages).  Values can vary
+ * significantly on different platforms and browsers, forgetting that you can
+ * scroll at different speeds.  Some devices (like trackpads) emit more events
+ * at smaller increments with fine granularity, and some emit massive jumps with
+ * linear speed or acceleration.
+ *
+ * This code does its best to normalize the deltas for you:
+ *
+ *   - spin is trying to normalize how far the wheel was spun (or trackpad
+ *     dragged).  This is super useful for zoom support where you want to
+ *     throw away the chunky scroll steps on the PC and make those equal to
+ *     the slow and smooth tiny steps on the Mac. Key data: This code tries to
+ *     resolve a single slow step on a wheel to 1.
+ *
+ *   - pixel is normalizing the desired scroll delta in pixel units.  You'll
+ *     get the crazy differences between browsers, but at least it'll be in
+ *     pixels!
+ *
+ *   - positive value indicates scrolling DOWN/RIGHT, negative UP/LEFT.  This
+ *     should translate to positive value zooming IN, negative zooming OUT.
+ *     This matches the newer 'wheel' event.
+ *
+ * Why are there spinX, spinY (or pixels)?
+ *
+ *   - spinX is a 2-finger side drag on the trackpad, and a shift + wheel turn
+ *     with a mouse.  It results in side-scrolling in the browser by default.
+ *
+ *   - spinY is what you expect -- it's the classic axis of a mouse wheel.
+ *
+ *   - I dropped spinZ/pixelZ.  It is supported by the DOM 3 'wheel' event and
+ *     probably is by browsers in conjunction with fancy 3D controllers .. but
+ *     you know.
+ *
+ * Implementation info:
+ *
+ * Examples of 'wheel' event if you scroll slowly (down) by one step with an
+ * average mouse:
+ *
+ *   OS X + Chrome  (mouse)     -    4   pixel delta  (wheelDelta -120)
+ *   OS X + Safari  (mouse)     -  N/A   pixel delta  (wheelDelta  -12)
+ *   OS X + Firefox (mouse)     -    0.1 line  delta  (wheelDelta  N/A)
+ *   Win8 + Chrome  (mouse)     -  100   pixel delta  (wheelDelta -120)
+ *   Win8 + Firefox (mouse)     -    3   line  delta  (wheelDelta -120)
+ *
+ * On the trackpad:
+ *
+ *   OS X + Chrome  (trackpad)  -    2   pixel delta  (wheelDelta   -6)
+ *   OS X + Firefox (trackpad)  -    1   pixel delta  (wheelDelta  N/A)
+ *
+ * On other/older browsers.. it's more complicated as there can be multiple and
+ * also missing delta values.
+ *
+ * The 'wheel' event is more standard:
+ *
+ * http://www.w3.org/TR/DOM-Level-3-Events/#events-wheelevents
+ *
+ * The basics is that it includes a unit, deltaMode (pixels, lines, pages), and
+ * deltaX, deltaY and deltaZ.  Some browsers provide other values to maintain
+ * backward compatibility with older events.  Those other values help us
+ * better normalize spin speed.  Example of what the browsers provide:
+ *
+ *                          | event.wheelDelta | event.detail
+ *        ------------------+------------------+--------------
+ *          Safari v5/OS X  |       -120       |       0
+ *          Safari v5/Win7  |       -120       |       0
+ *         Chrome v17/OS X  |       -120       |       0
+ *         Chrome v17/Win7  |       -120       |       0
+ *                IE9/Win7  |       -120       |   undefined
+ *         Firefox v4/OS X  |     undefined    |       1
+ *         Firefox v4/Win7  |     undefined    |       3
+ *
+ */
+function normalizeWheel( /*object*/event) /*object*/{
+  var sX = 0,
+      sY = 0,
+      // spinX, spinY
+  pX = 0,
+      pY = 0; // pixelX, pixelY
+
+  // Legacy
+  if ('detail' in event) {
+    sY = event.detail;
+  }
+  if ('wheelDelta' in event) {
+    sY = -event.wheelDelta / 120;
+  }
+  if ('wheelDeltaY' in event) {
+    sY = -event.wheelDeltaY / 120;
+  }
+  if ('wheelDeltaX' in event) {
+    sX = -event.wheelDeltaX / 120;
+  }
+
+  // side scrolling on FF with DOMMouseScroll
+  if ('axis' in event && event.axis === event.HORIZONTAL_AXIS) {
+    sX = sY;
+    sY = 0;
+  }
+
+  pX = sX * PIXEL_STEP;
+  pY = sY * PIXEL_STEP;
+
+  if ('deltaY' in event) {
+    pY = event.deltaY;
+  }
+  if ('deltaX' in event) {
+    pX = event.deltaX;
+  }
+
+  if ((pX || pY) && event.deltaMode) {
+    if (event.deltaMode == 1) {
+      // delta in LINE units
+      pX *= LINE_HEIGHT;
+      pY *= LINE_HEIGHT;
+    } else {
+      // delta in PAGE units
+      pX *= PAGE_HEIGHT;
+      pY *= PAGE_HEIGHT;
+    }
+  }
+
+  // Fall-back if spin cannot be determined
+  if (pX && !sX) {
+    sX = pX < 1 ? -1 : 1;
+  }
+  if (pY && !sY) {
+    sY = pY < 1 ? -1 : 1;
+  }
+
+  return { spinX: sX,
+    spinY: sY,
+    pixelX: pX,
+    pixelY: pY };
+}
+
+/**
+ * The best combination if you prefer spinX + spinY normalization.  It favors
+ * the older DOMMouseScroll for Firefox, as FF does not include wheelDelta with
+ * 'wheel' event, making spin speed determination impossible.
+ */
+normalizeWheel.getEventType = function () /*string*/{
+  return _UserAgent_DEPRECATED2.default.firefox() ? 'DOMMouseScroll' : (0, _isEventSupported2.default)('wheel') ? 'wheel' : 'mousewheel';
+};
+
+module.exports = normalizeWheel;
+
+/***/ }),
+/* 203 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Copyright Schrodinger, LLC
+ *
+ * @providesModule UserAgent_DEPRECATED
+ */
+
+/**
+ *  Provides entirely client-side User Agent and OS detection. You should prefer
+ *  the non-deprecated UserAgent module when possible, which exposes our
+ *  authoritative server-side PHP-based detection to the client.
+ *
+ *  Usage is straightforward:
+ *
+ *    if (UserAgent_DEPRECATED.ie()) {
+ *      //  IE
+ *    }
+ *
+ *  You can also do version checks:
+ *
+ *    if (UserAgent_DEPRECATED.ie() >= 7) {
+ *      //  IE7 or better
+ *    }
+ *
+ *  The browser functions will return NaN if the browser does not match, so
+ *  you can also do version compares the other way:
+ *
+ *    if (UserAgent_DEPRECATED.ie() < 7) {
+ *      //  IE6 or worse
+ *    }
+ *
+ *  Note that the version is a float and may include a minor version number,
+ *  so you should always use range operators to perform comparisons, not
+ *  strict equality.
+ *
+ *  **Note:** You should **strongly** prefer capability detection to browser
+ *  version detection where it's reasonable:
+ *
+ *    http://www.quirksmode.org/js/support.html
+ *
+ *  Further, we have a large number of mature wrapper functions and classes
+ *  which abstract away many browser irregularities. Check the documentation,
+ *  grep for things, or ask on javascript@lists.facebook.com before writing yet
+ *  another copy of "event || window.event".
+ *
+ */
+
+var _populated = false;
+
+// Browsers
+var _ie, _firefox, _opera, _webkit, _chrome;
+
+// Actual IE browser for compatibility mode
+var _ie_real_version;
+
+// Platforms
+var _osx, _windows, _linux, _android;
+
+// Architectures
+var _win64;
+
+// Devices
+var _iphone, _ipad, _native;
+
+var _mobile;
+
+function _populate() {
+  if (_populated) {
+    return;
+  }
+
+  _populated = true;
+
+  // To work around buggy JS libraries that can't handle multi-digit
+  // version numbers, Opera 10's user agent string claims it's Opera
+  // 9, then later includes a Version/X.Y field:
+  //
+  // Opera/9.80 (foo) Presto/2.2.15 Version/10.10
+  var uas = navigator.userAgent;
+  var agent = /(?:MSIE.(\d+\.\d+))|(?:(?:Firefox|GranParadiso|Iceweasel).(\d+\.\d+))|(?:Opera(?:.+Version.|.)(\d+\.\d+))|(?:AppleWebKit.(\d+(?:\.\d+)?))|(?:Trident\/\d+\.\d+.*rv:(\d+\.\d+))/.exec(uas);
+  var os = /(Mac OS X)|(Windows)|(Linux)/.exec(uas);
+
+  _iphone = /\b(iPhone|iP[ao]d)/.exec(uas);
+  _ipad = /\b(iP[ao]d)/.exec(uas);
+  _android = /Android/i.exec(uas);
+  _native = /FBAN\/\w+;/i.exec(uas);
+  _mobile = /Mobile/i.exec(uas);
+
+  // Note that the IE team blog would have you believe you should be checking
+  // for 'Win64; x64'.  But MSDN then reveals that you can actually be coming
+  // from either x64 or ia64;  so ultimately, you should just check for Win64
+  // as in indicator of whether you're in 64-bit IE.  32-bit IE on 64-bit
+  // Windows will send 'WOW64' instead.
+  _win64 = !!/Win64/.exec(uas);
+
+  if (agent) {
+    _ie = agent[1] ? parseFloat(agent[1]) : agent[5] ? parseFloat(agent[5]) : NaN;
+    // IE compatibility mode
+    if (_ie && document && document.documentMode) {
+      _ie = document.documentMode;
+    }
+    // grab the "true" ie version from the trident token if available
+    var trident = /(?:Trident\/(\d+.\d+))/.exec(uas);
+    _ie_real_version = trident ? parseFloat(trident[1]) + 4 : _ie;
+
+    _firefox = agent[2] ? parseFloat(agent[2]) : NaN;
+    _opera = agent[3] ? parseFloat(agent[3]) : NaN;
+    _webkit = agent[4] ? parseFloat(agent[4]) : NaN;
+    if (_webkit) {
+      // We do not add the regexp to the above test, because it will always
+      // match 'safari' only since 'AppleWebKit' appears before 'Chrome' in
+      // the userAgent string.
+      agent = /(?:Chrome\/(\d+\.\d+))/.exec(uas);
+      _chrome = agent && agent[1] ? parseFloat(agent[1]) : NaN;
+    } else {
+      _chrome = NaN;
+    }
+  } else {
+    _ie = _firefox = _opera = _chrome = _webkit = NaN;
+  }
+
+  if (os) {
+    if (os[1]) {
+      // Detect OS X version.  If no version number matches, set _osx to true.
+      // Version examples:  10, 10_6_1, 10.7
+      // Parses version number as a float, taking only first two sets of
+      // digits.  If only one set of digits is found, returns just the major
+      // version number.
+      var ver = /(?:Mac OS X (\d+(?:[._]\d+)?))/.exec(uas);
+
+      _osx = ver ? parseFloat(ver[1].replace('_', '.')) : true;
+    } else {
+      _osx = false;
+    }
+    _windows = !!os[2];
+    _linux = !!os[3];
+  } else {
+    _osx = _windows = _linux = false;
+  }
+}
+
+var UserAgent_DEPRECATED = {
+
+  /**
+   *  Check if the UA is Internet Explorer.
+   *
+   *
+   *  @return float|NaN Version number (if match) or NaN.
+   */
+  ie: function ie() {
+    return _populate() || _ie;
+  },
+
+  /**
+   * Check if we're in Internet Explorer compatibility mode.
+   *
+   * @return bool true if in compatibility mode, false if
+   * not compatibility mode or not ie
+   */
+  ieCompatibilityMode: function ieCompatibilityMode() {
+    return _populate() || _ie_real_version > _ie;
+  },
+
+  /**
+   * Whether the browser is 64-bit IE.  Really, this is kind of weak sauce;  we
+   * only need this because Skype can't handle 64-bit IE yet.  We need to remove
+   * this when we don't need it -- tracked by #601957.
+   */
+  ie64: function ie64() {
+    return UserAgent_DEPRECATED.ie() && _win64;
+  },
+
+  /**
+   *  Check if the UA is Firefox.
+   *
+   *
+   *  @return float|NaN Version number (if match) or NaN.
+   */
+  firefox: function firefox() {
+    return _populate() || _firefox;
+  },
+
+  /**
+   *  Check if the UA is Opera.
+   *
+   *
+   *  @return float|NaN Version number (if match) or NaN.
+   */
+  opera: function opera() {
+    return _populate() || _opera;
+  },
+
+  /**
+   *  Check if the UA is WebKit.
+   *
+   *
+   *  @return float|NaN Version number (if match) or NaN.
+   */
+  webkit: function webkit() {
+    return _populate() || _webkit;
+  },
+
+  /**
+   *  For Push
+   *  WILL BE REMOVED VERY SOON. Use UserAgent_DEPRECATED.webkit
+   */
+  safari: function safari() {
+    return UserAgent_DEPRECATED.webkit();
+  },
+
+  /**
+   *  Check if the UA is a Chrome browser.
+   *
+   *
+   *  @return float|NaN Version number (if match) or NaN.
+   */
+  chrome: function chrome() {
+    return _populate() || _chrome;
+  },
+
+  /**
+   *  Check if the user is running Windows.
+   *
+   *  @return bool `true' if the user's OS is Windows.
+   */
+  windows: function windows() {
+    return _populate() || _windows;
+  },
+
+  /**
+   *  Check if the user is running Mac OS X.
+   *
+   *  @return float|bool   Returns a float if a version number is detected,
+   *                       otherwise true/false.
+   */
+  osx: function osx() {
+    return _populate() || _osx;
+  },
+
+  /**
+   * Check if the user is running Linux.
+   *
+   * @return bool `true' if the user's OS is some flavor of Linux.
+   */
+  linux: function linux() {
+    return _populate() || _linux;
+  },
+
+  /**
+   * Check if the user is running on an iPhone or iPod platform.
+   *
+   * @return bool `true' if the user is running some flavor of the
+   *    iPhone OS.
+   */
+  iphone: function iphone() {
+    return _populate() || _iphone;
+  },
+
+  mobile: function mobile() {
+    return _populate() || _iphone || _ipad || _android || _mobile;
+  },
+
+  nativeApp: function nativeApp() {
+    // webviews inside of the native apps
+    return _populate() || _native;
+  },
+
+  android: function android() {
+    return _populate() || _android;
+  },
+
+  ipad: function ipad() {
+    return _populate() || _ipad;
+  }
+};
+
+module.exports = UserAgent_DEPRECATED;
+
+/***/ }),
+/* 204 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright Schrodinger, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule isEventSupported
+ */
+
+
+
+var _ExecutionEnvironment = __webpack_require__(70);
+
+var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var useHasFeature;
+if (_ExecutionEnvironment2.default.canUseDOM) {
+  useHasFeature = document.implementation && document.implementation.hasFeature &&
+  // always returns true in newer browsers as per the standard.
+  // @see http://dom.spec.whatwg.org/#dom-domimplementation-hasfeature
+  document.implementation.hasFeature('', '') !== true;
+}
+
+/**
+ * Checks if an event is supported in the current execution environment.
+ *
+ * NOTE: This will not work correctly for non-generic events such as `change`,
+ * `reset`, `load`, `error`, and `select`.
+ *
+ * Borrows from Modernizr.
+ *
+ * @param {string} eventNameSuffix Event name, e.g. "click".
+ * @param {?boolean} capture Check if the capture phase is supported.
+ * @return {boolean} True if the event is supported.
+ * @internal
+ * @license Modernizr 3.0.0pre (Custom Build) | MIT
+ */
+function isEventSupported(eventNameSuffix, capture) {
+  if (!_ExecutionEnvironment2.default.canUseDOM || capture && !('addEventListener' in document)) {
+    return false;
+  }
+
+  var eventName = 'on' + eventNameSuffix;
+  var isSupported = eventName in document;
+
+  if (!isSupported) {
+    var element = document.createElement('div');
+    element.setAttribute(eventName, 'return;');
+    isSupported = typeof element[eventName] === 'function';
+  }
+
+  if (!isSupported && useHasFeature && eventNameSuffix === 'wheel') {
+    // This is the only way to test support for the `wheel` event in IE9+.
+    isSupported = document.implementation.hasFeature('Events.wheel', '3.0');
+  }
+
+  return isSupported;
+}
+
+module.exports = isEventSupported;
+
+/***/ }),
+/* 205 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright Schrodinger, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule cssVar
+ * @typechecks
+ */
+
+
+
+// If you change these, you'll need to restart the dev server for it to take effect.
+
+var CSS_VARS = {
+  'scrollbar-face-active-color': '#7d7d7d',
+  'scrollbar-face-color': '#c2c2c2',
+  'scrollbar-face-margin': '4px',
+  'scrollbar-face-radius': '6px',
+  'scrollbar-size': '15px',
+  'scrollbar-size-large': '17px',
+  'scrollbar-track-color': '#fff',
+  'border-color': '#d3d3d3',
+  'fbui-white': '#fff',
+  'fbui-desktop-background-light': '#f6f7f8'
+};
+
+/**
+ * @param {string} name
+ */
+function cssVar(name) {
+  if (CSS_VARS.hasOwnProperty(name)) {
+    return CSS_VARS[name];
+  }
+
+  throw new Error('cssVar' + '("' + name + '"): Unexpected class transformation.');
+}
+
+cssVar.CSS_VARS = CSS_VARS;
+
+module.exports = cssVar;
+
+/***/ }),
+/* 206 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _DOMMouseMoveTracker = __webpack_require__(42);
@@ -11487,7 +12250,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _clamp = __webpack_require__(18);
+var _clamp = __webpack_require__(19);
 
 var _clamp2 = _interopRequireDefault(_clamp);
 
@@ -11669,7 +12432,7 @@ FixedDataTableColumnResizeHandle.propTypes = {
 module.exports = FixedDataTableColumnResizeHandle;
 
 /***/ }),
-/* 200 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11982,686 +12745,6 @@ var ReactTouchHandler = function () {
 module.exports = ReactTouchHandler;
 
 /***/ }),
-/* 201 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright Schrodinger, LLC
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule normalizeWheel
- * @typechecks
- */
-
-
-
-var _UserAgent_DEPRECATED = __webpack_require__(202);
-
-var _UserAgent_DEPRECATED2 = _interopRequireDefault(_UserAgent_DEPRECATED);
-
-var _isEventSupported = __webpack_require__(203);
-
-var _isEventSupported2 = _interopRequireDefault(_isEventSupported);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Reasonable defaults
-var PIXEL_STEP = 10;
-var LINE_HEIGHT = 40;
-var PAGE_HEIGHT = 800;
-
-/**
- * Mouse wheel (and 2-finger trackpad) support on the web sucks.  It is
- * complicated, thus this doc is long and (hopefully) detailed enough to answer
- * your questions.
- *
- * If you need to react to the mouse wheel in a predictable way, this code is
- * like your bestest friend. * hugs *
- *
- * As of today, there are 4 DOM event types you can listen to:
- *
- *   'wheel'                -- Chrome(31+), FF(17+), IE(9+)
- *   'mousewheel'           -- Chrome, IE(6+), Opera, Safari
- *   'MozMousePixelScroll'  -- FF(3.5 only!) (2010-2013) -- don't bother!
- *   'DOMMouseScroll'       -- FF(0.9.7+) since 2003
- *
- * So what to do?  The is the best:
- *
- *   normalizeWheel.getEventType();
- *
- * In your event callback, use this code to get sane interpretation of the
- * deltas.  This code will return an object with properties:
- *
- *   spinX   -- normalized spin speed (use for zoom) - x plane
- *   spinY   -- " - y plane
- *   pixelX  -- normalized distance (to pixels) - x plane
- *   pixelY  -- " - y plane
- *
- * Wheel values are provided by the browser assuming you are using the wheel to
- * scroll a web page by a number of lines or pixels (or pages).  Values can vary
- * significantly on different platforms and browsers, forgetting that you can
- * scroll at different speeds.  Some devices (like trackpads) emit more events
- * at smaller increments with fine granularity, and some emit massive jumps with
- * linear speed or acceleration.
- *
- * This code does its best to normalize the deltas for you:
- *
- *   - spin is trying to normalize how far the wheel was spun (or trackpad
- *     dragged).  This is super useful for zoom support where you want to
- *     throw away the chunky scroll steps on the PC and make those equal to
- *     the slow and smooth tiny steps on the Mac. Key data: This code tries to
- *     resolve a single slow step on a wheel to 1.
- *
- *   - pixel is normalizing the desired scroll delta in pixel units.  You'll
- *     get the crazy differences between browsers, but at least it'll be in
- *     pixels!
- *
- *   - positive value indicates scrolling DOWN/RIGHT, negative UP/LEFT.  This
- *     should translate to positive value zooming IN, negative zooming OUT.
- *     This matches the newer 'wheel' event.
- *
- * Why are there spinX, spinY (or pixels)?
- *
- *   - spinX is a 2-finger side drag on the trackpad, and a shift + wheel turn
- *     with a mouse.  It results in side-scrolling in the browser by default.
- *
- *   - spinY is what you expect -- it's the classic axis of a mouse wheel.
- *
- *   - I dropped spinZ/pixelZ.  It is supported by the DOM 3 'wheel' event and
- *     probably is by browsers in conjunction with fancy 3D controllers .. but
- *     you know.
- *
- * Implementation info:
- *
- * Examples of 'wheel' event if you scroll slowly (down) by one step with an
- * average mouse:
- *
- *   OS X + Chrome  (mouse)     -    4   pixel delta  (wheelDelta -120)
- *   OS X + Safari  (mouse)     -  N/A   pixel delta  (wheelDelta  -12)
- *   OS X + Firefox (mouse)     -    0.1 line  delta  (wheelDelta  N/A)
- *   Win8 + Chrome  (mouse)     -  100   pixel delta  (wheelDelta -120)
- *   Win8 + Firefox (mouse)     -    3   line  delta  (wheelDelta -120)
- *
- * On the trackpad:
- *
- *   OS X + Chrome  (trackpad)  -    2   pixel delta  (wheelDelta   -6)
- *   OS X + Firefox (trackpad)  -    1   pixel delta  (wheelDelta  N/A)
- *
- * On other/older browsers.. it's more complicated as there can be multiple and
- * also missing delta values.
- *
- * The 'wheel' event is more standard:
- *
- * http://www.w3.org/TR/DOM-Level-3-Events/#events-wheelevents
- *
- * The basics is that it includes a unit, deltaMode (pixels, lines, pages), and
- * deltaX, deltaY and deltaZ.  Some browsers provide other values to maintain
- * backward compatibility with older events.  Those other values help us
- * better normalize spin speed.  Example of what the browsers provide:
- *
- *                          | event.wheelDelta | event.detail
- *        ------------------+------------------+--------------
- *          Safari v5/OS X  |       -120       |       0
- *          Safari v5/Win7  |       -120       |       0
- *         Chrome v17/OS X  |       -120       |       0
- *         Chrome v17/Win7  |       -120       |       0
- *                IE9/Win7  |       -120       |   undefined
- *         Firefox v4/OS X  |     undefined    |       1
- *         Firefox v4/Win7  |     undefined    |       3
- *
- */
-function normalizeWheel( /*object*/event) /*object*/{
-  var sX = 0,
-      sY = 0,
-      // spinX, spinY
-  pX = 0,
-      pY = 0; // pixelX, pixelY
-
-  // Legacy
-  if ('detail' in event) {
-    sY = event.detail;
-  }
-  if ('wheelDelta' in event) {
-    sY = -event.wheelDelta / 120;
-  }
-  if ('wheelDeltaY' in event) {
-    sY = -event.wheelDeltaY / 120;
-  }
-  if ('wheelDeltaX' in event) {
-    sX = -event.wheelDeltaX / 120;
-  }
-
-  // side scrolling on FF with DOMMouseScroll
-  if ('axis' in event && event.axis === event.HORIZONTAL_AXIS) {
-    sX = sY;
-    sY = 0;
-  }
-
-  pX = sX * PIXEL_STEP;
-  pY = sY * PIXEL_STEP;
-
-  if ('deltaY' in event) {
-    pY = event.deltaY;
-  }
-  if ('deltaX' in event) {
-    pX = event.deltaX;
-  }
-
-  if ((pX || pY) && event.deltaMode) {
-    if (event.deltaMode == 1) {
-      // delta in LINE units
-      pX *= LINE_HEIGHT;
-      pY *= LINE_HEIGHT;
-    } else {
-      // delta in PAGE units
-      pX *= PAGE_HEIGHT;
-      pY *= PAGE_HEIGHT;
-    }
-  }
-
-  // Fall-back if spin cannot be determined
-  if (pX && !sX) {
-    sX = pX < 1 ? -1 : 1;
-  }
-  if (pY && !sY) {
-    sY = pY < 1 ? -1 : 1;
-  }
-
-  return { spinX: sX,
-    spinY: sY,
-    pixelX: pX,
-    pixelY: pY };
-}
-
-/**
- * The best combination if you prefer spinX + spinY normalization.  It favors
- * the older DOMMouseScroll for Firefox, as FF does not include wheelDelta with
- * 'wheel' event, making spin speed determination impossible.
- */
-normalizeWheel.getEventType = function () /*string*/{
-  return _UserAgent_DEPRECATED2.default.firefox() ? 'DOMMouseScroll' : (0, _isEventSupported2.default)('wheel') ? 'wheel' : 'mousewheel';
-};
-
-module.exports = normalizeWheel;
-
-/***/ }),
-/* 202 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Copyright Schrodinger, LLC
- *
- * @providesModule UserAgent_DEPRECATED
- */
-
-/**
- *  Provides entirely client-side User Agent and OS detection. You should prefer
- *  the non-deprecated UserAgent module when possible, which exposes our
- *  authoritative server-side PHP-based detection to the client.
- *
- *  Usage is straightforward:
- *
- *    if (UserAgent_DEPRECATED.ie()) {
- *      //  IE
- *    }
- *
- *  You can also do version checks:
- *
- *    if (UserAgent_DEPRECATED.ie() >= 7) {
- *      //  IE7 or better
- *    }
- *
- *  The browser functions will return NaN if the browser does not match, so
- *  you can also do version compares the other way:
- *
- *    if (UserAgent_DEPRECATED.ie() < 7) {
- *      //  IE6 or worse
- *    }
- *
- *  Note that the version is a float and may include a minor version number,
- *  so you should always use range operators to perform comparisons, not
- *  strict equality.
- *
- *  **Note:** You should **strongly** prefer capability detection to browser
- *  version detection where it's reasonable:
- *
- *    http://www.quirksmode.org/js/support.html
- *
- *  Further, we have a large number of mature wrapper functions and classes
- *  which abstract away many browser irregularities. Check the documentation,
- *  grep for things, or ask on javascript@lists.facebook.com before writing yet
- *  another copy of "event || window.event".
- *
- */
-
-var _populated = false;
-
-// Browsers
-var _ie, _firefox, _opera, _webkit, _chrome;
-
-// Actual IE browser for compatibility mode
-var _ie_real_version;
-
-// Platforms
-var _osx, _windows, _linux, _android;
-
-// Architectures
-var _win64;
-
-// Devices
-var _iphone, _ipad, _native;
-
-var _mobile;
-
-function _populate() {
-  if (_populated) {
-    return;
-  }
-
-  _populated = true;
-
-  // To work around buggy JS libraries that can't handle multi-digit
-  // version numbers, Opera 10's user agent string claims it's Opera
-  // 9, then later includes a Version/X.Y field:
-  //
-  // Opera/9.80 (foo) Presto/2.2.15 Version/10.10
-  var uas = navigator.userAgent;
-  var agent = /(?:MSIE.(\d+\.\d+))|(?:(?:Firefox|GranParadiso|Iceweasel).(\d+\.\d+))|(?:Opera(?:.+Version.|.)(\d+\.\d+))|(?:AppleWebKit.(\d+(?:\.\d+)?))|(?:Trident\/\d+\.\d+.*rv:(\d+\.\d+))/.exec(uas);
-  var os = /(Mac OS X)|(Windows)|(Linux)/.exec(uas);
-
-  _iphone = /\b(iPhone|iP[ao]d)/.exec(uas);
-  _ipad = /\b(iP[ao]d)/.exec(uas);
-  _android = /Android/i.exec(uas);
-  _native = /FBAN\/\w+;/i.exec(uas);
-  _mobile = /Mobile/i.exec(uas);
-
-  // Note that the IE team blog would have you believe you should be checking
-  // for 'Win64; x64'.  But MSDN then reveals that you can actually be coming
-  // from either x64 or ia64;  so ultimately, you should just check for Win64
-  // as in indicator of whether you're in 64-bit IE.  32-bit IE on 64-bit
-  // Windows will send 'WOW64' instead.
-  _win64 = !!/Win64/.exec(uas);
-
-  if (agent) {
-    _ie = agent[1] ? parseFloat(agent[1]) : agent[5] ? parseFloat(agent[5]) : NaN;
-    // IE compatibility mode
-    if (_ie && document && document.documentMode) {
-      _ie = document.documentMode;
-    }
-    // grab the "true" ie version from the trident token if available
-    var trident = /(?:Trident\/(\d+.\d+))/.exec(uas);
-    _ie_real_version = trident ? parseFloat(trident[1]) + 4 : _ie;
-
-    _firefox = agent[2] ? parseFloat(agent[2]) : NaN;
-    _opera = agent[3] ? parseFloat(agent[3]) : NaN;
-    _webkit = agent[4] ? parseFloat(agent[4]) : NaN;
-    if (_webkit) {
-      // We do not add the regexp to the above test, because it will always
-      // match 'safari' only since 'AppleWebKit' appears before 'Chrome' in
-      // the userAgent string.
-      agent = /(?:Chrome\/(\d+\.\d+))/.exec(uas);
-      _chrome = agent && agent[1] ? parseFloat(agent[1]) : NaN;
-    } else {
-      _chrome = NaN;
-    }
-  } else {
-    _ie = _firefox = _opera = _chrome = _webkit = NaN;
-  }
-
-  if (os) {
-    if (os[1]) {
-      // Detect OS X version.  If no version number matches, set _osx to true.
-      // Version examples:  10, 10_6_1, 10.7
-      // Parses version number as a float, taking only first two sets of
-      // digits.  If only one set of digits is found, returns just the major
-      // version number.
-      var ver = /(?:Mac OS X (\d+(?:[._]\d+)?))/.exec(uas);
-
-      _osx = ver ? parseFloat(ver[1].replace('_', '.')) : true;
-    } else {
-      _osx = false;
-    }
-    _windows = !!os[2];
-    _linux = !!os[3];
-  } else {
-    _osx = _windows = _linux = false;
-  }
-}
-
-var UserAgent_DEPRECATED = {
-
-  /**
-   *  Check if the UA is Internet Explorer.
-   *
-   *
-   *  @return float|NaN Version number (if match) or NaN.
-   */
-  ie: function ie() {
-    return _populate() || _ie;
-  },
-
-  /**
-   * Check if we're in Internet Explorer compatibility mode.
-   *
-   * @return bool true if in compatibility mode, false if
-   * not compatibility mode or not ie
-   */
-  ieCompatibilityMode: function ieCompatibilityMode() {
-    return _populate() || _ie_real_version > _ie;
-  },
-
-  /**
-   * Whether the browser is 64-bit IE.  Really, this is kind of weak sauce;  we
-   * only need this because Skype can't handle 64-bit IE yet.  We need to remove
-   * this when we don't need it -- tracked by #601957.
-   */
-  ie64: function ie64() {
-    return UserAgent_DEPRECATED.ie() && _win64;
-  },
-
-  /**
-   *  Check if the UA is Firefox.
-   *
-   *
-   *  @return float|NaN Version number (if match) or NaN.
-   */
-  firefox: function firefox() {
-    return _populate() || _firefox;
-  },
-
-  /**
-   *  Check if the UA is Opera.
-   *
-   *
-   *  @return float|NaN Version number (if match) or NaN.
-   */
-  opera: function opera() {
-    return _populate() || _opera;
-  },
-
-  /**
-   *  Check if the UA is WebKit.
-   *
-   *
-   *  @return float|NaN Version number (if match) or NaN.
-   */
-  webkit: function webkit() {
-    return _populate() || _webkit;
-  },
-
-  /**
-   *  For Push
-   *  WILL BE REMOVED VERY SOON. Use UserAgent_DEPRECATED.webkit
-   */
-  safari: function safari() {
-    return UserAgent_DEPRECATED.webkit();
-  },
-
-  /**
-   *  Check if the UA is a Chrome browser.
-   *
-   *
-   *  @return float|NaN Version number (if match) or NaN.
-   */
-  chrome: function chrome() {
-    return _populate() || _chrome;
-  },
-
-  /**
-   *  Check if the user is running Windows.
-   *
-   *  @return bool `true' if the user's OS is Windows.
-   */
-  windows: function windows() {
-    return _populate() || _windows;
-  },
-
-  /**
-   *  Check if the user is running Mac OS X.
-   *
-   *  @return float|bool   Returns a float if a version number is detected,
-   *                       otherwise true/false.
-   */
-  osx: function osx() {
-    return _populate() || _osx;
-  },
-
-  /**
-   * Check if the user is running Linux.
-   *
-   * @return bool `true' if the user's OS is some flavor of Linux.
-   */
-  linux: function linux() {
-    return _populate() || _linux;
-  },
-
-  /**
-   * Check if the user is running on an iPhone or iPod platform.
-   *
-   * @return bool `true' if the user is running some flavor of the
-   *    iPhone OS.
-   */
-  iphone: function iphone() {
-    return _populate() || _iphone;
-  },
-
-  mobile: function mobile() {
-    return _populate() || _iphone || _ipad || _android || _mobile;
-  },
-
-  nativeApp: function nativeApp() {
-    // webviews inside of the native apps
-    return _populate() || _native;
-  },
-
-  android: function android() {
-    return _populate() || _android;
-  },
-
-  ipad: function ipad() {
-    return _populate() || _ipad;
-  }
-};
-
-module.exports = UserAgent_DEPRECATED;
-
-/***/ }),
-/* 203 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright Schrodinger, LLC
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule isEventSupported
- */
-
-
-
-var _ExecutionEnvironment = __webpack_require__(70);
-
-var _ExecutionEnvironment2 = _interopRequireDefault(_ExecutionEnvironment);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var useHasFeature;
-if (_ExecutionEnvironment2.default.canUseDOM) {
-  useHasFeature = document.implementation && document.implementation.hasFeature &&
-  // always returns true in newer browsers as per the standard.
-  // @see http://dom.spec.whatwg.org/#dom-domimplementation-hasfeature
-  document.implementation.hasFeature('', '') !== true;
-}
-
-/**
- * Checks if an event is supported in the current execution environment.
- *
- * NOTE: This will not work correctly for non-generic events such as `change`,
- * `reset`, `load`, `error`, and `select`.
- *
- * Borrows from Modernizr.
- *
- * @param {string} eventNameSuffix Event name, e.g. "click".
- * @param {?boolean} capture Check if the capture phase is supported.
- * @return {boolean} True if the event is supported.
- * @internal
- * @license Modernizr 3.0.0pre (Custom Build) | MIT
- */
-function isEventSupported(eventNameSuffix, capture) {
-  if (!_ExecutionEnvironment2.default.canUseDOM || capture && !('addEventListener' in document)) {
-    return false;
-  }
-
-  var eventName = 'on' + eventNameSuffix;
-  var isSupported = eventName in document;
-
-  if (!isSupported) {
-    var element = document.createElement('div');
-    element.setAttribute(eventName, 'return;');
-    isSupported = typeof element[eventName] === 'function';
-  }
-
-  if (!isSupported && useHasFeature && eventNameSuffix === 'wheel') {
-    // This is the only way to test support for the `wheel` event in IE9+.
-    isSupported = document.implementation.hasFeature('Events.wheel', '3.0');
-  }
-
-  return isSupported;
-}
-
-module.exports = isEventSupported;
-
-/***/ }),
-/* 204 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Copyright Schrodinger, LLC
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule Keys
- */
-
-module.exports = {
-  BACKSPACE: 8,
-  TAB: 9,
-  RETURN: 13,
-  ALT: 18,
-  ESC: 27,
-  SPACE: 32,
-  PAGE_UP: 33,
-  PAGE_DOWN: 34,
-  END: 35,
-  HOME: 36,
-  LEFT: 37,
-  UP: 38,
-  RIGHT: 39,
-  DOWN: 40,
-  DELETE: 46,
-  COMMA: 188,
-  PERIOD: 190,
-  A: 65,
-  Z: 90,
-  ZERO: 48,
-  NUMPAD_0: 96,
-  NUMPAD_9: 105
-};
-
-/***/ }),
-/* 205 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Copyright Schrodinger, LLC
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule ReactDOM
- */
-
-module.exports = __webpack_require__(206);
-
-/***/ }),
-/* 206 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_206__;
-
-/***/ }),
-/* 207 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright Schrodinger, LLC
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule cssVar
- * @typechecks
- */
-
-
-
-// If you change these, you'll need to restart the dev server for it to take effect.
-
-var CSS_VARS = {
-  'scrollbar-face-active-color': '#7d7d7d',
-  'scrollbar-face-color': '#c2c2c2',
-  'scrollbar-face-margin': '4px',
-  'scrollbar-face-radius': '6px',
-  'scrollbar-size': '15px',
-  'scrollbar-size-large': '17px',
-  'scrollbar-track-color': '#fff',
-  'border-color': '#d3d3d3',
-  'fbui-white': '#fff',
-  'fbui-desktop-background-light': '#f6f7f8'
-};
-
-/**
- * @param {string} name
- */
-function cssVar(name) {
-  if (CSS_VARS.hasOwnProperty(name)) {
-    return CSS_VARS[name];
-  }
-
-  throw new Error('cssVar' + '("' + name + '"): Unexpected class transformation.');
-}
-
-cssVar.CSS_VARS = CSS_VARS;
-
-module.exports = cssVar;
-
-/***/ }),
 /* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12680,7 +12763,7 @@ var _forEach = __webpack_require__(62);
 
 var _forEach2 = _interopRequireDefault(_forEach);
 
-var _shallowEqualSelector = __webpack_require__(16);
+var _shallowEqualSelector = __webpack_require__(17);
 
 var _shallowEqualSelector2 = _interopRequireDefault(_shallowEqualSelector);
 
@@ -13148,7 +13231,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _scrollAnchor3 = __webpack_require__(216);
 
-var _ActionTypes = __webpack_require__(17);
+var _ActionTypes = __webpack_require__(18);
 
 var ActionTypes = _interopRequireWildcard(_ActionTypes);
 
@@ -13465,7 +13548,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.getScrollAnchor = getScrollAnchor;
 exports.scrollTo = scrollTo;
 
-var _clamp = __webpack_require__(18);
+var _clamp = __webpack_require__(19);
 
 var _clamp2 = _interopRequireDefault(_clamp);
 
@@ -13473,7 +13556,7 @@ var _updateRowHeight = __webpack_require__(89);
 
 var _updateRowHeight2 = _interopRequireDefault(_updateRowHeight);
 
-var _scrollbarsVisible = __webpack_require__(15);
+var _scrollbarsVisible = __webpack_require__(16);
 
 var _scrollbarsVisible2 = _interopRequireDefault(_scrollbarsVisible);
 
@@ -14401,16 +14484,23 @@ function initialize(state, props, oldProps) {
 function scrollTo(state, props, oldScrollToColumn, scrollX) {
   var scrollToColumn = props.scrollToColumn;
 
+  if ((0, _isNil2.default)(scrollToColumn)) {
+    return scrollX;
+  }
+
   var _columnWidths2 = (0, _columnWidths6.default)(state),
       availableScrollWidth = _columnWidths2.availableScrollWidth,
       fixedColumns = _columnWidths2.fixedColumns,
       scrollableColumns = _columnWidths2.scrollableColumns;
 
   var fixedColumnsCount = fixedColumns.length;
+  var scrollableColumnsCount = scrollableColumns.length;
 
+  var noScrollableColumns = scrollableColumnsCount === 0;
   var scrollToUnchanged = scrollToColumn === oldScrollToColumn;
   var selectedColumnFixed = scrollToColumn < fixedColumnsCount;
-  if ((0, _isNil2.default)(scrollToColumn) || scrollToUnchanged || selectedColumnFixed) {
+  var selectedColumnFixedRight = scrollToColumn >= fixedColumnsCount + scrollableColumnsCount;
+  if (scrollToUnchanged || selectedColumnFixed || selectedColumnFixedRight || noScrollableColumns) {
     return scrollX;
   }
 
@@ -14620,7 +14710,7 @@ var _roughHeights = __webpack_require__(63);
 
 var _roughHeights2 = _interopRequireDefault(_roughHeights);
 
-var _scrollbarsVisible = __webpack_require__(15);
+var _scrollbarsVisible = __webpack_require__(16);
 
 var _scrollbarsVisible2 = _interopRequireDefault(_scrollbarsVisible);
 
@@ -15002,7 +15092,7 @@ module.exports = basePick;
 
 var baseGet = __webpack_require__(58),
     baseSet = __webpack_require__(226),
-    castPath = __webpack_require__(25);
+    castPath = __webpack_require__(26);
 
 /**
  * The base implementation of  `_.pickBy` without support for iteratee shorthands.
@@ -15037,9 +15127,9 @@ module.exports = basePickBy;
 /***/ (function(module, exports, __webpack_require__) {
 
 var assignValue = __webpack_require__(227),
-    castPath = __webpack_require__(25),
+    castPath = __webpack_require__(26),
     isIndex = __webpack_require__(52),
-    isObject = __webpack_require__(20),
+    isObject = __webpack_require__(21),
     toKey = __webpack_require__(14);
 
 /**
@@ -16026,7 +16116,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.resizeColumn = exports.moveColumnReorder = exports.stopColumnReorder = exports.startColumnReorder = undefined;
 
-var _ActionTypes = __webpack_require__(17);
+var _ActionTypes = __webpack_require__(18);
 
 /**
  * Initiates column reordering
@@ -16092,7 +16182,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.stopScroll = exports.startScroll = exports.scrollToY = exports.scrollToX = undefined;
 
-var _ActionTypes = __webpack_require__(17);
+var _ActionTypes = __webpack_require__(18);
 
 /**
  * Scrolls the table horizontally to position

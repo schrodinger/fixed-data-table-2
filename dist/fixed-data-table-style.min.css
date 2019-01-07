@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.9 
+ * FixedDataTable v1.0.0-beta.10 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -38,10 +38,16 @@
 }
 
 .public_fixedDataTable_header,
+.public_fixedDataTable_scrollbarSpacer,
 .public_fixedDataTable_header .public_fixedDataTableCell_main {
   background-color: #f6f7f8;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#efefef));
   background-image: linear-gradient(#fff, #efefef);
+}
+
+.public_fixedDataTable_scrollbarSpacer {
+  position: absolute;
+  z-index: 99;
 }
 
 .public_fixedDataTable_footer .public_fixedDataTableCell_main {
