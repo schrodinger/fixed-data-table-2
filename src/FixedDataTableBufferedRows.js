@@ -95,7 +95,7 @@ class FixedDataTableBufferedRows extends React.Component {
             scrollLeft={Math.round(props.scrollLeft)}
             visible={false}
             fixedColumns={props.fixedColumns}
-            fixedRightColumns={props.fixedColumns}
+            fixedRightColumns={props.fixedRightColumns}
             scrollableColumns={props.scrollableColumns}
           />
         );

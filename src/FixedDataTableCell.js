@@ -242,8 +242,8 @@ class FixedDataTableCell extends React.Component {
           style={columnResizerStyle}
           onMouseDown={this._onColumnResizerMouseDown}
           onTouchStart={this.props.touchEnabled ? this._onColumnResizerMouseDown : null}
-          onTouchEnd={this.props.touchEnabled ? _suppressEvent : null}
-          onTouchMove={this.props.touchEnabled ? _suppressEvent : null}>
+          onTouchEnd={this.props.touchEnabled ? this._suppressEvent : null}
+          onTouchMove={this.props.touchEnabled ? this._suppressEvent : null}>
           <div
             className={joinClasses(
               cx('fixedDataTableCellLayout/columnResizerKnob'),
