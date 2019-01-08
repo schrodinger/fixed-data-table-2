@@ -137,13 +137,13 @@ class FixedDataTable extends React.Component {
      */
     touchScrollEnabled: PropTypes.bool,
 
-    // TODO (jordan) Remove propType of showScrollbarX & showScrollbarY without losing documentation (moved to scrollFlags)
     /**
      * Boolean flags to control if scrolling with keys is enabled
      */
     keyboardScrollEnabled: PropTypes.bool,
     keyboardPageEnabled: PropTypes.bool,
 
+    // TODO (jordan) Remove propType of showScrollbarX & showScrollbarY without losing documentation (moved to scrollFlags)
     /**
      * Hide the scrollbar but still enable scroll functionality
      */
@@ -666,6 +666,7 @@ class FixedDataTable extends React.Component {
           onScroll={this._onVerticalScroll}
           verticalTop={bodyOffsetTop}
           position={scrollY}
+          touchEnabled={touchScrollEnabled}
         />;
     }
 
@@ -678,6 +679,7 @@ class FixedDataTable extends React.Component {
           onScroll={this._onHorizontalScroll}
           position={scrollX}
           size={width}
+          touchEnabled={touchScrollEnabled}
         />;
     }
 
@@ -779,7 +781,10 @@ class FixedDataTable extends React.Component {
           style={{top: footOffsetTop}}
         />;
     }
-
+    var tabIndex = null;
+    if (this.props.keyboardPageEnabled || this.props.keyboardScrollEnabled) {
+      tabIndex = 0;
+    }
     return (
       <div
         className={joinClasses(
@@ -787,7 +792,7 @@ class FixedDataTable extends React.Component {
           cx('fixedDataTableLayout/main'),
           cx('public/fixedDataTable/main'),
         )}
-        tabIndex={0}
+        tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
         onWheel={this._wheelHandler.onWheel}
         onTouchStart={this._touchHandler.onTouchStart}

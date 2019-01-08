@@ -101,6 +101,7 @@ class ReactTouchHandler {
   }
 
   onTouchStart(/*object*/ event) {
+
     // Start tracking drag delta for scrolling
     this._lastTouchX = event.touches[0].pageX;
     this._lastTouchY = event.touches[0].pageY;
@@ -147,6 +148,7 @@ class ReactTouchHandler {
   }
 
   onTouchMove(/*object*/ event) {
+
     var moveX = event.touches[0].pageX;
     var moveY = event.touches[0].pageY;
 

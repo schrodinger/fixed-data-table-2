@@ -44,6 +44,7 @@ class Scrollbar extends React.PureComponent {
     position: PropTypes.number,
     size: PropTypes.number.isRequired,
     trackColor: PropTypes.oneOf(['gray']),
+    touchEnabled: PropTypes.bool,
     zIndex: PropTypes.number,
     verticalTop: PropTypes.number
   }
@@ -91,6 +92,8 @@ class Scrollbar extends React.PureComponent {
   }
 
   _onRefFace = (ref) => this._faceRef = ref;
+
+  _onRefRoot = (ref) => this._rootRef = ref;
 
   render() /*?object*/ {
     if (!this.state.scrollable) {
@@ -145,6 +148,7 @@ class Scrollbar extends React.PureComponent {
       FixedDataTableTranslateDOMPosition(faceStyle, 0, position, this._initialRender);
     }
 
+    mainStyle.touchAction = 'none';
     mainStyle.zIndex = this.props.zIndex;
 
     if (this.props.trackColor === 'gray') {
@@ -157,10 +161,14 @@ class Scrollbar extends React.PureComponent {
         onBlur={this._onBlur}
         onKeyDown={this._onKeyDown}
         onMouseDown={this._onMouseDown}
+        onTouchCancel={this._onTouchCancel}
+        onTouchEnd={this._onTouchEnd}
+        onTouchMove={this._onTouchMove}
+        onTouchStart={this._onTouchStart}
         onWheel={this._wheelHandler.onWheel}
         className={mainClassName}
         style={mainStyle}
-        tabIndex={0}>
+        ref={this._onRefRoot}>
         <div
           ref={this._onRefFace}
           className={faceClassName}
@@ -186,7 +194,8 @@ class Scrollbar extends React.PureComponent {
     this._mouseMoveTracker = new DOMMouseMoveTracker(
       this._onMouseMove,
       this._onMouseMoveEnd,
-      document.documentElement
+      document.documentElement,
+      this.props.touchEnabled
     );
 
     if (this.props.position !== undefined &&
@@ -322,8 +331,8 @@ class Scrollbar extends React.PureComponent {
       // magically available for browsers somehow.
       var nativeEvent = event.nativeEvent;
       var position = this.state.isHorizontal ?
-        nativeEvent.offsetX || nativeEvent.layerX :
-        nativeEvent.offsetY || nativeEvent.layerY;
+        nativeEvent.offsetX || nativeEvent.layerX || this.getTouchX(nativeEvent) :
+        nativeEvent.offsetY || nativeEvent.layerY || this.getTouchY(nativeEvent);
 
       // MouseDown on the scroll-track directly, move the center of the
       // scroll-face to the mouse position.
@@ -344,7 +353,24 @@ class Scrollbar extends React.PureComponent {
 
     this._mouseMoveTracker.captureMouseMoves(event);
     // Focus the node so it may receive keyboard event.
-    ReactDOM.findDOMNode(this).focus();
+    this._rootRef.focus();
+  }
+
+  _onTouchCancel = (/*object*/ event) => {
+    event.stopPropagation();
+  }
+
+  _onTouchEnd = (/*object*/ event) => {
+    event.stopPropagation();
+  }
+
+  _onTouchMove = (/*object*/ event) => {
+    event.stopPropagation();
+  }
+
+  _onTouchStart = (/*object*/ event) => {
+    event.stopPropagation();
+    this._onMouseDown(event);
   }
 
   _onMouseMove = (/*number*/ deltaX, /*number*/ deltaY) => {
@@ -474,6 +500,14 @@ class Scrollbar extends React.PureComponent {
     } catch (oops) {
       // pass
     }
+  }
+
+  getTouchX = (/*object*/ e) => {
+    return Math.round(e.targetTouches[0].pageX - e.target.getBoundingClientRect().x);
+  }
+
+  getTouchY = (/*object*/ e) => {
+    return Math.round(e.targetTouches[0].pageY - e.target.getBoundingClientRect().y);
   }
 
   _setNextState = (/*object*/ nextState, /*?object*/ props) => {

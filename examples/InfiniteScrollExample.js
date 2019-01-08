@@ -50,7 +50,7 @@ class PagedData {
   }
 }
 
-class PaginationExample extends React.Component {
+class InfiniteScrollExample extends React.Component {
   constructor(props) {
     super(props);
 
@@ -124,4 +124,4 @@ class PaginationExample extends React.Component {
   }
 }
 
-module.exports = PaginationExample;
+module.exports = InfiniteScrollExample;
