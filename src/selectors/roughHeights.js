@@ -126,7 +126,7 @@ function roughHeights(columnProps, elementHeights, rowSettings,
  * @param {{
  *   overflowX: string,
  *   showScrollbarX: boolean,
- * }}
+ * }} scrollFlags
  * @param {number} width
  * @return {ScrollbarState}
  */

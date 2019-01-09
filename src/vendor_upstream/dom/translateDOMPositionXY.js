@@ -30,7 +30,6 @@ var translateDOMPositionXY = (function() {
     if (!isSafari && BrowserSupportCore.hasCSS3DTransforms()) {
       return function(/*object*/ style, /*number*/ x, /*number*/ y) {
         style[TRANSFORM] ='translate3d(' + x + 'px,' + y + 'px,0)';
-        style[BACKFACE_VISIBILITY] = 'hidden';
       };
     } else {
       return function(/*object*/ style, /*number*/ x, /*number*/ y) {
