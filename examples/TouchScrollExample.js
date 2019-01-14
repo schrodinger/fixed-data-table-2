@@ -18,10 +18,18 @@ class TouchScrollExample extends React.Component {
   }
 
   render() {
-    let {dataList, collapsedRows} = this.state;
+    const { dataList } = this.state;
+
+    // Recent browser versions are making touch events passive by default. Unfortunately, React doesn't allow us
+    // to specify the event handlers as passive/active (see #6436 on facebook/react). This can lead to unneeded
+    // scrolling of parent containers of FDT. This style is a work around to fix this. By applying 'none' to
+    // touch-action, we are disabling touch events from propagating.
+    const tableParentStyle = {
+      'touch-action': 'none'
+    };
 
     return (
-      <div>
+      <div style={tableParentStyle}>
         <Table
           rowHeight={50}
           rowsCount={dataList.getSize()}
