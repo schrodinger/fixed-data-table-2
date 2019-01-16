@@ -1,6 +1,6 @@
 {
   "name": "fixed-data-table-2",
-  "version": "1.0.0-beta.10",
+  "version": "0.8.16",
   "description": "A React table component designed to allow presenting thousands of rows of data.",
   "main": "main.js",
   "peerDependencies": {
@@ -8,10 +8,8 @@
     "react-dom": ">=0.14.0 || ^0.14.0-beta3"
   },
   "dependencies": {
-    "lodash": "^4.17.4",
-    "prop-types": "^15.5.8",
-    "redux": "^3.5.2",
-    "reselect": "^3.0.1"
+    "create-react-class": "^15.5.2",
+    "prop-types": "^15.5.8"
   },
   "devDependencies": {
     "aphrodite": "^0.5.0",
@@ -66,9 +64,8 @@
     "build-docs": "./build_helpers/buildAPIDocs.sh",
     "publish-site": "./build_helpers/publishStaticSite.sh",
     "publish-package": "./build_helpers/publishPackage.sh",
-    "publish-beta": "./build_helpers/publishPackage.sh --beta 1",
-    "test": "mocha-webpack --webpack-config webpack.config-test.js \"test/**/*-test.js\" --require build_helpers/test-globals.js",
-    "test:watch": "mocha-webpack --webpack-config webpack.config-test.js --watch \"test/**/*-test.js\" --require build_helpers/test-globals.js",
+    "test": "mocha-webpack --webpack-config webpack.config-test.js \"src/**/*-test.js\" --require build_helpers/test-globals.js",
+    "test:watch": "mocha-webpack --webpack-config webpack.config-test.js --watch \"src/**/*-test.js\" --require build_helpers/test-globals.js",
     "test:server": "webpack-dev-server --config webpack.config-test.js --hot --inline"
   },
   "repository": {

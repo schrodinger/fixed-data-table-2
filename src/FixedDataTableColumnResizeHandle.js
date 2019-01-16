@@ -17,13 +17,18 @@
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import Locale from 'Locale';
 import React from 'React';
+import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
+import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
 
 import clamp from 'clamp';
 import cx from 'cx';
 
-class FixedDataTableColumnResizeHandle extends React.PureComponent {
-  static propTypes = {
+var FixedDataTableColumnResizeHandle = createReactClass({
+  displayName: 'FixedDataTableColumnResizeHandle',
+  mixins: [ReactComponentWithPureRenderMixin],
+
+  propTypes: {
     visible: PropTypes.bool.isRequired,
 
     /**
@@ -82,12 +87,14 @@ class FixedDataTableColumnResizeHandle extends React.PureComponent {
      * Whether the resize handle should respond to touch events or not.
      */
     touchEnabled: PropTypes.bool,
-  }
+  },
 
-  state = /*object*/ {
-    width: 0,
-    cursorDelta: 0,
-  }
+  getInitialState() /*object*/ {
+    return {
+      width: 0,
+      cursorDelta: 0
+    };
+  },
 
   componentWillReceiveProps(/*object*/ newProps) {
     if (newProps.initialEvent && !this._mouseMoveTracker.isDragging()) {
@@ -97,7 +104,7 @@ class FixedDataTableColumnResizeHandle extends React.PureComponent {
         cursorDelta: newProps.initialWidth
       });
     }
-  }
+  },
 
   componentDidMount() {
     this._mouseMoveTracker = new DOMMouseMoveTracker(
@@ -106,12 +113,12 @@ class FixedDataTableColumnResizeHandle extends React.PureComponent {
       document.body,
       this.props.touchEnabled
     );
-  }
+  },
 
   componentWillUnmount() {
     this._mouseMoveTracker.releaseMouseMoves();
     this._mouseMoveTracker = null;
-  }
+  },
 
   render() /*object*/ {
     var style = {
@@ -133,13 +140,13 @@ class FixedDataTableColumnResizeHandle extends React.PureComponent {
         style={style}>
         <div
           className={cx('fixedDataTableColumnResizerLineLayout/mouseArea')}
-          style={{ height: this.props.height }}
+          style={{height: this.props.height}}
         />
       </div>
     );
-  }
+  },
 
-  _onMove = (/*number*/ deltaX) => {
+  _onMove(/*number*/ deltaX) {
     if (Locale.isRTL()) {
       deltaX = -deltaX;
     }
@@ -153,15 +160,15 @@ class FixedDataTableColumnResizeHandle extends React.PureComponent {
       width: newColumnWidth,
       cursorDelta: newWidth
     });
-  }
+  },
 
-  _onColumnResizeEnd = () => {
+  _onColumnResizeEnd() {
     this._mouseMoveTracker.releaseMouseMoves();
     this.props.onColumnResizeEnd(
       this.state.width,
       this.props.columnKey
     );
-  }
-};
+  },
+});
 
 module.exports = FixedDataTableColumnResizeHandle;
