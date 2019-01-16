@@ -43,6 +43,9 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.RESPONSIVE_EXAMPLE.location]: require('../../examples/ResponsiveExample'),
   [ExamplePages.STYLING_EXAMPLE.location]: require('../../examples/StylingExample'),
   [ExamplePages.TOOLTIP_EXAMPLE.location]: require('../../examples/TooltipExample'),
+  [ExamplePages.FOOTER_EXAMPLE.location]: require('../../examples/FooterExample'),
+  [ExamplePages.MAX_HEIGHT_EXAMPLE.location]: require('../../examples/MaxHeightExample'),
+  [ExamplePages.OWNER_HEIGHT_EXAMPLE.location]: require('../../examples/OwnerHeightExample'),
   [ExamplePages.LONG_CLICK_EXAMPLE.location]: require('../../examples/LongClickExample'),
   [ExamplePages.CONTEXT_EXAMPLE.location]: require('../../examples/ContextExample'),
   [ExamplePages.FIXED_RIGHT_COLUMNS_EXAMPLE.location]: require('../../examples/FixedRightColumnsExample'),
@@ -51,7 +54,7 @@ var EXAMPLE_COMPONENTS = {
 class ExamplesPage extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       renderPage: false
     };

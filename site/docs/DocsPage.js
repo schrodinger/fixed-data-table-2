@@ -34,21 +34,21 @@ class DocsPage extends React.Component {
 
     return (
       <div className="docsPage">
-      <MiniHeader />
+        <MiniHeader />
 
-      <div className="pageBody" id="body">
-      <div className="contents">
-      <SideBar
-      title="API"
-      pages={DocsPages}
-      page={this.props.page}
-      />
-      <StaticHTMLBlock
-      className="docContents"
-      html={HTML}
-      />
-      </div>
-      </div>
+        <div className="pageBody" id="body">
+          <div className="contents">
+            <SideBar
+              title="API"
+              pages={DocsPages}
+              page={this.props.page}
+            />
+            <StaticHTMLBlock
+              className="docContents"
+              html={HTML}
+            />
+          </div>
+        </div>
       </div>
     );
   }

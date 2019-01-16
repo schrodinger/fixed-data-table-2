@@ -11,7 +11,7 @@
 
 'use strict';
 
-import FixedDataTable from 'FixedDataTable';
+import FixedDataTableContainer from 'FixedDataTableContainer';
 import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import FixedDataTableColumn from 'FixedDataTableColumn';
 import FixedDataTableColumnGroup from 'FixedDataTableColumnGroup';
@@ -20,8 +20,8 @@ var FixedDataTableRoot = {
   Cell: FixedDataTableCellDefault,
   Column: FixedDataTableColumn,
   ColumnGroup: FixedDataTableColumnGroup,
-  Table: FixedDataTable,
+  Table: FixedDataTableContainer,
 };
 
-FixedDataTableRoot.version = '0.8.16';
+FixedDataTableRoot.version = '1.0.0-beta.10';
 module.exports = FixedDataTableRoot;
