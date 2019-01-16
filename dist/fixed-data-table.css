@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.16 
+ * FixedDataTable v1.0.0-beta.10 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -195,11 +195,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   overflow: hidden;
   position: relative;
 }
-
-.fixedDataTableLayout_horizontalScrollbar {
-  bottom: 0;
-  position: absolute;
-}
 /**
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -287,7 +282,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .ScrollbarLayout_mainHorizontal {
-  bottom: 0;
   height: 15px;
   left: 0;
   -webkit-transition-property: background-color height;
@@ -309,8 +303,8 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
           transition-duration: 250ms;
   -webkit-transition-timing-function: ease;
           transition-timing-function: ease;
-  -webkit-transition-property: width;
-  transition-property: width;
+  -webkit-transition-property: background-color width position;
+  transition-property: background-color width position;
 }
 
 /**

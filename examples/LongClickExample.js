@@ -12,14 +12,14 @@ const React = require('react');
 class LongClickExample extends React.Component {
 
   longClickTimer = null;
-  
+
   displayColumns = {
     firstName: 'First Name',
     lastName: 'Last Name',
     city: 'City',
     street: 'zipCode',
   };
-  
+
   constructor(props) {
     super(props);
 
@@ -72,12 +72,12 @@ class LongClickExample extends React.Component {
 
   getCell(rowIndex, columnKey) {
     let isCellHighlighted = this.state.longPressedRowIndex === rowIndex;
-      
+
     let rowStyle = {
       backgroundColor: isCellHighlighted ? 'yellow' : 'transparent',
       width: '100%',
       height: '100%'
-    } 
+    }
 
     return <TextCell style={rowStyle}
       data={this.state.dataList}

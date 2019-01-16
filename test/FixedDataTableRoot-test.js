@@ -4,9 +4,9 @@
 
 import { assert } from 'chai';
 import React from 'react';
-import FixedDataTable from './FixedDataTableRoot';
+import ReactDOM from 'react-dom';
+import FixedDataTable from '../src/FixedDataTableRoot';
 import { createRenderer, isElement, renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
-import Scrollbar from 'Scrollbar';
 
 const { Table, Column } = FixedDataTable;
 
@@ -37,8 +37,6 @@ describe('FixedDataTableRoot', function() {
   class TestTable extends React.Component {
     constructor(props) {
       super(props);
-
-      this.state = {...props}
     }
 
     /**
@@ -47,21 +45,21 @@ describe('FixedDataTableRoot', function() {
      * @return {!Object}
      */
     getTableState() {
-      return this.table.state;
+      return this._tableRef.state;
     }
 
-    tableRef = ref => (this.table = ref);
+    _onRef = (ref) => this._tableRef = ref;
 
     render() {
       return (
         <Table
-          ref={this.tableRef}
+          ref={this._onRef}
           width={600}
           height={400}
           rowsCount={50}
           rowHeight={100}
           headerHeight={50}
-          {...this.state}
+          {...this.props}
         >
           <Column width={300} />
           <Column width={300} />
@@ -73,8 +71,14 @@ describe('FixedDataTableRoot', function() {
     }
   }
 
+  let node;
+
+  beforeEach(function() {
+    node = document.createElement('div');
+  });
+
   const renderTable = (optionalProps = {}) => {
-    let renderedTree = renderIntoDocument(<TestTable {...optionalProps} />);
+    let renderedTree = ReactDOM.render(<TestTable {...optionalProps} />, node);
     return findRenderedComponentWithType(renderedTree, TestTable);
   };
 
@@ -92,7 +96,7 @@ describe('FixedDataTableRoot', function() {
     it('should set scrollToColumn correctly', function() {
       let table = renderTable({scrollToColumn: 3});
       // extra 18 comes from Scrollbar.SIZE & Scrollbar.OFFSET
-      assert.equal(table.getTableState().scrollX, 300 * 2 + Scrollbar.SIZE + Scrollbar.OFFSET, 'should be third visible column');
+      assert.equal(table.getTableState().scrollX, 300 * 2 + 16, 'should be third visible column');
     });
 
     it('should set scrollToRow correctly', function() {
@@ -104,41 +108,73 @@ describe('FixedDataTableRoot', function() {
   });
 
   describe('update render', function() {
+    it('should update scrollLeft correctly', function() {
+      let table = renderTable({scrollLeft: 300});
+      assert.equal(table.getTableState().scrollX, 300, 'should set scrollX to 300');
+      table = renderTable({scrollLeft: 600});
+      assert.equal(table.getTableState().scrollX, 600, 'should set scrollX to 600');
+    });
 
+    it('should update scrollTop correctly', function() {
+      let table = renderTable({scrollTop: 600});
+      assert.equal(table.getTableState().scrollY, 600, 'should set scrollY to 600');
+
+      table = renderTable({scrollTop: 300});
+      assert.equal(table.getTableState().scrollY, 300, 'should set scrollY to 300');
+    });
+
+    it('should update scrollToColumn correctly', function() {
+      let table = renderTable({scrollToColumn: 3});
+      // extra 18 comes from Scrollbar.SIZE & Scrollbar.OFFSET
+      assert.equal(table.getTableState().scrollX, 300 * 2 + 16, 'should be third visible column');
+      table = renderTable({scrollToColumn: 1});
+      assert.equal(table.getTableState().scrollX, 300, 'should be first visible column');
+    });
+
+    it('should update scrollToRow correctly', function() {
+      let table = renderTable({scrollToRow: 30, height: 300});
+      //scrollToRow is considered valid if row is visible. Test to make sure that row is somewhere in between
+      assert.isAtMost(table.getTableState().scrollY, 30 * 100, 'should be below first row');
+      assert.isAtLeast(table.getTableState().scrollY, 30 * 100 - 300, 'should be above last row');
+      table = renderTable({scrollToRow: 20, height: 100});
+      assert.isAtMost(table.getTableState().scrollY, 20 * 100, 'should be below first row');
+      assert.isAtLeast(table.getTableState().scrollY, 20 * 100 - 100, 'should be above last row');
+    });
+  });
+
+  describe('unset props', function() {
     it('should not blow up when unsetting the scrollLeft property', function() {
       let table = renderTable({scrollLeft: 300});
       assert.doesNotThrow(function() {
-        table.setState({scrollLeft: undefined});
+        renderTable({scrollLeft: undefined});
       });
     });
 
     it('should not blow up when unsetting the scrollTop property', function() {
       let table = renderTable({scrollTop: 600});
-      //assert.doesNotThrow(function() {
-        table.setState({scrollTop: undefined});
-      //});
+      assert.doesNotThrow(function() {
+        renderTable({scrollTop: undefined});
+      });
     });
 
     it('should not blow up when unsetting the scrollToColumn property', function() {
       let table = renderTable({scrollToColumn: 3});
       assert.doesNotThrow(function() {
-        table.setState({scrollToColumn: undefined});
+        renderTable({scrollToColumn: undefined});
       });
     });
 
     it('should not blow up when unsetting the scrollToRow property', function() {
       let table = renderTable({scrollToRow: 30});
       assert.doesNotThrow(function() {
-        table.setState({scrollToRow: undefined});
+        renderTable({scrollToRow: undefined});
       });
     });
 
     it('should set scrollToRow correctly when height changes', function() {
-      let table = renderTable({ height: 0, scrollToRow: 30});
-      table.setState({height: 200});
-      //scrollToRow is considered valid if row is visible. Test to make sure that row is somewhere in between
-      assert.isBelow(table.getTableState().scrollY, 30 * 100, 'should be below first row');
-      assert.isAbove(table.getTableState().scrollY, 30 * 100 - 300, 'should be above last row');
+      let table = renderTable({ height: 0, scrollToRow: 30 });
+      table.setState({ height: 200 });
+      assert.equal(table.getTableState().scrollY, 30 * 100, 'should be scrolled to 30th row');
     });
   });
 });

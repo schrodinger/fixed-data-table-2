@@ -13,10 +13,8 @@
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import Keys from 'Keys';
 import React from 'React';
-import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import ReactDOM from 'ReactDOM';
-import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
 import ReactWheelHandler from 'ReactWheelHandler';
 
 import cssVar from 'cssVar';
@@ -36,19 +34,8 @@ var KEYBOARD_SCROLL_AMOUNT = 40;
 
 var _lastScrolledScrollbar = null;
 
-var getTouchX = function(e) {
-  return Math.round(e.targetTouches[0].pageX - e.target.getBoundingClientRect().x);
-};
-
-var getTouchY = function(e) {
-  return Math.round(e.targetTouches[0].pageY - e.target.getBoundingClientRect().y);
-};
-
-var Scrollbar = createReactClass({
-  displayName: 'Scrollbar',
-  mixins: [ReactComponentWithPureRenderMixin],
-
-  propTypes: {
+class Scrollbar extends React.PureComponent {
+  static propTypes = {
     contentSize: PropTypes.number.isRequired,
     defaultPosition: PropTypes.number,
     isOpaque: PropTypes.bool,
@@ -57,19 +44,20 @@ var Scrollbar = createReactClass({
     position: PropTypes.number,
     size: PropTypes.number.isRequired,
     trackColor: PropTypes.oneOf(['gray']),
+    touchEnabled: PropTypes.bool,
     zIndex: PropTypes.number,
     verticalTop: PropTypes.number
-  },
+  }
 
-  getInitialState() /*object*/ {
-    var props = this.props;
-    return this._calculateState(
+  constructor(props) /*object*/ {
+    super(props)
+    this.state = this._calculateState(
       props.position || props.defaultPosition || 0,
       props.size,
       props.contentSize,
       props.orientation
     );
-  },
+  }
 
   componentWillReceiveProps(/*object*/ nextProps) {
     var controlledPosition = nextProps.position;
@@ -93,25 +81,19 @@ var Scrollbar = createReactClass({
         nextProps
       );
     }
-  },
+  }
 
-  getDefaultProps() /*object*/ {
-    return {
-      defaultPosition: 0,
-      isOpaque: false,
-      onScroll: emptyFunction,
-      orientation: 'vertical',
-      zIndex: 99,
-    };
-  },
+  static defaultProps = /*object*/ {
+    defaultPosition: 0,
+    isOpaque: false,
+    onScroll: emptyFunction,
+    orientation: 'vertical',
+    zIndex: 99,
+  }
 
-  faceRef(ref) {
-    this.face = ref;
-  },
+  _onRefFace = (ref) => this._faceRef = ref;
 
-  rootRef(ref) {
-    this.root = ref;
-  },
+  _onRefRoot = (ref) => this._rootRef = ref;
 
   render() /*?object*/ {
     if (!this.state.scrollable) {
@@ -185,16 +167,16 @@ var Scrollbar = createReactClass({
         onTouchStart={this._onTouchStart}
         onWheel={this._wheelHandler.onWheel}
         className={mainClassName}
-        ref={this.rootRef}
-        style={mainStyle}>
+        style={mainStyle}
+        ref={this._onRefRoot}>
         <div
-          ref={this.faceRef}
+          ref={this._onRefFace}
           className={faceClassName}
           style={faceStyle}
         />
       </div>
     );
-  },
+  }
 
   componentWillMount() {
     var isHorizontal = this.props.orientation === 'horizontal';
@@ -206,7 +188,7 @@ var Scrollbar = createReactClass({
       this._shouldHandleY // Should handle vertical scroll
     );
     this._initialRender = true;
-  },
+  }
 
   componentDidMount() {
     this._mouseMoveTracker = new DOMMouseMoveTracker(
@@ -221,7 +203,7 @@ var Scrollbar = createReactClass({
       this._didScroll();
     }
     this._initialRender = false;
-  },
+  }
 
   componentWillUnmount() {
     this._nextState = null;
@@ -230,25 +212,23 @@ var Scrollbar = createReactClass({
       _lastScrolledScrollbar = null;
     }
     delete this._mouseMoveTracker;
-  },
+  }
 
-  scrollBy(/*number*/ delta) {
+  scrollBy = (/*number*/ delta) => {
     this._onWheel(delta);
-  },
+  }
 
-  _shouldHandleX(/*number*/ delta) /*boolean*/ {
-    return this.props.orientation === 'horizontal' ?
+  _shouldHandleX = (/*number*/ delta) /*boolean*/ =>
+    this.props.orientation === 'horizontal' ?
+      this._shouldHandleChange(delta) :
+      false
+
+  _shouldHandleY = (/*number*/ delta) /*boolean*/ =>
+    this.props.orientation !== 'horizontal' ?
       this._shouldHandleChange(delta) :
       false;
-  },
 
-  _shouldHandleY(/*number*/ delta) /*boolean*/ {
-    return this.props.orientation !== 'horizontal' ?
-      this._shouldHandleChange(delta) :
-      false;
-  },
-
-  _shouldHandleChange(/*number*/ delta) /*boolean*/ {
+  _shouldHandleChange = (/*number*/ delta) /*boolean*/ => {
     var nextState = this._calculateState(
       this.state.position + delta,
       this.props.size,
@@ -256,19 +236,21 @@ var Scrollbar = createReactClass({
       this.props.orientation
     );
     return nextState.position !== this.state.position;
-  },
+  }
 
-  _calculateState(
+  _calculateState = (
     /*number*/ position,
     /*number*/ size,
     /*number*/ contentSize,
     /*string*/ orientation
-  ) /*object*/ {
-    if (size < 1 || contentSize <= size) {
+  ) /*object*/ => {
+
+    const clampedSize = Math.max(1, size);
+    if (contentSize <= clampedSize) {
       return UNSCROLLABLE_STATE;
     }
 
-    var stateKey = `${position}_${size}_${contentSize}_${orientation}`;
+    var stateKey = `${position}_${clampedSize}_${contentSize}_${orientation}`;
     if (this._stateKey === stateKey) {
       return this._stateForKey;
     }
@@ -280,16 +262,16 @@ var Scrollbar = createReactClass({
     // function will translate it into physical position to render.
 
     var isHorizontal = orientation === 'horizontal';
-    var scale = size / contentSize;
-    var faceSize = size * scale;
+    var scale = clampedSize / contentSize;
+    var faceSize = clampedSize * scale;
 
     if (faceSize < FACE_SIZE_MIN) {
-      scale = (size - FACE_SIZE_MIN) / (contentSize - size);
+      scale = (clampedSize - FACE_SIZE_MIN) / (contentSize - clampedSize);
       faceSize = FACE_SIZE_MIN;
     }
 
     var scrollable = true;
-    var maxPosition = contentSize - size;
+    var maxPosition = contentSize - clampedSize;
 
     if (position < 0) {
       position = 0;
@@ -316,17 +298,17 @@ var Scrollbar = createReactClass({
     this._stateKey = stateKey;
     this._stateForKey = state;
     return state;
-  },
+  }
 
-  _onWheelY(/*number*/ deltaX, /*number*/ deltaY) {
+  _onWheelY = (/*number*/ deltaX, /*number*/ deltaY) => {
     this._onWheel(deltaY);
-  },
+  }
 
-  _onWheelX(/*number*/ deltaX, /*number*/ deltaY) {
+  _onWheelX = (/*number*/ deltaX, /*number*/ deltaY) => {
     this._onWheel(deltaX);
-  },
+  }
 
-  _onWheel(/*number*/ delta) {
+  _onWheel = (/*number*/ delta) => {
     var props = this.props;
 
     // The mouse may move faster then the animation frame does.
@@ -339,18 +321,18 @@ var Scrollbar = createReactClass({
         props.orientation
       )
     );
-  },
+  }
 
-  _onMouseDown(/*object*/ event) {
+  _onMouseDown = (/*object*/ event) => {
     var nextState;
 
-    if (event.target !== ReactDOM.findDOMNode(this.face)) {
+    if (event.target !== this._faceRef) {
       // Both `offsetX` and `layerX` are non-standard DOM property but they are
       // magically available for browsers somehow.
       var nativeEvent = event.nativeEvent;
       var position = this.state.isHorizontal ?
-        nativeEvent.offsetX || nativeEvent.layerX || getTouchX(nativeEvent) :
-        nativeEvent.offsetY || nativeEvent.layerY || getTouchY(nativeEvent);
+        nativeEvent.offsetX || nativeEvent.layerX || this.getTouchX(nativeEvent) :
+        nativeEvent.offsetY || nativeEvent.layerY || this.getTouchY(nativeEvent);
 
       // MouseDown on the scroll-track directly, move the center of the
       // scroll-face to the mouse position.
@@ -371,27 +353,27 @@ var Scrollbar = createReactClass({
 
     this._mouseMoveTracker.captureMouseMoves(event);
     // Focus the node so it may receive keyboard event.
-    this.root.focus();
-  },
+    this._rootRef.focus();
+  }
 
-  _onTouchCancel(/*object*/ event) {
+  _onTouchCancel = (/*object*/ event) => {
     event.stopPropagation();
-  },
+  }
 
-  _onTouchEnd(/*object*/ event) {
+  _onTouchEnd = (/*object*/ event) => {
     event.stopPropagation();
-  },
+  }
 
-  _onTouchMove(/*object*/ event) {
+  _onTouchMove = (/*object*/ event) => {
     event.stopPropagation();
-  },
+  }
 
-  _onTouchStart(/*object*/ event) {
+  _onTouchStart = (/*object*/ event) => {
     event.stopPropagation();
     this._onMouseDown(event);
-  },
+  }
 
-  _onMouseMove(/*number*/ deltaX, /*number*/ deltaY) {
+  _onMouseMove = (/*number*/ deltaX, /*number*/ deltaY) => {
     var props = this.props;
     var delta = this.state.isHorizontal ? deltaX : deltaY;
     delta /= this.state.scale;
@@ -404,15 +386,15 @@ var Scrollbar = createReactClass({
         props.orientation
       )
     );
-  },
+  }
 
-  _onMouseMoveEnd() {
+  _onMouseMoveEnd = () => {
     this._nextState = null;
     this._mouseMoveTracker.releaseMouseMoves();
-    this.setState({isDragging: false});
-  },
+    this.setState({ isDragging: false });
+  }
 
-  _onKeyDown(/*object*/ event) {
+  _onKeyDown = (/*object*/ event) =>{
     var keyCode = event.keyCode;
 
     if (keyCode === Keys.TAB) {
@@ -492,21 +474,21 @@ var Scrollbar = createReactClass({
         props.orientation
       )
     );
-  },
+  }
 
-  _onFocus() {
+  _onFocus = () => {
     this.setState({
       focused: true,
     });
-  },
+  }
 
-  _onBlur() {
+  _onBlur = () => {
     this.setState({
       focused: false,
     });
-  },
+  }
 
-  _blur() {
+  _blur = () => {
     var el = ReactDOM.findDOMNode(this);
     if (!el) {
       return;
@@ -518,9 +500,17 @@ var Scrollbar = createReactClass({
     } catch (oops) {
       // pass
     }
-  },
+  }
 
-  _setNextState(/*object*/ nextState, /*?object*/ props) {
+  getTouchX = (/*object*/ e) => {
+    return Math.round(e.targetTouches[0].pageX - e.target.getBoundingClientRect().x);
+  }
+
+  getTouchY = (/*object*/ e) => {
+    return Math.round(e.targetTouches[0].pageY - e.target.getBoundingClientRect().y);
+  }
+
+  _setNextState = (/*object*/ nextState, /*?object*/ props) => {
     props = props || this.props;
     var controlledPosition = props.position;
     var willScroll = this.state.position !== nextState.position;
@@ -543,12 +533,12 @@ var Scrollbar = createReactClass({
       _lastScrolledScrollbar && _lastScrolledScrollbar._blur();
       _lastScrolledScrollbar = this;
     }
-  },
+  }
 
-  _didScroll() {
+  _didScroll = () => {
     this.props.onScroll(this.state.position);
-  },
-});
+  }
+};
 
 Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;
 Scrollbar.SIZE = parseInt(cssVar('scrollbar-size'), 10);
