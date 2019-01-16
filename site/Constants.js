@@ -132,24 +132,6 @@ exports.ExamplePages = {
     title: 'Tooltips',
     description: 'A table example that displays additional information in a tooltip.'
   },
-  FOOTER_EXAMPLE: {
-    location: 'example-footer.html',
-    fileName: 'FooterExample.js',
-    title: 'Footer',
-    description: 'A table example that displays a footer.'
-  },
-  MAX_HEIGHT_EXAMPLE: {
-    location: 'example-max-height.html',
-    fileName: 'MaxHeightExample.js',
-    title: 'Max Height',
-    description: 'A table example that displays a table growing to it\'s max height.'
-  },
-  OWNER_HEIGHT_EXAMPLE: {
-    location: 'example-owner-height.html',
-    fileName: 'OwnerHeightExample.js',
-    title: 'Owner Height',
-    description: 'A table example that displays a table footer sticking to the screen.'
-  },
   LONG_CLICK_EXAMPLE: {
     location: 'example-long-click.html',
     fileName: 'LongClickExample.js',

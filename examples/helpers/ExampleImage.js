@@ -6,37 +6,43 @@ var React = require('react');
 
 var PropTypes = require('prop-types');
 
+var createReactClass = require('create-react-class');
+
 var PendingPool = {};
 var ReadyPool = {};
 var imageIdCounter = 0;
 
-class ExampleImage extends React.Component {
-  static propTypes = {
-    src: PropTypes.string.isRequired,
-  }
+var ExampleImage = createReactClass({
+  displayName: 'ExampleImage',
 
-  state = {
-    ready: false,
-  }
+  propTypes: {
+    src: PropTypes.string.isRequired,
+  },
+
+  getInitialState() {
+    return {
+      ready: false,
+    };
+  },
 
   componentWillMount() {
     this.componentId = imageIdCounter++;
     this._load(this.props.src);
-  }
+  },
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.src !== this.props.src) {
       this.setState({src: null});
       this._load(nextProps.src);
     }
-  }
+  },
 
   componentWillUnmount() {
     var loadingPool = PendingPool[this.props.src];
     if (loadingPool) {
       delete loadingPool[this.componentId];
     }
-  }
+  },
 
   render() {
     var style = this.state.src ?
@@ -44,9 +50,9 @@ class ExampleImage extends React.Component {
       undefined;
 
     return <div className="exampleImage" style={style} />;
-  }
+  },
 
-  _load = (/*string*/ src) => {
+  _load(/*string*/ src) {
     if (ReadyPool[src]) {
       this.setState({src: src});
       return;
@@ -71,17 +77,17 @@ class ExampleImage extends React.Component {
       src = undefined;
     };
     img.src = src;
-  }
+  },
 
-  _onLoad = (/*string*/ src) => {
+  _onLoad(/*string*/ src) {
     ReadyPool[src] = true;
     if (src === this.props.src) {
       this.setState({
         src: src,
       });
     }
-  }
-};
+  },
+});
 
 
 module.exports = ExampleImage;
