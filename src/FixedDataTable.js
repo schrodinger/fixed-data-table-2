@@ -576,10 +576,6 @@ class FixedDataTable extends React.Component {
       this.props.scrollLeft !== nextProps.scrollLeft) {
       this._didScrollStart();
     }
-
-    // Cancel any pending debounced scroll handling and handle immediately.
-    this._didScrollStop.reset();
-    this._didScrollStopSync();
   }
 
   componentDidUpdate() {
