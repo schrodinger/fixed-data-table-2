@@ -131,6 +131,7 @@ function reducers(state = getInitialState(), action) {
       if (!shallowEqual(state, newState) || scrollAnchor.changed) {
         newState = computeRenderedRows(newState, scrollAnchor);
       }
+      newState.scrollJumped = state.scrollJumped || scrollAnchor.changed;
 
       newState = columnStateHelper.initialize(newState, newProps, oldProps);
 
@@ -143,6 +144,11 @@ function reducers(state = getInitialState(), action) {
     case ActionTypes.SCROLL_END: {
       return Object.assign({}, state, {
         scrolling: false,
+      });
+    }
+    case ActionTypes.SCROLL_JUMP: {
+      return Object.assign({}, state, {
+        scrollJumped: false,
       });
     }
     case ActionTypes.SCROLL_START: {

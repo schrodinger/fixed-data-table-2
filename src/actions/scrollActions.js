@@ -9,6 +9,7 @@
 
 import {
   SCROLL_END,
+  SCROLL_JUMP,
   SCROLL_START,
   SCROLL_TO_X,
   SCROLL_TO_Y,
@@ -46,4 +47,11 @@ export const startScroll = () => ({
  */
 export const stopScroll = () => ({
   type: SCROLL_END,
+});
+
+/**
+ * Fire when fdt does a jump scroll due to a jump onto a row or column
+ */
+export const jumpScroll = () => ({
+  type: SCROLL_JUMP,
 });
