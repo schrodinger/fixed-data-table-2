@@ -577,9 +577,7 @@ class FixedDataTable extends React.Component {
       this._didScrollStart();
     }
 
-    if (!this.props.scrollJumped && nextProps.scrollJumped) {
-      this._didScrollJump(nextProps);
-    }
+    this._didScrollJump(nextProps);
   }
 
   componentDidUpdate() {
@@ -1062,17 +1060,35 @@ class FixedDataTable extends React.Component {
     }
   }
 
-  _didScrollJump = (nextProps) => {
+  _didScrollJump = (/* ?object */ nextProps) => {
     const {
       firstRowIndex,
       onScrollEnd,
       scrollActions,
       scrollX,
       scrollY,
+      scrollJumpedX,
+      scrollJumpedY,
+      onHorizontalScroll,
+      onVerticalScroll,
     } = nextProps || this.props;
 
-    scrollActions.jumpScroll();
+    // no jump happened, so just return
+    if (!scrollJumpedX && !scrollJumpedY) {
+      return;
+    }
 
+    if (scrollJumpedX) {
+      scrollActions.jumpScrollX();
+      onHorizontalScroll && onHorizontalScroll(scrollX);
+    }
+
+    if (scrollJumpedY) {
+      scrollActions.jumpScrollY();
+      onVerticalScroll && onVerticalScroll(scrollY);
+    }
+
+    // any jump must have happened, so call onScrollEnd
     if (onScrollEnd) {
       onScrollEnd(scrollX, scrollY, firstRowIndex);
     }

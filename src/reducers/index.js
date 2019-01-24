@@ -131,7 +131,8 @@ function reducers(state = getInitialState(), action) {
       if (!shallowEqual(state, newState) || scrollAnchor.changed) {
         newState = computeRenderedRows(newState, scrollAnchor);
       }
-      newState.scrollJumped = state.scrollJumped || scrollAnchor.changed;
+
+      newState.scrollJumpedY = scrollAnchor.didScrollToRow;
 
       newState = columnStateHelper.initialize(newState, newProps, oldProps);
 
@@ -146,9 +147,14 @@ function reducers(state = getInitialState(), action) {
         scrolling: false,
       });
     }
-    case ActionTypes.SCROLL_JUMP: {
+    case ActionTypes.SCROLL_JUMP_X: {
       return Object.assign({}, state, {
-        scrollJumped: false,
+        scrollJumpedX: false,
+      });
+    }
+    case ActionTypes.SCROLL_JUMP_Y: {
+      return Object.assign({}, state, {
+        scrollJumpedY: false,
       });
     }
     case ActionTypes.SCROLL_START: {
