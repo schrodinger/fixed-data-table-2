@@ -25,6 +25,7 @@
 }
 
 .ScrollbarLayout/mainHorizontal {
+  bottom: 0;
   height: var(--scrollbar-size);
   left: 0;
   transition-property: background-color height;

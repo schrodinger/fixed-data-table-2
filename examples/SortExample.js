@@ -30,7 +30,7 @@ class SortHeaderCell extends React.Component {
     return (
       <Cell {...props}>
         <a onClick={this._onSortChange}>
-          {children} {sortDir ? (sortDir === SortTypes.DESC ? '↓' : '↑') : ''}
+          {children} {sortDir ? (sortDir === SortTypes.DESC ? '↑' : '↓') : ''}
         </a>
       </Cell>
     );
@@ -99,7 +99,7 @@ class SortExample extends React.Component {
       if (valueA < valueB) {
         sortVal = -1;
       }
-      if (sortVal !== 0 && sortDir === SortTypes.DESC) {
+      if (sortVal !== 0 && sortDir === SortTypes.ASC) {
         sortVal = sortVal * -1;
       }
 

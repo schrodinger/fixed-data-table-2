@@ -1,23 +1,6 @@
 #!/bin/bash
 set -e
 
-# Defaults that can be overridden in the CLI (except the cookie file)
-export BETA=0
-
-while (( "$#" )); do
-  opt=$1
-  VALUE=$2
-  # Make sure to shift here and any option that uses the $VALUE
-  shift
-  case $opt in
-    --beta) BETA=$VALUE; shift ;;
-    * ) # Invalid flag
-      echo "Invalid flag: $opt"
-      exit 192
-      ;;
-  esac
-done
-
 current_version=$(node -p "require('./package').version")
 
 printf "Next version (current is $current_version)? "
@@ -61,13 +44,10 @@ git commit -m "Version $next_version"
 next_ref="v$next_version"
 
 git tag "$next_ref"
-git push origin "$next_ref"
+git tag latest -f
 
-if [ $BETA = 1 ]; then
-  npm publish --tag beta
-else
-  git tag latest -f
-  git push origin latest -f
-  git push origin master
-  npm publish
-fi
+git push origin master
+git push origin "$next_ref"
+git push origin latest -f
+
+npm publish
