@@ -83,8 +83,11 @@ function getInitialState() {
     rowHeights: {},
     rows: [], // rowsToRender
     scrollContentHeight: 0,
+    scrollJumpedX: false,
+    scrollJumpedY: false,
     scrollX: 0,
     scrollY: 0,
+    scrolling: false,
 
     /*
      * Internal state only used by this file
