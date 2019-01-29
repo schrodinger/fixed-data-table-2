@@ -36,7 +36,8 @@ export function getScrollAnchor(state, newProps, oldProps) {
   if (newProps.scrollToRow !== undefined &&
       newProps.scrollToRow !== null &&
       (!oldProps || newProps.scrollToRow !== oldProps.scrollToRow)) {
-    return set(scrollToRow(state, newProps.scrollToRow), 'didScrollToRow', newProps.changed);
+    const scrollAnchor = scrollToRow(state, newProps.scrollToRow);
+    return set(scrollAnchor, 'didScrollToRow', scrollAnchor.changed);
   }
 
   if (newProps.scrollTop !== undefined &&
