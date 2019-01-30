@@ -27,10 +27,8 @@ import cx from 'cx';
 import debounceCore from 'debounceCore';
 import joinClasses from 'joinClasses';
 import scrollbarsVisible from 'scrollbarsVisible';
+import configSelector from 'config';
 import tableHeightsSelector from 'tableHeights';
-
-var ARROW_SCROLL_SPEED = 25;
-
 
 /**
  * Data grid component with fixed or scrollable header and columns.
@@ -436,6 +434,8 @@ class FixedDataTable extends React.Component {
   }
 
   componentWillMount() {
+    const { touchConfig } = configSelector(this.props);
+
     this._didScrollStop = debounceCore(this._didScrollStopSync, 200, this);
     this._onKeyDown = this._onKeyDown.bind(this);
 
@@ -450,7 +450,8 @@ class FixedDataTable extends React.Component {
       this._onScroll,
       this._shouldHandleTouchX,
       this._shouldHandleTouchY,
-      this.props.stopScrollPropagation
+      this.props.stopScrollPropagation,
+      touchConfig
     );
   }
 
@@ -509,6 +510,8 @@ class FixedDataTable extends React.Component {
 
   _onKeyDown(event) {
     const { scrollbarYHeight } = tableHeightsSelector(this.props);
+    const { scrollAmpltiude } = configSelector(this.props).keyboardConfig;
+
     if (this.props.keyboardPageEnabled) {
       switch (event.key) {
         case 'PageDown':
@@ -529,22 +532,22 @@ class FixedDataTable extends React.Component {
       switch (event.key) {
 
         case 'ArrowDown':
-          this._onScroll(0, ARROW_SCROLL_SPEED);
+          this._onScroll(0, scrollAmpltiude);
           event.preventDefault();
           break;
 
         case 'ArrowUp':
-          this._onScroll(0, ARROW_SCROLL_SPEED * -1);
+          this._onScroll(0, scrollAmpltiude * -1);
           event.preventDefault();
           break;
 
         case 'ArrowRight':
-          this._onScroll(ARROW_SCROLL_SPEED, 0);
+          this._onScroll(scrollAmpltiude, 0);
           event.preventDefault();
           break;
 
         case 'ArrowLeft':
-          this._onScroll(ARROW_SCROLL_SPEED * -1, 0);
+          this._onScroll(scrollAmpltiude * -1, 0);
           event.preventDefault();
           break;
 

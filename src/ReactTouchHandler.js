@@ -19,10 +19,12 @@
 import emptyFunction from 'emptyFunction';
 import requestAnimationFramePolyfill from 'requestAnimationFramePolyfill';
 
-var MOVE_AMPLITUDE = 1.6;
-var DECELERATION_AMPLITUDE = 1.6;
-var DECELERATION_FACTOR = 325;
-var TRACKER_TIMEOUT = 100;
+let DEFAULT_TOUCH_CONFIG = {
+  MOVE_AMPLITUDE: 1.6,
+  DECELERATION_AMPLITUDE: 1.6,
+  DECELERATION_FACTOR: 325,
+  TRACKER_TIMEOUT: 100,
+};
 
 class ReactTouchHandler {
   /**
@@ -35,7 +37,8 @@ class ReactTouchHandler {
     /*function*/ onTouchScroll,
     /*boolean|function*/ handleScrollX,
     /*boolean|function*/ handleScrollY,
-    /*?boolean|?function*/ stopPropagation
+    /*?boolean|?function*/ stopPropagation,
+    /*?object*/ touchConfig
   ) {
 
     // The animation frame id for the drag scroll
@@ -87,6 +90,7 @@ class ReactTouchHandler {
 
     this._handleScrollX = handleScrollX;
     this._handleScrollY = handleScrollY;
+    this._touchConfig = Object.extend({}, DEFAULT_TOUCH_CONFIG, touchConfig);
     this._stopPropagation = stopPropagation;
     this._onTouchScrollCallback = onTouchScroll;
 
@@ -101,6 +105,7 @@ class ReactTouchHandler {
   }
 
   onTouchStart(/*object*/ event) {
+    var TRACKER_TIMEOUT = this._touchConfig.TRACKER_TIMEOUT;
 
     // Start tracking drag delta for scrolling
     this._lastTouchX = event.touches[0].pageX;
@@ -149,6 +154,7 @@ class ReactTouchHandler {
 
   onTouchMove(/*object*/ event) {
 
+    var MOVE_AMPLITUDE = this._touchConfig.MOVE_AMPLITUDE;
     var moveX = event.touches[0].pageX;
     var moveY = event.touches[0].pageY;
 
@@ -215,6 +221,7 @@ class ReactTouchHandler {
     var elapsed = now - this._lastFrameTimestamp;
     var oldVelocityX = this._velocityX;
     var oldVelocityY = this._velocityY;
+    var TRACKER_TIMEOUT = this._touchConfig.TRACKER_TIMEOUT;
 
     // We compute velocity using a weighted average of the current velocity and the previous velocity
     // If the previous velocity is 0, put the full weight on the last 100 ms
@@ -262,6 +269,9 @@ class ReactTouchHandler {
    * This is called recursively on animation frames until the delta is below a threshold (5 pixels)
    */
   _autoScroll() {
+    var DECELERATION_AMPLITUDE = this._touchConfig.DECELERATION_AMPLITUDE;
+    var DECELERATION_FACTOR = this._touchConfig.DECELERATION_FACTOR;
+
     var elapsed = Date.now() - this._autoScrollTimestamp;
     var factor = DECELERATION_AMPLITUDE * Math.exp(-elapsed / DECELERATION_FACTOR);
     var deltaX = factor * this._velocityX;

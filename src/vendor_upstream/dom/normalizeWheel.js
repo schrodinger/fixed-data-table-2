@@ -18,9 +18,11 @@ import isEventSupported from 'isEventSupported';
 
 
 // Reasonable defaults
-var PIXEL_STEP  = 10;
-var LINE_HEIGHT = 40;
-var PAGE_HEIGHT = 800;
+var DEFAULT_WHEEL_CONFIG = {
+  PIXEL_STEP: 10,
+  LINE_HEIGHT: 40,
+  PAGE_HEIGHT: 800,
+};
 
 /**
  * Mouse wheel (and 2-finger trackpad) support on the web sucks.  It is
@@ -122,7 +124,11 @@ var PAGE_HEIGHT = 800;
  *         Firefox v4/Win7  |     undefined    |       3
  *
  */
-function normalizeWheel(/*object*/ event) /*object*/ {
+function normalizeWheel(/*object*/ event, /*?object*/wheelConfig = {}) /*object*/ {
+  var PIXEL_STEP = wheelConfig.PIXEL_STEP || DEFAULT_WHEEL_CONFIG.PIXEL_STEP;
+  var LINE_HEIGHT = wheelConfig.LINE_HEIGHT || DEFAULT_WHEEL_CONFIG.PIXEL_STEP;
+  var PAGE_HEIGHT = wheelConfig.PAGE_HEIGHT || DEFAULT_WHEEL_CONFIG.PIXEL_STEP;
+  
   var sX = 0, sY = 0,       // spinX, spinY
       pX = 0, pY = 0;       // pixelX, pixelY
 
