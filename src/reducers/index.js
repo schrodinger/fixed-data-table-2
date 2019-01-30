@@ -83,8 +83,11 @@ function getInitialState() {
     rowHeights: {},
     rows: [], // rowsToRender
     scrollContentHeight: 0,
+    scrollJumpedX: false,
+    scrollJumpedY: false,
     scrollX: 0,
     scrollY: 0,
+    scrolling: false,
 
     /*
      * Internal state only used by this file
@@ -132,6 +135,8 @@ function reducers(state = getInitialState(), action) {
         newState = computeRenderedRows(newState, scrollAnchor);
       }
 
+      newState.scrollJumpedY = scrollAnchor.didScrollToRow;
+
       newState = columnStateHelper.initialize(newState, newProps, oldProps);
 
       // TODO REDUX_MIGRATION solve w/ evil-diff
@@ -143,6 +148,16 @@ function reducers(state = getInitialState(), action) {
     case ActionTypes.SCROLL_END: {
       return Object.assign({}, state, {
         scrolling: false,
+      });
+    }
+    case ActionTypes.SCROLL_JUMP_X: {
+      return Object.assign({}, state, {
+        scrollJumpedX: false,
+      });
+    }
+    case ActionTypes.SCROLL_JUMP_Y: {
+      return Object.assign({}, state, {
+        scrollJumpedY: false,
       });
     }
     case ActionTypes.SCROLL_START: {

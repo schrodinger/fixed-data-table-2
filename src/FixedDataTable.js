@@ -577,9 +577,7 @@ class FixedDataTable extends React.Component {
       this._didScrollStart();
     }
 
-    // Cancel any pending debounced scroll handling and handle immediately.
-    this._didScrollStop.reset();
-    this._didScrollStopSync();
+    this._didScrollJump(nextProps);
   }
 
   componentDidUpdate() {
@@ -619,6 +617,7 @@ class FixedDataTable extends React.Component {
       scrollContentHeight,
       scrollX,
       scrollY,
+      scrolling,
       tableSize,
       touchScrollEnabled,
     } = this.props;
@@ -633,7 +632,7 @@ class FixedDataTable extends React.Component {
       groupHeader = (
         <FixedDataTableRow
           key="group_header"
-          isScrolling={this._isScrolling}
+          isScrolling={scrolling}
           className={joinClasses(
             cx('fixedDataTableLayout/header'),
             cx('public/fixedDataTable/header'),
@@ -703,7 +702,7 @@ class FixedDataTable extends React.Component {
       footer =
         <FixedDataTableRow
           key="footer"
-          isScrolling={this._isScrolling}
+          isScrolling={scrolling}
           className={joinClasses(
             cx('fixedDataTableLayout/footer'),
             cx('public/fixedDataTable/footer'),
@@ -728,7 +727,7 @@ class FixedDataTable extends React.Component {
     const header =
       <FixedDataTableRow
         key="header"
-        isScrolling={this._isScrolling}
+        isScrolling={scrolling}
         className={joinClasses(
           cx('fixedDataTableLayout/header'),
           cx('public/fixedDataTable/header'),
@@ -826,11 +825,11 @@ class FixedDataTable extends React.Component {
 
   _renderRows = (/*number*/ offsetTop, fixedCellTemplates, fixedRightCellTemplates, scrollableCellTemplates,
     bodyHeight) /*object*/ => {
-    const { scrollEnabledY } = scrollbarsVisible(this.props);
+    const { scrollEnabledY, scrolling } = scrollbarsVisible(this.props);
     const props = this.props;
     return (
       <FixedDataTableBufferedRows
-        isScrolling={this._isScrolling}
+        isScrolling={scrolling}
         fixedColumns={fixedCellTemplates}
         fixedRightColumns={fixedRightCellTemplates}
         height={bodyHeight}
@@ -955,12 +954,14 @@ class FixedDataTable extends React.Component {
       scrollFlags,
       scrollX,
       scrollY,
+      scrolling,
     } = this.props;
     const { overflowX, overflowY } = scrollFlags;
 
-    if (!this._isScrolling) {
+    if (!scrolling) {
       this._didScrollStart();
     }
+
     let x = scrollX;
     let y = scrollY;
     if (Math.abs(deltaY) > Math.abs(deltaX) && overflowY !== 'hidden') {
@@ -995,13 +996,14 @@ class FixedDataTable extends React.Component {
       onHorizontalScroll,
       scrollActions,
       scrollX,
+      scrolling,
     } = this.props;
 
     if (scrollPos === scrollX) {
       return;
     }
 
-    if (!this._isScrolling) {
+    if (!scrolling) {
       this._didScrollStart();
     }
 
@@ -1020,13 +1022,14 @@ class FixedDataTable extends React.Component {
       onVerticalScroll,
       scrollActions,
       scrollY,
+      scrolling,
     } = this.props;
 
     if (scrollPos === scrollY) {
       return;
     }
 
-    if (!this._isScrolling) {
+    if (!scrolling) {
       this._didScrollStart();
     }
 
@@ -1044,17 +1047,50 @@ class FixedDataTable extends React.Component {
       scrollActions,
       scrollX,
       scrollY,
+      scrolling,
     } = this.props;
 
-    if (this._isScrolling) {
+    if (scrolling) {
       return;
     }
 
-    this._isScrolling = true;
     scrollActions.startScroll();
-
     if (onScrollStart) {
       onScrollStart(scrollX, scrollY, firstRowIndex);
+    }
+  }
+
+  _didScrollJump = (/* ?object */ nextProps) => {
+    const {
+      firstRowIndex,
+      onScrollEnd,
+      scrollActions,
+      scrollX,
+      scrollY,
+      scrollJumpedX,
+      scrollJumpedY,
+      onHorizontalScroll,
+      onVerticalScroll,
+    } = nextProps || this.props;
+
+    // no jump happened, so just return
+    if (!scrollJumpedX && !scrollJumpedY) {
+      return;
+    }
+
+    if (scrollJumpedX) {
+      scrollActions.jumpScrollX();
+      onHorizontalScroll && onHorizontalScroll(scrollX);
+    }
+
+    if (scrollJumpedY) {
+      scrollActions.jumpScrollY();
+      onVerticalScroll && onVerticalScroll(scrollY);
+    }
+
+    // any jump must have happened, so call onScrollEnd
+    if (onScrollEnd) {
+      onScrollEnd(scrollX, scrollY, firstRowIndex);
     }
   }
 
@@ -1068,13 +1104,13 @@ class FixedDataTable extends React.Component {
       scrollActions,
       scrollX,
       scrollY,
+      scrolling,
     } = this.props;
 
-    if (!this._isScrolling) {
+    if (!scrolling) {
       return;
     }
 
-    this._isScrolling = false;
     scrollActions.stopScroll();
 
     if (onScrollEnd) {

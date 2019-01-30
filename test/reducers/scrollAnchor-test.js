@@ -102,6 +102,7 @@ describe('scrollAnchor', function() {
         firstOffset: 0,
         lastIndex: 40,
         changed: true,
+        didScrollToRow: true,
       });
     });
 
@@ -114,6 +115,7 @@ describe('scrollAnchor', function() {
         firstOffset: 0,
         lastIndex: undefined,
         changed: true,
+        didScrollToRow: true,
       });
     });
 
@@ -128,6 +130,7 @@ describe('scrollAnchor', function() {
         firstOffset: 50,
         lastIndex: undefined,
         changed: false,
+        didScrollToRow: false,
       });
     });
 
@@ -142,6 +145,7 @@ describe('scrollAnchor', function() {
         firstOffset: 0,
         lastIndex: undefined,
         changed: true,
+        didScrollToRow: true,
       });
     });
 
@@ -154,6 +158,7 @@ describe('scrollAnchor', function() {
         firstOffset: 0,
         lastIndex: undefined,
         changed: true,
+        didScrollToRow: true,
       });
     });
 
@@ -166,6 +171,7 @@ describe('scrollAnchor', function() {
         firstOffset: 0,
         lastIndex: 99,
         changed: true,
+        didScrollToRow: true,
       });
     });
   });

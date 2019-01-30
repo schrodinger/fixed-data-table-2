@@ -98,6 +98,9 @@ class FixedDataTableContainer extends React.Component {
       'scrollFlags',
       'scrollX',
       'scrollY',
+      'scrolling',
+      'scrollJumpedX',
+      'scrollJumpedY',
       'tableSize',
     ]);
 

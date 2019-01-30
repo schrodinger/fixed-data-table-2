@@ -12,6 +12,7 @@
 'use strict';
 
 import clamp from 'clamp';
+import set from 'lodash/set';
 import updateRowHeight from 'updateRowHeight';
 import scrollbarsVisibleSelector from 'scrollbarsVisible';
 
@@ -28,13 +29,15 @@ import scrollbarsVisibleSelector from 'scrollbarsVisible';
  *   firstOffset: number,
  *   lastIndex: number,
  *   changed: boolean,
+ *   didScrollToRow: (boolean|undefined),
  * }}
  */
 export function getScrollAnchor(state, newProps, oldProps) {
   if (newProps.scrollToRow !== undefined &&
       newProps.scrollToRow !== null &&
       (!oldProps || newProps.scrollToRow !== oldProps.scrollToRow)) {
-    return scrollToRow(state, newProps.scrollToRow);
+    const scrollAnchor = scrollToRow(state, newProps.scrollToRow);
+    return set(scrollAnchor, 'didScrollToRow', scrollAnchor.changed);
   }
 
   if (newProps.scrollTop !== undefined &&
