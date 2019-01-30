@@ -44,11 +44,11 @@
 }
 
 .public/fixedDataTable/topShadow {
-  background-image: linear-gradient(180deg,rgba(0,0,0,0.1),rgba(0,0,0,0));
+  background-image: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public/fixedDataTable/bottomShadow {
-  background-image: linear-gradient(0deg,rgba(0,0,0,0.1),rgba(0,0,0,0));
+  background-image: linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public/fixedDataTable/horizontalScrollbar .public/Scrollbar/mainHorizontal {
