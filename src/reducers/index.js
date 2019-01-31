@@ -35,6 +35,7 @@ function getInitialState() {
      */
     columnProps: [],
     columnGroupProps: [],
+    config: {},
     elementTemplates: {
       cell: [],
       footer: [],
@@ -224,6 +225,21 @@ function setStateFromProps(state, props) {
 
   const newState = Object.assign({}, state,
     { columnGroupProps, columnProps, elementTemplates });
+
+  newState.config = Object.assign({}, newState.config, pick(props.config, [
+      'touchAmplitude',
+      'touchDeceleration',
+      'touchDecelerationFactor',
+      'touchDecelerationThreshold',
+      'touchTimeout',
+      'touchThreshold',
+      'keyboardScrollAmplitude',
+      'wheelBaseFactor',
+      'wheelPixelAmplitude',
+      'wheelLineAmplitude',
+      'wheelPageAmplitude'
+    ])
+  );
 
   newState.elementHeights = Object.assign({}, newState.elementHeights,
     pick(props, ['cellGroupWrapperHeight', 'footerHeight', 'groupHeaderHeight', 'headerHeight']));

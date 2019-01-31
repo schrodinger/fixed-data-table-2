@@ -20,9 +20,10 @@ import emptyFunction from 'emptyFunction';
 import requestAnimationFramePolyfill from 'requestAnimationFramePolyfill';
 
 let DEFAULT_TOUCH_CONFIG = {
-  MOVE_AMPLITUDE: 1.6,
   DECELERATION_AMPLITUDE: 1.6,
-  DECELERATION_FACTOR: 325,
+  DECELERATION_FACTOR: 0.325,
+  DECELERATION_THRESHOLD: 5,
+  MOVE_AMPLITUDE: 1.6,
   TRACKER_TIMEOUT: 100,
 };
 
@@ -90,7 +91,7 @@ class ReactTouchHandler {
 
     this._handleScrollX = handleScrollX;
     this._handleScrollY = handleScrollY;
-    this._touchConfig = Object.extend({}, DEFAULT_TOUCH_CONFIG, touchConfig);
+    this._setTouchConfig(touchConfig);
     this._stopPropagation = stopPropagation;
     this._onTouchScrollCallback = onTouchScroll;
 
@@ -271,16 +272,17 @@ class ReactTouchHandler {
   _autoScroll() {
     var DECELERATION_AMPLITUDE = this._touchConfig.DECELERATION_AMPLITUDE;
     var DECELERATION_FACTOR = this._touchConfig.DECELERATION_FACTOR;
+    var DECELERATION_THRESHOLD = this._touchConfig.DECELERATION_THRESHOLD;
 
-    var elapsed = Date.now() - this._autoScrollTimestamp;
+    var elapsed = (Date.now() - this._autoScrollTimestamp)/1000;
     var factor = DECELERATION_AMPLITUDE * Math.exp(-elapsed / DECELERATION_FACTOR);
     var deltaX = factor * this._velocityX;
     var deltaY = factor * this._velocityY;
 
-    if (Math.abs(deltaX) <= 5 || !this._handleScrollX(deltaX, deltaY)) {
+    if (Math.abs(deltaX) <= DECELERATION_THRESHOLD || !this._handleScrollX(deltaX, deltaY)) {
       deltaX = 0;
     }
-    if (Math.abs(deltaY) <= 5 || !this._handleScrollY(deltaY, deltaX)) {
+    if (Math.abs(deltaY) <= DECELERATION_THRESHOLD || !this._handleScrollY(deltaY, deltaX)) {
       deltaY = 0;
     }
 
@@ -288,6 +290,11 @@ class ReactTouchHandler {
       this._onTouchScrollCallback(deltaX, deltaY);
       requestAnimationFramePolyfill(this._autoScroll);
     }
+  }
+
+  /* Sets the configuration. */
+  _setTouchConfig(/*object*/ touchConfig) {
+    this._touchConfig = Object.assign({}, DEFAULT_TOUCH_CONFIG, touchConfig);
   }
 }
 

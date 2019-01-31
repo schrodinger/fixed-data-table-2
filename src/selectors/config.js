@@ -8,30 +8,45 @@
  *
  * @providesModule config
  */
+import defaultsDeep from 'lodash/defaultsDeep';
 import shallowEqualSelector from 'shallowEqualSelector';
+import isUndefined from 'lodash/isUndefined';
+import omitBy from 'lodash/omitBy';
+import reduce from 'lodash/reduce';
+import set from 'lodash/set';
 
 const DEFAULT_CONFIG = {
   keyboardConfig: {
     scrollAmplitude: 25,
   },
-  // react touch handler already provides the default values
-  touchConfig: {},
-  // react wheel handler already provides the default values
-  wheelConfig: {},
+  // react touch handler already provides some of the default values
+  touchConfig: {
+    threshold: (t) => Math.round(t) === 0,
+    DECELERATION_THRESHOLD: 5,
+  },
+  // react wheel handler already provides some of the default values
+  wheelConfig: {
+    baseFactor: 1,
+    threshold: (t) => Math.round(t) === 0,
+  },
 };
 
 /**
  * Compute the necessary heights for rendering parts of the table
  *
  * @param {{
- *   keyboardScollAmplitude: number,
+ *   keyboardScrollAmplitude: number,
  *   touchAmplitude: number,
- *   touchDecelaration: number,
- *   touchDecelarationFactor: number,
+ *   touchDeceleration: number,
+ *   touchDecelerationFactor: number,
+ *   touchDecelerationThreshold: number,
+ *   touchThreshold: number|function(threshold: number),
  *   touchTimeout: number,
- *   wheelPixelAmplitude: number,
+ *   wheelBaseFactor: number,
  *   wheelLineAmplitude: number,
  *   wheelPageAmplitude: number
+ *   wheelPixelAmplitude: number,
+ *   wheelThreshold: number
  * }} config
  * @return {{
  *   keyboardConfig: {
@@ -41,38 +56,52 @@ const DEFAULT_CONFIG = {
  *     MOVE_AMPLITUDE: number,
  *     DECELERATION_AMPLITUDE: number,
  *     DECELERATION_FACTOR: number,
- *     TRACKER_TIMEOUT: number
+ *     DECELERATION_THRESHOLD: number,
+ *     TRACKER_TIMEOUT: number,
+ *     threshold: number
  *   },
  *   wheelConfig: {
- *     PIXEL_STEP: number,
  *     LINE_HEIGHT: number,
- *     PAGE_HEIGHT: number
+ *     PAGE_HEIGHT: number,
+ *     PIXEL_STEP: number,
+ *     baseFactor: number,
+ *     threshold: number
  *   }
  * }}
  */
-function config(config) {
+function getConfig(config) {
   const touchConfig = {
     MOVE_AMPLITUDE: config.touchAmplitude,
-    DECELERATION_AMPLITUDE: config.touchDecelaration,
-    DECELERATION_FACTOR: config.touchDecelarationFactor,
+    DECELERATION_AMPLITUDE: config.touchDeceleration,
+    DECELERATION_FACTOR: config.touchDecelerationFactor,
+    DECELERATION_THRESHOLD: config.touchDecelerationThreshold,
     TRACKER_TIMEOUT: config.touchTimeout,
+    threshold: config.touchThreshold,
   };
 
   const keyboardConfig = {
-    scrollAmplitude: config.keyboardScollAmplitude,
+    scrollAmplitude: config.keyboardScrollAmplitude,
   };
 
   const wheelConfig = {
     PIXEL_STEP: config.wheelPixelAmplitude,
     LINE_HEIGHT: config.wheelLineAmplitude,
     PAGE_HEIGHT: config.wheelPageAmplitude,
+    baseFactor: config.wheelBaseFactor,
+    threshold: config.wheelThreshold,
   };
 
-  return _.merge({}, DEFAULT_CONFIG, {
+  const configMap = defaultsDeep({
     keyboardConfig,
     touchConfig,
     wheelConfig,
-  });
+  }, DEFAULT_CONFIG);
+
+  // NOTE: this only works for the first level of properties in the argument, and they must be objects.
+  const removeUndefinedProps = (obj) => reduce(obj, (result, value, key) =>
+    set(result, [key], omitBy(value, isUndefined)), {});
+
+  return removeUndefinedProps(configMap);
 }
 
-export default shallowEqualSelector(state.config, config);
+export default shallowEqualSelector([(state) => state.config], getConfig);

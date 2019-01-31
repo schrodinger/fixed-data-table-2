@@ -434,7 +434,7 @@ class FixedDataTable extends React.Component {
   }
 
   componentWillMount() {
-    const { touchConfig } = configSelector(this.props);
+    const { touchConfig, wheelConfig } = configSelector(this.props);
 
     this._didScrollStop = debounceCore(this._didScrollStopSync, 200, this);
     this._onKeyDown = this._onKeyDown.bind(this);
@@ -443,7 +443,8 @@ class FixedDataTable extends React.Component {
       this._onScroll,
       this._shouldHandleWheelX,
       this._shouldHandleWheelY,
-      this.props.stopScrollPropagation
+      this.props.stopScrollPropagation,
+      wheelConfig
     );
 
     this._touchHandler = new ReactTouchHandler(
@@ -464,24 +465,38 @@ class FixedDataTable extends React.Component {
     this._didScrollStopSync();
   }
 
-  _shouldHandleTouchX = (/*number*/ delta) /*boolean*/ =>
-    this.props.touchScrollEnabled && this._shouldHandleWheelX(delta)
-
-  _shouldHandleTouchY = (/*number*/ delta) /*boolean*/ =>
-    this.props.touchScrollEnabled && this._shouldHandleWheelY(delta)
-
   _shouldHandleWheelX = (/*number*/ delta) /*boolean*/ => {
+    return this.props.touchScrollEnabled && this._shouldHandleScrollX(delta);
+  }
+
+  _shouldHandleWheelY = (/*number*/ delta) /*boolean*/ => {
+    return this.props.touchScrollEnabled && this._shouldHandleScrollY(delta);
+  }
+
+  _shouldHandleTouchX = (/*number*/ delta) /*boolean*/ => {
+    const { threshold } = configSelector(this.props).touchConfig;
+    return this.props.touchScrollEnabled && this._shouldHandleScrollX(delta, threshold);
+  }
+
+  _shouldHandleTouchY = (/*number*/ delta) /*boolean*/ => {
+    const { threshold } = configSelector(this.props).touchConfig;
+    return this.props.touchScrollEnabled && this._shouldHandleScrollY(delta, threshold);
+  }
+
+  _shouldHandleScrollX = (/*number*/ delta, threshold = 0) /*boolean*/ => {
     const { maxScrollX, scrollFlags, scrollX } = this.props;
     const { overflowX } = scrollFlags;
 
-    if (overflowX === 'hidden') {
+    if (overflowX === 'hidden' || delta == 0) {
       return false;
     }
 
-    delta = Math.round(delta);
-    if (delta === 0) {
+    if (typeof threshold === 'function' && threshold(delta)) {
+      return false;
+    } else if (Math.abs(delta) <= threshold) {
       return false;
     }
+    delta = Math.round(delta);
 
     return (
       (delta < 0 && scrollX > 0) ||
@@ -489,7 +504,7 @@ class FixedDataTable extends React.Component {
     );
   }
 
-  _shouldHandleWheelY = (/*number*/ delta) /*boolean*/ => {
+  _shouldHandleScrollY = (/*number*/ delta, threshold = 0) /*boolean*/ => {
     const { maxScrollY, scrollFlags, scrollY } = this.props;
     const { overflowY } = scrollFlags;
 
@@ -497,20 +512,22 @@ class FixedDataTable extends React.Component {
       return false;
     }
 
-    delta = Math.round(delta);
-    if (delta === 0) {
+    if (typeof threshold === 'function' && threshold(delta)) {
+      return false;
+    } else if (Math.abs(delta) <= threshold) {
       return false;
     }
+    delta = Math.round(delta);
 
     return (
       (delta < 0 && scrollY > 0) ||
-      (delta >= 0 && scrollY < maxScrollY)
+      (delta > 0 && scrollY < maxScrollY)
     );
   }
 
   _onKeyDown(event) {
     const { scrollbarYHeight } = tableHeightsSelector(this.props);
-    const { scrollAmpltiude } = configSelector(this.props).keyboardConfig;
+    const { scrollAmplitude } = configSelector(this.props).keyboardConfig;
 
     if (this.props.keyboardPageEnabled) {
       switch (event.key) {
@@ -532,22 +549,22 @@ class FixedDataTable extends React.Component {
       switch (event.key) {
 
         case 'ArrowDown':
-          this._onScroll(0, scrollAmpltiude);
+          this._onScroll(0, scrollAmplitude);
           event.preventDefault();
           break;
 
         case 'ArrowUp':
-          this._onScroll(0, scrollAmpltiude * -1);
+          this._onScroll(0, scrollAmplitude * -1);
           event.preventDefault();
           break;
 
         case 'ArrowRight':
-          this._onScroll(scrollAmpltiude, 0);
+          this._onScroll(scrollAmplitude, 0);
           event.preventDefault();
           break;
 
         case 'ArrowLeft':
-          this._onScroll(scrollAmpltiude * -1, 0);
+          this._onScroll(scrollAmplitude * -1, 0);
           event.preventDefault();
           break;
 

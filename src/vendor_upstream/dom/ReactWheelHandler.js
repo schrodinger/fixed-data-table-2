@@ -60,13 +60,16 @@ class ReactWheelHandler {
     this._handleScrollX = handleScrollX;
     this._handleScrollY = handleScrollY;
     this._stopPropagation = stopPropagation;
-    this._wheelConfig = wheelConfig;
+    this._setWheelConfig(wheelConfig);
     this._onWheelCallback = onWheel;
     this.onWheel = this.onWheel.bind(this);
   }
 
   onWheel(/*object*/ event) {
     var normalizedEvent = normalizeWheel(event, this._wheelConfig);
+    normalizedEvent.pixelX *= this._wheelConfig.baseFactor;
+    normalizedEvent.pixelY *= this._wheelConfig.baseFactor;
+
     var deltaX = this._deltaX + normalizedEvent.pixelX;
     var deltaY = this._deltaY + normalizedEvent.pixelY;
     var handleScrollX = this._handleScrollX(deltaX, deltaY);
@@ -116,6 +119,11 @@ class ReactWheelHandler {
       parent = parent.parentNode;
     }
     return false;
+  }
+
+  /* Sets the configuration. */
+  _setWheelConfig(/*object*/ wheelConfig) {
+    this._wheelConfig = wheelConfig;
   }
 }
 

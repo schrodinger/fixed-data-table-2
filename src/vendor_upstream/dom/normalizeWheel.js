@@ -19,9 +19,9 @@ import isEventSupported from 'isEventSupported';
 
 // Reasonable defaults
 var DEFAULT_WHEEL_CONFIG = {
-  PIXEL_STEP: 10,
   LINE_HEIGHT: 40,
   PAGE_HEIGHT: 800,
+  PIXEL_STEP: 10,
 };
 
 /**
@@ -126,8 +126,8 @@ var DEFAULT_WHEEL_CONFIG = {
  */
 function normalizeWheel(/*object*/ event, /*?object*/wheelConfig = {}) /*object*/ {
   var PIXEL_STEP = wheelConfig.PIXEL_STEP || DEFAULT_WHEEL_CONFIG.PIXEL_STEP;
-  var LINE_HEIGHT = wheelConfig.LINE_HEIGHT || DEFAULT_WHEEL_CONFIG.PIXEL_STEP;
-  var PAGE_HEIGHT = wheelConfig.PAGE_HEIGHT || DEFAULT_WHEEL_CONFIG.PIXEL_STEP;
+  var LINE_HEIGHT = wheelConfig.LINE_HEIGHT || DEFAULT_WHEEL_CONFIG.LINE_HEIGHT;
+  var PAGE_HEIGHT = wheelConfig.PAGE_HEIGHT || DEFAULT_WHEEL_CONFIG.PAGE_HEIGHT;
   
   var sX = 0, sY = 0,       // spinX, spinY
       pX = 0, pY = 0;       // pixelX, pixelY
