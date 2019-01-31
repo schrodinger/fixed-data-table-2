@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.10 
+ * FixedDataTable v1.0.0-beta.11 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -303,8 +303,8 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
           transition-duration: 250ms;
   -webkit-transition-timing-function: ease;
           transition-timing-function: ease;
-  -webkit-transition-property: background-color width position;
-  transition-property: background-color width position;
+  -webkit-transition-property: width;
+  transition-property: width;
 }
 
 /**
