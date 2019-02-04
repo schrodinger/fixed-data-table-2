@@ -14,7 +14,7 @@
 
 ## Steps to Reproduce (for bugs)
 <!--- Provide a link to a live example, or - -->
-<!--- Fork the CodePen to reproduce https://codepen.io/alphalpha/pen/oqKJgG ->
+<!--- Fork the jsfiddle to reproduce https://codepen.io/alphalpha/pen/oqKJgG ->
 
 ## Context
 <!--- How has this issue affected you? What are you trying to accomplish? -->
