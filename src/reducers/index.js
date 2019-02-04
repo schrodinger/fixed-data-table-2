@@ -15,7 +15,6 @@ import { getScrollAnchor, scrollTo } from 'scrollAnchor';
 import * as ActionTypes from 'ActionTypes';
 import IntegerBufferSet from 'IntegerBufferSet';
 import PrefixIntervalTree from 'PrefixIntervalTree';
-import clamp from 'lodash/clamp';
 import columnStateHelper from 'columnStateHelper'
 import computeRenderedRows from 'computeRenderedRows';
 import convertColumnElementsToData from 'convertColumnElementsToData';
