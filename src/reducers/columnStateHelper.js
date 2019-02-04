@@ -36,10 +36,11 @@ function initialize(state, props, oldProps) {
     scrollX = scrollLeft;
   }
 
+  const scrollXAfterScrollLeft = scrollX;
   scrollX = scrollTo(state, props, oldProps.scrollToColumn, scrollX);
 
-  // if scrollX changed due to scrollLeft or scrollToColumn, then set scrollJumpedX
-  const scrollJumpedX = scrollX != state.scrollX;
+  // if scrollX changed due to scrollToColumn, then set scrollJumpedX
+  const scrollJumpedX = scrollX != scrollXAfterScrollLeft;
 
   const { maxScrollX } = columnWidths(state);
   scrollX = Math.min(scrollX, maxScrollX);

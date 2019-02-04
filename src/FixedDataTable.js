@@ -575,6 +575,7 @@ class FixedDataTable extends React.Component {
       this.props.scrollTop !== nextProps.scrollTop ||
       this.props.scrollLeft !== nextProps.scrollLeft) {
       this._didScrollStart();
+      this._didScrollStop();
     }
 
     this._didScrollJump(nextProps);
