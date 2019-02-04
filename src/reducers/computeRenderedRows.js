@@ -11,6 +11,7 @@
 
 'use strict';
 
+import clamp from 'lodash/clamp';
 import updateRowHeight from 'updateRowHeight';
 import roughHeightsSelector from 'roughHeights';
 import scrollbarsVisibleSelector from 'scrollbarsVisible';
@@ -58,7 +59,7 @@ export default function computeRenderedRows(state, scrollAnchor) {
   if (rowsCount > 0) {
     scrollY = newState.rowHeights[rowRange.firstViewportIdx] - newState.firstRowOffset;
   }
-  scrollY = Math.min(scrollY, maxScrollY);
+  scrollY = clamp(scrollY, 0, maxScrollY);
 
   return Object.assign(newState, {
     maxScrollY,

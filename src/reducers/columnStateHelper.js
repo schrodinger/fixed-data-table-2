@@ -14,6 +14,7 @@
 import emptyFunction from 'emptyFunction';
 import isNil from 'lodash/isNil';
 import columnWidths from 'columnWidths';
+import clamp from 'lodash/clamp';
 
 const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
@@ -43,7 +44,7 @@ function initialize(state, props, oldProps) {
   const scrollJumpedX = scrollX != scrollXAfterScrollLeft;
 
   const { maxScrollX } = columnWidths(state);
-  scrollX = Math.min(scrollX, maxScrollX);
+  scrollX = clamp(scrollX, 0, maxScrollX);
 
   // isColumnResizing should be overwritten by value from props if available
   isColumnResizing = props.isColumnResizing !== undefined ? props.isColumnResizing : isColumnResizing;
