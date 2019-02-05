@@ -25,6 +25,7 @@ import Scrollbar from 'Scrollbar';
 import columnTemplatesSelector from 'columnTemplates';
 import cx from 'cx';
 import debounceCore from 'debounceCore';
+import isNaN from 'lodash/isNaN';
 import joinClasses from 'joinClasses';
 import scrollbarsVisible from 'scrollbarsVisible';
 import tableHeightsSelector from 'tableHeights';
@@ -569,15 +570,7 @@ class FixedDataTable extends React.Component {
   }
 
   componentWillReceiveProps(/*object*/ nextProps) {
-
-    // In the case of controlled scrolling, notify.
-    if (this.props.tableSize.ownerHeight !== nextProps.tableSize.ownerHeight ||
-      this.props.scrollTop !== nextProps.scrollTop ||
-      this.props.scrollLeft !== nextProps.scrollLeft) {
-      this._didScrollStart();
-      this._didScrollStopSync();
-    }
-
+    this._didControlledScroll(nextProps);
     this._didScrollJump(nextProps);
   }
 
@@ -1092,6 +1085,52 @@ class FixedDataTable extends React.Component {
     // any jump must have happened, so call onScrollEnd
     if (onScrollEnd) {
       onScrollEnd(scrollX, scrollY, firstRowIndex);
+    }
+  }
+
+  _didControlledScroll = (/* !object */ nextProps) => {
+    const {
+      firstRowIndex: oldFirstRowIndex,
+      scrollLeft: oldScrollLeft,
+      scrollTop: oldScrollTop,
+      scrollX: oldScrollX,
+      scrollY: oldScrollY,
+      tableSize: { ownerHeight: oldOwnerHeight },
+    } = this.props;
+
+    const {
+      firstRowIndex,
+      onHorizontalScroll,
+      onScrollStart,
+      onScrollEnd,
+      onVerticalScroll,
+      scrollLeft,
+      scrollTop,
+      scrollX,
+      scrollY,
+      tableSize: { ownerHeight },
+    } = nextProps;
+
+    // we have an extra check on NaN because (NaN !== NaN)
+    const ownerHeightChanged = ownerHeight !== oldOwnerHeight && !(isNaN(ownerHeight) && isNaN(oldOwnerHeight));
+
+    // check if controlled scrolling occurred
+    const willScrollX = scrollLeft !== oldScrollLeft;
+    const willScrollY = scrollTop !== oldScrollTop;
+    const willScroll = willScrollX || willScrollY || ownerHeightChanged;
+
+    // notify if controlled scrolling occurred
+    if (willScroll) {
+      onScrollStart && onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex);
+    }
+    if (willScrollX) {
+      onHorizontalScroll && onHorizontalScroll(scrollX);
+    }
+    if (willScrollY) {
+      onVerticalScroll && onVerticalScroll(scrollY);
+    }
+    if (willScroll) {
+      onScrollEnd && onScrollEnd(scrollX, scrollY, firstRowIndex);
     }
   }
 
