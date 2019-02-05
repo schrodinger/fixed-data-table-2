@@ -36,6 +36,7 @@
 .public/fixedDataTable/scrollbarSpacer {
   position: absolute;
   z-index: 99;
+  top: 0;
 }
 
 .public/fixedDataTable/footer .public/fixedDataTableCell/main {
