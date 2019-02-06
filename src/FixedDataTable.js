@@ -25,6 +25,7 @@ import Scrollbar from 'Scrollbar';
 import columnTemplatesSelector from 'columnTemplates';
 import cx from 'cx';
 import debounceCore from 'debounceCore';
+import isNaN from 'lodash/isNaN';
 import joinClasses from 'joinClasses';
 import scrollbarsVisible from 'scrollbarsVisible';
 import tableHeightsSelector from 'tableHeights';
@@ -569,15 +570,7 @@ class FixedDataTable extends React.Component {
   }
 
   componentWillReceiveProps(/*object*/ nextProps) {
-
-    // In the case of controlled scrolling, notify.
-    if (this.props.tableSize.ownerHeight !== nextProps.tableSize.ownerHeight ||
-      this.props.scrollTop !== nextProps.scrollTop ||
-      this.props.scrollLeft !== nextProps.scrollLeft) {
-      this._didScrollStart();
-    }
-
-    this._didScrollJump(nextProps);
+    this._didControlledScroll(nextProps);
   }
 
   componentDidUpdate() {
@@ -1060,9 +1053,15 @@ class FixedDataTable extends React.Component {
     }
   }
 
-  _didScrollJump = (/* ?object */ nextProps) => {
+  /*
+    A controlled scroll can occur due to a scroll jump or a change in owner height.
+    This function also resets the jump state if any jump had occurred.
+    Handlers onScrollStart, onScrollEnd, onHorizontalScroll, and onVerticalScroll are called appropriately.
+   */
+  _didControlledScroll = (/* !object */ nextProps) => {
     const {
       firstRowIndex,
+      onScrollStart,
       onScrollEnd,
       scrollActions,
       scrollX,
@@ -1071,11 +1070,28 @@ class FixedDataTable extends React.Component {
       scrollJumpedY,
       onHorizontalScroll,
       onVerticalScroll,
-    } = nextProps || this.props;
+      tableSize: { ownerHeight },
+    } = nextProps;
 
-    // no jump happened, so just return
-    if (!scrollJumpedX && !scrollJumpedY) {
+    const {
+      firstRowIndex: oldFirstRowIndex,
+      scrollX: oldScrollX,
+      scrollY: oldScrollY,
+      tableSize: { ownerHeight: oldOwnerHeight },
+    } = this.props;
+
+    // we have an extra check on NaN because (NaN !== NaN)
+    const ownerHeightChanged = ownerHeight !== oldOwnerHeight && !(isNaN(ownerHeight) && isNaN(oldOwnerHeight));
+
+    // Only check for owner height changes if no scroll jump occurred. This prevents the scroll handlers from
+    // being called when an owner height change and scroll jump occurs in the same update.
+    if (!scrollJumpedX && !scrollJumpedY && !ownerHeightChanged) {
       return;
+    }
+
+    // any jump must have happened, so call onScrollStart
+    if (onScrollStart) {
+      onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex)
     }
 
     if (scrollJumpedX) {
@@ -1092,6 +1108,8 @@ class FixedDataTable extends React.Component {
     if (onScrollEnd) {
       onScrollEnd(scrollX, scrollY, firstRowIndex);
     }
+
+    return true;
   }
 
   // We need two versions of this function, one to finish up synchronously (for

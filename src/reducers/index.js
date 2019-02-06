@@ -135,8 +135,6 @@ function reducers(state = getInitialState(), action) {
         newState = computeRenderedRows(newState, scrollAnchor);
       }
 
-      newState.scrollJumpedY = scrollAnchor.didScrollToRow;
-
       newState = columnStateHelper.initialize(newState, newProps, oldProps);
 
       // TODO REDUX_MIGRATION solve w/ evil-diff
