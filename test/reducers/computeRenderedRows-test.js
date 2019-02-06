@@ -48,6 +48,7 @@ describe('computeRenderedRows', function() {
         },
         storedHeights: initialStoredHeights,
         scrollContentHeight: 10000,
+        scrollJumpedY: false,
       };
     });
 

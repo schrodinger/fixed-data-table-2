@@ -37,11 +37,7 @@ function initialize(state, props, oldProps) {
     scrollX = scrollLeft;
   }
 
-  const scrollXAfterScrollLeft = scrollX;
   scrollX = scrollTo(state, props, oldProps.scrollToColumn, scrollX);
-
-  // if scrollX changed due to scrollToColumn, then set scrollJumpedX
-  const scrollJumpedX = scrollX != scrollXAfterScrollLeft;
 
   const { maxScrollX } = columnWidths(state);
   scrollX = clamp(scrollX, 0, maxScrollX);
@@ -50,6 +46,7 @@ function initialize(state, props, oldProps) {
   isColumnResizing = props.isColumnResizing !== undefined ? props.isColumnResizing : isColumnResizing;
   columnResizingData = isColumnResizing ? columnResizingData : {};
 
+  const scrollJumpedX = scrollX != state.scrollX;
 
   return Object.assign({}, state, {
     columnResizingData,

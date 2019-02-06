@@ -238,6 +238,7 @@ describe('columnStateHelper', function() {
       assert.deepEqual(result, Object.assign({}, oldState, {
         maxScrollX: 400,
         scrollX: 400,
+        scrollJumpedX: true,
       }));
     });
 
@@ -249,6 +250,7 @@ describe('columnStateHelper', function() {
       assert.deepEqual(result, Object.assign({}, oldState, {
         maxScrollX: 400,
         scrollX: 100,
+        scrollJumpedX: true,
       }));
     });
 

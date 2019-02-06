@@ -29,7 +29,7 @@ import scrollbarsVisibleSelector from 'scrollbarsVisible';
  *   firstOffset: number,
  *   lastIndex: number,
  *   changed: boolean,
- *   didScrollToRow: (boolean|undefined),
+ *   scrollJumpedY: boolean,
  * }}
  */
 export function getScrollAnchor(state, newProps, oldProps) {
@@ -37,13 +37,16 @@ export function getScrollAnchor(state, newProps, oldProps) {
       newProps.scrollToRow !== null &&
       (!oldProps || newProps.scrollToRow !== oldProps.scrollToRow)) {
     const scrollAnchor = scrollToRow(state, newProps.scrollToRow);
-    return set(scrollAnchor, 'didScrollToRow', scrollAnchor.changed);
+    return set(scrollAnchor, 'scrollJumpedY', scrollAnchor.changed);
   }
 
   if (newProps.scrollTop !== undefined &&
       newProps.scrollTop !== null &&
       (!oldProps || newProps.scrollTop !== oldProps.scrollTop)) {
-    return scrollTo(state, newProps.scrollTop);
+    const scrollAnchor = scrollTo(state, newProps.scrollTop);
+    // 'changed' might give false positives to scrollJumpedY,
+    // but that's fine as the final value is determined by computeRenderedRows.
+    return set(scrollAnchor, 'scrollJumpedY', scrollAnchor.changed);
   }
 
   return {
@@ -51,6 +54,7 @@ export function getScrollAnchor(state, newProps, oldProps) {
     firstOffset: state.firstRowOffset,
     lastIndex: undefined,
     changed: false,
+    scrollJumpedY: false,
   }
 }
 

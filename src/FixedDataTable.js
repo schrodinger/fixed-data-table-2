@@ -571,7 +571,6 @@ class FixedDataTable extends React.Component {
 
   componentWillReceiveProps(/*object*/ nextProps) {
     this._didControlledScroll(nextProps);
-    this._didScrollJump(nextProps);
   }
 
   componentDidUpdate() {
@@ -1054,9 +1053,15 @@ class FixedDataTable extends React.Component {
     }
   }
 
-  _didScrollJump = (/* ?object */ nextProps) => {
+  /*
+    A controlled scroll can occur due to a scroll jump or a change in owner height.
+    This function also resets the jump state if any jump had occurred.
+    Handlers onScrollStart, onScrollEnd, onHorizontalScroll, and onVerticalScroll are called appropriately.
+   */
+  _didControlledScroll = (/* !object */ nextProps) => {
     const {
       firstRowIndex,
+      onScrollStart,
       onScrollEnd,
       scrollActions,
       scrollX,
@@ -1065,11 +1070,28 @@ class FixedDataTable extends React.Component {
       scrollJumpedY,
       onHorizontalScroll,
       onVerticalScroll,
-    } = nextProps || this.props;
+      tableSize: { ownerHeight },
+    } = nextProps;
 
-    // no jump happened, so just return
-    if (!scrollJumpedX && !scrollJumpedY) {
+    const {
+      firstRowIndex: oldFirstRowIndex,
+      scrollX: oldScrollX,
+      scrollY: oldScrollY,
+      tableSize: { ownerHeight: oldOwnerHeight },
+    } = this.props;
+
+    // we have an extra check on NaN because (NaN !== NaN)
+    const ownerHeightChanged = ownerHeight !== oldOwnerHeight && !(isNaN(ownerHeight) && isNaN(oldOwnerHeight));
+
+    // Only check for owner height changes if no scroll jump occurred. This prevents the scroll handlers from
+    // being called when an owner height change and scroll jump occurs in the same update.
+    if (!scrollJumpedX && !scrollJumpedY && !ownerHeightChanged) {
       return;
+    }
+
+    // any jump must have happened, so call onScrollStart
+    if (onScrollStart) {
+      onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex)
     }
 
     if (scrollJumpedX) {
@@ -1086,52 +1108,8 @@ class FixedDataTable extends React.Component {
     if (onScrollEnd) {
       onScrollEnd(scrollX, scrollY, firstRowIndex);
     }
-  }
 
-  _didControlledScroll = (/* !object */ nextProps) => {
-    const {
-      firstRowIndex: oldFirstRowIndex,
-      scrollLeft: oldScrollLeft,
-      scrollTop: oldScrollTop,
-      scrollX: oldScrollX,
-      scrollY: oldScrollY,
-      tableSize: { ownerHeight: oldOwnerHeight },
-    } = this.props;
-
-    const {
-      firstRowIndex,
-      onHorizontalScroll,
-      onScrollStart,
-      onScrollEnd,
-      onVerticalScroll,
-      scrollLeft,
-      scrollTop,
-      scrollX,
-      scrollY,
-      tableSize: { ownerHeight },
-    } = nextProps;
-
-    // we have an extra check on NaN because (NaN !== NaN)
-    const ownerHeightChanged = ownerHeight !== oldOwnerHeight && !(isNaN(ownerHeight) && isNaN(oldOwnerHeight));
-
-    // check if controlled scrolling occurred
-    const willScrollX = scrollLeft !== oldScrollLeft;
-    const willScrollY = scrollTop !== oldScrollTop;
-    const willScroll = willScrollX || willScrollY || ownerHeightChanged;
-
-    // notify if controlled scrolling occurred
-    if (willScroll) {
-      onScrollStart && onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex);
-    }
-    if (willScrollX) {
-      onHorizontalScroll && onHorizontalScroll(scrollX);
-    }
-    if (willScrollY) {
-      onVerticalScroll && onVerticalScroll(scrollY);
-    }
-    if (willScroll) {
-      onScrollEnd && onScrollEnd(scrollX, scrollY, firstRowIndex);
-    }
+    return true;
   }
 
   // We need two versions of this function, one to finish up synchronously (for

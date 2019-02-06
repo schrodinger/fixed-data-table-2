@@ -29,6 +29,7 @@ import tableHeightsSelector from 'tableHeights';
  *   firstIndex: number,
  *   firstOffset: number,
  *   lastIndex: number,
+ *   scrollJumpedY: boolean,
  * }} scrollAnchor
  * @return {!Object} The updated state object
  */
@@ -59,11 +60,13 @@ export default function computeRenderedRows(state, scrollAnchor) {
   if (rowsCount > 0) {
     scrollY = newState.rowHeights[rowRange.firstViewportIdx] - newState.firstRowOffset;
   }
+  const scrollJumpedY = (scrollAnchor.scrollJumpedY === true) && (scrollY !== state.scrollY);
   scrollY = clamp(scrollY, 0, maxScrollY);
 
   return Object.assign(newState, {
     maxScrollY,
     scrollY,
+    scrollJumpedY,
   });
 }
 
