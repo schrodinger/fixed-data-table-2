@@ -598,7 +598,7 @@ var FixedDataTable = createReactClass({
 
     // Cancel any pending debounced scroll handling and handle immediately.
     this._didScrollStop.reset();
-    this._didScrollStopSync();
+    this._didScrollStop();
 
     this.setState(this._calculateState(nextProps, this.state));
   },
