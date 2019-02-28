@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.19 
+ * FixedDataTable v0.8.20 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -3278,7 +3278,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.19';
+FixedDataTableRoot.version = '0.8.20';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -3901,11 +3901,8 @@ var FixedDataTable = (0, _createReactClass2.default)({
     // In the case of controlled scrolling, notify.
     if (this.props.ownerHeight !== nextProps.ownerHeight || this.props.scrollTop !== nextProps.scrollTop || this.props.scrollLeft !== nextProps.scrollLeft) {
       this._didScrollStart();
+      this._didScrollStop();
     }
-
-    // Cancel any pending debounced scroll handling and handle immediately.
-    this._didScrollStop.reset();
-    this._didScrollStopSync();
 
     this.setState(this._calculateState(nextProps, this.state));
   },
