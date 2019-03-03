@@ -78,19 +78,14 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
  */
 function flexWidths(columnGroupProps, columnProps, viewportWidth) {
   let remainingFlexGrow = getTotalFlexGrow(columnProps);
-  if (remainingFlexGrow === 0) {
-    return {
-      newColumnGroupProps: columnGroupProps,
-      newColumnProps: columnProps,
-    };
-  }
 
   const columnsWidth = getTotalWidth(columnProps);
   let remainingFlexWidth = Math.max(viewportWidth - columnsWidth, 0);
 
   const newColumnProps = map(columnProps, column => {
     const { flexGrow } = column;
-    if (!flexGrow) {
+
+    if (!flexGrow || remainingFlexGrow === 0) {
       return column;
     }
 
