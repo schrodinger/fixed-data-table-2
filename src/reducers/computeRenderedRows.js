@@ -60,8 +60,8 @@ export default function computeRenderedRows(state, scrollAnchor) {
       }
       newState.firstRowOffset = 0;
     }
+    computeRenderedRowOffsets(newState, rowRange);
   }
-  computeRenderedRowOffsets(newState, rowRange);
 
   let scrollY = state.scrollY;
   if (rowsCount > 0) {
@@ -233,7 +233,8 @@ function computeRenderedRowOffsets(state, rowRange) {
 
 /**
  * Walk the rows to render that are present in the viewport and compute the height offsets and
- * positions in the row buffer.
+ * positions in the row buffer. (Also modifies the height offsets for the rows outside the viewport, to avoid
+ * overlapping).
  *
  * NOTE (jordan) This alters state so it shouldn't be called
  * without state having been cloned first.
@@ -267,30 +268,35 @@ function computeViewPortRenderedRowOffsets(state, rowRange) {
   }
 
   // output for this function
-  const bufferMapping = state.rows; // state.rows
-  const rowOffsetsCache = {}; // state.rowHeights
+  const bufferMapping = state.rows;
+  const rowOffsetsCache = {};
 
-  // these are used for finding row indices that remain unchanged while scrolling
-  const bufferMappingOld = state.rows.slice(); // old state.rows
-  const rowOffsetsCacheOld = state.rowHeights; // old state.rowHeights
+  // Used as a way to get the row ID deltas across scrolls
+  const bufferMappingOld = state.rows.slice();
+  const rowOffsetsCacheOld = Object.assign({}, state.rowHeights);
 
+  // incremental way for calculating rowOffset
   let runningOffset = rowOffsets.sumUntil(firstBufferIdx);
 
-  //console.log('firstViewportIdx = ', firstViewportIdx);
-  for (let rowIdx = firstViewportIdx; rowIdx <= endViewportIdx; rowIdx++) {
+  for (let rowIdx = firstBufferIdx; rowIdx < endBufferIdx; rowIdx++) {
+
     // Update the offset for rendering the row
     rowOffsetsCache[rowIdx] = runningOffset;
     runningOffset += storedHeights[rowIdx];
 
-    // get the position of the row by adding it to the buffer
-    const rowPosition = addRowToBuffer(rowIdx, firstViewportIdx, endViewportIdx, bufferSet, renderedRowsCount);
+    // we'll skip rows inside the viewport
+    if (rowIdx < firstViewportIdx || rowIdx >= endViewportIdx) {
+      continue;
+    }
 
-    // update our buffer
+    // Get position for the viewport row
+    const rowPosition = addRowToBuffer(rowIdx, firstViewportIdx, endViewportIdx, bufferSet, renderedRowsCount);
     bufferMapping[rowPosition] = rowIdx;
   }
 
-  // There will be rows which are still present in the new buffer but not updated (since the loop only changes
-  // values for rows between the viewport).
+  // Each time we make a set of row offsets, but we only change the position for the rows inside the buffer
+  // there's a possibility that the old rows (outside the viewport) overlap the new ones since scrollY was changed.
+  // To avoid this, we need to update the rowOffsets for them.
   const unchangedRows = intersection(bufferMapping, bufferMappingOld);
   unchangedRows.forEach(rowIdx => rowOffsetsCache[rowIdx] = rowOffsetsCacheOld[rowIdx]);
 
