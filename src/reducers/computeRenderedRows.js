@@ -17,6 +17,8 @@ import roughHeightsSelector from 'roughHeights';
 import scrollbarsVisibleSelector from 'scrollbarsVisible';
 import tableHeightsSelector from 'tableHeights';
 
+import intersection from 'lodash/intersection';
+
 /**
  * Returns data about the rows to render
  * rows is a map of rowIndexes to render to their heights
@@ -42,21 +44,26 @@ export default function computeRenderedRows(state, scrollAnchor) {
   const { bodyHeight } = tableHeightsSelector(newState);
   const maxScrollY = scrollContentHeight - bodyHeight;
 
-  // NOTE (jordan) This handles #115 where resizing the viewport may
-  // leave only a subset of rows shown, but no scrollbar to scroll up to the first rows.
-  if (maxScrollY === 0) {
-    if (rowRange.firstViewportIdx > 0) {
-      rowRange = calculateRenderedRowRange(newState, {
-        firstOffset: 0,
-        lastIndex: rowsCount - 1,
-      });
+  // if we are scrolling, only update the offsets for the rows which are
+  // inside the viewport
+  if (state.scrolling) {
+    computeViewPortRenderedRowOffsets(newState, rowRange);
+  } else {
+    // NOTE (jordan) This handles #115 where resizing the viewport may
+    // leave only a subset of rows shown, but no scrollbar to scroll up to the first rows.
+    if (maxScrollY === 0) {
+      if (rowRange.firstViewportIdx > 0) {
+        rowRange = calculateRenderedRowRange(newState, {
+          firstOffset: 0,
+          lastIndex: rowsCount - 1,
+        });
+      }
+      newState.firstRowOffset = 0;
     }
-
-    newState.firstRowOffset = 0;
   }
-
   computeRenderedRowOffsets(newState, rowRange);
-  let scrollY = 0;
+
+  let scrollY = state.scrollY;
   if (rowsCount > 0) {
     scrollY = newState.rowHeights[rowRange.firstViewportIdx] - newState.firstRowOffset;
   }
@@ -216,26 +223,97 @@ function computeRenderedRowOffsets(state, rowRange) {
     rowOffsetsCache[rowIdx] = runningOffset;
     runningOffset += storedHeights[rowIdx];
 
-    // Check if row already has a position in the buffer
-    let rowPosition = bufferSet.getValuePosition(rowIdx);
-
-    // Request a position in the buffer through eviction of another row
-    if (rowPosition === null && bufferSet.getSize() >= renderedRowsCount) {
-      rowPosition = bufferSet.replaceFurthestValuePosition(
-        firstViewportIdx,
-        endViewportIdx - 1,
-        rowIdx
-      );
-    }
-
-    // If we can't reuse any existing position, create a new one
-    if (rowPosition === null) {
-      rowPosition = bufferSet.getNewPositionForValue(rowIdx);
-    }
-
+    const rowPosition = addRowToBuffer(rowIdx, firstViewportIdx, endViewportIdx, bufferSet, renderedRowsCount);
     bufferMapping[rowPosition] = rowIdx;
   }
 
   state.rowHeights = rowOffsetsCache;
   state.rows = bufferMapping;
+}
+
+/**
+ * Walk the rows to render that are present in the viewport and compute the height offsets and
+ * positions in the row buffer.
+ *
+ * NOTE (jordan) This alters state so it shouldn't be called
+ * without state having been cloned first.
+ *
+ * TODO (pradeep): Refactor computeViewPortRenderedRowOffsets and computeRenderRowOffsets. There's some code
+ * duplication present.
+ *
+ * @param {!Object} state
+ * @param {{
+ *   endBufferIdx: number,
+ *   endViewportIdx: number,
+ *   firstBufferIdx: number,
+ *   firstViewportIdx: number,
+ * }} rowRange
+ * @private
+ */
+function computeViewPortRenderedRowOffsets(state, rowRange) {
+  const { bufferSet, rowOffsets, storedHeights } = state;
+  const {
+    endBufferIdx,
+    endViewportIdx,
+    firstBufferIdx,
+    firstViewportIdx,
+  } = rowRange;
+
+  const renderedRowsCount = endBufferIdx - firstBufferIdx;
+  if (renderedRowsCount === 0) {
+    state.rowHeights = {};
+    state.rows = [];
+    return;
+  }
+
+  // output for this function
+  const bufferMapping = state.rows; // state.rows
+  const rowOffsetsCache = {}; // state.rowHeights
+
+  // these are used for finding row indices that remain unchanged while scrolling
+  const bufferMappingOld = state.rows.slice(); // old state.rows
+  const rowOffsetsCacheOld = state.rowHeights; // old state.rowHeights
+
+  let runningOffset = rowOffsets.sumUntil(firstBufferIdx);
+
+  //console.log('firstViewportIdx = ', firstViewportIdx);
+  for (let rowIdx = firstViewportIdx; rowIdx <= endViewportIdx; rowIdx++) {
+    // Update the offset for rendering the row
+    rowOffsetsCache[rowIdx] = runningOffset;
+    runningOffset += storedHeights[rowIdx];
+
+    // get the position of the row by adding it to the buffer
+    const rowPosition = addRowToBuffer(rowIdx, firstViewportIdx, endViewportIdx, bufferSet, renderedRowsCount);
+
+    // update our buffer
+    bufferMapping[rowPosition] = rowIdx;
+  }
+
+  // There will be rows which are still present in the new buffer but not updated (since the loop only changes
+  // values for rows between the viewport).
+  const unchangedRows = intersection(bufferMapping, bufferMappingOld);
+  unchangedRows.forEach(rowIdx => rowOffsetsCache[rowIdx] = rowOffsetsCacheOld[rowIdx]);
+
+  state.rowHeights = rowOffsetsCache;
+  state.rows = bufferMapping;
+}
+
+function addRowToBuffer(rowIdx, bufferSetStartIndex, bufferSetEndIndex, bufferSet, maxBufferSize) {
+  // Check if row already has a position in the buffer
+  let rowPosition = bufferSet.getValuePosition(rowIdx);
+
+  // Request a position in the buffer through eviction of another row
+  if (rowPosition === null && bufferSet.getSize() >= maxBufferSize)  {
+    rowPosition = bufferSet.replaceFurthestValuePosition(
+      bufferSetStartIndex,
+      bufferSetEndIndex - 1,
+      rowIdx
+    );
+  }
+
+  if (rowPosition === null) {
+    rowPosition = bufferSet.getNewPositionForValue(rowIdx);
+  }
+
+  return rowPosition;
 }
