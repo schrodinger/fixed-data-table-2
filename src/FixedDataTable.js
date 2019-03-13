@@ -38,7 +38,7 @@ import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPositi
 var ReactChildren = React.Children;
 
 var EMPTY_OBJECT = {};
-var BORDER_HEIGHT = 1;
+var BORDER_HEIGHT = 0;
 var HEADER = 'header';
 var FOOTER = 'footer';
 var CELL = 'cell';
