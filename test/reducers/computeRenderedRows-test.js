@@ -46,6 +46,7 @@ describe('computeRenderedRows', function() {
           rowHeightGetter: () => 125,
           subRowHeightGetter: () => 0,
         },
+        rows: [],
         storedHeights: initialStoredHeights,
         scrollContentHeight: 10000,
         scrollJumpedY: false,
