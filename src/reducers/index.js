@@ -151,7 +151,7 @@ function reducers(state = getInitialState(), action) {
         firstIndex: state.firstRowIndex,
         firstOffset: state.firstRowOffset,
         lastIndex: state.lastIndex,
-        scrollJumpedY: false,
+        scrollJumpedY: state.scrollJumpedY,
       };
       return computeRenderedRows(newState, unchangedRowRange);
     }
