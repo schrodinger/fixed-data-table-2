@@ -149,7 +149,7 @@ class FixedDataTableColumn extends React.Component {
    flexGrow: PropTypes.number,
 
    /**
-    * Whether the column can be resized with the ColumnResizerLine.
+    * Whether the column can be resized.
     * Please note that if a column has a flex grow, once you resize
     * the column, this will be set to 0.
     *
