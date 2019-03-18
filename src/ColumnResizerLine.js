@@ -10,7 +10,7 @@
  * that when you click on a column that is resizable appears and allows
  * you to resize the corresponding column.
  *
- * @providesModule FixedDataTableColumnResizeHandle
+ * @providesModule ColumnResizerLine
  * @typechecks
  */
 
@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import clamp from 'clamp';
 import cx from 'cx';
 
-class FixedDataTableColumnResizeHandle extends React.PureComponent {
+class ColumnResizerLine extends React.PureComponent {
   static propTypes = {
     visible: PropTypes.bool.isRequired,
 
@@ -164,4 +164,4 @@ class FixedDataTableColumnResizeHandle extends React.PureComponent {
   }
 };
 
-module.exports = FixedDataTableColumnResizeHandle;
+module.exports = ColumnResizerLine;

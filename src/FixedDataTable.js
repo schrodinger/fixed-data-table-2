@@ -14,7 +14,7 @@
 /*eslint no-bitwise:1*/
 
 import FixedDataTableBufferedRows from 'FixedDataTableBufferedRows';
-import FixedDataTableColumnResizeHandle from 'FixedDataTableColumnResizeHandle';
+import ColumnResizerLine from 'ColumnResizerLine';
 import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
 import FixedDataTableRow from 'FixedDataTableRow';
 import React from 'React';
@@ -676,7 +676,7 @@ class FixedDataTable extends React.Component {
     }
 
     const dragKnob =
-      <FixedDataTableColumnResizeHandle
+      <ColumnResizerLine
         height={componentHeight}
         initialWidth={columnResizingData.width || 0}
         minWidth={columnResizingData.minWidth || 0}
