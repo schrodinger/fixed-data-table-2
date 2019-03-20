@@ -818,11 +818,11 @@ class FixedDataTable extends React.Component {
 
   _renderRows = (/*number*/ offsetTop, fixedCellTemplates, fixedRightCellTemplates, scrollableCellTemplates,
     bodyHeight) /*object*/ => {
-    const { scrollEnabledY, scrolling } = scrollbarsVisible(this.props);
+    const { scrollEnabledY } = scrollbarsVisible(this.props);
     const props = this.props;
     return (
       <FixedDataTableBufferedRows
-        isScrolling={scrolling}
+        isScrolling={props.scrolling}
         fixedColumns={fixedCellTemplates}
         fixedRightColumns={fixedRightCellTemplates}
         height={bodyHeight}
