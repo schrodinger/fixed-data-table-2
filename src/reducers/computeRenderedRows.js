@@ -235,7 +235,7 @@ function computeRenderedRowOffsets(state, rowRange, computeWithinViewportOnly) {
   if (computeWithinViewportOnly) {
     // In the above loop, we only calculated row offsets for the rows inside the buffer.
     // Now we calculate the row offsets for the remaining rows.
-    const rowsNotInBuffer = filter(state.rows, (rowIdx) => !inRange(rowIdx, firstBufferIdx, endBufferIdx));
+    const rowsNotInBuffer = filter(bufferMapping, (rowIdx) => !inRange(rowIdx, firstBufferIdx, endBufferIdx));
     rowsNotInBuffer.forEach(rowIdx => rowOffsetsCache[rowIdx] = state.rowHeights[rowIdx]);
   }
 
