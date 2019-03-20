@@ -178,9 +178,8 @@ function calculateRenderedRowRange(state, scrollAnchor) {
 }
 
 /**
- * Walk the rows to render that are present in the viewport and compute the height offsets and
- * positions in the row buffer. (Also modifies the height offsets for the rows outside the viewport, to avoid
- * overlapping).
+ * Walk the rows to render that are present in the viewport and compute the height offsets and positions
+ * in the row buffer. Also modifies the height offsets for the rows outside the viewport, to avoid overlapping.
  *
  * NOTE (jordan) This alters state so it shouldn't be called
  * without state having been cloned first.
@@ -192,10 +191,10 @@ function calculateRenderedRowRange(state, scrollAnchor) {
  *   firstBufferIdx: number,
  *   firstViewportIdx: number,
  * }} rowRange
- * @param {boolean=} computeWithinViewportOnly
+ * @param {boolean} computeWithinViewportOnly
  * @private
  */
-function computeRenderedRowOffsets(state, rowRange, computeWithinViewportOnly = false) {
+function computeRenderedRowOffsets(state, rowRange, computeWithinViewportOnly) {
   const { bufferSet, rowOffsets, storedHeights } = state;
   const {
     endBufferIdx,
@@ -212,7 +211,7 @@ function computeRenderedRowOffsets(state, rowRange, computeWithinViewportOnly = 
   }
 
   // output for this function
-  const bufferMapping = state.rows;
+  const bufferMapping = computeWithinViewportOnly ? state.rows : [];
   const rowOffsetsCache = {}; // state.rowHeights
 
   // incremental way for calculating rowOffset
