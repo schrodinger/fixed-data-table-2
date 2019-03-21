@@ -270,7 +270,7 @@ function computeRenderedRowOffsetsInViewport(state, rowRange) {
     endViewportIdx,
     firstBufferIdx,
     firstViewportIdx,
-    } = rowRange;
+  } = rowRange;
 
   const renderedRowsCount = endBufferIdx - firstBufferIdx;
   if (renderedRowsCount === 0) {
@@ -280,34 +280,31 @@ function computeRenderedRowOffsetsInViewport(state, rowRange) {
   }
 
   // output for this function
-  const bufferMapping = state.rows.slice(); // state.rows
-  const rowOffsetsCache = {}; // state.rowOffsets
+  const rows = state.rows.slice(); // state.rows
+  const rowOffsets = {}; // state.rowOffsets
 
   // incremental way for calculating rowOffset
-  let runningOffset = rowOffsetIntervalTree.sumUntil(firstBufferIdx);
+  let runningOffset = rowOffsetIntervalTree.sumUntil(firstViewportIdx);
 
-  for (let rowIdx = firstBufferIdx; rowIdx < endBufferIdx; rowIdx++) {
+  // we add the rows inside the current view port and also calculate their offsets
+  for (let rowIdx = firstViewportIdx; rowIdx < endViewportIdx; rowIdx++) {
     // Update the offset for rendering the row
-    rowOffsetsCache[rowIdx] = runningOffset;
+    rowOffsets[rowIdx] = runningOffset;
     runningOffset += storedHeights[rowIdx];
-
-    // we'll skip getting a row position for the rows outside the viewport
-    if (rowIdx < firstViewportIdx || rowIdx >= endViewportIdx) {
-      continue;
-    }
 
     // Get position for the viewport row
     const rowPosition = addRowToBuffer(rowIdx, rowBufferSet, firstViewportIdx, endViewportIdx, renderedRowsCount);
-    bufferMapping[rowPosition] = rowIdx;
+    rows[rowPosition] = rowIdx;
   }
 
-  // In the above loop, we only calculated row offsets for the rows inside the buffer.
-  // Now we calculate the row offsets for the remaining rows from the previous row offsets.
-  const rowsNotInBuffer = filter(bufferMapping, (rowIdx) => !inRange(rowIdx, firstBufferIdx, endBufferIdx));
-  rowsNotInBuffer.forEach((rowIdx) => rowOffsetsCache[rowIdx] = state.rowOffsets[rowIdx]);
+  // we also need to store the rowOffsets for rows out side the view port that still exist in the buffer
+  const rowsInBufferSet = filter(state.rows, (rowIdx) => rowBufferSet.getValuePosition(rowIdx) !== null);
+  const rowsOutsideViewPort = filter(rowsInBufferSet, (rowIdx) => !inRange(rowIdx, firstViewportIdx, endViewportIdx));
+  rowsOutsideViewPort.forEach((rowIdx) => rowOffsets[rowIdx] = state.rowOffsets[rowIdx]);
 
-  state.rowOffsets = rowOffsetsCache;
-  state.rows = bufferMapping;
+  // now we modify the state with the newly calculated rows and offsets
+  state.rows = rows;
+  state.rowOffsets = rowOffsets;
 }
 
 /**
