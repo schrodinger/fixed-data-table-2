@@ -19,7 +19,7 @@ describe('scrollAnchor', function() {
     let oldState;
     beforeEach(function() {
       oldState = {
-        rowOffsets: {
+        rowOffsetIntervalTree: {
           greatestLowerBound: (scrollY) => Math.floor(scrollY / 100),
           sumUntil: (idx) => idx * 100,
         },
@@ -81,7 +81,7 @@ describe('scrollAnchor', function() {
     let oldState;
     beforeEach(function() {
       oldState = {
-        rowOffsets: {
+        rowOffsetIntervalTree: {
           sumUntil: idx => idx * 100,
         },
         rowSettings: {

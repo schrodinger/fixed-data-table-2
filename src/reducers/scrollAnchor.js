@@ -72,7 +72,7 @@ export function getScrollAnchor(state, newProps, oldProps) {
  */
 export function scrollTo(state, scrollY) {
   const { availableHeight } = scrollbarsVisibleSelector(state);
-  const { rowOffsets, rowSettings, scrollContentHeight } = state;
+  const { rowOffsetIntervalTree, rowSettings, scrollContentHeight } = state;
   const { rowsCount } = rowSettings;
 
   if (rowsCount === 0) {
@@ -95,15 +95,15 @@ export function scrollTo(state, scrollY) {
     lastIndex = rowsCount - 1;
   } else {
     // Mark the row which will appear first in the viewport
-    // We use this as our "marker" when scrolling even if updating rowHeights
+    // We use this as our "marker" when scrolling even if updating rowOffsets
     // leads to it not being different from the scrollY specified
-    const newRowIdx = rowOffsets.greatestLowerBound(scrollY);
+    const newRowIdx = rowOffsetIntervalTree.greatestLowerBound(scrollY);
     firstIndex = clamp(newRowIdx, 0, Math.max(rowsCount - 1, 0));
 
     // Record how far into the first row we should scroll
     // firstOffset is a negative value representing how much larger scrollY is
     // than the scroll position of the first row in the viewport
-    const firstRowPosition = rowOffsets.sumUntil(firstIndex);
+    const firstRowPosition = rowOffsetIntervalTree.sumUntil(firstIndex);
     firstOffset = firstRowPosition - scrollY;
   }
 
@@ -135,7 +135,7 @@ export function scrollTo(state, scrollY) {
  */
 function scrollToRow(state, rowIndex) {
   const { availableHeight } = scrollbarsVisibleSelector(state);
-  const { rowOffsets, rowSettings, storedHeights, scrollY } = state;
+  const { rowOffsetIntervalTree, rowSettings, storedHeights, scrollY } = state;
   const { rowsCount } = rowSettings;
 
   if (rowsCount === 0) {
@@ -149,7 +149,7 @@ function scrollToRow(state, rowIndex) {
 
   rowIndex = clamp(rowIndex, 0, Math.max(rowsCount - 1, 0));
   updateRowHeight(state, rowIndex);
-  let rowBegin = rowOffsets.sumUntil(rowIndex);
+  let rowBegin = rowOffsetIntervalTree.sumUntil(rowIndex);
   let rowEnd = rowBegin + storedHeights[rowIndex];
 
   let firstIndex = rowIndex;

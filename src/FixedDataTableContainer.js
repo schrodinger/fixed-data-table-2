@@ -92,7 +92,7 @@ class FixedDataTableContainer extends React.Component {
       'maxScrollX',
       'maxScrollY',
       'rows',
-      'rowHeights',
+      'rowOffsets',
       'rowSettings',
       'scrollContentHeight',
       'scrollFlags',

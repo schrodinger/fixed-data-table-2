@@ -40,7 +40,7 @@ describe('computeRenderedRows', function() {
       oldState = {
         bufferSet: new IntegerBufferSet(),
         placeholder: 'temp',
-        rowOffsets: PrefixIntervalTree.uniform(80, 125),
+        rowOffsetIntervalTree: PrefixIntervalTree.uniform(80, 125),
         rowSettings: {
           rowsCount: 80,
           rowHeightGetter: () => 125,
@@ -65,15 +65,15 @@ describe('computeRenderedRows', function() {
 
       const newState = computeRenderedRows(oldState, scrollAnchor);
 
-      const expectedRowHeights = {};
+      const expectedRowOffsets = {};
       const expectedRows = [];
       for (let rowIdx = 13; rowIdx < 22; rowIdx++) {
         expectedRows.push(rowIdx);
-        expectedRowHeights[rowIdx] = rowIdx * 125;
+        expectedRowOffsets[rowIdx] = rowIdx * 125;
 
         assert.strictEqual(newState.storedHeights[rowIdx], 125,
           'expected stored height of 125 for each row');
-        assert.strictEqual(newState.rowOffsets.get(rowIdx), 125,
+        assert.strictEqual(newState.rowOffsetIntervalTree.get(rowIdx), 125,
           'expected row offsets for each row to be set to 125');
         assert.isNotNull(newState.bufferSet.getValuePosition(rowIdx),
           `expected a buffer position for each row. rowIdx: ${rowIdx}`);
@@ -86,7 +86,7 @@ describe('computeRenderedRows', function() {
         firstRowIndex: 15,
         firstRowOffset: -25,
         maxScrollY: 9400,
-        rowHeights: expectedRowHeights,
+        rowOffsets: expectedRowOffsets,
         rows: expectedRows,
         scrollY: 1900,
       }));
@@ -101,15 +101,15 @@ describe('computeRenderedRows', function() {
 
       const newState = computeRenderedRows(oldState, scrollAnchor);
 
-      const expectedRowHeights = {};
+      const expectedRowOffsets = {};
       const expectedRows = [];
       for (let rowIdx = 24; rowIdx < 33; rowIdx++) {
         expectedRows.push(rowIdx);
-        expectedRowHeights[rowIdx] = rowIdx * 125;
+        expectedRowOffsets[rowIdx] = rowIdx * 125;
 
         assert.strictEqual(newState.storedHeights[rowIdx], 125,
           'expected stored height of 125 for each row');
-        assert.strictEqual(newState.rowOffsets.get(rowIdx), 125,
+        assert.strictEqual(newState.rowOffsetIntervalTree.get(rowIdx), 125,
           'expected row offsets for each row to be set to 125');
         assert.isNotNull(newState.bufferSet.getValuePosition(rowIdx),
           `expected a buffer position for each row. rowIdx: ${rowIdx}`);
@@ -122,7 +122,7 @@ describe('computeRenderedRows', function() {
         firstRowIndex: 26,
         firstRowOffset: -25,
         maxScrollY: 9400,
-        rowHeights: expectedRowHeights,
+        rowOffsets: expectedRowOffsets,
         rows: expectedRows,
         scrollY: 3275,
       }));
@@ -140,7 +140,7 @@ describe('computeRenderedRows', function() {
 
       assert.deepEqual(newState, Object.assign(oldState, {
         maxScrollY: 9400,
-        rowHeights: {},
+        rowOffsets: {},
         rows: [],
         scrollY: 0,
       }));
@@ -155,15 +155,15 @@ describe('computeRenderedRows', function() {
 
       const newState = computeRenderedRows(oldState, scrollAnchor);
 
-      const expectedRowHeights = {};
+      const expectedRowOffsets = {};
       const expectedRows = [];
       for (let rowIdx = 73; rowIdx < 80; rowIdx++) {
         expectedRows.push(rowIdx);
-        expectedRowHeights[rowIdx] = rowIdx * 125;
+        expectedRowOffsets[rowIdx] = rowIdx * 125;
 
         assert.strictEqual(newState.storedHeights[rowIdx], 125,
           'expected stored height of 125 for each row');
-        assert.strictEqual(newState.rowOffsets.get(rowIdx), 125,
+        assert.strictEqual(newState.rowOffsetIntervalTree.get(rowIdx), 125,
           'expected row offsets for each row to be set to 125');
         assert.isNotNull(newState.bufferSet.getValuePosition(rowIdx),
           `expected a buffer position for each row. rowIdx: ${rowIdx}`);
@@ -176,7 +176,7 @@ describe('computeRenderedRows', function() {
         firstRowIndex: 75,
         firstRowOffset: -25,
         maxScrollY: 9400,
-        rowHeights: expectedRowHeights,
+        rowOffsets: expectedRowOffsets,
         rows: expectedRows,
         scrollY: 9400,
       }));
@@ -190,21 +190,21 @@ describe('computeRenderedRows', function() {
       };
       oldState.rowSettings.rowHeightGetter = () => 200;
 
-      const rowOffsetsMock = sandbox.mock(PrefixIntervalTree.prototype);
-      oldState.rowOffsets = PrefixIntervalTree.uniform(80, 125);
+      const rowOffsetIntervalTreeMock = sandbox.mock(PrefixIntervalTree.prototype);
+      oldState.rowOffsetIntervalTree = PrefixIntervalTree.uniform(80, 125);
       for (let rowIdx = 13; rowIdx < 21; rowIdx++) {
-        rowOffsetsMock.expects('set').once().withArgs(rowIdx, 200);
+        rowOffsetIntervalTreeMock.expects('set').once().withArgs(rowIdx, 200);
       }
 
       const newState = computeRenderedRows(oldState, scrollAnchor);
       sandbox.verify();
 
       let priorHeight = 1625;
-      const expectedRowHeights = {};
+      const expectedRowOffsets = {};
       const expectedRows = [];
       for (let rowIdx = 13; rowIdx < 21; rowIdx++) {
         expectedRows.push(rowIdx);
-        expectedRowHeights[rowIdx] = priorHeight;
+        expectedRowOffsets[rowIdx] = priorHeight;
         priorHeight += 200;
 
         assert.strictEqual(newState.storedHeights[rowIdx], 200,
@@ -215,7 +215,7 @@ describe('computeRenderedRows', function() {
         firstRowIndex: 15,
         firstRowOffset: -25,
         maxScrollY: 10000,
-        rowHeights: expectedRowHeights,
+        rowOffsets: expectedRowOffsets,
         rows: expectedRows,
         scrollContentHeight: 10600,
         scrollY: 2050,

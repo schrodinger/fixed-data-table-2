@@ -23,13 +23,13 @@
  * @return {number} The new row height
  */
 export default function updateRowHeight(state, rowIdx) {
-  const { storedHeights, rowOffsets, rowSettings } = state;
+  const { storedHeights, rowOffsetIntervalTree, rowSettings } = state;
   const { rowHeightGetter, subRowHeightGetter } = rowSettings;
 
   const newHeight = rowHeightGetter(rowIdx) + subRowHeightGetter(rowIdx);
   const oldHeight = storedHeights[rowIdx];
   if (newHeight !== oldHeight) {
-    rowOffsets.set(rowIdx, newHeight);
+    rowOffsetIntervalTree.set(rowIdx, newHeight);
     storedHeights[rowIdx] = newHeight;
     state.scrollContentHeight += newHeight - oldHeight;
   }

@@ -80,7 +80,7 @@ function getInitialState() {
     isColumnResizing: false,
     maxScrollX: 0,
     maxScrollY: 0,
-    rowHeights: {},
+    rowOffsets: {},
     rows: [], // rowsToRender
     scrollContentHeight: 0,
     scrollJumpedX: false,
@@ -97,7 +97,7 @@ function getInitialState() {
      */
     bufferSet: new IntegerBufferSet(),
     storedHeights: [],
-    rowOffsets: null, // PrefixIntervalTree
+    rowOffsetIntervalTree: null, // PrefixIntervalTree
   };
 }
 
@@ -107,7 +107,7 @@ function reducers(state = getInitialState(), action) {
       const { props } = action;
 
       let newState = setStateFromProps(state, props);
-      newState = initializeRowHeights(newState);
+      newState = initializeRowHeightsAndOffsets(newState);
       const scrollAnchor = getScrollAnchor(newState, props);
       newState = computeRenderedRows(newState, scrollAnchor);
       return columnStateHelper.initialize(newState, props, {});
@@ -119,7 +119,7 @@ function reducers(state = getInitialState(), action) {
       if (oldProps.rowsCount !== newProps.rowsCount ||
           oldProps.rowHeight !== newProps.rowHeight ||
           oldProps.subRowHeight !== newProps.subRowHeight) {
-        newState = initializeRowHeights(newState);
+        newState = initializeRowHeightsAndOffsets(newState);
       }
 
       if (oldProps.rowsCount !== newProps.rowsCount) {
@@ -205,17 +205,17 @@ function reducers(state = getInitialState(), action) {
  * @param {!Object} state
  * @private
  */
-function initializeRowHeights(state) {
+function initializeRowHeightsAndOffsets(state) {
   const { rowHeight, rowsCount, subRowHeight } = state.rowSettings;
   const defaultFullRowHeight = rowHeight + subRowHeight;
-  const rowOffsets = PrefixIntervalTree.uniform(rowsCount, defaultFullRowHeight);
+  const rowOffsetIntervalTree = PrefixIntervalTree.uniform(rowsCount, defaultFullRowHeight);
   const scrollContentHeight = rowsCount * defaultFullRowHeight;
   const storedHeights = new Array(rowsCount);
   for (let idx = 0; idx < rowsCount; idx++) {
     storedHeights[idx] = defaultFullRowHeight;
   }
   return Object.assign({}, state, {
-    rowOffsets,
+    rowOffsetIntervalTree,
     scrollContentHeight,
     storedHeights,
   });
