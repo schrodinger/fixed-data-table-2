@@ -847,7 +847,7 @@ class FixedDataTable extends React.Component {
         showLastRowBorder={true}
         width={props.tableSize.width}
         rowsToRender={props.rows}
-        rowHeights={props.rowHeights}
+        rowOffsets={props.rowOffsets}
         showScrollbarY={scrollEnabledY}
       />
     );

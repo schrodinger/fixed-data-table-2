@@ -58,7 +58,7 @@ export default function computeRenderedRows(state, scrollAnchor) {
   computeRenderedRowOffsets(newState, rowRange);
   let scrollY = 0;
   if (rowsCount > 0) {
-    scrollY = newState.rowHeights[rowRange.firstViewportIdx] - newState.firstRowOffset;
+    scrollY = newState.rowOffsets[rowRange.firstViewportIdx] - newState.firstRowOffset;
   }
   const scrollJumpedY = (scrollAnchor.scrollJumpedY === true) && (scrollY !== state.scrollY);
   scrollY = clamp(scrollY, 0, maxScrollY);
@@ -192,7 +192,7 @@ function calculateRenderedRowRange(state, scrollAnchor) {
  * @private
  */
 function computeRenderedRowOffsets(state, rowRange) {
-  const { bufferSet, rowOffsets, storedHeights } = state;
+  const { rowBufferSet, rowOffsetIntervalTree, storedHeights } = state;
   const {
     endBufferIdx,
     endViewportIdx,
@@ -202,14 +202,14 @@ function computeRenderedRowOffsets(state, rowRange) {
 
   const renderedRowsCount = endBufferIdx - firstBufferIdx;
   if (renderedRowsCount === 0) {
-    state.rowHeights = {};
+    state.rowOffsets = {};
     state.rows = [];
     return;
   }
 
   const bufferMapping = []; // state.rows
-  const rowOffsetsCache = {}; // state.rowHeights
-  let runningOffset = rowOffsets.sumUntil(firstBufferIdx);
+  const rowOffsetsCache = {}; // state.rowOffsets
+  let runningOffset = rowOffsetIntervalTree.sumUntil(firstBufferIdx);
   for (let rowIdx = firstBufferIdx; rowIdx < endBufferIdx; rowIdx++) {
 
     // Update the offset for rendering the row
@@ -217,11 +217,11 @@ function computeRenderedRowOffsets(state, rowRange) {
     runningOffset += storedHeights[rowIdx];
 
     // Check if row already has a position in the buffer
-    let rowPosition = bufferSet.getValuePosition(rowIdx);
+    let rowPosition = rowBufferSet.getValuePosition(rowIdx);
 
     // Request a position in the buffer through eviction of another row
-    if (rowPosition === null && bufferSet.getSize() >= renderedRowsCount) {
-      rowPosition = bufferSet.replaceFurthestValuePosition(
+    if (rowPosition === null && rowBufferSet.getSize() >= renderedRowsCount) {
+      rowPosition = rowBufferSet.replaceFurthestValuePosition(
         firstViewportIdx,
         endViewportIdx - 1,
         rowIdx
@@ -230,12 +230,12 @@ function computeRenderedRowOffsets(state, rowRange) {
 
     // If we can't reuse any existing position, create a new one
     if (rowPosition === null) {
-      rowPosition = bufferSet.getNewPositionForValue(rowIdx);
+      rowPosition = rowBufferSet.getNewPositionForValue(rowIdx);
     }
 
     bufferMapping[rowPosition] = rowIdx;
   }
 
-  state.rowHeights = rowOffsetsCache;
+  state.rowOffsets = rowOffsetsCache;
   state.rows = bufferMapping;
 }

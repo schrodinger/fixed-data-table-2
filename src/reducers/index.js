@@ -80,7 +80,7 @@ function getInitialState() {
     isColumnResizing: false,
     maxScrollX: 0,
     maxScrollY: 0,
-    rowHeights: {},
+    rowOffsets: {},
     rows: [], // rowsToRender
     scrollContentHeight: 0,
     scrollJumpedX: false,
@@ -95,9 +95,9 @@ function getInitialState() {
      * so don't trust it for redux history or immutability checks
      * TODO (jordan) investigate if we want to move this to local or scoped state
      */
-    bufferSet: new IntegerBufferSet(),
+    rowBufferSet: new IntegerBufferSet(),
     storedHeights: [],
-    rowOffsets: null, // PrefixIntervalTree
+    rowOffsetIntervalTree: null, // PrefixIntervalTree
   };
 }
 
@@ -107,7 +107,7 @@ function reducers(state = getInitialState(), action) {
       const { props } = action;
 
       let newState = setStateFromProps(state, props);
-      newState = initializeRowHeights(newState);
+      newState = initializeRowHeightsAndOffsets(newState);
       const scrollAnchor = getScrollAnchor(newState, props);
       newState = computeRenderedRows(newState, scrollAnchor);
       return columnStateHelper.initialize(newState, props, {});
@@ -119,13 +119,13 @@ function reducers(state = getInitialState(), action) {
       if (oldProps.rowsCount !== newProps.rowsCount ||
           oldProps.rowHeight !== newProps.rowHeight ||
           oldProps.subRowHeight !== newProps.subRowHeight) {
-        newState = initializeRowHeights(newState);
+        newState = initializeRowHeightsAndOffsets(newState);
       }
 
       if (oldProps.rowsCount !== newProps.rowsCount) {
         // NOTE (jordan) bad practice to modify state directly, but okay since
         // we know setStateFromProps clones state internally
-        newState.bufferSet = new IntegerBufferSet();
+        newState.rowBufferSet = new IntegerBufferSet();
       }
 
       const scrollAnchor = getScrollAnchor(newState, newProps, oldProps);
@@ -205,17 +205,17 @@ function reducers(state = getInitialState(), action) {
  * @param {!Object} state
  * @private
  */
-function initializeRowHeights(state) {
+function initializeRowHeightsAndOffsets(state) {
   const { rowHeight, rowsCount, subRowHeight } = state.rowSettings;
   const defaultFullRowHeight = rowHeight + subRowHeight;
-  const rowOffsets = PrefixIntervalTree.uniform(rowsCount, defaultFullRowHeight);
+  const rowOffsetIntervalTree = PrefixIntervalTree.uniform(rowsCount, defaultFullRowHeight);
   const scrollContentHeight = rowsCount * defaultFullRowHeight;
   const storedHeights = new Array(rowsCount);
   for (let idx = 0; idx < rowsCount; idx++) {
     storedHeights[idx] = defaultFullRowHeight;
   }
   return Object.assign({}, state, {
-    rowOffsets,
+    rowOffsetIntervalTree,
     scrollContentHeight,
     storedHeights,
   });
