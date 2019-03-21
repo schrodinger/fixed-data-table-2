@@ -95,7 +95,7 @@ function getInitialState() {
      * so don't trust it for redux history or immutability checks
      * TODO (jordan) investigate if we want to move this to local or scoped state
      */
-    bufferSet: new IntegerBufferSet(),
+    rowBufferSet: new IntegerBufferSet(),
     storedHeights: [],
     rowOffsetIntervalTree: null, // PrefixIntervalTree
   };
@@ -125,7 +125,7 @@ function reducers(state = getInitialState(), action) {
       if (oldProps.rowsCount !== newProps.rowsCount) {
         // NOTE (jordan) bad practice to modify state directly, but okay since
         // we know setStateFromProps clones state internally
-        newState.bufferSet = new IntegerBufferSet();
+        newState.rowBufferSet = new IntegerBufferSet();
       }
 
       const scrollAnchor = getScrollAnchor(newState, newProps, oldProps);

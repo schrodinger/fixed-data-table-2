@@ -192,7 +192,7 @@ function calculateRenderedRowRange(state, scrollAnchor) {
  * @private
  */
 function computeRenderedRowOffsets(state, rowRange) {
-  const { bufferSet, rowOffsetIntervalTree, storedHeights } = state;
+  const { rowBufferSet, rowOffsetIntervalTree, storedHeights } = state;
   const {
     endBufferIdx,
     endViewportIdx,
@@ -217,11 +217,11 @@ function computeRenderedRowOffsets(state, rowRange) {
     runningOffset += storedHeights[rowIdx];
 
     // Check if row already has a position in the buffer
-    let rowPosition = bufferSet.getValuePosition(rowIdx);
+    let rowPosition = rowBufferSet.getValuePosition(rowIdx);
 
     // Request a position in the buffer through eviction of another row
-    if (rowPosition === null && bufferSet.getSize() >= renderedRowsCount) {
-      rowPosition = bufferSet.replaceFurthestValuePosition(
+    if (rowPosition === null && rowBufferSet.getSize() >= renderedRowsCount) {
+      rowPosition = rowBufferSet.replaceFurthestValuePosition(
         firstViewportIdx,
         endViewportIdx - 1,
         rowIdx
@@ -230,7 +230,7 @@ function computeRenderedRowOffsets(state, rowRange) {
 
     // If we can't reuse any existing position, create a new one
     if (rowPosition === null) {
-      rowPosition = bufferSet.getNewPositionForValue(rowIdx);
+      rowPosition = rowBufferSet.getNewPositionForValue(rowIdx);
     }
 
     bufferMapping[rowPosition] = rowIdx;
