@@ -144,9 +144,16 @@ function reducers(state = getInitialState(), action) {
       return newState;
     }
     case ActionTypes.SCROLL_END: {
-      return Object.assign({}, state, {
+      const newState = Object.assign({}, state, {
         scrolling: false,
       });
+      const previousScrollAnchor = {
+        firstIndex: state.firstRowIndex,
+        firstOffset: state.firstRowOffset,
+        lastIndex: state.lastIndex,
+        scrollJumpedY: state.scrollJumpedY,
+      };
+      return computeRenderedRows(newState, previousScrollAnchor);
     }
     case ActionTypes.SCROLL_JUMP_X: {
       return Object.assign({}, state, {

@@ -16,6 +16,8 @@ import updateRowHeight from 'updateRowHeight';
 import roughHeightsSelector from 'roughHeights';
 import scrollbarsVisibleSelector from 'scrollbarsVisible';
 import tableHeightsSelector from 'tableHeights';
+import filter from 'lodash/filter';
+import inRange from 'lodash/inRange';
 
 /**
  * Returns data about the rows to render
@@ -51,11 +53,15 @@ export default function computeRenderedRows(state, scrollAnchor) {
         lastIndex: rowsCount - 1,
       });
     }
-
     newState.firstRowOffset = 0;
   }
 
-  computeRenderedRowOffsets(newState, rowRange);
+  if (state.scrolling) {
+    computeRenderedRowOffsetsInViewport(newState, rowRange);
+  } else {
+    computeRenderedRowOffsets(newState, rowRange);
+  }
+
   let scrollY = 0;
   if (rowsCount > 0) {
     scrollY = newState.rowOffsets[rowRange.firstViewportIdx] - newState.firstRowOffset;
@@ -238,4 +244,101 @@ function computeRenderedRowOffsets(state, rowRange) {
 
   state.rowOffsets = rowOffsetsCache;
   state.rows = bufferMapping;
+}
+
+
+/**
+ * Walk the rows to render and compute the height offsets and
+ * positions in the row buffer.
+ *
+ * NOTE (jordan) This alters state so it shouldn't be called
+ * without state having been cloned first.
+ *
+ * @param {!Object} state
+ * @param {{
+ *   endBufferIdx: number,
+ *   endViewportIdx: number,
+ *   firstBufferIdx: number,
+ *   firstViewportIdx: number,
+ * }} rowRange
+ * @private
+ */
+function computeRenderedRowOffsetsInViewport(state, rowRange) {
+  const { rowBufferSet, rowOffsetIntervalTree, storedHeights } = state;
+  const {
+    endBufferIdx,
+    endViewportIdx,
+    firstBufferIdx,
+    firstViewportIdx,
+    } = rowRange;
+
+  const renderedRowsCount = endBufferIdx - firstBufferIdx;
+  if (renderedRowsCount === 0) {
+    state.rowOffsets = {};
+    state.rows = [];
+    return;
+  }
+
+  // output for this function
+  const bufferMapping = state.rows.slice(); // state.rows
+  const rowOffsetsCache = {}; // state.rowOffsets
+
+  // incremental way for calculating rowOffset
+  let runningOffset = rowOffsetIntervalTree.sumUntil(firstBufferIdx);
+
+  for (let rowIdx = firstBufferIdx; rowIdx < endBufferIdx; rowIdx++) {
+    // Update the offset for rendering the row
+    rowOffsetsCache[rowIdx] = runningOffset;
+    runningOffset += storedHeights[rowIdx];
+
+    // we'll skip getting a row position for the rows outside the viewport
+    if (rowIdx < firstViewportIdx || rowIdx >= endViewportIdx) {
+      continue;
+    }
+
+    // Get position for the viewport row
+    const rowPosition = addRowToBuffer(rowIdx, rowBufferSet, firstViewportIdx, endViewportIdx, renderedRowsCount);
+    bufferMapping[rowPosition] = rowIdx;
+  }
+
+  // In the above loop, we only calculated row offsets for the rows inside the buffer.
+  // Now we calculate the row offsets for the remaining rows from the previous row offsets.
+  const rowsNotInBuffer = filter(bufferMapping, (rowIdx) => !inRange(rowIdx, firstBufferIdx, endBufferIdx));
+  rowsNotInBuffer.forEach((rowIdx) => rowOffsetsCache[rowIdx] = state.rowOffsets[rowIdx]);
+
+  state.rowOffsets = rowOffsetsCache;
+  state.rows = bufferMapping;
+}
+
+/**
+ * Add the row to the buffer set if it doesn't exist.
+ * If addition isn't possible due to max buffer size, it'll replace an existing element outside the given range.
+ *
+ * @param {!number} rowIdx
+ * @param {!number} rowBufferSet
+ * @param {!number} startRange
+ * @param {!number} endRange
+ * @param {!number} maxBufferSize
+ *
+ * @return {?number} the position of the row after being added to the buffer set
+ * @private
+ */
+function addRowToBuffer(rowIdx, rowBufferSet, startRange, endRange, maxBufferSize) {
+  // Check if row already has a position in the buffer
+  let rowPosition = rowBufferSet.getValuePosition(rowIdx);
+
+  // Request a position in the buffer through eviction of another row
+  if (rowPosition === null && rowBufferSet.getSize() >= maxBufferSize)  {
+    rowPosition = rowBufferSet.replaceFurthestValuePosition(
+      startRange,
+      endRange - 1, // replaceFurthestValuePosition uses closed interval from startRange to endRange
+      rowIdx
+    );
+  }
+
+  if (rowPosition === null) {
+    rowPosition = rowBufferSet.getNewPositionForValue(rowIdx);
+  }
+
+  return rowPosition;
 }
