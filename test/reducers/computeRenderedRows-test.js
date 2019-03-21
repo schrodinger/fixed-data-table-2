@@ -38,7 +38,7 @@ describe('computeRenderedRows', function() {
         initialStoredHeights[rowIdx] = 125;
       }
       oldState = {
-        bufferSet: new IntegerBufferSet(),
+        rowBufferSet: new IntegerBufferSet(),
         placeholder: 'temp',
         rowOffsetIntervalTree: PrefixIntervalTree.uniform(80, 125),
         rowSettings: {
@@ -56,7 +56,7 @@ describe('computeRenderedRows', function() {
       sandbox.restore();
     });
 
-    it('should update bufferSet & row heights for buffered rows', function() {
+    it('should update rowBufferSet & row heights for buffered rows', function() {
       const scrollAnchor = {
         firstIndex: 15,
         firstOffset: -25,
@@ -75,11 +75,11 @@ describe('computeRenderedRows', function() {
           'expected stored height of 125 for each row');
         assert.strictEqual(newState.rowOffsetIntervalTree.get(rowIdx), 125,
           'expected row offsets for each row to be set to 125');
-        assert.isNotNull(newState.bufferSet.getValuePosition(rowIdx),
+        assert.isNotNull(newState.rowBufferSet.getValuePosition(rowIdx),
           `expected a buffer position for each row. rowIdx: ${rowIdx}`);
       }
 
-      assert.isNull(newState.bufferSet.getValuePosition(12),
+      assert.isNull(newState.rowBufferSet.getValuePosition(12),
         'expected no buffer position for other row');
 
       assert.deepEqual(newState, Object.assign(oldState, {
@@ -111,11 +111,11 @@ describe('computeRenderedRows', function() {
           'expected stored height of 125 for each row');
         assert.strictEqual(newState.rowOffsetIntervalTree.get(rowIdx), 125,
           'expected row offsets for each row to be set to 125');
-        assert.isNotNull(newState.bufferSet.getValuePosition(rowIdx),
+        assert.isNotNull(newState.rowBufferSet.getValuePosition(rowIdx),
           `expected a buffer position for each row. rowIdx: ${rowIdx}`);
       }
 
-      assert.isNull(newState.bufferSet.getValuePosition(12),
+      assert.isNull(newState.rowBufferSet.getValuePosition(12),
         'expected no buffer position for other row');
 
       assert.deepEqual(newState, Object.assign(oldState, {
@@ -165,11 +165,11 @@ describe('computeRenderedRows', function() {
           'expected stored height of 125 for each row');
         assert.strictEqual(newState.rowOffsetIntervalTree.get(rowIdx), 125,
           'expected row offsets for each row to be set to 125');
-        assert.isNotNull(newState.bufferSet.getValuePosition(rowIdx),
+        assert.isNotNull(newState.rowBufferSet.getValuePosition(rowIdx),
           `expected a buffer position for each row. rowIdx: ${rowIdx}`);
       }
 
-      assert.isNull(newState.bufferSet.getValuePosition(80),
+      assert.isNull(newState.rowBufferSet.getValuePosition(80),
         'expected no buffer position for other row');
 
       assert.deepEqual(newState, Object.assign(oldState, {
