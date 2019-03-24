@@ -947,13 +947,10 @@ class FixedDataTable extends React.Component {
       scrollFlags,
       scrollX,
       scrollY,
-      scrolling,
     } = this.props;
     const { overflowX, overflowY } = scrollFlags;
 
-    if (!scrolling) {
-      this._didScrollStart();
-    }
+    this._didScrollStart();
 
     let x = scrollX;
     let y = scrollY;
@@ -989,16 +986,13 @@ class FixedDataTable extends React.Component {
       onHorizontalScroll,
       scrollActions,
       scrollX,
-      scrolling,
     } = this.props;
 
     if (scrollPos === scrollX) {
       return;
     }
 
-    if (!scrolling) {
-      this._didScrollStart();
-    }
+    this._didScrollStart();
 
     // This is a workaround to prevent content blurring. This happens when translate3d
     // is applied with non-rounded values to elements having text.
@@ -1007,6 +1001,7 @@ class FixedDataTable extends React.Component {
     if (onHorizontalScroll ? onHorizontalScroll(roundedScrollPos) : true) {
       scrollActions.scrollToX(roundedScrollPos);
     }
+
     this._didScrollStop();
   }
 
@@ -1015,16 +1010,13 @@ class FixedDataTable extends React.Component {
       onVerticalScroll,
       scrollActions,
       scrollY,
-      scrolling,
     } = this.props;
 
     if (scrollPos === scrollY) {
       return;
     }
 
-    if (!scrolling) {
-      this._didScrollStart();
-    }
+    this._didScrollStart();
 
     if (onVerticalScroll ? onVerticalScroll(scrollPos) : true) {
       scrollActions.scrollToY(scrollPos);
@@ -1112,9 +1104,10 @@ class FixedDataTable extends React.Component {
     return true;
   }
 
-  // We need two versions of this function, one to finish up synchronously (for
-  // example, in componentWillUnmount), and a debounced version for normal
-  // scroll handling.
+  /**
+   * We need two versions of this function, one to finish up synchronously (in componentWillUnmount),
+   * and a debounced version for normal scroll handling.
+  */
   _didScrollStopSync = () => {
     const {
       firstRowIndex,
