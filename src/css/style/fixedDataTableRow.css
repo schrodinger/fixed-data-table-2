@@ -26,7 +26,7 @@
 }
 
 .public/fixedDataTableRow/columnsShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==) repeat-y;
+  background-image: linear-gradient(90deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public/fixedDataTableRow/columnsRightShadow {
