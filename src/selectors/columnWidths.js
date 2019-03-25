@@ -77,27 +77,33 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
  * }}
  */
 function flexWidths(columnGroupProps, columnProps, viewportWidth) {
+  let newColumnProps = columnProps;
   let remainingFlexGrow = getTotalFlexGrow(columnProps);
 
-  const columnsWidth = getTotalWidth(columnProps);
-  let remainingFlexWidth = Math.max(viewportWidth - columnsWidth, 0);
+  // if any column is a flex column, we'll need to calculate the widths for every column
+  if (remainingFlexGrow !== 0) {
+    const columnsWidth = getTotalWidth(columnProps);
+    let remainingFlexWidth = Math.max(viewportWidth - columnsWidth, 0);
 
-  const newColumnProps = map(columnProps, column => {
-    const { flexGrow } = column;
+    // calculate and set width for each column
+    newColumnProps = map(columnProps, column => {
+      const { flexGrow } = column;
 
-    if (!flexGrow || remainingFlexGrow === 0) {
-      return column;
-    }
+      // if no flexGrow is specified, column defaults to original width
+      if (!flexGrow) {
+        return column;
+      }
 
-    const flexWidth = Math.floor(
-      flexGrow * remainingFlexWidth / remainingFlexGrow);
-    const newWidth = column.width + flexWidth;
-    remainingFlexGrow -= flexGrow;
-    remainingFlexWidth -= flexWidth;
+      const flexWidth = Math.floor(flexGrow * remainingFlexWidth / remainingFlexGrow);
+      const newWidth = column.width + flexWidth;
+      remainingFlexGrow -= flexGrow;
+      remainingFlexWidth -= flexWidth;
 
-    return Object.assign({}, column, { width: newWidth });
-  });
+      return Object.assign({}, column, { width: newWidth });
+    });
+  }
 
+  // calculate width for each column group
   const columnGroupWidths = map(columnGroupProps, () => 0);
   forEach(newColumnProps, column => {
     if (column.groupIdx !== undefined) {
@@ -105,7 +111,8 @@ function flexWidths(columnGroupProps, columnProps, viewportWidth) {
     }
   });
 
-  let newColumnGroupProps = map(columnGroupProps, (columnGroup, idx) => {
+  // set the width for each column group
+  const newColumnGroupProps = map(columnGroupProps, (columnGroup, idx) => {
     if (columnGroupWidths[idx] === columnGroup.width) {
       return columnGroup;
     }
