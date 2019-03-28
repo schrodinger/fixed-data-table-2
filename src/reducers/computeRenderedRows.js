@@ -280,15 +280,15 @@ function computeRenderedRowOffsetsInViewport(state, rowRange) {
   }
 
   // output for this function
-  const rows = state.rows.slice(); // state.rows
-  const rowOffsets = {}; // state.rowOffsets
+  const rows = state.rows.slice(); // clone rows indexes
+  const rowOffsets = {}; // offsets for the rows
 
   // incremental way for calculating rowOffset
   let runningOffset = rowOffsetIntervalTree.sumUntil(firstViewportIdx);
 
-  // we add the rows inside the current view port and also calculate their offsets
+  // compute row index and offsets for rows inside the current view port
   for (let rowIdx = firstViewportIdx; rowIdx < endViewportIdx; rowIdx++) {
-    // Update the offset for rendering the row
+    // update the offset for the current row
     rowOffsets[rowIdx] = runningOffset;
     runningOffset += storedHeights[rowIdx];
 
@@ -297,10 +297,12 @@ function computeRenderedRowOffsetsInViewport(state, rowRange) {
     rows[rowPosition] = rowIdx;
   }
 
-  // we also need to store the rowOffsets for rows out side the view port that still exist in the buffer
-  const rowsInBufferSet = filter(state.rows, (rowIdx) => rowBufferSet.getValuePosition(rowIdx) !== null);
-  const rowsOutsideViewPort = filter(rowsInBufferSet, (rowIdx) => !inRange(rowIdx, firstViewportIdx, endViewportIdx));
-  rowsOutsideViewPort.forEach((rowIdx) => rowOffsets[rowIdx] = state.rowOffsets[rowIdx]);
+  // now recompute the row offsets for the rows lying outside the viewport
+  // but also still present in the buffer
+  const rowsInBufferOutsideViewPort = filter(rows, (rowIdx) => {
+    return rowIdx !== undefined && !inRange(rowIdx, firstViewportIdx, endViewportIdx)
+  });
+  rowsInBufferOutsideViewPort.forEach((rowIdx) => rowOffsets[rowIdx] = rowOffsetIntervalTree.sumUntil(rowIdx));
 
   // now we modify the state with the newly calculated rows and offsets
   state.rows = rows;
