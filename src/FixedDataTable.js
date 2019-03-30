@@ -825,6 +825,8 @@ class FixedDataTable extends React.Component {
         isScrolling={props.scrolling}
         fixedColumns={fixedCellTemplates}
         fixedRightColumns={fixedRightCellTemplates}
+        firstRowIndex={props.firstRowIndex}
+        endRowIndex={props.endRowIndex}
         height={bodyHeight}
         offsetTop={offsetTop}
         onRowClick={props.onRowClick}

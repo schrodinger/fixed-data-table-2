@@ -16,6 +16,7 @@ import React from 'React';
 import cx from 'cx';
 import emptyFunction from 'emptyFunction';
 import joinClasses from 'joinClasses';
+import inRange from 'lodash/inRange';
 
 class FixedDataTableBufferedRows extends React.Component {
   static propTypes = {
@@ -78,36 +79,30 @@ class FixedDataTableBufferedRows extends React.Component {
     var rowClassNameGetter = props.rowClassNameGetter || emptyFunction;
     var rowsToRender = this.props.rowsToRender || [];
 
-    this._staticRowArray.length = rowsToRender.length;
+    if (!props.isScrolling) {
+      this._staticRowArray.length = this.props.rowsToRender.length;
+    } else {
+      // we are scrolling, so don't display any rows which lie outside the viewport
+      this._staticRowArray.forEach((row, i) => {
+        const rowOutsideViewport = !inRange(row.props.index, this.props.firstRowIndex, this.props.endRowIndex);
+        if (rowOutsideViewport) {
+          this._staticRowArray[i] = React.cloneElement(this._staticRowArray[i], {
+            visible: false,
+          });
+        }
+      });
+    }
+
     var baseOffsetTop = props.offsetTop - props.scrollTop;
 
-    for (let i = 0; i < rowsToRender.length; ++i) {
-      const rowIndex = rowsToRender[i];
-      if (rowIndex === undefined) {
-        this._staticRowArray[i] = (
-          <FixedDataTableRow
-            key={i}
-            isScrolling={props.isScrolling}
-            index={i}
-            width={props.width}
-            height={0}
-            offsetTop={0}
-            scrollLeft={Math.round(props.scrollLeft)}
-            visible={false}
-            fixedColumns={props.fixedColumns}
-            fixedRightColumns={props.fixedRightColumns}
-            scrollableColumns={props.scrollableColumns}
-          />
-        );
-        continue;
-      }
-
+    rowsToRender.forEach((rowIndex, i) => {
       const currentRowHeight = this.props.rowSettings.rowHeightGetter(rowIndex);
       const currentSubRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
       const rowOffsetTop = baseOffsetTop + props.rowOffsets[rowIndex];
       const rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
       const hasBottomBorder = (rowIndex === props.rowSettings.rowsCount - 1) &&
         props.showLastRowBorder;
+      const visible = inRange(rowIndex, this.props.firstRowIndex, this.props.endRowIndex);
 
       this._staticRowArray[i] =
         <FixedDataTableRow
@@ -120,7 +115,7 @@ class FixedDataTableBufferedRows extends React.Component {
           rowExpanded={props.rowExpanded}
           scrollLeft={Math.round(props.scrollLeft)}
           offsetTop={Math.round(rowOffsetTop)}
-          visible={true}
+          visible={visible}
           fixedColumns={props.fixedColumns}
           fixedRightColumns={props.fixedRightColumns}
           scrollableColumns={props.scrollableColumns}
@@ -144,7 +139,7 @@ class FixedDataTableBufferedRows extends React.Component {
             })
           )}
         />;
-    }
+    });
 
     return <div>{this._staticRowArray}</div>;
   }

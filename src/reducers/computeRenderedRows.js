@@ -16,8 +16,6 @@ import updateRowHeight from 'updateRowHeight';
 import roughHeightsSelector from 'roughHeights';
 import scrollbarsVisibleSelector from 'scrollbarsVisible';
 import tableHeightsSelector from 'tableHeights';
-import filter from 'lodash/filter';
-import inRange from 'lodash/inRange';
 
 /**
  * Returns data about the rows to render
@@ -73,6 +71,8 @@ export default function computeRenderedRows(state, scrollAnchor) {
     maxScrollY,
     scrollY,
     scrollJumpedY,
+    firstRowIndex: rowRange.firstViewportIdx,
+    endRowIndex: rowRange.endViewportIdx,
   });
 }
 
@@ -280,8 +280,8 @@ function computeRenderedRowOffsetsInViewport(state, rowRange) {
   }
 
   // output for this function
-  const rows = state.rows.slice(); // clone rows indexes
-  const rowOffsets = {}; // offsets for the rows
+  const rows = []; // state.rows
+  const rowOffsets = {}; // state.rowOffsets
 
   // incremental way for calculating rowOffset
   let runningOffset = rowOffsetIntervalTree.sumUntil(firstViewportIdx);
@@ -296,13 +296,6 @@ function computeRenderedRowOffsetsInViewport(state, rowRange) {
     const rowPosition = addRowToBuffer(rowIdx, rowBufferSet, firstViewportIdx, endViewportIdx, renderedRowsCount);
     rows[rowPosition] = rowIdx;
   }
-
-  // now recompute the row offsets for the rows lying outside the viewport
-  // but also still present in the buffer
-  const rowsInBufferOutsideViewPort = filter(rows, (rowIdx) => {
-    return rowIdx !== undefined && !inRange(rowIdx, firstViewportIdx, endViewportIdx)
-  });
-  rowsInBufferOutsideViewPort.forEach((rowIdx) => rowOffsets[rowIdx] = rowOffsetIntervalTree.sumUntil(rowIdx));
 
   // now we modify the state with the newly calculated rows and offsets
   state.rows = rows;

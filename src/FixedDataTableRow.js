@@ -90,11 +90,6 @@ class FixedDataTableRowImpl extends React.Component {
     scrollLeft: PropTypes.number.isRequired,
 
     /**
-     * Pass false to hide the row.  This is used internally for buffering rows
-     */
-    visible: PropTypes.bool.isRequired,
-
-    /**
      * Width of the row.
      */
     width: PropTypes.number.isRequired,
@@ -154,10 +149,6 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   render() /*object*/ {
-    if (!this.props.visible) {
-      return null;
-    }
-
     var subRowHeight = this.props.subRowHeight || 0;
     var style = {
       width: this.props.width,
@@ -452,6 +443,7 @@ class FixedDataTableRow extends React.Component {
       width: this.props.width,
       height: this.props.height,
       zIndex: (this.props.zIndex ? this.props.zIndex : 0),
+      display: this.props.visible ? 'block' : 'none',
     };
     FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender);
 
@@ -463,6 +455,7 @@ class FixedDataTableRow extends React.Component {
           {...this.props}
           offsetTop={undefined}
           zIndex={undefined}
+          visible={undefined}
         />
       </div>
     );
