@@ -82,7 +82,8 @@ class FixedDataTableBufferedRows extends React.Component {
     var rowsToRender = this.props.rowsToRender || [];
 
     if (props.isScrolling) {
-      // we are scrolling, so don't display any rows which lie outside the viewport
+      // We are scrolling, so there's no need to display any rows which lie outside the viewport.
+      // We still need to render them though, so as to not cause any mounts/unmounts.
       this._staticRowArray.forEach((row, i) => {
         const rowOutsideViewport = !this.isRowInsideViewport(row.props.index);
         if (rowOutsideViewport) {
