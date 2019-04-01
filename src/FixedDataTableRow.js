@@ -90,9 +90,9 @@ class FixedDataTableRowImpl extends React.Component {
     scrollLeft: PropTypes.number.isRequired,
 
     /**
-     * Pass false to hide the row.  This is used internally for buffering rows
+     * Pass true to not render the row. This is used internally for buffering rows.
      */
-    visible: PropTypes.bool.isRequired,
+    fake: PropTypes.bool,
 
     /**
      * Width of the row.
@@ -154,7 +154,7 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   render() /*object*/ {
-    if (!this.props.visible) {
+    if (this.props.fake) {
       return null;
     }
 
@@ -434,6 +434,11 @@ class FixedDataTableRow extends React.Component {
     offsetTop: PropTypes.number.isRequired,
 
     /**
+     * Pass false to hide the row via CSS
+     */
+    visible: PropTypes.bool.isRequired,
+
+    /**
      * Width of the row.
      */
     width: PropTypes.number.isRequired,
@@ -452,22 +457,21 @@ class FixedDataTableRow extends React.Component {
       width: this.props.width,
       height: this.props.height,
       zIndex: (this.props.zIndex ? this.props.zIndex : 0),
+      display: (this.props.visible ? 'block' : 'none'),
     };
     FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender);
+
+    const { offsetTop, zIndex, visible, ...rowProps } = this.props;
 
     return (
       <div
         style={style}
-        className={cx('fixedDataTableRowLayout/rowWrapper')}>
-        <FixedDataTableRowImpl
-          {...this.props}
-          offsetTop={undefined}
-          zIndex={undefined}
-        />
+        className={cx('fixedDataTableRowLayout/rowWrapper')}
+      >
+        <FixedDataTableRowImpl {...rowProps} />
       </div>
     );
   }
 }
-
 
 module.exports = FixedDataTableRow;

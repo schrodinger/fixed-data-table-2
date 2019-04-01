@@ -16,10 +16,13 @@ import React from 'React';
 import cx from 'cx';
 import emptyFunction from 'emptyFunction';
 import joinClasses from 'joinClasses';
+import inRange from 'lodash/inRange';
 
 class FixedDataTableBufferedRows extends React.Component {
   static propTypes = {
     isScrolling: PropTypes.bool,
+    firstViewportRowIndex: PropTypes.number.isRequired,
+    endViewportRowIndex: PropTypes.number.isRequired,
     fixedColumns: PropTypes.array.isRequired,
     fixedRightColumns: PropTypes.array.isRequired,
     height: PropTypes.number.isRequired,
@@ -78,27 +81,33 @@ class FixedDataTableBufferedRows extends React.Component {
     var rowClassNameGetter = props.rowClassNameGetter || emptyFunction;
     var rowsToRender = this.props.rowsToRender || [];
 
-    this._staticRowArray.length = rowsToRender.length;
+    if (props.isScrolling) {
+      // We are scrolling, so there's no need to display any rows which lie outside the viewport.
+      // We still need to render them though, so as to not cause any mounts/unmounts.
+      this._staticRowArray.forEach((row, i) => {
+        const rowOutsideViewport = !this.isRowInsideViewport(row.props.index);
+        if (rowOutsideViewport) {
+          this._staticRowArray[i] = React.cloneElement(this._staticRowArray[i], {
+            visible: false,
+          });
+        }
+      });
+    } else {
+      this._staticRowArray.length = rowsToRender.length;
+    }
+
     var baseOffsetTop = props.offsetTop - props.scrollTop;
 
-    for (let i = 0; i < rowsToRender.length; ++i) {
+    for (let i = 0; i < rowsToRender.length; i++) {
       const rowIndex = rowsToRender[i];
+
+      // if the row doesn't exist in the buffer, assign a fake row to it.
+      // this is so that we can get rid of unnecessary row mounts/unmounts
       if (rowIndex === undefined) {
-        this._staticRowArray[i] = (
-          <FixedDataTableRow
-            key={i}
-            isScrolling={props.isScrolling}
-            index={i}
-            width={props.width}
-            height={0}
-            offsetTop={0}
-            scrollLeft={Math.round(props.scrollLeft)}
-            visible={false}
-            fixedColumns={props.fixedColumns}
-            fixedRightColumns={props.fixedRightColumns}
-            scrollableColumns={props.scrollableColumns}
-          />
-        );
+        // if a previous row existed, let's just make use of that
+        if (this._staticRowArray[i] === undefined) {
+          this._staticRowArray[i] = this.getFakeRow(i);
+        }
         continue;
       }
 
@@ -108,6 +117,7 @@ class FixedDataTableBufferedRows extends React.Component {
       const rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
       const hasBottomBorder = (rowIndex === props.rowSettings.rowsCount - 1) &&
         props.showLastRowBorder;
+      const visible = this.isRowInsideViewport(rowIndex);
 
       this._staticRowArray[i] =
         <FixedDataTableRow
@@ -120,7 +130,7 @@ class FixedDataTableBufferedRows extends React.Component {
           rowExpanded={props.rowExpanded}
           scrollLeft={Math.round(props.scrollLeft)}
           offsetTop={Math.round(rowOffsetTop)}
-          visible={true}
+          visible={visible}
           fixedColumns={props.fixedColumns}
           fixedRightColumns={props.fixedRightColumns}
           scrollableColumns={props.scrollableColumns}
@@ -147,6 +157,30 @@ class FixedDataTableBufferedRows extends React.Component {
     }
 
     return <div>{this._staticRowArray}</div>;
+  }
+
+  getFakeRow(/*number*/key) /*object*/ {
+    const props = this.props;
+    return (
+      <FixedDataTableRow
+        key={key}
+        isScrolling={props.isScrolling}
+        index={key}
+        width={props.width}
+        height={0}
+        offsetTop={0}
+        scrollLeft={Math.round(props.scrollLeft)}
+        visible={false}
+        fake={true}
+        fixedColumns={props.fixedColumns}
+        fixedRightColumns={props.fixedRightColumns}
+        scrollableColumns={props.scrollableColumns}
+      />
+    );
+  }
+
+  isRowInsideViewport(/*number*/rowIndex) {
+    return inRange(rowIndex, this.props.firstViewportRowIndex, this.props.endViewportRowIndex);
   }
 };
 

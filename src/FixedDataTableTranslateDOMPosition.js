@@ -13,6 +13,9 @@
 import translateDOMPositionXY from 'translateDOMPositionXY';
 
 function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*number*/ y, /*boolean*/ initialRender = false) {
+  if (style.display === 'none') {
+    return;
+  }
   if (initialRender) {
     style.left = x + 'px';
     style.top = y + 'px';

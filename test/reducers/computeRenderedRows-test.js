@@ -84,6 +84,7 @@ describe('computeRenderedRows', function() {
 
       assert.deepEqual(newState, Object.assign(oldState, {
         firstRowIndex: 15,
+        endRowIndex: 20,
         firstRowOffset: -25,
         maxScrollY: 9400,
         rowOffsets: expectedRowOffsets,
@@ -120,6 +121,7 @@ describe('computeRenderedRows', function() {
 
       assert.deepEqual(newState, Object.assign(oldState, {
         firstRowIndex: 26,
+        endRowIndex: 31,
         firstRowOffset: -25,
         maxScrollY: 9400,
         rowOffsets: expectedRowOffsets,
@@ -174,6 +176,7 @@ describe('computeRenderedRows', function() {
 
       assert.deepEqual(newState, Object.assign(oldState, {
         firstRowIndex: 75,
+        endRowIndex: 80,
         firstRowOffset: -25,
         maxScrollY: 9400,
         rowOffsets: expectedRowOffsets,
@@ -213,6 +216,7 @@ describe('computeRenderedRows', function() {
 
       assert.deepEqual(newState, Object.assign(oldState, {
         firstRowIndex: 15,
+        endRowIndex: 19,
         firstRowOffset: -25,
         maxScrollY: 10000,
         rowOffsets: expectedRowOffsets,
