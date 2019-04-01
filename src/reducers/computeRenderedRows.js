@@ -51,14 +51,11 @@ export default function computeRenderedRows(state, scrollAnchor) {
         lastIndex: rowsCount - 1,
       });
     }
+
     newState.firstRowOffset = 0;
   }
 
-  if (state.scrolling) {
-    computeRenderedRowOffsetsInViewport(newState, rowRange);
-  } else {
-    computeRenderedRowOffsets(newState, rowRange);
-  }
+  computeRenderedRowOffsets(newState, rowRange, state.scrolling);
 
   let scrollY = 0;
   if (rowsCount > 0) {
@@ -194,9 +191,10 @@ function calculateRenderedRowRange(state, scrollAnchor) {
  *   firstBufferIdx: number,
  *   firstViewportIdx: number,
  * }} rowRange
+ * @param {boolean} viewportOnly
  * @private
  */
-function computeRenderedRowOffsets(state, rowRange) {
+function computeRenderedRowOffsets(state, rowRange, viewportOnly) {
   const { rowBufferSet, rowOffsetIntervalTree, storedHeights } = state;
   const {
     endBufferIdx,
@@ -212,87 +210,25 @@ function computeRenderedRowOffsets(state, rowRange) {
     return;
   }
 
-  const bufferMapping = []; // state.rows
-  const rowOffsetsCache = {}; // state.rowOffsets
-  let runningOffset = rowOffsetIntervalTree.sumUntil(firstBufferIdx);
-  for (let rowIdx = firstBufferIdx; rowIdx < endBufferIdx; rowIdx++) {
-
-    // Update the offset for rendering the row
-    rowOffsetsCache[rowIdx] = runningOffset;
-    runningOffset += storedHeights[rowIdx];
-
-    // Check if row already has a position in the buffer
-    let rowPosition = rowBufferSet.getValuePosition(rowIdx);
-
-    // Request a position in the buffer through eviction of another row
-    if (rowPosition === null && rowBufferSet.getSize() >= renderedRowsCount) {
-      rowPosition = rowBufferSet.replaceFurthestValuePosition(
-        firstViewportIdx,
-        endViewportIdx - 1,
-        rowIdx
-      );
-    }
-
-    // If we can't reuse any existing position, create a new one
-    if (rowPosition === null) {
-      rowPosition = rowBufferSet.getNewPositionForValue(rowIdx);
-    }
-
-    bufferMapping[rowPosition] = rowIdx;
-  }
-
-  state.rowOffsets = rowOffsetsCache;
-  state.rows = bufferMapping;
-}
-
-
-/**
- * Walk the rows to render and compute the height offsets and
- * positions in the row buffer.
- *
- * NOTE (jordan) This alters state so it shouldn't be called
- * without state having been cloned first.
- *
- * @param {!Object} state
- * @param {{
- *   endBufferIdx: number,
- *   endViewportIdx: number,
- *   firstBufferIdx: number,
- *   firstViewportIdx: number,
- * }} rowRange
- * @private
- */
-function computeRenderedRowOffsetsInViewport(state, rowRange) {
-  const { rowBufferSet, rowOffsetIntervalTree, storedHeights } = state;
-  const {
-    endBufferIdx,
-    endViewportIdx,
-    firstBufferIdx,
-    firstViewportIdx,
-  } = rowRange;
-
-  const renderedRowsCount = endBufferIdx - firstBufferIdx;
-  if (renderedRowsCount === 0) {
-    state.rowOffsets = {};
-    state.rows = [];
-    return;
-  }
+  const startIdx = viewportOnly ? firstViewportIdx : firstBufferIdx;
+  const endIdx = viewportOnly ? endViewportIdx : endBufferIdx;
 
   // output for this function
   const rows = []; // state.rows
   const rowOffsets = {}; // state.rowOffsets
 
   // incremental way for calculating rowOffset
-  let runningOffset = rowOffsetIntervalTree.sumUntil(firstViewportIdx);
+  let runningOffset = rowOffsetIntervalTree.sumUntil(startIdx);
 
-  // compute row index and offsets for rows inside the current view port
-  for (let rowIdx = firstViewportIdx; rowIdx < endViewportIdx; rowIdx++) {
-    // update the offset for the current row
+  // compute row index and offsets for every rows inside the buffer
+  for (let rowIdx = startIdx; rowIdx < endIdx; rowIdx++) {
+
+    // Update the offset for rendering the row
     rowOffsets[rowIdx] = runningOffset;
     runningOffset += storedHeights[rowIdx];
 
     // Get position for the viewport row
-    const rowPosition = addRowToBuffer(rowIdx, rowBufferSet, firstViewportIdx, endViewportIdx, renderedRowsCount);
+    const rowPosition = addRowToBuffer(rowIdx, rowBufferSet, startIdx, endIdx, renderedRowsCount);
     rows[rowPosition] = rowIdx;
   }
 

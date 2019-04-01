@@ -81,30 +81,42 @@ class FixedDataTableBufferedRows extends React.Component {
     var rowClassNameGetter = props.rowClassNameGetter || emptyFunction;
     var rowsToRender = this.props.rowsToRender || [];
 
-    if (!props.isScrolling) {
-      this._staticRowArray.length = this.props.rowsToRender.length;
-    } else {
+    if (props.isScrolling) {
       // we are scrolling, so don't display any rows which lie outside the viewport
       this._staticRowArray.forEach((row, i) => {
-        const rowOutsideViewport = !inRange(row.props.index, this.props.firstViewportRowIndex, this.props.endViewportRowIndex);
+        const rowOutsideViewport = !this.isRowInsideViewport(row.props.index);
         if (rowOutsideViewport) {
           this._staticRowArray[i] = React.cloneElement(this._staticRowArray[i], {
             visible: false,
           });
         }
       });
+    } else {
+      this._staticRowArray.length = rowsToRender.length;
     }
 
     var baseOffsetTop = props.offsetTop - props.scrollTop;
 
-    rowsToRender.forEach((rowIndex, i) => {
+    for (let i = 0; i < rowsToRender.length; i++) {
+      const rowIndex = rowsToRender[i];
+
+      // if the row doesn't exist in the buffer, assign a fake row to it.
+      // this is so that we can get rid of unnecessary row mounts/unmounts
+      if (rowIndex === undefined) {
+        // if a previous row existed, let's just make use of that
+        if (this._staticRowArray[i] === undefined) {
+          this._staticRowArray[i] = this.getFakeRow(i);
+        }
+        continue;
+      }
+
       const currentRowHeight = this.props.rowSettings.rowHeightGetter(rowIndex);
       const currentSubRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
       const rowOffsetTop = baseOffsetTop + props.rowOffsets[rowIndex];
       const rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
       const hasBottomBorder = (rowIndex === props.rowSettings.rowsCount - 1) &&
         props.showLastRowBorder;
-      const visible = inRange(rowIndex, this.props.firstViewportRowIndex, this.props.endViewportRowIndex);
+      const visible = this.isRowInsideViewport(rowIndex);
 
       this._staticRowArray[i] =
         <FixedDataTableRow
@@ -141,9 +153,33 @@ class FixedDataTableBufferedRows extends React.Component {
             })
           )}
         />;
-    });
+    }
 
     return <div>{this._staticRowArray}</div>;
+  }
+
+  getFakeRow(/*number*/key) /*object*/ {
+    const props = this.props;
+    return (
+      <FixedDataTableRow
+        key={key}
+        isScrolling={props.isScrolling}
+        index={key}
+        width={props.width}
+        height={0}
+        offsetTop={0}
+        scrollLeft={Math.round(props.scrollLeft)}
+        visible={false}
+        fake={true}
+        fixedColumns={props.fixedColumns}
+        fixedRightColumns={props.fixedRightColumns}
+        scrollableColumns={props.scrollableColumns}
+      />
+    );
+  }
+
+  isRowInsideViewport(/*number*/rowIndex) {
+    return inRange(rowIndex, this.props.firstViewportRowIndex, this.props.endViewportRowIndex);
   }
 };
 
