@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.12 
+ * FixedDataTable v1.0.0-beta.13 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -134,6 +134,7 @@
           box-sizing: border-box;
   position: absolute;
   z-index: 10;
+  pointer-events: none;
 }
 
 body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
@@ -397,6 +398,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 .public_fixedDataTable_scrollbarSpacer {
   position: absolute;
   z-index: 99;
+  top: 0;
 }
 
 .public_fixedDataTable_footer .public_fixedDataTableCell_main {
@@ -405,11 +407,13 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .public_fixedDataTable_topShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAF0lEQVR4AWPUkNeSBhHCjJoK2twgFisAFagCCp3pJlAAAAAASUVORK5CYII=) repeat-x;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,0.1)), to(rgba(0,0,0,0)));
+  background-image: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public_fixedDataTable_bottomShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAHElEQVQI12MwNjZmZdAT1+Nm0JDWEGZQk1GTBgAWkwIeAEp52AAAAABJRU5ErkJggg==) repeat-x;
+  background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0,0,0,0.1)), to(rgba(0,0,0,0)));
+  background-image: linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public_fixedDataTable_horizontalScrollbar .public_Scrollbar_mainHorizontal {
@@ -513,7 +517,8 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .public_fixedDataTableRow_columnsShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==) repeat-y;
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(0,0,0,0.1)), to(rgba(0,0,0,0)));
+  background-image: linear-gradient(90deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public_fixedDataTableRow_columnsRightShadow {

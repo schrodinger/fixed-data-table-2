@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.12 
+ * FixedDataTable v1.0.0-beta.13 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -134,6 +134,7 @@
           box-sizing: border-box;
   position: absolute;
   z-index: 10;
+  pointer-events: none;
 }
 
 body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
