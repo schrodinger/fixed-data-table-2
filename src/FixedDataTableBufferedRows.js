@@ -21,6 +21,8 @@ import inRange from 'lodash/inRange';
 class FixedDataTableBufferedRows extends React.Component {
   static propTypes = {
     isScrolling: PropTypes.bool,
+    firstViewportRowIndex: PropTypes.number.isRequired,
+    endViewportRowIndex: PropTypes.number.isRequired,
     fixedColumns: PropTypes.array.isRequired,
     fixedRightColumns: PropTypes.array.isRequired,
     height: PropTypes.number.isRequired,
@@ -84,7 +86,7 @@ class FixedDataTableBufferedRows extends React.Component {
     } else {
       // we are scrolling, so don't display any rows which lie outside the viewport
       this._staticRowArray.forEach((row, i) => {
-        const rowOutsideViewport = !inRange(row.props.index, this.props.firstRowIndex, this.props.endRowIndex);
+        const rowOutsideViewport = !inRange(row.props.index, this.props.firstViewportRowIndex, this.props.endViewportRowIndex);
         if (rowOutsideViewport) {
           this._staticRowArray[i] = React.cloneElement(this._staticRowArray[i], {
             visible: false,
@@ -102,7 +104,7 @@ class FixedDataTableBufferedRows extends React.Component {
       const rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
       const hasBottomBorder = (rowIndex === props.rowSettings.rowsCount - 1) &&
         props.showLastRowBorder;
-      const visible = inRange(rowIndex, this.props.firstRowIndex, this.props.endRowIndex);
+      const visible = inRange(rowIndex, this.props.firstViewportRowIndex, this.props.endViewportRowIndex);
 
       this._staticRowArray[i] =
         <FixedDataTableRow

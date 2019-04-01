@@ -71,8 +71,6 @@ export default function computeRenderedRows(state, scrollAnchor) {
     maxScrollY,
     scrollY,
     scrollJumpedY,
-    firstRowIndex: rowRange.firstViewportIdx,
-    endRowIndex: rowRange.endViewportIdx,
   });
 }
 
@@ -172,6 +170,7 @@ function calculateRenderedRowRange(state, scrollAnchor) {
   }
 
   state.firstRowIndex = firstViewportIdx;
+  state.endRowIndex = endViewportIdx;
   state.firstRowOffset = firstOffset;
   return {
     endBufferIdx,
