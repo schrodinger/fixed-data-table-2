@@ -467,6 +467,11 @@ var FixedDataTable = createReactClass({
   },
 
   componentWillUnmount() {
+    this._divRef && this._divRef.removeEventListener(
+      'wheel',
+      this._wheelHandler.onWheel,
+      { passive: false }
+    );
     this._wheelHandler = null;
     this._touchHandler = null;
 
@@ -582,6 +587,11 @@ var FixedDataTable = createReactClass({
   },
 
   componentDidMount() {
+    this._divRef && this._divRef.addEventListener(
+      'wheel',
+      this._wheelHandler.onWheel,
+      { passive: false }
+    );
     this._reportContentHeight();
   },
 
@@ -605,6 +615,8 @@ var FixedDataTable = createReactClass({
   },
 
   _onRef(div) {
+    this._divRef = div;
+
     if (this.props.stopReactWheelPropagation) {
       this._wheelHandler.setRoot(div);
     }
@@ -808,7 +820,6 @@ var FixedDataTable = createReactClass({
         )}
         tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
-        onWheel={this._wheelHandler.onWheel}
         onTouchStart={this._touchHandler.onTouchStart}
         onTouchEnd={this._touchHandler.onTouchEnd}
         onTouchMove={this._touchHandler.onTouchMove}
