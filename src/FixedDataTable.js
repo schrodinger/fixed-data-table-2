@@ -456,6 +456,11 @@ class FixedDataTable extends React.Component {
   }
 
   componentWillUnmount() {
+    this._divRef && this._divRef.removeEventListener(
+      'wheel',
+      this._wheelHandler.onWheel,
+      { passive: false }
+    );
     this._wheelHandler = null;
     this._touchHandler = null;
 
@@ -566,6 +571,11 @@ class FixedDataTable extends React.Component {
   }
 
   componentDidMount() {
+    this._divRef && this._divRef.addEventListener(
+      'wheel',
+      this._wheelHandler.onWheel,
+      { passive: false }
+    );
     this._reportContentHeight();
   }
 
@@ -786,7 +796,6 @@ class FixedDataTable extends React.Component {
         )}
         tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
-        onWheel={this._wheelHandler.onWheel}
         onTouchStart={this._touchHandler.onTouchStart}
         onTouchEnd={this._touchHandler.onTouchEnd}
         onTouchMove={this._touchHandler.onTouchMove}
@@ -856,6 +865,7 @@ class FixedDataTable extends React.Component {
   }
 
   _onRef = (div) => {
+    this._divRef = div;
     if (this.props.stopReactWheelPropagation) {
       this._wheelHandler.setRoot(div);
     }
