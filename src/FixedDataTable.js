@@ -463,7 +463,7 @@ class FixedDataTable extends React.Component {
       this._wheelHandler.onWheel,
       { passive: false }
     );
-    this._divRef && this._divRef.addEventListener(
+    this._divRef && this._divRef.removeEventListener(
       'touchmove',
       this._touchHandler.onTouchMove,
       { passive: false }
