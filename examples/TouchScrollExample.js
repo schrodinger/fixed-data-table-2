@@ -25,7 +25,7 @@ class TouchScrollExample extends React.Component {
     // scrolling of parent containers of FDT. This style is a work around to fix this. By applying 'none' to
     // touch-action, we are disabling touch events from propagating.
     const tableParentStyle = {
-      'touch-action': 'none'
+      'touchAction': 'none'
     };
 
     return (

@@ -148,6 +148,7 @@ class ReactTouchHandler {
   }
 
   onTouchMove(/*object*/ event) {
+    event.preventDefault();
 
     var moveX = event.touches[0].pageX;
     var moveY = event.touches[0].pageY;
@@ -175,13 +176,13 @@ class ReactTouchHandler {
       this._deltaY = 0;
     }
 
-    event.preventDefault();
+    //event.preventDefault();
 
     // Ensure minimum delta magnitude is met to avoid jitter
     var changed = false;
     if (Math.abs(this._deltaX) > 2 || Math.abs(this._deltaY) > 2) {
       if (this._stopPropagation()) {
-        event.stopPropagation();
+        //event.stopPropagation();
       }
       changed = true;
     }

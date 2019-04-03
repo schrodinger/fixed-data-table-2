@@ -64,6 +64,8 @@ class ReactWheelHandler {
   }
 
   onWheel(/*object*/ event) {
+    event.preventDefault();
+
     var normalizedEvent = normalizeWheel(event);
 
     // if shift is held, swap the axis of scrolling.
@@ -85,7 +87,6 @@ class ReactWheelHandler {
 
     this._deltaX += handleScrollX ? normalizedEvent.pixelX : 0;
     this._deltaY += handleScrollY ? normalizedEvent.pixelY : 0;
-    event.preventDefault();
 
     var changed;
     if (this._deltaX !== 0 || this._deltaY !== 0) {

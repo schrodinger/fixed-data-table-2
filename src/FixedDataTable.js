@@ -456,9 +456,16 @@ class FixedDataTable extends React.Component {
   }
 
   componentWillUnmount() {
+    // TODO (pradeep): Remove these and pass to our table component directly after
+    // React provides an API where event handlers can be specified to be non-passive
     this._divRef && this._divRef.removeEventListener(
       'wheel',
       this._wheelHandler.onWheel,
+      { passive: false }
+    );
+    this._divRef && this._divRef.addEventListener(
+      'touchmove',
+      this._touchHandler.onTouchMove,
       { passive: false }
     );
     this._wheelHandler = null;
@@ -574,6 +581,11 @@ class FixedDataTable extends React.Component {
     this._divRef && this._divRef.addEventListener(
       'wheel',
       this._wheelHandler.onWheel,
+      { passive: false }
+    );
+    this._divRef && this._divRef.addEventListener(
+      'touchmove',
+      this._touchHandler.onTouchMove,
       { passive: false }
     );
     this._reportContentHeight();
@@ -798,7 +810,6 @@ class FixedDataTable extends React.Component {
         onKeyDown={this._onKeyDown}
         onTouchStart={this._touchHandler.onTouchStart}
         onTouchEnd={this._touchHandler.onTouchEnd}
-        onTouchMove={this._touchHandler.onTouchMove}
         onTouchCancel={this._touchHandler.onTouchCancel}
         ref={this._onRef}
         style={{
