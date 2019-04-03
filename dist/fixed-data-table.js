@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.20 
+ * FixedDataTable v0.8.21 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -3278,7 +3278,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.20';
+FixedDataTableRoot.version = '0.8.21';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -3791,6 +3791,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
     this.setState(this._calculateState(props));
   },
   componentWillUnmount: function componentWillUnmount() {
+    this._divRef && this._divRef.removeEventListener('wheel', this._wheelHandler.onWheel, { passive: false });
     this._wheelHandler = null;
     this._touchHandler = null;
 
@@ -3892,6 +3893,7 @@ var FixedDataTable = (0, _createReactClass2.default)({
     this._contentHeight = contentHeight;
   },
   componentDidMount: function componentDidMount() {
+    this._divRef && this._divRef.addEventListener('wheel', this._wheelHandler.onWheel, { passive: false });
     this._reportContentHeight();
   },
   componentWillReceiveProps: function componentWillReceiveProps( /*object*/nextProps) {
@@ -3910,6 +3912,8 @@ var FixedDataTable = (0, _createReactClass2.default)({
     this._reportContentHeight();
   },
   _onRef: function _onRef(div) {
+    this._divRef = div;
+
     if (this.props.stopReactWheelPropagation) {
       this._wheelHandler.setRoot(div);
     }
@@ -4074,7 +4078,6 @@ var FixedDataTable = (0, _createReactClass2.default)({
         className: (0, _joinClasses2.default)(this.state.className, (0, _cx2.default)('fixedDataTableLayout/main'), (0, _cx2.default)('public/fixedDataTable/main')),
         tabIndex: tabIndex,
         onKeyDown: this._onKeyDown,
-        onWheel: this._wheelHandler.onWheel,
         onTouchStart: this._touchHandler.onTouchStart,
         onTouchEnd: this._touchHandler.onTouchEnd,
         onTouchMove: this._touchHandler.onTouchMove,
