@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.13 
+ * FixedDataTable v1.0.0-beta.14 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -5605,7 +5605,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTableContainer2.default
 };
 
-FixedDataTableRoot.version = '1.0.0-beta.13';
+FixedDataTableRoot.version = '1.0.0-beta.14';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -5996,6 +5996,7 @@ var FixedDataTable = function (_React$Component) {
         showScrollbarY: scrollEnabledY
       });
     }, _this._onRef = function (div) {
+      _this._divRef = div;
       if (_this.props.stopReactWheelPropagation) {
         _this._wheelHandler.setRoot(div);
       }
@@ -6254,6 +6255,7 @@ var FixedDataTable = function (_React$Component) {
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
+      this._divRef && this._divRef.removeEventListener('wheel', this._wheelHandler.onWheel, { passive: false });
       this._wheelHandler = null;
       this._touchHandler = null;
 
@@ -6314,6 +6316,7 @@ var FixedDataTable = function (_React$Component) {
   }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
+      this._divRef && this._divRef.addEventListener('wheel', this._wheelHandler.onWheel, { passive: false });
       this._reportContentHeight();
     }
   }, {
@@ -6512,7 +6515,6 @@ var FixedDataTable = function (_React$Component) {
           className: (0, _joinClasses2.default)(className, (0, _cx2.default)('fixedDataTableLayout/main'), (0, _cx2.default)('public/fixedDataTable/main')),
           tabIndex: tabIndex,
           onKeyDown: this._onKeyDown,
-          onWheel: this._wheelHandler.onWheel,
           onTouchStart: this._touchHandler.onTouchStart,
           onTouchEnd: this._touchHandler.onTouchEnd,
           onTouchMove: this._touchHandler.onTouchMove,
