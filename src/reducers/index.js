@@ -83,8 +83,6 @@ function getInitialState() {
     rowOffsets: {},
     rows: [], // rowsToRender
     scrollContentHeight: 0,
-    scrollJumpedX: false,
-    scrollJumpedY: false,
     scrollX: 0,
     scrollY: 0,
     scrolling: false,
@@ -137,6 +135,11 @@ function reducers(state = getInitialState(), action) {
 
       newState = columnStateHelper.initialize(newState, newProps, oldProps);
 
+      // if scroll values have changed, then we're scrolling!
+      if (newState.scrollX !== state.scrollX || newState.scrollY !== state.scrollY) {
+        newState.scrolling = newState.scrolling || true;
+      }
+
       // TODO REDUX_MIGRATION solve w/ evil-diff
       // TODO (jordan) check if relevant props unchanged and
       // children column widths and flex widths are unchanged
@@ -151,30 +154,16 @@ function reducers(state = getInitialState(), action) {
         firstIndex: state.firstRowIndex,
         firstOffset: state.firstRowOffset,
         lastIndex: state.lastIndex,
-        scrollJumpedY: state.scrollJumpedY,
       };
       return computeRenderedRows(newState, previousScrollAnchor);
     }
-    case ActionTypes.SCROLL_JUMP_X: {
-      return Object.assign({}, state, {
-        scrollJumpedX: false,
-      });
-    }
-    case ActionTypes.SCROLL_JUMP_Y: {
-      return Object.assign({}, state, {
-        scrollJumpedY: false,
-      });
-    }
-    case ActionTypes.SCROLL_START: {
-      return Object.assign({}, state, {
-        scrolling: true,
-      });
-    }
     case ActionTypes.SCROLL_TO_Y: {
       let { scrollY } = action;
-
-      const scrollAnchor = scrollTo(state, scrollY);
-      return computeRenderedRows(state, scrollAnchor);
+      const newState = Object.assign({}, state, {
+        scrolling: true,
+      });
+      const scrollAnchor = scrollTo(newState, scrollY);
+      return computeRenderedRows(newState, scrollAnchor);
     }
     case ActionTypes.COLUMN_RESIZE: {
       const { resizeData } = action;
@@ -197,6 +186,7 @@ function reducers(state = getInitialState(), action) {
     case ActionTypes.SCROLL_TO_X: {
       const { scrollX } = action;
       return Object.assign({}, state, {
+        scrolling: true,
         scrollX,
       });
     }

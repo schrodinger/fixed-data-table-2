@@ -580,7 +580,7 @@ class FixedDataTable extends React.Component {
   }
 
   componentWillReceiveProps(/*object*/ nextProps) {
-    this._didControlledScroll(nextProps);
+    this._didScroll(nextProps);
   }
 
   componentDidUpdate() {
@@ -963,10 +963,6 @@ class FixedDataTable extends React.Component {
     } = this.props;
     const { overflowX, overflowY } = scrollFlags;
 
-    if (!scrolling) {
-      this._didScrollStart();
-    }
-
     let x = scrollX;
     let y = scrollY;
     if (Math.abs(deltaY) > Math.abs(deltaX) && overflowY !== 'hidden') {
@@ -992,8 +988,6 @@ class FixedDataTable extends React.Component {
         scrollActions.scrollToX(roundedX);
       }
     }
-
-    this._didScrollStop();
   }
 
   _onHorizontalScroll = (/*number*/ scrollPos) => {
@@ -1008,10 +1002,6 @@ class FixedDataTable extends React.Component {
       return;
     }
 
-    if (!scrolling) {
-      this._didScrollStart();
-    }
-
     // This is a workaround to prevent content blurring. This happens when translate3d
     // is applied with non-rounded values to elements having text.
     var roundedScrollPos = Math.round(scrollPos);
@@ -1019,7 +1009,6 @@ class FixedDataTable extends React.Component {
     if (onHorizontalScroll ? onHorizontalScroll(roundedScrollPos) : true) {
       scrollActions.scrollToX(roundedScrollPos);
     }
-    this._didScrollStop();
   }
 
   _onVerticalScroll = (/*number*/ scrollPos) => {
@@ -1027,59 +1016,26 @@ class FixedDataTable extends React.Component {
       onVerticalScroll,
       scrollActions,
       scrollY,
-      scrolling,
     } = this.props;
 
     if (scrollPos === scrollY) {
       return;
     }
 
-    if (!scrolling) {
-      this._didScrollStart();
-    }
-
     if (onVerticalScroll ? onVerticalScroll(scrollPos) : true) {
       scrollActions.scrollToY(scrollPos);
-    }
-
-    this._didScrollStop();
-  }
-
-  _didScrollStart = () => {
-    const {
-      firstRowIndex,
-      onScrollStart,
-      scrollActions,
-      scrollX,
-      scrollY,
-      scrolling,
-    } = this.props;
-
-    if (scrolling) {
-      return;
-    }
-
-    scrollActions.startScroll();
-    if (onScrollStart) {
-      onScrollStart(scrollX, scrollY, firstRowIndex);
     }
   }
 
   /*
-    A controlled scroll can occur due to a scroll jump or a change in owner height.
-    This function also resets the jump state if any jump had occurred.
+    Appropriate
     Handlers onScrollStart, onScrollEnd, onHorizontalScroll, and onVerticalScroll are called appropriately.
    */
-  _didControlledScroll = (/* !object */ nextProps) => {
+  _didScroll = (/* !object */ nextProps) => {
     const {
-      firstRowIndex,
       onScrollStart,
-      onScrollEnd,
-      scrollActions,
       scrollX,
       scrollY,
-      scrollJumpedX,
-      scrollJumpedY,
       onHorizontalScroll,
       onVerticalScroll,
       tableSize: { ownerHeight },
@@ -1092,36 +1048,31 @@ class FixedDataTable extends React.Component {
       tableSize: { ownerHeight: oldOwnerHeight },
     } = this.props;
 
-    // we have an extra check on NaN because (NaN !== NaN)
+    // check if scroll values have changed - we have an extra check on NaN because (NaN !== NaN)
     const ownerHeightChanged = ownerHeight !== oldOwnerHeight && !(isNaN(ownerHeight) && isNaN(oldOwnerHeight));
+    const scrollXChanged = scrollX !== oldScrollX;
+    const scrollYChanged = scrollY !== oldScrollY;
 
-    // Only check for owner height changes if no scroll jump occurred. This prevents the scroll handlers from
-    // being called when an owner height change and scroll jump occurs in the same update.
-    if (!scrollJumpedX && !scrollJumpedY && !ownerHeightChanged) {
+    // if none of the above changed, then a scroll didn't happen at all
+    if (!ownerHeightChanged && !scrollXChanged && !scrollYChanged) {
       return;
     }
 
-    // any jump must have happened, so call onScrollStart
-    if (onScrollStart) {
+    // only call onScrollStart if scrolling wasn't on previously
+    if (!this.props.scrolling && onScrollStart) {
       onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex)
     }
 
-    if (scrollJumpedX) {
-      scrollActions.jumpScrollX();
-      onHorizontalScroll && onHorizontalScroll(scrollX);
+    if (scrollXChanged && onHorizontalScroll) {
+      onHorizontalScroll(scrollX);
     }
 
-    if (scrollJumpedY) {
-      scrollActions.jumpScrollY();
-      onVerticalScroll && onVerticalScroll(scrollY);
+    if (scrollYChanged && onVerticalScroll) {
+      onVerticalScroll(scrollY);
     }
 
-    // any jump must have happened, so call onScrollEnd
-    if (onScrollEnd) {
-      onScrollEnd(scrollX, scrollY, firstRowIndex);
-    }
-
-    return true;
+    // debounced version of didScrollStop as we don't immediately stop scrolling
+    this._didScrollStop();
   }
 
   // We need two versions of this function, one to finish up synchronously (for

@@ -37,7 +37,6 @@ describe('scrollAnchor', function() {
         firstOffset: -50,
         lastIndex: undefined,
         changed: true,
-        scrollJumpedY: true,
       });
     });
 
@@ -48,7 +47,6 @@ describe('scrollAnchor', function() {
         firstOffset: 0,
         lastIndex: undefined,
         changed: true,
-        scrollJumpedY: true,
       });
     });
 
@@ -59,7 +57,6 @@ describe('scrollAnchor', function() {
         firstOffset: 0,
         lastIndex: 99,
         changed: true,
-        scrollJumpedY: true,
       });
     });
 
@@ -72,7 +69,6 @@ describe('scrollAnchor', function() {
         firstOffset: 0,
         lastIndex: undefined,
         changed: true,
-        scrollJumpedY: true,
       });
     });
   });
@@ -106,7 +102,6 @@ describe('scrollAnchor', function() {
         firstOffset: 0,
         lastIndex: 40,
         changed: true,
-        scrollJumpedY: true,
       });
     });
 
@@ -119,7 +114,6 @@ describe('scrollAnchor', function() {
         firstOffset: 0,
         lastIndex: undefined,
         changed: true,
-        scrollJumpedY: true,
       });
     });
 
@@ -134,7 +128,6 @@ describe('scrollAnchor', function() {
         firstOffset: 50,
         lastIndex: undefined,
         changed: false,
-        scrollJumpedY: false,
       });
     });
 
@@ -149,7 +142,6 @@ describe('scrollAnchor', function() {
         firstOffset: 0,
         lastIndex: undefined,
         changed: true,
-        scrollJumpedY: true,
       });
     });
 
@@ -162,7 +154,6 @@ describe('scrollAnchor', function() {
         firstOffset: 0,
         lastIndex: undefined,
         changed: true,
-        scrollJumpedY: true,
       });
     });
 
@@ -175,7 +166,6 @@ describe('scrollAnchor', function() {
         firstOffset: 0,
         lastIndex: 99,
         changed: true,
-        scrollJumpedY: true,
       });
     });
   });

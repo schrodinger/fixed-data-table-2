@@ -46,14 +46,11 @@ function initialize(state, props, oldProps) {
   isColumnResizing = props.isColumnResizing !== undefined ? props.isColumnResizing : isColumnResizing;
   columnResizingData = isColumnResizing ? columnResizingData : {};
 
-  const scrollJumpedX = scrollX != state.scrollX;
-
   return Object.assign({}, state, {
     columnResizingData,
     isColumnResizing,
     maxScrollX,
     scrollX,
-    scrollJumpedX,
   });
 };
 
