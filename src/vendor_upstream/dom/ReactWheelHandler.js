@@ -30,8 +30,8 @@ class ReactWheelHandler {
     /*function*/ onWheel,
     /*boolean|function*/ handleScrollX,
     /*boolean|function*/ handleScrollY,
-    /*?boolean|?function*/ preventDefault,
-    /*?boolean|?function*/ stopPropagation
+    /*?boolean*/ preventDefault,
+    /*?boolean*/ stopPropagation
   ) {
     this._animationFrameID = null;
     this._deltaX = 0;
@@ -51,21 +51,6 @@ class ReactWheelHandler {
         emptyFunction.thatReturnsFalse;
     }
 
-    // Can we just make this a boolean flag instead?
-    if (typeof preventDefault !== 'function') {
-      preventDefault = preventDefault ?
-        emptyFunction.thatReturnsTrue :
-        emptyFunction.thatReturnsFalse;
-    }
-
-    // TODO (jordan) Is configuring this necessary
-    // I don't think so. We are only just passing a boolean anyway.
-    if (typeof stopPropagation !== 'function') {
-      stopPropagation = stopPropagation ?
-        emptyFunction.thatReturnsTrue :
-        emptyFunction.thatReturnsFalse;
-    }
-
     this._handleScrollX = handleScrollX;
     this._handleScrollY = handleScrollY;
     this._preventDefault = preventDefault;
@@ -75,7 +60,7 @@ class ReactWheelHandler {
   }
 
   onWheel(/*object*/ event) {
-    if (this._preventDefault()) {
+    if (this._preventDefault) {
       event.preventDefault();
     }
 
@@ -108,7 +93,7 @@ class ReactWheelHandler {
 
     var changed;
     if (this._deltaX !== 0 || this._deltaY !== 0) {
-      if (this._stopPropagation()) {
+      if (this._stopPropagation) {
         event.stopPropagation();
       }
       changed = true;

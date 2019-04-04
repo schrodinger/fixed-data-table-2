@@ -313,8 +313,8 @@ class FixedDataTable extends React.Component {
     stopReactWheelPropagation: PropTypes.bool,
 
     /**
-     * If enabled scroll events will never be default handled.
-     * If disabled/unspecified, scroll events will be default handled if the scroll
+     * If enabled scroll events will never be bubbled to the browser default handler.
+     * If disabled (default when unspecified), scroll events will be bubbled up if the scroll
      * doesn't lead to a change in scroll offsets, which is preferable if you like
      * the page/container to scroll up when the table is already scrolled up max.
      */

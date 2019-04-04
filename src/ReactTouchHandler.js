@@ -35,8 +35,8 @@ class ReactTouchHandler {
     /*function*/ onTouchScroll,
     /*boolean|function*/ handleScrollX,
     /*boolean|function*/ handleScrollY,
-    /*?boolean|?function*/ preventDefault,
-    /*?boolean|?function*/ stopPropagation
+    /*?boolean*/ preventDefault,
+    /*?boolean*/ stopPropagation
   ) {
 
     // The animation frame id for the drag scroll
@@ -79,21 +79,6 @@ class ReactTouchHandler {
         emptyFunction.thatReturnsFalse;
     }
 
-    // Can we just make this a boolean flag instead?
-    if (typeof preventDefault !== 'function') {
-      preventDefault = preventDefault ?
-        emptyFunction.thatReturnsTrue :
-        emptyFunction.thatReturnsFalse;
-    }
-
-    // TODO (jordan) Is configuring this necessary
-    // I don't think so. We are only just passing a boolean anyway.
-    if (typeof stopPropagation !== 'function') {
-      stopPropagation = stopPropagation ?
-        emptyFunction.thatReturnsTrue :
-        emptyFunction.thatReturnsFalse;
-    }
-
     this._handleScrollX = handleScrollX;
     this._handleScrollY = handleScrollY;
     this._preventDefault = preventDefault;
@@ -111,7 +96,7 @@ class ReactTouchHandler {
   }
 
   onTouchStart(/*object*/ event) {
-    if (this._preventDefault()) {
+    if (this._preventDefault) {
       event.preventDefault();
     }
 
@@ -130,13 +115,13 @@ class ReactTouchHandler {
     clearInterval(this._trackerId);
     this._trackerId = setInterval(this._track, TRACKER_TIMEOUT);
 
-    if (this._stopPropagation()) {
+    if (this._stopPropagation) {
       event.stopPropagation();
     }
   }
 
   onTouchEnd(/*object*/ event) {
-    if (this._preventDefault()) {
+    if (this._preventDefault) {
       event.preventDefault();
     }
 
@@ -147,7 +132,7 @@ class ReactTouchHandler {
     // Initialize decelerating autoscroll on drag stop
     requestAnimationFramePolyfill(this._startAutoScroll);
 
-    if (this._stopPropagation()) {
+    if (this._stopPropagation) {
       event.stopPropagation();
     }
   }
@@ -158,13 +143,13 @@ class ReactTouchHandler {
     clearInterval(this._trackerId);
     this._trackerId = null;
 
-    if (this._stopPropagation()) {
+    if (this._stopPropagation) {
       event.stopPropagation();
     }
   }
 
   onTouchMove(/*object*/ event) {
-    if (this._preventDefault()) {
+    if (this._preventDefault) {
       event.preventDefault();
     }
 
@@ -202,7 +187,7 @@ class ReactTouchHandler {
     // Ensure minimum delta magnitude is met to avoid jitter
     var changed = false;
     if (Math.abs(this._deltaX) > 2 || Math.abs(this._deltaY) > 2) {
-      if (this._stopPropagation()) {
+      if (this._stopPropagation) {
         event.stopPropagation();
       }
       changed = true;
