@@ -30,6 +30,7 @@ class ReactWheelHandler {
     /*function*/ onWheel,
     /*boolean|function*/ handleScrollX,
     /*boolean|function*/ handleScrollY,
+    /*?boolean|?function*/ preventDefault,
     /*?boolean|?function*/ stopPropagation
   ) {
     this._animationFrameID = null;
@@ -50,6 +51,15 @@ class ReactWheelHandler {
         emptyFunction.thatReturnsFalse;
     }
 
+    // Can we just make this a boolean flag instead?
+    if (typeof preventDefault !== 'function') {
+      preventDefault = preventDefault ?
+        emptyFunction.thatReturnsTrue :
+        emptyFunction.thatReturnsFalse;
+    }
+
+    // TODO (jordan) Is configuring this necessary
+    // I don't think so. We are only just passing a boolean anyway.
     if (typeof stopPropagation !== 'function') {
       stopPropagation = stopPropagation ?
         emptyFunction.thatReturnsTrue :
@@ -58,13 +68,16 @@ class ReactWheelHandler {
 
     this._handleScrollX = handleScrollX;
     this._handleScrollY = handleScrollY;
+    this._preventDefault = preventDefault;
     this._stopPropagation = stopPropagation;
     this._onWheelCallback = onWheel;
     this.onWheel = this.onWheel.bind(this);
   }
 
   onWheel(/*object*/ event) {
-    event.preventDefault();
+    if (this._preventDefault()) {
+      event.preventDefault();
+    }
 
     var normalizedEvent = normalizeWheel(event);
 
@@ -87,6 +100,11 @@ class ReactWheelHandler {
 
     this._deltaX += handleScrollX ? normalizedEvent.pixelX : 0;
     this._deltaY += handleScrollY ? normalizedEvent.pixelY : 0;
+
+    // This will result in a scroll to the table, so there's no need to let the parent containers scroll
+    if (!event.defaultPrevented) {
+      event.preventDefault();
+    }
 
     var changed;
     if (this._deltaX !== 0 || this._deltaY !== 0) {
