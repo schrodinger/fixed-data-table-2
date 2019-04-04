@@ -80,22 +80,13 @@ describe('ReactTouchHandler', function() {
       assert.isFalse(fakeEvent.stopPropagation.called);
     });
 
-    it('should prevent default if flag is false', function() {
+    it('should prevent default if flag is true', function() {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, false);
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, true, false);
       reactTouchHandler.onTouchStart(fakeEvent);
 
       // --- Verify Expectations ---
-      assert.isFalse(fakeEvent.preventDefault.called);
-    });
-
-    it('should not prevent default if flag is false', function() {
-      // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, true, () => false);
-      reactTouchHandler.onTouchStart(fakeEvent);
-
-      // --- Verify Expectations ---
-      assert.isFalse(fakeEvent.preventDefault.called);
+      assert.isTrue(fakeEvent.preventDefault.calledOnce);
     });
 
     it('should start new interval', function() {
@@ -164,22 +155,13 @@ describe('ReactTouchHandler', function() {
       assert.isFalse(fakeEvent.stopPropagation.called);
     });
 
-    it('should prevent default if flag is false', function() {
-      // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, false);
-      reactTouchHandler.onTouchEnd(fakeEvent);
-
-      // --- Verify Expectations ---
-      assert.isFalse(fakeEvent.preventDefault.called);
-    });
-
-    it('should not prevent default if flag is false', function() {
+    it('should prevent default if flag is true', function() {
       // --- Run Test ---
       var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, true, () => false);
       reactTouchHandler.onTouchEnd(fakeEvent);
 
       // --- Verify Expectations ---
-      assert.isFalse(fakeEvent.preventDefault.called);
+      assert.isTrue(fakeEvent.preventDefault.calledOnce);
     });
 
     it('should clear last interval', function() {

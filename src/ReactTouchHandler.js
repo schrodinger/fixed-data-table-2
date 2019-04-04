@@ -111,6 +111,9 @@ class ReactTouchHandler {
   }
 
   onTouchStart(/*object*/ event) {
+    if (this._preventDefault()) {
+      event.preventDefault();
+    }
 
     // Start tracking drag delta for scrolling
     this._lastTouchX = event.touches[0].pageX;
@@ -133,6 +136,9 @@ class ReactTouchHandler {
   }
 
   onTouchEnd(/*object*/ event) {
+    if (this._preventDefault()) {
+      event.preventDefault();
+    }
 
     // Stop tracking velocity
     clearInterval(this._trackerId);
