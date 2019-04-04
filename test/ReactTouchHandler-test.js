@@ -39,13 +39,14 @@ describe('ReactTouchHandler', function() {
           pageX: 121,
           pageY: 312
         }],
+        preventDefault: sandbox.spy(),
         stopPropagation: sandbox.spy()
       };
     });
 
     it('should stop event propagation if flag is true', function() {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, true);
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, true);
       reactTouchHandler.onTouchStart(fakeEvent);
 
       // --- Verify Expectations ---
@@ -54,7 +55,7 @@ describe('ReactTouchHandler', function() {
 
     it('should stop event propagation if function returns true', function() {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, () => true);
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, () => true);
       reactTouchHandler.onTouchStart(fakeEvent);
 
       // --- Verify Expectations ---
@@ -63,7 +64,7 @@ describe('ReactTouchHandler', function() {
 
     it('should not stop event propagation if flag is false', function() {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false);
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, false);
       reactTouchHandler.onTouchStart(fakeEvent);
 
       // --- Verify Expectations ---
@@ -72,16 +73,34 @@ describe('ReactTouchHandler', function() {
 
     it('should not stop event propagation if function returns false', function() {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, () => false);
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, () => false);
       reactTouchHandler.onTouchStart(fakeEvent);
 
       // --- Verify Expectations ---
       assert.isFalse(fakeEvent.stopPropagation.called);
     });
 
+    it('should prevent default if flag is false', function() {
+      // --- Run Test ---
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, false);
+      reactTouchHandler.onTouchStart(fakeEvent);
+
+      // --- Verify Expectations ---
+      assert.isFalse(fakeEvent.preventDefault.called);
+    });
+
+    it('should not prevent default if flag is false', function() {
+      // --- Run Test ---
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, true, () => false);
+      reactTouchHandler.onTouchStart(fakeEvent);
+
+      // --- Verify Expectations ---
+      assert.isFalse(fakeEvent.preventDefault.called);
+    });
+
     it('should start new interval', function() {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, () => false);
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, () => false);
       reactTouchHandler.onTouchStart(fakeEvent);
       clock.tick(100);
 
@@ -100,6 +119,7 @@ describe('ReactTouchHandler', function() {
           pageX: 121,
           pageY: 312
         }],
+        preventDefault: sandbox.spy(),
         stopPropagation: sandbox.spy()
       };
     });
@@ -110,7 +130,7 @@ describe('ReactTouchHandler', function() {
 
     it('should stop event propagation if flag is true', function() {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, true);
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, true);
       reactTouchHandler.onTouchEnd(fakeEvent);
 
       // --- Verify Expectations ---
@@ -119,7 +139,7 @@ describe('ReactTouchHandler', function() {
 
     it('should stop event propagation if function returns true', function() {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, () => true);
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, () => true);
       reactTouchHandler.onTouchEnd(fakeEvent);
 
       // --- Verify Expectations ---
@@ -128,7 +148,7 @@ describe('ReactTouchHandler', function() {
 
     it('should not stop event propagation if flag is false', function() {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false);
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, false);
       reactTouchHandler.onTouchEnd(fakeEvent);
 
       // --- Verify Expectations ---
@@ -137,16 +157,34 @@ describe('ReactTouchHandler', function() {
 
     it('should not stop event propagation if function returns false', function() {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, () => false);
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, () => false);
       reactTouchHandler.onTouchEnd(fakeEvent);
 
       // --- Verify Expectations ---
       assert.isFalse(fakeEvent.stopPropagation.called);
     });
 
+    it('should prevent default if flag is false', function() {
+      // --- Run Test ---
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, false);
+      reactTouchHandler.onTouchEnd(fakeEvent);
+
+      // --- Verify Expectations ---
+      assert.isFalse(fakeEvent.preventDefault.called);
+    });
+
+    it('should not prevent default if flag is false', function() {
+      // --- Run Test ---
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, true, () => false);
+      reactTouchHandler.onTouchEnd(fakeEvent);
+
+      // --- Verify Expectations ---
+      assert.isFalse(fakeEvent.preventDefault.called);
+    });
+
     it('should clear last interval', function() {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, () => false);
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, () => false);
       reactTouchHandler.onTouchEnd(fakeEvent);
 
       // --- Verify Expectations ---
@@ -155,7 +193,7 @@ describe('ReactTouchHandler', function() {
 
     it('Should start deceleration', function() {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, () => false);
+      var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, () => false);
       reactTouchHandler.onTouchEnd(fakeEvent);
 
       // --- Verify Expectations ---
