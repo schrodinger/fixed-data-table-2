@@ -35,7 +35,8 @@ class ReactTouchHandler {
     /*function*/ onTouchScroll,
     /*boolean|function*/ handleScrollX,
     /*boolean|function*/ handleScrollY,
-    /*?boolean|?function*/ stopPropagation
+    /*?boolean*/ preventDefault,
+    /*?boolean*/ stopPropagation
   ) {
 
     // The animation frame id for the drag scroll
@@ -78,15 +79,9 @@ class ReactTouchHandler {
         emptyFunction.thatReturnsFalse;
     }
 
-    // TODO (jordan) Is configuring this necessary
-    if (typeof stopPropagation !== 'function') {
-      stopPropagation = stopPropagation ?
-        emptyFunction.thatReturnsTrue :
-        emptyFunction.thatReturnsFalse;
-    }
-
     this._handleScrollX = handleScrollX;
     this._handleScrollY = handleScrollY;
+    this._preventDefault = preventDefault;
     this._stopPropagation = stopPropagation;
     this._onTouchScrollCallback = onTouchScroll;
 
@@ -101,6 +96,9 @@ class ReactTouchHandler {
   }
 
   onTouchStart(/*object*/ event) {
+    if (this._preventDefault) {
+      event.preventDefault();
+    }
 
     // Start tracking drag delta for scrolling
     this._lastTouchX = event.touches[0].pageX;
@@ -117,12 +115,15 @@ class ReactTouchHandler {
     clearInterval(this._trackerId);
     this._trackerId = setInterval(this._track, TRACKER_TIMEOUT);
 
-    if (this._stopPropagation()) {
+    if (this._stopPropagation) {
       event.stopPropagation();
     }
   }
 
   onTouchEnd(/*object*/ event) {
+    if (this._preventDefault) {
+      event.preventDefault();
+    }
 
     // Stop tracking velocity
     clearInterval(this._trackerId);
@@ -131,7 +132,7 @@ class ReactTouchHandler {
     // Initialize decelerating autoscroll on drag stop
     requestAnimationFramePolyfill(this._startAutoScroll);
 
-    if (this._stopPropagation()) {
+    if (this._stopPropagation) {
       event.stopPropagation();
     }
   }
@@ -142,12 +143,15 @@ class ReactTouchHandler {
     clearInterval(this._trackerId);
     this._trackerId = null;
 
-    if (this._stopPropagation()) {
+    if (this._stopPropagation) {
       event.stopPropagation();
     }
   }
 
   onTouchMove(/*object*/ event) {
+    if (this._preventDefault) {
+      event.preventDefault();
+    }
 
     var moveX = event.touches[0].pageX;
     var moveY = event.touches[0].pageY;
@@ -175,12 +179,15 @@ class ReactTouchHandler {
       this._deltaY = 0;
     }
 
-    event.preventDefault();
+    // The event will result in a scroll to the table, so there's no need to also let the parent containers scroll
+    if (!event.defaultPrevented) {
+      event.preventDefault();
+    }
 
     // Ensure minimum delta magnitude is met to avoid jitter
     var changed = false;
     if (Math.abs(this._deltaX) > 2 || Math.abs(this._deltaY) > 2) {
-      if (this._stopPropagation()) {
+      if (this._stopPropagation) {
         event.stopPropagation();
       }
       changed = true;

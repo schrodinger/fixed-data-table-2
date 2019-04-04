@@ -313,6 +313,14 @@ class FixedDataTable extends React.Component {
     stopReactWheelPropagation: PropTypes.bool,
 
     /**
+     * If enabled scroll events will never be bubbled to the browser default handler.
+     * If disabled (default when unspecified), scroll events will be bubbled up if the scroll
+     * doesn't lead to a change in scroll offsets, which is preferable if you like
+     * the page/container to scroll up when the table is already scrolled up max.
+     */
+    stopScrollDefaultHandling: PropTypes.bool,
+
+    /**
      * If enabled scroll events will not be propagated outside of the table.
      */
     stopScrollPropagation: PropTypes.bool,
@@ -444,6 +452,7 @@ class FixedDataTable extends React.Component {
       this._onScroll,
       this._shouldHandleWheelX,
       this._shouldHandleWheelY,
+      this.props.stopScrollDefaultHandling,
       this.props.stopScrollPropagation
     );
 
@@ -451,14 +460,22 @@ class FixedDataTable extends React.Component {
       this._onScroll,
       this._shouldHandleTouchX,
       this._shouldHandleTouchY,
+      this.props.stopScrollDefaultHandling,
       this.props.stopScrollPropagation
     );
   }
 
   componentWillUnmount() {
+    // TODO (pradeep): Remove these and pass to our table component directly after
+    // React provides an API where event handlers can be specified to be non-passive (facebook/react#6436)
     this._divRef && this._divRef.removeEventListener(
       'wheel',
       this._wheelHandler.onWheel,
+      { passive: false }
+    );
+    this._divRef && this._divRef.removeEventListener(
+      'touchmove',
+      this._touchHandler.onTouchMove,
       { passive: false }
     );
     this._wheelHandler = null;
@@ -574,6 +591,11 @@ class FixedDataTable extends React.Component {
     this._divRef && this._divRef.addEventListener(
       'wheel',
       this._wheelHandler.onWheel,
+      { passive: false }
+    );
+    this._divRef && this._divRef.addEventListener(
+      'touchmove',
+      this._touchHandler.onTouchMove,
       { passive: false }
     );
     this._reportContentHeight();
@@ -798,7 +820,6 @@ class FixedDataTable extends React.Component {
         onKeyDown={this._onKeyDown}
         onTouchStart={this._touchHandler.onTouchStart}
         onTouchEnd={this._touchHandler.onTouchEnd}
-        onTouchMove={this._touchHandler.onTouchMove}
         onTouchCancel={this._touchHandler.onTouchCancel}
         ref={this._onRef}
         style={{
