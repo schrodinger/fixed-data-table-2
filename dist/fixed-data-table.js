@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.15 
+ * FixedDataTable v1.0.0-beta.16 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -4421,7 +4421,8 @@ var ReactWheelHandler = function () {
   /*function*/onWheel,
   /*boolean|function*/handleScrollX,
   /*boolean|function*/handleScrollY,
-  /*?boolean|?function*/stopPropagation) {
+  /*?boolean*/preventDefault,
+  /*?boolean*/stopPropagation) {
     _classCallCheck(this, ReactWheelHandler);
 
     this._animationFrameID = null;
@@ -4438,12 +4439,9 @@ var ReactWheelHandler = function () {
       handleScrollY = handleScrollY ? _emptyFunction2.default.thatReturnsTrue : _emptyFunction2.default.thatReturnsFalse;
     }
 
-    if (typeof stopPropagation !== 'function') {
-      stopPropagation = stopPropagation ? _emptyFunction2.default.thatReturnsTrue : _emptyFunction2.default.thatReturnsFalse;
-    }
-
     this._handleScrollX = handleScrollX;
     this._handleScrollY = handleScrollY;
+    this._preventDefault = preventDefault;
     this._stopPropagation = stopPropagation;
     this._onWheelCallback = onWheel;
     this.onWheel = this.onWheel.bind(this);
@@ -4452,6 +4450,10 @@ var ReactWheelHandler = function () {
   _createClass(ReactWheelHandler, [{
     key: 'onWheel',
     value: function onWheel( /*object*/event) {
+      if (this._preventDefault) {
+        event.preventDefault();
+      }
+
       var normalizedEvent = (0, _normalizeWheel2.default)(event);
 
       // if shift is held, swap the axis of scrolling.
@@ -4473,11 +4475,15 @@ var ReactWheelHandler = function () {
 
       this._deltaX += handleScrollX ? normalizedEvent.pixelX : 0;
       this._deltaY += handleScrollY ? normalizedEvent.pixelY : 0;
-      event.preventDefault();
+
+      // This will result in a scroll to the table, so there's no need to let the parent containers scroll
+      if (!event.defaultPrevented) {
+        event.preventDefault();
+      }
 
       var changed;
       if (this._deltaX !== 0 || this._deltaY !== 0) {
-        if (this._stopPropagation()) {
+        if (this._stopPropagation) {
           event.stopPropagation();
         }
         changed = true;
@@ -5603,7 +5609,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTableContainer2.default
 };
 
-FixedDataTableRoot.version = '1.0.0-beta.15';
+FixedDataTableRoot.version = '1.0.0-beta.16';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -6200,14 +6206,17 @@ var FixedDataTable = function (_React$Component) {
       this._didScrollStop = (0, _debounceCore2.default)(this._didScrollStopSync, 200, this);
       this._onKeyDown = this._onKeyDown.bind(this);
 
-      this._wheelHandler = new _ReactWheelHandler2.default(this._onScroll, this._shouldHandleWheelX, this._shouldHandleWheelY, this.props.stopScrollPropagation);
+      this._wheelHandler = new _ReactWheelHandler2.default(this._onScroll, this._shouldHandleWheelX, this._shouldHandleWheelY, this.props.stopScrollDefaultHandling, this.props.stopScrollPropagation);
 
-      this._touchHandler = new _ReactTouchHandler2.default(this._onScroll, this._shouldHandleTouchX, this._shouldHandleTouchY, this.props.stopScrollPropagation);
+      this._touchHandler = new _ReactTouchHandler2.default(this._onScroll, this._shouldHandleTouchX, this._shouldHandleTouchY, this.props.stopScrollDefaultHandling, this.props.stopScrollPropagation);
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
+      // TODO (pradeep): Remove these and pass to our table component directly after
+      // React provides an API where event handlers can be specified to be non-passive (facebook/react#6436)
       this._divRef && this._divRef.removeEventListener('wheel', this._wheelHandler.onWheel, { passive: false });
+      this._divRef && this._divRef.removeEventListener('touchmove', this._touchHandler.onTouchMove, { passive: false });
       this._wheelHandler = null;
       this._touchHandler = null;
 
@@ -6269,6 +6278,7 @@ var FixedDataTable = function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       this._divRef && this._divRef.addEventListener('wheel', this._wheelHandler.onWheel, { passive: false });
+      this._divRef && this._divRef.addEventListener('touchmove', this._touchHandler.onTouchMove, { passive: false });
       this._reportContentHeight();
     }
   }, {
@@ -6469,7 +6479,6 @@ var FixedDataTable = function (_React$Component) {
           onKeyDown: this._onKeyDown,
           onTouchStart: this._touchHandler.onTouchStart,
           onTouchEnd: this._touchHandler.onTouchEnd,
-          onTouchMove: this._touchHandler.onTouchMove,
           onTouchCancel: this._touchHandler.onTouchCancel,
           ref: this._onRef,
           style: {
@@ -6747,6 +6756,14 @@ FixedDataTable.propTypes = {
    * If enabled scroll events will not be propagated outside of the table.
    */
   stopReactWheelPropagation: _propTypes2.default.bool,
+
+  /**
+   * If enabled scroll events will never be bubbled to the browser default handler.
+   * If disabled (default when unspecified), scroll events will be bubbled up if the scroll
+   * doesn't lead to a change in scroll offsets, which is preferable if you like
+   * the page/container to scroll up when the table is already scrolled up max.
+   */
+  stopScrollDefaultHandling: _propTypes2.default.bool,
 
   /**
    * If enabled scroll events will not be propagated outside of the table.
@@ -12910,7 +12927,8 @@ var ReactTouchHandler = function () {
   /*function*/onTouchScroll,
   /*boolean|function*/handleScrollX,
   /*boolean|function*/handleScrollY,
-  /*?boolean|?function*/stopPropagation) {
+  /*?boolean*/preventDefault,
+  /*?boolean*/stopPropagation) {
     _classCallCheck(this, ReactTouchHandler);
 
     // The animation frame id for the drag scroll
@@ -12949,13 +12967,9 @@ var ReactTouchHandler = function () {
       handleScrollY = handleScrollY ? _emptyFunction2.default.thatReturnsTrue : _emptyFunction2.default.thatReturnsFalse;
     }
 
-    // TODO (jordan) Is configuring this necessary
-    if (typeof stopPropagation !== 'function') {
-      stopPropagation = stopPropagation ? _emptyFunction2.default.thatReturnsTrue : _emptyFunction2.default.thatReturnsFalse;
-    }
-
     this._handleScrollX = handleScrollX;
     this._handleScrollY = handleScrollY;
+    this._preventDefault = preventDefault;
     this._stopPropagation = stopPropagation;
     this._onTouchScrollCallback = onTouchScroll;
 
@@ -12972,6 +12986,9 @@ var ReactTouchHandler = function () {
   _createClass(ReactTouchHandler, [{
     key: 'onTouchStart',
     value: function onTouchStart( /*object*/event) {
+      if (this._preventDefault) {
+        event.preventDefault();
+      }
 
       // Start tracking drag delta for scrolling
       this._lastTouchX = event.touches[0].pageX;
@@ -12988,13 +13005,16 @@ var ReactTouchHandler = function () {
       clearInterval(this._trackerId);
       this._trackerId = setInterval(this._track, TRACKER_TIMEOUT);
 
-      if (this._stopPropagation()) {
+      if (this._stopPropagation) {
         event.stopPropagation();
       }
     }
   }, {
     key: 'onTouchEnd',
     value: function onTouchEnd( /*object*/event) {
+      if (this._preventDefault) {
+        event.preventDefault();
+      }
 
       // Stop tracking velocity
       clearInterval(this._trackerId);
@@ -13003,7 +13023,7 @@ var ReactTouchHandler = function () {
       // Initialize decelerating autoscroll on drag stop
       (0, _requestAnimationFramePolyfill2.default)(this._startAutoScroll);
 
-      if (this._stopPropagation()) {
+      if (this._stopPropagation) {
         event.stopPropagation();
       }
     }
@@ -13015,13 +13035,16 @@ var ReactTouchHandler = function () {
       clearInterval(this._trackerId);
       this._trackerId = null;
 
-      if (this._stopPropagation()) {
+      if (this._stopPropagation) {
         event.stopPropagation();
       }
     }
   }, {
     key: 'onTouchMove',
     value: function onTouchMove( /*object*/event) {
+      if (this._preventDefault) {
+        event.preventDefault();
+      }
 
       var moveX = event.touches[0].pageX;
       var moveY = event.touches[0].pageY;
@@ -13049,12 +13072,15 @@ var ReactTouchHandler = function () {
         this._deltaY = 0;
       }
 
-      event.preventDefault();
+      // The event will result in a scroll to the table, so there's no need to also let the parent containers scroll
+      if (!event.defaultPrevented) {
+        event.preventDefault();
+      }
 
       // Ensure minimum delta magnitude is met to avoid jitter
       var changed = false;
       if (Math.abs(this._deltaX) > 2 || Math.abs(this._deltaY) > 2) {
-        if (this._stopPropagation()) {
+        if (this._stopPropagation) {
           event.stopPropagation();
         }
         changed = true;
