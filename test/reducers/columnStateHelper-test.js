@@ -203,7 +203,6 @@ describe('columnStateHelper', function() {
         },
         isColumnResizing: true,
         scrollX: 300,
-        scrollJumpedX: false,
       };
       availableWidth = 200;
 
@@ -238,7 +237,6 @@ describe('columnStateHelper', function() {
       assert.deepEqual(result, Object.assign({}, oldState, {
         maxScrollX: 400,
         scrollX: 400,
-        scrollJumpedX: true,
       }));
     });
 
@@ -250,7 +248,6 @@ describe('columnStateHelper', function() {
       assert.deepEqual(result, Object.assign({}, oldState, {
         maxScrollX: 400,
         scrollX: 100,
-        scrollJumpedX: true,
       }));
     });
 
@@ -276,7 +273,6 @@ describe('columnStateHelper', function() {
       assert.deepEqual(result, Object.assign({}, oldState, {
         maxScrollX: 250,
         scrollX: 100,
-        scrollJumpedX: true,
       }));
     });
 
@@ -290,7 +286,6 @@ describe('columnStateHelper', function() {
       assert.deepEqual(result, Object.assign({}, oldState, {
         maxScrollX: 250,
         scrollX: 150,
-        scrollJumpedX: true,
       }));
     });
 
