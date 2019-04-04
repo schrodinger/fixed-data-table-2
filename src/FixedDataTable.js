@@ -467,7 +467,7 @@ class FixedDataTable extends React.Component {
 
   componentWillUnmount() {
     // TODO (pradeep): Remove these and pass to our table component directly after
-    // React provides an API where event handlers can be specified to be non-passive
+    // React provides an API where event handlers can be specified to be non-passive (facebook/react#6436)
     this._divRef && this._divRef.removeEventListener(
       'wheel',
       this._wheelHandler.onWheel,
