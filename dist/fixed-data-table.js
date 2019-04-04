@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.14 
+ * FixedDataTable v1.0.0-beta.15 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -1480,8 +1480,6 @@ var INITIALIZE = exports.INITIALIZE = 'INITIALIZE';
 var PROP_CHANGE = exports.PROP_CHANGE = 'PROP_CHANGE';
 var SCROLL_START = exports.SCROLL_START = 'SCROLL_START';
 var SCROLL_END = exports.SCROLL_END = 'SCROLL_END';
-var SCROLL_JUMP_X = exports.SCROLL_JUMP_X = 'SCROLL_JUMP_X';
-var SCROLL_JUMP_Y = exports.SCROLL_JUMP_Y = 'SCROLL_JUMP_Y';
 var SCROLL_TO_X = exports.SCROLL_TO_X = 'SCROLL_TO_X';
 var SCROLL_TO_Y = exports.SCROLL_TO_Y = 'SCROLL_TO_Y';
 
@@ -5605,7 +5603,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTableContainer2.default
 };
 
-FixedDataTableRoot.version = '1.0.0-beta.14';
+FixedDataTableRoot.version = '1.0.0-beta.15';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -6077,10 +6075,6 @@ var FixedDataTable = function (_React$Component) {
           overflowY = scrollFlags.overflowY;
 
 
-      if (!scrolling) {
-        _this._didScrollStart();
-      }
-
       var x = scrollX;
       var y = scrollY;
       if (Math.abs(deltaY) > Math.abs(deltaX) && overflowY !== 'hidden') {
@@ -6106,8 +6100,6 @@ var FixedDataTable = function (_React$Component) {
           scrollActions.scrollToX(roundedX);
         }
       }
-
-      _this._didScrollStop();
     }, _this._onHorizontalScroll = function ( /*number*/scrollPos) {
       var _this$props5 = _this.props,
           onHorizontalScroll = _this$props5.onHorizontalScroll,
@@ -6120,10 +6112,6 @@ var FixedDataTable = function (_React$Component) {
         return;
       }
 
-      if (!scrolling) {
-        _this._didScrollStart();
-      }
-
       // This is a workaround to prevent content blurring. This happens when translate3d
       // is applied with non-rounded values to elements having text.
       var roundedScrollPos = Math.round(scrollPos);
@@ -6131,103 +6119,67 @@ var FixedDataTable = function (_React$Component) {
       if (onHorizontalScroll ? onHorizontalScroll(roundedScrollPos) : true) {
         scrollActions.scrollToX(roundedScrollPos);
       }
-      _this._didScrollStop();
     }, _this._onVerticalScroll = function ( /*number*/scrollPos) {
       var _this$props6 = _this.props,
           onVerticalScroll = _this$props6.onVerticalScroll,
           scrollActions = _this$props6.scrollActions,
-          scrollY = _this$props6.scrollY,
-          scrolling = _this$props6.scrolling;
+          scrollY = _this$props6.scrollY;
 
 
       if (scrollPos === scrollY) {
         return;
       }
 
-      if (!scrolling) {
-        _this._didScrollStart();
-      }
-
       if (onVerticalScroll ? onVerticalScroll(scrollPos) : true) {
         scrollActions.scrollToY(scrollPos);
       }
-
-      _this._didScrollStop();
-    }, _this._didScrollStart = function () {
-      var _this$props7 = _this.props,
-          firstRowIndex = _this$props7.firstRowIndex,
-          onScrollStart = _this$props7.onScrollStart,
-          scrollActions = _this$props7.scrollActions,
-          scrollX = _this$props7.scrollX,
-          scrollY = _this$props7.scrollY,
-          scrolling = _this$props7.scrolling;
-
-
-      if (scrolling) {
-        return;
-      }
-
-      scrollActions.startScroll();
-      if (onScrollStart) {
-        onScrollStart(scrollX, scrollY, firstRowIndex);
-      }
-    }, _this._didControlledScroll = function ( /* !object */nextProps) {
-      var firstRowIndex = nextProps.firstRowIndex,
-          onScrollStart = nextProps.onScrollStart,
-          onScrollEnd = nextProps.onScrollEnd,
-          scrollActions = nextProps.scrollActions,
+    }, _this._didScroll = function ( /* !object */nextProps) {
+      var onScrollStart = nextProps.onScrollStart,
           scrollX = nextProps.scrollX,
           scrollY = nextProps.scrollY,
-          scrollJumpedX = nextProps.scrollJumpedX,
-          scrollJumpedY = nextProps.scrollJumpedY,
           onHorizontalScroll = nextProps.onHorizontalScroll,
           onVerticalScroll = nextProps.onVerticalScroll,
           ownerHeight = nextProps.tableSize.ownerHeight;
-      var _this$props8 = _this.props,
-          oldFirstRowIndex = _this$props8.firstRowIndex,
-          oldScrollX = _this$props8.scrollX,
-          oldScrollY = _this$props8.scrollY,
-          oldOwnerHeight = _this$props8.tableSize.ownerHeight;
+      var _this$props7 = _this.props,
+          oldFirstRowIndex = _this$props7.firstRowIndex,
+          oldScrollX = _this$props7.scrollX,
+          oldScrollY = _this$props7.scrollY,
+          oldOwnerHeight = _this$props7.tableSize.ownerHeight;
 
-      // we have an extra check on NaN because (NaN !== NaN)
+      // check if scroll values have changed - we have an extra check on NaN because (NaN !== NaN)
 
       var ownerHeightChanged = ownerHeight !== oldOwnerHeight && !((0, _isNaN2.default)(ownerHeight) && (0, _isNaN2.default)(oldOwnerHeight));
+      var scrollXChanged = scrollX !== oldScrollX;
+      var scrollYChanged = scrollY !== oldScrollY;
 
-      // Only check for owner height changes if no scroll jump occurred. This prevents the scroll handlers from
-      // being called when an owner height change and scroll jump occurs in the same update.
-      if (!scrollJumpedX && !scrollJumpedY && !ownerHeightChanged) {
+      // if none of the above changed, then a scroll didn't happen at all
+      if (!ownerHeightChanged && !scrollXChanged && !scrollYChanged) {
         return;
       }
 
-      // any jump must have happened, so call onScrollStart
-      if (onScrollStart) {
+      // only call onScrollStart if scrolling wasn't on previously
+      if (!_this.props.scrolling && onScrollStart) {
         onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex);
       }
 
-      if (scrollJumpedX) {
-        scrollActions.jumpScrollX();
-        onHorizontalScroll && onHorizontalScroll(scrollX);
+      if (scrollXChanged && onHorizontalScroll) {
+        onHorizontalScroll(scrollX);
       }
 
-      if (scrollJumpedY) {
-        scrollActions.jumpScrollY();
-        onVerticalScroll && onVerticalScroll(scrollY);
+      if (scrollYChanged && onVerticalScroll) {
+        onVerticalScroll(scrollY);
       }
 
-      // any jump must have happened, so call onScrollEnd
-      if (onScrollEnd) {
-        onScrollEnd(scrollX, scrollY, firstRowIndex);
-      }
-
-      return true;
+      // debounced version of didScrollStop as we don't immediately stop scrolling
+      _this._didScrollStop();
     }, _this._didScrollStopSync = function () {
-      var _this$props9 = _this.props,
-          firstRowIndex = _this$props9.firstRowIndex,
-          onScrollEnd = _this$props9.onScrollEnd,
-          scrollActions = _this$props9.scrollActions,
-          scrollX = _this$props9.scrollX,
-          scrollY = _this$props9.scrollY,
-          scrolling = _this$props9.scrolling;
+      var _this$props8 = _this.props,
+          firstRowIndex = _this$props8.firstRowIndex,
+          onScrollEnd = _this$props8.onScrollEnd,
+          scrollActions = _this$props8.scrollActions,
+          scrollX = _this$props8.scrollX,
+          scrollY = _this$props8.scrollY,
+          scrolling = _this$props8.scrolling;
 
 
       if (!scrolling) {
@@ -6322,7 +6274,7 @@ var FixedDataTable = function (_React$Component) {
   }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps( /*object*/nextProps) {
-      this._didControlledScroll(nextProps);
+      this._didScroll(nextProps);
     }
   }, {
     key: 'componentDidUpdate',
@@ -6553,8 +6505,7 @@ var FixedDataTable = function (_React$Component) {
 
 
     /*
-      A controlled scroll can occur due to a scroll jump or a change in owner height.
-      This function also resets the jump state if any jump had occurred.
+      Appropriate
       Handlers onScrollStart, onScrollEnd, onHorizontalScroll, and onVerticalScroll are called appropriately.
      */
 
@@ -13898,8 +13849,6 @@ function getInitialState() {
     rowOffsets: {},
     rows: [], // rowsToRender
     scrollContentHeight: 0,
-    scrollJumpedX: false,
-    scrollJumpedY: false,
     scrollX: 0,
     scrollY: 0,
     scrolling: false,
@@ -13958,6 +13907,11 @@ function reducers() {
 
         _newState = _columnStateHelper2.default.initialize(_newState, newProps, oldProps);
 
+        // if scroll values have changed, then we're scrolling!
+        if (_newState.scrollX !== state.scrollX || _newState.scrollY !== state.scrollY) {
+          _newState.scrolling = _newState.scrolling || true;
+        }
+
         // TODO REDUX_MIGRATION solve w/ evil-diff
         // TODO (jordan) check if relevant props unchanged and
         // children column widths and flex widths are unchanged
@@ -13972,36 +13926,19 @@ function reducers() {
         var previousScrollAnchor = {
           firstIndex: state.firstRowIndex,
           firstOffset: state.firstRowOffset,
-          lastIndex: state.lastIndex,
-          scrollJumpedY: state.scrollJumpedY
+          lastIndex: state.lastIndex
         };
         return (0, _computeRenderedRows2.default)(_newState2, previousScrollAnchor);
-      }
-    case ActionTypes.SCROLL_JUMP_X:
-      {
-        return _extends({}, state, {
-          scrollJumpedX: false
-        });
-      }
-    case ActionTypes.SCROLL_JUMP_Y:
-      {
-        return _extends({}, state, {
-          scrollJumpedY: false
-        });
-      }
-    case ActionTypes.SCROLL_START:
-      {
-        return _extends({}, state, {
-          scrolling: true
-        });
       }
     case ActionTypes.SCROLL_TO_Y:
       {
         var scrollY = action.scrollY;
 
-
-        var _scrollAnchor2 = (0, _scrollAnchor3.scrollTo)(state, scrollY);
-        return (0, _computeRenderedRows2.default)(state, _scrollAnchor2);
+        var _newState3 = _extends({}, state, {
+          scrolling: true
+        });
+        var _scrollAnchor2 = (0, _scrollAnchor3.scrollTo)(_newState3, scrollY);
+        return (0, _computeRenderedRows2.default)(_newState3, _scrollAnchor2);
       }
     case ActionTypes.COLUMN_RESIZE:
       {
@@ -14033,6 +13970,7 @@ function reducers() {
         var scrollX = action.scrollX;
 
         return _extends({}, state, {
+          scrolling: true,
           scrollX: scrollX
         });
       }
@@ -14166,28 +14104,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *   firstOffset: number,
  *   lastIndex: number,
  *   changed: boolean,
- *   scrollJumpedY: boolean,
  * }}
  */
 function getScrollAnchor(state, newProps, oldProps) {
   if (newProps.scrollToRow !== undefined && newProps.scrollToRow !== null && (!oldProps || newProps.scrollToRow !== oldProps.scrollToRow)) {
-    var scrollAnchor = scrollToRow(state, newProps.scrollToRow);
-    return (0, _set2.default)(scrollAnchor, 'scrollJumpedY', scrollAnchor.changed);
+    return scrollToRow(state, newProps.scrollToRow);
   }
 
   if (newProps.scrollTop !== undefined && newProps.scrollTop !== null && (!oldProps || newProps.scrollTop !== oldProps.scrollTop)) {
-    var _scrollAnchor = scrollTo(state, newProps.scrollTop);
-    // 'changed' might give false positives to scrollJumpedY,
-    // but that's fine as the final value is determined by computeRenderedRows.
-    return (0, _set2.default)(_scrollAnchor, 'scrollJumpedY', _scrollAnchor.changed);
+    return scrollTo(state, newProps.scrollTop);
   }
 
   return {
     firstIndex: state.firstRowIndex,
     firstOffset: state.firstRowOffset,
     lastIndex: undefined,
-    changed: false,
-    scrollJumpedY: false
+    changed: false
   };
 }
 
@@ -15170,14 +15102,11 @@ function initialize(state, props, oldProps) {
   isColumnResizing = props.isColumnResizing !== undefined ? props.isColumnResizing : isColumnResizing;
   columnResizingData = isColumnResizing ? columnResizingData : {};
 
-  var scrollJumpedX = scrollX != state.scrollX;
-
   return _extends({}, state, {
     columnResizingData: columnResizingData,
     isColumnResizing: isColumnResizing,
     maxScrollX: maxScrollX,
-    scrollX: scrollX,
-    scrollJumpedX: scrollJumpedX
+    scrollX: scrollX
   });
 };
 
@@ -15474,7 +15403,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *   firstIndex: number,
  *   firstOffset: number,
  *   lastIndex: number,
- *   scrollJumpedY: boolean,
  * }} scrollAnchor
  * @return {!Object} The updated state object
  */
@@ -15510,13 +15438,11 @@ function computeRenderedRows(state, scrollAnchor) {
   if (rowsCount > 0) {
     scrollY = newState.rowOffsets[rowRange.firstViewportIdx] - newState.firstRowOffset;
   }
-  var scrollJumpedY = scrollAnchor.scrollJumpedY === true && scrollY !== state.scrollY;
   scrollY = (0, _clamp2.default)(scrollY, 0, maxScrollY);
 
   return _extends(newState, {
     maxScrollY: maxScrollY,
-    scrollY: scrollY,
-    scrollJumpedY: scrollJumpedY
+    scrollY: scrollY
   });
 }
 
@@ -16849,7 +16775,7 @@ var resizeColumn = exports.resizeColumn = function resizeColumn(resizeData) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.jumpScrollY = exports.jumpScrollX = exports.stopScroll = exports.startScroll = exports.scrollToY = exports.scrollToX = undefined;
+exports.stopScroll = exports.startScroll = exports.scrollToY = exports.scrollToX = undefined;
 
 var _ActionTypes = __webpack_require__(19);
 
@@ -16892,24 +16818,6 @@ var startScroll = exports.startScroll = function startScroll() {
 var stopScroll = exports.stopScroll = function stopScroll() {
   return {
     type: _ActionTypes.SCROLL_END
-  };
-};
-
-/**
- * Fire when fdt does a jump scroll due to a jump onto a row
- */
-var jumpScrollX = exports.jumpScrollX = function jumpScrollX() {
-  return {
-    type: _ActionTypes.SCROLL_JUMP_X
-  };
-};
-
-/**
- * Fire when fdt does a jump scroll due to a jump onto a column
- */
-var jumpScrollY = exports.jumpScrollY = function jumpScrollY() {
-  return {
-    type: _ActionTypes.SCROLL_JUMP_Y
   };
 };
 
