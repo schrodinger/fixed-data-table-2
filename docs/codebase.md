@@ -45,9 +45,6 @@ File Descriptions
   * Also renders column resize and reorder handles
 
 ### Additional Components
-* Scrollbar.js
-  * Renders the horizontal and vertical scrollbars for the table
-  * Used by FixedDataTable.js
 * ColumnResizerLine.js
   * Renders the line displayed while resizing a column
   * Used by FixedDataTable.js

@@ -10,6 +10,7 @@
   "dependencies": {
     "lodash": "^4.17.4",
     "prop-types": "^15.5.8",
+    "react-custom-scrollbars": "^4.2.1",
     "redux": "^3.5.2",
     "reselect": "^3.0.1"
   },

@@ -3,6 +3,7 @@
  */
 import { assert } from 'chai';
 import columnWidths from 'columnWidths';
+import {SCROLLBAR_STYLE} from 'scrollbar';
 
 describe('columnWidths', function() {
   let columnGroupPropsIn;
@@ -128,7 +129,7 @@ describe('columnWidths', function() {
   });
 
   it('should take into account scrollbar visibility', function() {
-    width = 656;
+    width = 640 + SCROLLBAR_STYLE.size;
     scrollEnabledY = true;
 
     const {

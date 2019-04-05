@@ -10,7 +10,6 @@ var Column = FixedDataTable.Column;
 var Cell = FixedDataTable.Cell;
 
 // Require common FixedDataTable CSS.
-require('fixed-data-table-2/css/layout/ScrollbarLayout.css');
 require('fixed-data-table-2/css/layout/fixedDataTableLayout.css');
 require('fixed-data-table-2/css/layout/fixedDataTableCellLayout.css');
 require('fixed-data-table-2/css/layout/fixedDataTableCellGroupLayout.css');
@@ -21,7 +20,6 @@ require('fixed-data-table-2/css/style/fixedDataTable.css');
 require('fixed-data-table-2/css/style/fixedDataTableCell.css');
 require('fixed-data-table-2/css/style/fixedDataTableColumnResizerLine.css');
 require('fixed-data-table-2/css/style/fixedDataTableRow.css');
-require('fixed-data-table-2/css/style/Scrollbar.css');
 
 var dataList = new FakeObjectDataListStore();
 var FakeTextCell = ({rowIndex, field, ...props}) => (

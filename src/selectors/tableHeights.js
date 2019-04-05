@@ -8,10 +8,10 @@
  *
  * @providesModule tableHeights
  */
-import Scrollbar from 'Scrollbar';
 import roughHeights from 'roughHeights';
 import scrollbarsVisible from 'scrollbarsVisible';
 import shallowEqualSelector from 'shallowEqualSelector';
+import {SCROLLBAR_STYLE} from 'scrollbar';
 
 /**
  * Compute the necessary heights for rendering parts of the table
@@ -45,7 +45,7 @@ function tableHeights(elementHeights, ownerHeight, reservedHeight,
   const { availableHeight, scrollEnabledX } = scrollbarsVisible;
   let reservedWithScrollbar = reservedHeight;
   if (scrollEnabledX) {
-    reservedWithScrollbar += Scrollbar.SIZE;
+    reservedWithScrollbar += SCROLLBAR_STYLE.size;
   }
 
   // If less content than space for rows (bodyHeight), then

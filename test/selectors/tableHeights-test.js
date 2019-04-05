@@ -3,6 +3,7 @@
  */
 import { assert } from 'chai';
 import tableHeights from 'tableHeights';
+import {SCROLLBAR_STYLE} from "../../src/helper/scrollbar";
 
 describe('tableHeights', function() {
   let elementHeights;
@@ -56,8 +57,8 @@ describe('tableHeights', function() {
     assert.deepEqual(result, {
       bodyHeight: 698,
       bodyOffsetTop: 75,
-      componentHeight: 800,
-      contentHeight: 2102,
+      componentHeight: 698 + reservedHeight + SCROLLBAR_STYLE.size,
+      contentHeight: scrollContentHeight + reservedHeight + SCROLLBAR_STYLE.size,
       footOffsetTop: 773,
       scrollbarXOffsetTop: 783,
       scrollbarYHeight: 698,

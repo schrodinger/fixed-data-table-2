@@ -3,6 +3,7 @@
  */
 import { assert } from 'chai';
 import roughHeights, { ScrollbarState } from 'roughHeights';
+import {SCROLLBAR_STYLE} from 'scrollbar';
 
 describe('roughHeights', function() {
   let columnProps;
@@ -72,8 +73,8 @@ describe('roughHeights', function() {
 
       assert.deepEqual(result, {
         bufferRowCount: 6,
-        minAvailableHeight: 698,
-        maxAvailableHeight: 698,
+        minAvailableHeight: 800 - 10 - 40 - 35 - 2 - SCROLLBAR_STYLE.size,
+        maxAvailableHeight: 800 - 10 - 40 - 35 - 2 - SCROLLBAR_STYLE.size,
         reservedHeight: 87,
         scrollStateX: ScrollbarState.VISIBLE,
       });
@@ -87,8 +88,8 @@ describe('roughHeights', function() {
 
       assert.deepEqual(result, {
         bufferRowCount: 6,
-        minAvailableHeight: 698,
-        maxAvailableHeight: 713,
+        minAvailableHeight: 800 - 10 - 40 - 35 - 2 - SCROLLBAR_STYLE.size,
+        maxAvailableHeight: 800 - 10 - 40 - 35 - 2,
         reservedHeight: 87,
         scrollStateX: ScrollbarState.JOINT_SCROLLBARS,
       });
@@ -107,7 +108,7 @@ describe('roughHeights', function() {
 
       assert.deepEqual(result, {
         bufferRowCount: 4,
-        minAvailableHeight: 298,
+        minAvailableHeight: 400 - 10 - 40 - 35 - 2 - SCROLLBAR_STYLE.size,
         maxAvailableHeight: 313,
         reservedHeight: 87,
         scrollStateX: ScrollbarState.JOINT_SCROLLBARS,

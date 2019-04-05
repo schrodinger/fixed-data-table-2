@@ -9,11 +9,11 @@
  * @providesModule columnWidths
  */
 import { getTotalFlexGrow, getTotalWidth } from 'widthHelper';
-import Scrollbar from 'Scrollbar';
 import forEach from 'lodash/forEach';
 import map from 'lodash/map';
 import scrollbarsVisible from 'scrollbarsVisible';
 import shallowEqualSelector from 'shallowEqualSelector';
+import {SCROLLBAR_STYLE} from 'scrollbar';
 
 /**
  * @typedef {{
@@ -41,7 +41,7 @@ let columnDefinition;
  * }} The total width of all columns.
  */
 function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
-  const scrollbarSpace = scrollEnabledY ? Scrollbar.SIZE + Scrollbar.OFFSET : 0;
+  const scrollbarSpace = scrollEnabledY ? SCROLLBAR_STYLE.size : 0;
   const viewportWidth = width - scrollbarSpace;
 
   const {

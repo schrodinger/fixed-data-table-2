@@ -9,9 +9,9 @@
  * @providesModule roughHeights
  */
 import { getTotalWidth } from 'widthHelper';
-import Scrollbar from 'Scrollbar';
 import clamp from 'clamp';
 import shallowEqualSelector from 'shallowEqualSelector';
+import {SCROLLBAR_STYLE} from 'scrollbar';
 
 const BORDER_HEIGHT = 1;
 const MIN_BUFFER_ROWS = 3;
@@ -100,12 +100,12 @@ function roughHeights(columnProps, elementHeights, rowSettings,
   let maxAvailableHeight = roughAvailableHeight;
   switch (scrollStateX) {
     case ScrollbarState.VISIBLE: {
-      minAvailableHeight -= Scrollbar.SIZE;
-      maxAvailableHeight -= Scrollbar.SIZE;
+      minAvailableHeight -= SCROLLBAR_STYLE.size;
+      maxAvailableHeight -= SCROLLBAR_STYLE.size;
       break;
     }
     case ScrollbarState.JOINT_SCROLLBARS: {
-      minAvailableHeight -= Scrollbar.SIZE;
+      minAvailableHeight -= SCROLLBAR_STYLE.size;
       break;
     }
   }
@@ -139,7 +139,7 @@ function getScrollStateX(columnProps, scrollFlags, width) {
     return ScrollbarState.VISIBLE;
   }
 
-  const scrollbarSpace = Scrollbar.SIZE + Scrollbar.OFFSET;
+  const scrollbarSpace = SCROLLBAR_STYLE.size;
   if (minColWidth > width - scrollbarSpace) {
     return ScrollbarState.JOINT_SCROLLBARS;
   }

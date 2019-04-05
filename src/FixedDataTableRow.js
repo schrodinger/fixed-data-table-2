@@ -16,11 +16,10 @@ import FixedDataTableCellGroup from 'FixedDataTableCellGroup';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 import PropTypes from 'prop-types';
 import React from 'React';
-import Scrollbar from 'Scrollbar';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
 import { sumPropWidths } from 'widthHelper';
-
+import {SCROLLBAR_STYLE} from 'scrollbar';
 // .fixedDataTableLayout/header border-bottom-width
 var HEADER_BORDER_BOTTOM_WIDTH = 1;
 
@@ -193,7 +192,7 @@ class FixedDataTableRowImpl extends React.Component {
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
     var fixedRightColumnsWidth = sumPropWidths(this.props.fixedRightColumns);
-    var scrollbarOffset = this.props.showScrollbarY ? Scrollbar.SIZE : 0;
+    var scrollbarOffset = this.props.showScrollbarY ? SCROLLBAR_STYLE.size : 0;
     var fixedRightColumns = 
       <FixedDataTableCellGroup
         key="fixed_right_cells"
