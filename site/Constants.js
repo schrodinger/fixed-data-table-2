@@ -163,6 +163,12 @@ exports.ExamplePages = {
     description: 'A table example using a data context to pass data to the cells.' +
     ' The table is paginated and filterable by first and last name.',
   },
+  FIXED_ROWS_EXAMPLE: {
+    location: 'example-fixed-rows.html',
+    fileName: 'FixedRowsExample.js',
+    title: 'Fixed Rows',
+    description: 'An example using multiple tables to mimic fixed rows.',
+  },
 };
 
 Object.keys(exports.ExamplePages).forEach(
