@@ -49,6 +49,7 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.LONG_CLICK_EXAMPLE.location]: require('../../examples/LongClickExample'),
   [ExamplePages.CONTEXT_EXAMPLE.location]: require('../../examples/ContextExample'),
   [ExamplePages.FIXED_RIGHT_COLUMNS_EXAMPLE.location]: require('../../examples/FixedRightColumnsExample'),
+  [ExamplePages.FIXED_ROWS_EXAMPLE.location]: require('../../examples/FixedRowsExample'),
 };
 
 class ExamplesPage extends React.Component {
