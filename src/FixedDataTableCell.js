@@ -13,6 +13,7 @@
 import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
 import FixedDataTableHelper from 'FixedDataTableHelper';
+import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 import React from 'React';
 import PropTypes from 'prop-types';
 import cx from 'cx';
@@ -81,8 +82,15 @@ class FixedDataTableCell extends React.Component {
     /**
      * Whether touch is enabled or not.
      */
-    touchEnabled: PropTypes.bool
-  }
+    touchEnabled: PropTypes.bool,
+
+    /**
+     * Whether the cell is present in the viewport.
+     * We use this to skip render and also don't
+     * render the cell if it's not visible.
+     */
+    visible: PropTypes.bool,
+  };
 
   state = {
     isReorderingThisColumn: false,
@@ -91,7 +99,20 @@ class FixedDataTableCell extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
+    if (nextProps.visible !== this.props.visible) {
+      return true;
+    }
+    return true;
+
+    // no need to render if it's not going to be visible again
+    if (this.props.visible && nextProps.visible) {
+      return false;
+    }
+
+    if (nextProps.isScrolling &&
+        this.props.rowIndex === nextProps.rowIndex && 
+        this.props.columnKey === nextProps.columnKey
+    ) {
       return false;
     }
 
@@ -198,18 +219,15 @@ class FixedDataTableCell extends React.Component {
 
   render() /*object*/ {
 
-    var { height, width, columnKey, ...props } = this.props;
+    var { height, width, visible, columnKey, ...props } = this.props;
 
     var style = {
+      display: visible ? 'block' : 'none',
       height,
       width,
     };
 
-    if (DIR_SIGN === 1) {
-      style.left = props.left;
-    } else {
-      style.right = props.left;
-    }
+    FixedDataTableTranslateDOMPosition(style, DIR_SIGN * props.left, 0, false);
 
     if (this.state.isReorderingThisColumn) {
       style.transform = `translateX(${this.state.displacement}px) translateZ(0)`;

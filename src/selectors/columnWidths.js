@@ -48,21 +48,35 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     newColumnGroupProps,
     newColumnProps,
   } = flexWidths(columnGroupProps, columnProps, viewportWidth);
+
   const {
     fixedColumns,
     fixedRightColumns,
     scrollableColumns,
   } = groupColumns(newColumnProps);
 
+  const {
+    fixedColumnOffsets,
+    fixedRightColumnOffsets,
+    columnGroupOffsets,
+    fixedColumnGroupOffsets,
+    fixedRightColumnGroupOffsets,
+  } = columnOffsets(newColumnProps, newColumnGroupProps);
+
   const availableScrollWidth = viewportWidth - getTotalWidth(fixedColumns) - getTotalWidth(fixedRightColumns);
   const maxScrollX = Math.max(0, getTotalWidth(newColumnProps) - viewportWidth);
   return {
     columnGroupProps: newColumnGroupProps,
+    columnGroupOffsets,
     columnProps: newColumnProps,
     availableScrollWidth,
     fixedColumns,
+    fixedColumnGroupOffsets,
     fixedRightColumns,
+    fixedRightColumnGroupOffsets,
     scrollableColumns,
+    fixedColumnOffsets,
+    fixedRightColumnOffsets,
     maxScrollX,
   };
 }
@@ -155,9 +169,67 @@ function groupColumns(columnProps) {
   };
 }
 
+/**
+ * @param {!Array.<columnDefinition>} columnProps
+ * @param {!Array.<columnDefinition>} columnGroupProps
+ * @return {{
+ *   fixedColumnOffsets: !Array.<number>,
+ *   fixedRightColumnOffsets: !Array.<number>.
+ *   columnGroupOffsets: !Array.<number>.
+ *   fixedColumnGroupOffsets: !Array.<number>.
+ *   fixedRightColumnGroupOffsets: !Array.<number>
+ * }}
+ */
+function columnOffsets(columnProps, columnGroupProps) {
+  const fixedColumnOffsets = [];
+  const fixedRightColumnOffsets = [];
+  const columnGroupOffsets = [];
+  const fixedColumnGroupOffsets = [];
+  const fixedRightColumnGroupOffsets = [];
+
+  let offsetFixed = 0;
+  let offsetFixedRight = 0;
+  let offset = 0;
+
+  forEach(columnProps, columnProp => {
+    if (columnProp.fixed) {
+      fixedColumnOffsets.push(offsetFixed);
+      offsetFixed += columnProp.width;
+    } else if (columnProp.fixedRight) {
+      fixedRightColumnOffsets.push(offsetFixedRight);
+      offsetFixedRight += columnProp.width;
+    }
+  });
+
+  offset = 0;
+  offsetFixed = 0;
+  offsetFixedRight = 0;
+
+  forEach(columnGroupProps, columnGroupProp => {
+    if (columnGroupProp.fixed) {
+      fixedColumnGroupOffsets.push(offset);
+      offsetFixed += columnGroupProp.width;
+    } else if (columnGroupProp.fixedRight) {
+      fixedRightColumnGroupOffsets.push(offset);
+      offsetFixedRight += columnGroupProp.width;
+    } else {
+      columnGroupOffsets.push(offset);
+      offset += columnGroupProp.width;
+    }
+  });
+
+  return {
+    fixedColumnOffsets,
+    fixedRightColumnOffsets,
+    fixedColumnGroupOffsets,
+    fixedRightColumnGroupOffsets,
+    columnGroupOffsets,
+  };
+}
+
 export default shallowEqualSelector([
-  state => state.columnGroupProps,
-  state => state.columnProps,
-  state => scrollbarsVisible(state).scrollEnabledY,
-  state => state.tableSize.width,
+    state => state.columnGroupProps,
+    state => state.columnProps,
+    state => scrollbarsVisible(state).scrollEnabledY,
+    state => state.tableSize.width,
 ], columnWidths);

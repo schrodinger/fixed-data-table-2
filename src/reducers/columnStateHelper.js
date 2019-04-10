@@ -11,10 +11,10 @@
 
 'use strict';
 
+import clamp from 'lodash/clamp';
+import columnWidths from 'columnWidths';
 import emptyFunction from 'emptyFunction';
 import isNil from 'lodash/isNil';
-import columnWidths from 'columnWidths';
-import clamp from 'lodash/clamp';
 
 const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
@@ -29,7 +29,7 @@ const DRAG_SCROLL_BUFFER = 100;
  * @return {!Object}
  */
 function initialize(state, props, oldProps) {
-  const { scrollLeft, scrollToColumn } = props;
+  const { scrollLeft } = props;
   let { columnResizingData, isColumnResizing, scrollX } = state;
 
   if (scrollLeft !== undefined &&
@@ -37,22 +37,27 @@ function initialize(state, props, oldProps) {
     scrollX = scrollLeft;
   }
 
-  scrollX = scrollTo(state, props, oldProps.scrollToColumn, scrollX);
+  scrollX = scrollToColumn(state, props, oldProps.scrollToColumn, scrollX);
 
   const { maxScrollX } = columnWidths(state);
   scrollX = clamp(scrollX, 0, maxScrollX);
+
+  const columnAnchor = getScrollAnchor(state, scrollX);
 
   // isColumnResizing should be overwritten by value from props if available
   isColumnResizing = props.isColumnResizing !== undefined ? props.isColumnResizing : isColumnResizing;
   columnResizingData = isColumnResizing ? columnResizingData : {};
 
+  // TODO (pradeep): pass 'changed' to indicate if scrollX was changed resulting in a need
+  // to calculate rendered rows and offsets (similar logic in scroll anchor)
   return Object.assign({}, state, {
+    columnAnchor,
     columnResizingData,
     isColumnResizing,
     maxScrollX,
     scrollX,
   });
-};
+}
 
 /**
  * @param {!Object} state
@@ -64,7 +69,7 @@ function initialize(state, props, oldProps) {
  * @param {number} scrollX
  * @return {number} The new scrollX
  */
-function scrollTo(state, props, oldScrollToColumn, scrollX) {
+function scrollToColumn(state, props, oldScrollToColumn, scrollX) {
   const { scrollToColumn } = props;
   if (isNil(scrollToColumn)) {
     return scrollX;
@@ -120,6 +125,57 @@ function scrollTo(state, props, oldScrollToColumn, scrollX) {
   }
 
   return scrollX;
+}
+
+/**
+ * Scroll to a specific position in the grid
+ *
+ * @param {!Object} state
+ * @param {number} scrollX
+ * @return {{
+ *   firstIndex: number,
+ *   firstOffset: number,
+ *   lastIndex: number,
+ * }}
+ */
+function getScrollAnchor(state, scrollX) {
+  const {
+    maxScrollX,
+    scrollableColumns,
+  } = columnWidths(state);
+
+  const {
+    columnOffsetIntervalTree,
+  } = state;
+
+  const columnsCount = scrollableColumns.length;
+  let firstIndex = 0; // first column that's visible (partially or fully)
+  let firstOffset = 0; // offset needed to see the first column fully
+  let lastIndex = undefined; // if we scroll value is above the available width, we calculate from the last index
+
+  if (scrollX >= maxScrollX) {
+    // Scroll to the last column
+    firstIndex = undefined;
+    lastIndex = columnsCount - 1;
+  } else if (scrollX > 0) {
+    // Mark the column which will appear first in the viewport
+    // We use this as our "marker" when scrolling even if updating rowOffsets
+    // leads to it not being different from the scrollX specified
+    const newColumnIdx = columnOffsetIntervalTree.greatestLowerBound(scrollX);
+    firstIndex = clamp(newColumnIdx, 0, Math.max(columnsCount - 1, 0));
+
+    // Record how far into the first column we should scroll
+    // firstOffset is a negative value representing how much larger scrollY is
+    // than the scroll position of the first col in the viewport
+    const firstColumnPosition = columnOffsetIntervalTree.sumUntil(firstIndex);
+    firstOffset = firstColumnPosition - scrollX;
+  }
+
+  return {
+    firstIndex,
+    firstOffset,
+    lastIndex,
+  };
 }
 
 /**
@@ -213,4 +269,5 @@ module.exports = {
   reorderColumn,
   reorderColumnMove,
   resizeColumn,
+  getScrollAnchor,
 }

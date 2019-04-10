@@ -65,6 +65,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
   componentWillMount() {
     this._initialRender = true;
+    this._staticCellArray = [];
   }
 
   componentDidMount() {
@@ -72,50 +73,71 @@ class FixedDataTableCellGroupImpl extends React.Component {
   }
 
   render() /*object*/ {
-    var props = this.props;
-    var columns = props.columns;
-    var cells = new Array(columns.length);
-    var contentWidth = sumPropWidths(columns);
+    const props = this.props;
+    const columnsToRender = props.columnsToRender;
+    const columns = props.columns;
+    const contentWidth = sumPropWidths(columns);
 
-    var isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
+    const isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
       return acc || props.columnReorderingData.columnKey === column.props.columnKey;
     }, false);
 
-    var currentPosition = 0;
-    for (var i = 0, j = columns.length; i < j; i++) {
-      var columnProps = columns[i].props;
-      var cellTemplate = columns[i].template;
-      var recyclable = columnProps.allowCellsRecycling && !isColumnReordering;
-      if (!recyclable || (
-        currentPosition - props.left <= props.width &&
-        currentPosition - props.left + columnProps.width >= 0)) {
-        var key = columnProps.columnKey || 'cell_' + i;
-        cells[i] = this._renderCell(
-          props.rowIndex,
-          props.rowHeight,
-          columnProps,
-          cellTemplate,
-          currentPosition,
-          key,
-          contentWidth,
-          isColumnReordering
-        );
-      }
-      currentPosition += columnProps.width;
+    if (this.props.isScrolling) {
+      // We are scrolling, so there's no need to display any cells which lie outside the viewport.
+      // We still need to render them though, so as to not cause any mounts/unmounts.
+      this._staticCellArray.forEach((cell, i) => {
+        this._staticCellArray[i] = React.cloneElement(this._staticCellArray[i], { visible: false });
+      });
+    } else {
+      // reset the static cell array if scrolling is stopped
+      // this is done so that only cells inside the viewport are considered for vertical scrolling
+      this._staticCellArray = [];
     }
-    var style = {
+
+    for (let i = 0; i < props.columns.length; i++) {
+      const columnIndex = columnsToRender === undefined ? i : columnsToRender[i];
+
+      // if columnIndex doesn't exist, it means that the cell isn't visible or that it doesn't exist at all
+      if (columnIndex === undefined) {
+        continue;
+      }
+
+      const columnProps = columns[columnIndex].props;
+      const cellTemplate = columns[columnIndex].template;
+      const key = columnProps.columnKey || 'cell_' + i;
+
+      const currentPosition = props.columnOffsets[columnIndex];
+      const visible = currentPosition - props.left <= props.width &&
+        currentPosition - props.left + columnProps.width >= 0;
+
+      this._staticCellArray[i] = this._renderCell(
+        props.rowIndex,
+        props.rowHeight,
+        columnProps,
+        cellTemplate,
+        currentPosition,
+        visible,
+        key,
+        contentWidth,
+        isColumnReordering
+      );
+    }
+
+    const style = {
       height: props.height,
       position: 'absolute',
       width: contentWidth,
       zIndex: props.zIndex,
     };
+
     FixedDataTableTranslateDOMPosition(style, -1 * DIR_SIGN * props.left, 0, this._initialRender);
 
     return (
       <div
         className={cx('fixedDataTableCellGroupLayout/cellGroup')}
-        style={style}>
-        {cells}
+        style={style}
+      >
+        {this._staticCellArray}
       </div>
     );
   }
@@ -126,13 +148,13 @@ class FixedDataTableCellGroupImpl extends React.Component {
     /*object*/ columnProps,
     /*object*/ cellTemplate,
     /*number*/ left,
+    /*boolean*/ visible,
     /*string*/ key,
     /*number*/ columnGroupWidth,
-    /*boolean*/ isColumnReordering,
+    /*boolean*/ isColumnReordering
   ) /*object*/ => {
 
-    var cellIsResizable = columnProps.isResizable &&
-      this.props.onColumnResize;
+    var cellIsResizable = columnProps.isResizable && this.props.onColumnResize;
     var onColumnResize = cellIsResizable ? this.props.onColumnResize : null;
 
     var cellIsReorderable = columnProps.isReorderable && this.props.onColumnReorder && rowIndex === -1 && columnGroupWidth !== columnProps.width;
@@ -164,10 +186,11 @@ class FixedDataTableCellGroupImpl extends React.Component {
         cell={cellTemplate}
         columnGroupWidth={columnGroupWidth}
         pureRendering={pureRendering}
+        visible={visible}
       />
     );
   }
-};
+}
 
 class FixedDataTableCellGroup extends React.Component {
   /**

@@ -23,7 +23,10 @@ class FixedDataTableBufferedRows extends React.Component {
     isScrolling: PropTypes.bool,
     firstViewportRowIndex: PropTypes.number.isRequired,
     endViewportRowIndex: PropTypes.number.isRequired,
-    fixedColumns: PropTypes.array.isRequired,
+    columnOffsets: PropTypes.object.isRequired,
+    columnsToRender: PropTypes.array.isRequired,
+    fixedColumnOffsets: PropTypes.array.isRequired,
+    fixedRightColumnOffsets: PropTypes.array.isRequired,
     fixedRightColumns: PropTypes.array.isRequired,
     height: PropTypes.number.isRequired,
     offsetTop: PropTypes.number.isRequired,
@@ -131,6 +134,10 @@ class FixedDataTableBufferedRows extends React.Component {
           scrollLeft={Math.round(props.scrollLeft)}
           offsetTop={Math.round(rowOffsetTop)}
           visible={visible}
+          columnsToRender={props.columnsToRender}
+          columnOffsets={props.columnOffsets}
+          fixedColumnOffsets={props.fixedColumnOffsets}
+          fixedRightColumnOffsets={props.fixedRightColumnOffsets}
           fixedColumns={props.fixedColumns}
           fixedRightColumns={props.fixedRightColumns}
           scrollableColumns={props.scrollableColumns}
@@ -172,6 +179,8 @@ class FixedDataTableBufferedRows extends React.Component {
         scrollLeft={Math.round(props.scrollLeft)}
         visible={false}
         fake={true}
+        columnOffsets={props.columnOffsets}
+        columnsToRender={props.columnsToRender}
         fixedColumns={props.fixedColumns}
         fixedRightColumns={props.fixedRightColumns}
         scrollableColumns={props.scrollableColumns}
