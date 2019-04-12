@@ -208,7 +208,8 @@ var Scrollbar = createReactClass({
   },
 
   componentDidMount() {
-    this.root && this.root.addEventListener('wheel',
+    this.root && this.root.addEventListener(
+        'wheel',
         this._wheelHandler.onWheel,
         { passive: false }
     );
