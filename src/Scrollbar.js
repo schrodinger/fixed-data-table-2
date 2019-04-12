@@ -165,7 +165,6 @@ class Scrollbar extends React.PureComponent {
         onTouchEnd={this._onTouchEnd}
         onTouchMove={this._onTouchMove}
         onTouchStart={this._onTouchStart}
-        onWheel={this._wheelHandler.onWheel}
         className={mainClassName}
         style={mainStyle}
         ref={this._onRefRoot}>
@@ -191,6 +190,11 @@ class Scrollbar extends React.PureComponent {
   }
 
   componentDidMount() {
+    this._rootRef && this._rootRef.addEventListener(
+        'wheel',
+        this._wheelHandler.onWheel,
+        { passive: false }
+    );
     this._mouseMoveTracker = new DOMMouseMoveTracker(
       this._onMouseMove,
       this._onMouseMoveEnd,
@@ -206,6 +210,11 @@ class Scrollbar extends React.PureComponent {
   }
 
   componentWillUnmount() {
+    this._rootRef && this._rootRef.removeEventListener(
+        'wheel',
+        this._wheelHandler.onWheel,
+        { passive: false }
+    );
     this._nextState = null;
     this._mouseMoveTracker.releaseMouseMoves();
     if (_lastScrolledScrollbar === this) {
