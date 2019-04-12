@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.21 
+ * FixedDataTable v0.8.22 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -1694,7 +1694,6 @@ var Scrollbar = (0, _createReactClass2.default)({
         onTouchEnd: this._onTouchEnd,
         onTouchMove: this._onTouchMove,
         onTouchStart: this._onTouchStart,
-        onWheel: this._wheelHandler.onWheel,
         className: mainClassName,
         ref: this.rootRef,
         style: mainStyle },
@@ -1715,6 +1714,7 @@ var Scrollbar = (0, _createReactClass2.default)({
     this._initialRender = true;
   },
   componentDidMount: function componentDidMount() {
+    this.root && this.root.addEventListener('wheel', this._wheelHandler.onWheel, { passive: false });
     this._mouseMoveTracker = new _DOMMouseMoveTracker2.default(this._onMouseMove, this._onMouseMoveEnd, document.documentElement, this.props.touchEnabled);
 
     if (this.props.position !== undefined && this.state.position !== this.props.position) {
@@ -1723,6 +1723,7 @@ var Scrollbar = (0, _createReactClass2.default)({
     this._initialRender = false;
   },
   componentWillUnmount: function componentWillUnmount() {
+    this.root && this.root.removeEventListener('wheel', this._wheelHandler.onWheel, { passive: false });
     this._nextState = null;
     this._mouseMoveTracker.releaseMouseMoves();
     if (_lastScrolledScrollbar === this) {
@@ -3278,7 +3279,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.21';
+FixedDataTableRoot.version = '0.8.22';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
