@@ -25,7 +25,15 @@ export default function computeRenderedColumns(state, columnAnchor) {
   
   // update the offsets and buffer mapping
   computeRenderedColumnOffsets(newState, columnRange, newState.scrolling);
-  
+
+  // scrollX might have changed due to change in columns and offsets
+  const { scrollableColumns, maxScrollX } = columnWidths(state);
+  let scrollX = 0;
+  if (scrollableColumns.length > 0) {
+    scrollX = newState.columnOffsets[columnRange.firstViewportIdy] - newState.firstColumnOffset;
+  }
+  newState.scrollX = clamp(scrollX, 0, maxScrollX);
+
   return newState;
 }
 
@@ -109,6 +117,12 @@ function calculateRenderedColumnRange(state, columnAnchor) {
     updateColumnWidth(state, columnIdy);
   }
 
+  // Calculate offset needed to position column row at the end of viewport
+  // This should be negative and represent how far the first column needs to be offscreen
+  if (lastIndex !== undefined) {
+    firstOffset = Math.min(availableScrollWidth - totalWidth, 0);
+  }
+
   state.firstColumnIndex = firstViewportIdy;
   state.endColumnIndex = endViewportIdy;
   state.firstColumnOffset = firstOffset;
@@ -155,7 +169,7 @@ function computeRenderedColumnOffsets(state, columnRange, viewportOnly) {
     fixedRightColumnGroupOffsets,
   } = columnWidths(state);
 
-  // we aren't doing calculations for fixed columns
+  // we are only doing calculations for scrollable columns
   state.columnGroupOffsets = columnGroupOffsets;
   state.fixedColumnOffsets = fixedColumnOffsets;
   state.fixedRightColumnOffsets = fixedRightColumnOffsets;

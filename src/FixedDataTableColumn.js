@@ -165,18 +165,6 @@ class FixedDataTableColumn extends React.Component {
    isReorderable: PropTypes.bool,
 
    /**
-    * Whether cells in this column can be removed from document when outside
-    * of viewport as a result of horizontal scrolling.
-    * Setting this property to true allows the table to not render cells in
-    * particular column that are outside of viewport for visible rows. This
-    * allows to create table with many columns and not have vertical scrolling
-    * performance drop.
-    * Setting the property to false will keep previous behaviour and keep
-    * cell rendered if the row it belongs to is visible.
-    */
-   allowCellsRecycling: PropTypes.bool,
-
-   /**
     * Flag to enable performance check when rendering. Stops the component from
     * rendering if none of it's passed in props have changed
     */
@@ -184,7 +172,6 @@ class FixedDataTableColumn extends React.Component {
  };
 
  static defaultProps = {
-   allowCellsRecycling: false,
    fixed: false,
    fixedRight: false,
  };

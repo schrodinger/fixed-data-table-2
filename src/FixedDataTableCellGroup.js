@@ -84,7 +84,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     if (this.props.isScrolling) {
       // We are scrolling, so there's no need to display any cells which lie outside the viewport.
-      // We still need to render them though, so as to not cause any mounts/unmounts.
+      // We still need to render them though, so as to not cause any unmounts.
       this._staticCellArray.forEach((cell, i) => {
         this._staticCellArray[i] = React.cloneElement(this._staticCellArray[i], { visible: false });
       });

@@ -15,6 +15,7 @@ import clamp from 'lodash/clamp';
 import columnWidths from 'columnWidths';
 import emptyFunction from 'emptyFunction';
 import isNil from 'lodash/isNil';
+import updateColumnWidth from 'updateColumnWidth';
 
 const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
@@ -32,24 +33,15 @@ function initialize(state, props, oldProps) {
   const { scrollLeft } = props;
   let { columnResizingData, isColumnResizing, scrollX } = state;
 
-  if (scrollLeft !== undefined &&
-      (!oldProps || scrollLeft !== oldProps.scrollLeft)) {
-    scrollX = scrollLeft;
-  }
-
-  scrollX = scrollToColumn(state, props, oldProps.scrollToColumn, scrollX);
+  const columnAnchor = getColumnAnchor(state, props, oldProps);
 
   const { maxScrollX } = columnWidths(state);
   scrollX = clamp(scrollX, 0, maxScrollX);
-
-  const columnAnchor = getScrollAnchor(state, scrollX);
 
   // isColumnResizing should be overwritten by value from props if available
   isColumnResizing = props.isColumnResizing !== undefined ? props.isColumnResizing : isColumnResizing;
   columnResizingData = isColumnResizing ? columnResizingData : {};
 
-  // TODO (pradeep): pass 'changed' to indicate if scrollX was changed resulting in a need
-  // to calculate rendered rows and offsets (similar logic in scroll anchor)
   return Object.assign({}, state, {
     columnAnchor,
     columnResizingData,
@@ -60,71 +52,106 @@ function initialize(state, props, oldProps) {
 }
 
 /**
+ * Get the anchor for scrolling.
+ * This will either be the first row's index and an offset, or the last row's index.
+ * We also pass a flag indicating if the anchor has changed from the state
+ *
  * @param {!Object} state
- * @param {{
- *   scrollToColumn: number,
- *   width: number,
- * }} props
- * @param {number} oldScrollToColumn
- * @param {number} scrollX
- * @return {number} The new scrollX
+ * @param {!Object} props
+ * @param {!Object} oldProps
+ * @return {{
+ *   firstIndex: number,
+ *   firstOffset: number,
+ *   lastIndex: number,
+ *   changed: boolean,
+ * }}
  */
-function scrollToColumn(state, props, oldScrollToColumn, scrollX) {
-  const { scrollToColumn } = props;
-  if (isNil(scrollToColumn)) {
-    return scrollX;
+function getColumnAnchor(state, props, oldProps) {
+if (props.scrollToColumn !== undefined &&
+    props.scrollToColumn !== null &&
+    (!oldProps || props.scrollToColumn !== oldProps.scrollToColumn)) {
+    return scrollToColumn(state, props.scrollToColumn);
+  }
+  if (
+    props.scrollLeft !== undefined &&
+    props.scrollLeft !== null &&
+    (!oldProps || props.scrollLeft !== oldProps.scrollLeft)
+  ) {
+    return scrollToPos(state, props.scrollLeft);
   }
 
+  // no change in column anchor
+  return {
+    firstIndex: state.firstRowIndex,
+    firstOffset: state.firstRowOffset,
+    lastIndex: undefined,
+    changed: false,
+  };
+}
+
+/**
+ * @param {!Object} state
+ * @param {number} scrollToColumn
+ * @return {{
+ *   firstIndex: number,
+ *   firstOffset: number,
+ *   lastIndex: number,
+ *   changed: boolean,
+ * }}
+ */
+function scrollToColumn(state, scrollToColumn) {
   const {
     availableScrollWidth,
+    columnOffsets,
     fixedColumns,
     scrollableColumns,
   } = columnWidths(state);
-  const fixedColumnsCount = fixedColumns.length;
-  const scrollableColumnsCount = scrollableColumns.length;
 
-  const noScrollableColumns = scrollableColumnsCount === 0;
-  const scrollToUnchanged = scrollToColumn === oldScrollToColumn;
-  const selectedColumnFixed = scrollToColumn < fixedColumnsCount;
-  const selectedColumnFixedRight = scrollToColumn >= fixedColumnsCount + scrollableColumnsCount;
-  if (scrollToUnchanged || selectedColumnFixed || selectedColumnFixedRight || noScrollableColumns) {
-    return scrollX;
+  const { scrollX, columnOffsetIntervalTree } = state;
+
+  const selectedColumnFixed = scrollToColumn < fixedColumns.length;
+  const selectedColumnFixedRight = scrollToColumn >= fixedColumns.length + scrollableColumns.length;
+
+  // if target column is fixed, then don't do anything
+  if (selectedColumnFixed || selectedColumnFixedRight) {
+    return {
+      firstIndex: state.firstColumnIndex,
+      firstOffset: state.firstColumnOffset,
+      lastIndex: undefined,
+      changed: false,
+    }
   }
 
-  // Convert column index (0 indexed) to scrollable index (0 indexed)
-  // and clamp to max scrollable index
-  const clampedColumnIndex = Math.min(scrollToColumn - fixedColumnsCount,
-    scrollableColumns.length - 1);
+  // convert to scrollable column index where 0 denotes first scrollable column
+  const clampedColumnIndex = Math.min(scrollToColumn - fixedColumns.length, scrollableColumns.length - 1);
+  const columnBeginX = columnOffsetIntervalTree.sumUntil(clampedColumnIndex);
+  const columnEndX = columnBeginX + updateColumnWidth(state, clampedColumnIndex);
 
-  // Compute the width of all columns to the left of the column
-  let previousWidth = 0;
-  for (let columnIdx = 0; columnIdx < clampedColumnIndex; ++columnIdx) {
-    previousWidth += scrollableColumns[columnIdx].width;
+  let firstIndex = clampedColumnIndex;
+  let lastIndex = undefined;
+  if (columnBeginX < scrollX) {
+    // If column starts before the viewport, set as the first column in the viewport
+    // Uses defaults (from above)
+  } else if (scrollX < columnEndX - availableScrollWidth) {
+    // If after the viewport, set as the last column in the viewport
+    firstIndex = undefined;
+    lastIndex = clampedColumnIndex;
+  } else {
+    // If already in the viewport, do nothing.
+    return {
+      firstIndex: state.firstColumnIndex,
+      firstOffset: state.firstColumnOffset,
+      lastIndex: undefined,
+      changed: false,
+    };
   }
 
-  // Get width of specified column
-  const selectedColumnWidth = scrollableColumns[clampedColumnIndex].width;
-
-  // Compute the scroll position which sets the column on the right of the viewport
-  // Must scroll at least far enough for end of column (previousWidth + selectedColumnWidth)
-  // to be in viewport.
-  const minScrollPosition = previousWidth + selectedColumnWidth - availableScrollWidth;
-
-  // Handle offscreen to the left
-  // If scrolled less than minimum amount, scroll to minimum amount
-  // so column on right of viewport
-  if (scrollX < minScrollPosition) {
-    return minScrollPosition;
-  }
-
-  // Handle offscreen to the right
-  // If scrolled more than previous columns, at least part of column will be offscreen to left
-  // Scroll so column is flush with left edge of viewport
-  if (scrollX > previousWidth) {
-    return previousWidth;
-  }
-
-  return scrollX;
+  return {
+    firstIndex,
+    firstOffset: 0,
+    lastIndex,
+    changed: true,
+  };
 }
 
 /**
@@ -136,9 +163,10 @@ function scrollToColumn(state, props, oldScrollToColumn, scrollX) {
  *   firstIndex: number,
  *   firstOffset: number,
  *   lastIndex: number,
+ *   changed: number
  * }}
  */
-function getScrollAnchor(state, scrollX) {
+function scrollToPos(state, scrollX) {
   const {
     maxScrollX,
     scrollableColumns,
@@ -149,32 +177,42 @@ function getScrollAnchor(state, scrollX) {
   } = state;
 
   const columnsCount = scrollableColumns.length;
-  let firstIndex = 0; // first column that's visible (partially or fully)
-  let firstOffset = 0; // offset needed to see the first column fully
-  let lastIndex = undefined; // if we scroll value is above the available width, we calculate from the last index
 
+  // scroll to the last column
   if (scrollX >= maxScrollX) {
-    // Scroll to the last column
-    firstIndex = undefined;
-    lastIndex = columnsCount - 1;
+    return {
+      firstIndex: undefined,
+      firstOffset: 0,
+      lastIndex: columnsCount - 1,
+      changed: true,
+    }
   } else if (scrollX > 0) {
     // Mark the column which will appear first in the viewport
-    // We use this as our "marker" when scrolling even if updating rowOffsets
-    // leads to it not being different from the scrollX specified
+    // We use this as our "marker" when scrolling even if updating columnOffsets
+    // leads to it being different from the scrollX specified
     const newColumnIdx = columnOffsetIntervalTree.greatestLowerBound(scrollX);
-    firstIndex = clamp(newColumnIdx, 0, Math.max(columnsCount - 1, 0));
+    const firstIndex = clamp(newColumnIdx, 0, Math.max(columnsCount - 1, 0));
 
     // Record how far into the first column we should scroll
-    // firstOffset is a negative value representing how much larger scrollY is
-    // than the scroll position of the first col in the viewport
+    // firstOffset is a negative value representing how much larger scrollX is
+    // than the scroll position of the first column in the viewport
     const firstColumnPosition = columnOffsetIntervalTree.sumUntil(firstIndex);
-    firstOffset = firstColumnPosition - scrollX;
+    const firstOffset = firstColumnPosition - scrollX;
+
+    return {
+      firstIndex,
+      firstOffset,
+      lastIndex: undefined,
+      changed: true,
+    }
   }
 
+  // scroll to the first column
   return {
-    firstIndex,
-    firstOffset,
-    lastIndex,
+    firstIndex: 0,
+    firstOffset: 0,
+    lastIndex: undefined,
+    changed: true,
   };
 }
 
@@ -269,5 +307,5 @@ module.exports = {
   reorderColumn,
   reorderColumnMove,
   resizeColumn,
-  getScrollAnchor,
-}
+  scrollToPos,
+};

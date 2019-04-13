@@ -102,10 +102,9 @@ class FixedDataTableCell extends React.Component {
     if (nextProps.visible !== this.props.visible) {
       return true;
     }
-    return true;
 
-    // no need to render if it's not going to be visible again
-    if (this.props.visible && nextProps.visible) {
+    // no need to render if it's still not visible
+    if (!this.props.visible && !nextProps.visible) {
       return false;
     }
 

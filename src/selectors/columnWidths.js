@@ -181,12 +181,14 @@ function groupColumns(columnProps) {
  * }}
  */
 function columnOffsets(columnProps, columnGroupProps) {
+  const columnOffsets = [];
   const fixedColumnOffsets = [];
   const fixedRightColumnOffsets = [];
   const columnGroupOffsets = [];
   const fixedColumnGroupOffsets = [];
   const fixedRightColumnGroupOffsets = [];
 
+  // calculate offsets for columns
   let offsetFixed = 0;
   let offsetFixedRight = 0;
   let offset = 0;
@@ -198,9 +200,13 @@ function columnOffsets(columnProps, columnGroupProps) {
     } else if (columnProp.fixedRight) {
       fixedRightColumnOffsets.push(offsetFixedRight);
       offsetFixedRight += columnProp.width;
+    } else {
+      columnOffsets.push(offset);
+      offset += columnProp.width;
     }
   });
 
+  // calculate offsets for column groups
   offset = 0;
   offsetFixed = 0;
   offsetFixedRight = 0;

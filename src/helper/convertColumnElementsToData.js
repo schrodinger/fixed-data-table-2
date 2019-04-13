@@ -20,7 +20,6 @@ import pick from 'lodash/pick';
 function _extractProps(column) {
   return pick(column.props, [
     'align',
-    'allowCellsRecycling',
     'cellClassName',
     'columnKey',
     'flexGrow',
