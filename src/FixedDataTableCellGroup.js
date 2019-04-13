@@ -90,7 +90,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       });
     } else {
       // reset the static cell array if scrolling is stopped
-      // this is done so that only cells inside the viewport are considered for vertical scrolling
+      // this is done so that only cells inside the buffer are considered for vertical scrolling
       this._staticCellArray = [];
     }
 
