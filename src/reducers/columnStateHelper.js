@@ -82,8 +82,8 @@ if (props.scrollToColumn !== undefined &&
 
   // no change in column anchor
   return {
-    firstIndex: state.firstRowIndex,
-    firstOffset: state.firstRowOffset,
+    firstIndex: state.firstColumnIndex,
+    firstOffset: state.firstColumnOffset,
     lastIndex: undefined,
     changed: false,
   };
