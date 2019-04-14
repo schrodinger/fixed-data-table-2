@@ -11,6 +11,7 @@
  */
 
 import FixedDataTableRow from 'FixedDataTableRow';
+import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 import PropTypes from 'prop-types';
 import React from 'React';
 import cx from 'cx';
@@ -96,8 +97,6 @@ class FixedDataTableBufferedRows extends React.Component {
       this._staticRowArray.length = rowsToRender.length;
     }
 
-    var baseOffsetTop = props.offsetTop - props.scrollTop;
-
     for (let i = 0; i < rowsToRender.length; i++) {
       const rowIndex = rowsToRender[i];
 
@@ -113,7 +112,7 @@ class FixedDataTableBufferedRows extends React.Component {
 
       const currentRowHeight = this.props.rowSettings.rowHeightGetter(rowIndex);
       const currentSubRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
-      const rowOffsetTop = baseOffsetTop + props.rowOffsets[rowIndex];
+      const rowOffsetTop = props.rowOffsets[rowIndex];
       const rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
       const hasBottomBorder = (rowIndex === props.rowSettings.rowsCount - 1) &&
         props.showLastRowBorder;
@@ -156,7 +155,9 @@ class FixedDataTableBufferedRows extends React.Component {
         />;
     }
 
-    return <div>{this._staticRowArray}</div>;
+    const style = {};
+    FixedDataTableTranslateDOMPosition(style, 0, props.offsetTop - props.scrollTop, false);
+    return <div style={style}>{this._staticRowArray}</div>;
   }
 
   getFakeRow(/*number*/key) /*object*/ {

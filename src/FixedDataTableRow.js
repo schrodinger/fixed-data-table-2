@@ -153,6 +153,20 @@ class FixedDataTableRowImpl extends React.Component {
     touchEnabled: PropTypes.bool,
   };
 
+  shouldComponentUpdate(nextProps) {
+    // only update the row if scrolling leads to change in horizontal offsets
+    // the vertical offset is taken care of by the wrapper
+    if (nextProps.isScrolling) {
+      if (
+        this.props.index === nextProps.index &&
+        this.props.scrollLeft === nextProps.scrollLeft
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   render() /*object*/ {
     if (this.props.fake) {
       return null;
@@ -452,16 +466,47 @@ class FixedDataTableRow extends React.Component {
     this._initialRender = false;
   }
 
+  shouldComponentUpdate(nextProps) {
+    // if row is still fake or still not visible then no need to update
+    if (
+      !this.props.visible && !nextProps.visible ||
+      this.props.fake && nextProps.fake
+    ) {
+      return false;
+    }
+
+    // if row's visibility or fakeness has changed, then update it
+    if (
+      this.props.visible !== nextProps.visible ||
+      this.props.fake !== nextProps.fake
+    ) {
+      return true;
+    }
+
+    // if offsets haven't changed for the same row index while scrolling then no need to update
+    if (nextProps.isScrolling) {
+      if (
+        this.props.index === nextProps.index &&
+        this.props.offsetTop === nextProps.offsetTop &&
+        this.props.scrollLeft === nextProps.scrollLeft
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   render() /*object*/ {
+    const { offsetTop, zIndex, visible, ...rowProps } = this.props;
+
     var style = {
       width: this.props.width,
       height: this.props.height,
-      zIndex: (this.props.zIndex ? this.props.zIndex : 0),
-      display: (this.props.visible ? 'block' : 'none'),
+      zIndex: (zIndex ? zIndex : 0),
+      display: (visible ? 'block' : 'none'),
     };
-    FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender);
-
-    const { offsetTop, zIndex, visible, ...rowProps } = this.props;
+    FixedDataTableTranslateDOMPosition(style, 0, offsetTop, this._initialRender);
 
     return (
       <div
