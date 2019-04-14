@@ -193,7 +193,7 @@ class FixedDataTableCellGroup extends React.Component {
   }
 
   shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
-    /// if offsets haven't changed for the same row while scrolliong, then skip update
+    /// if offsets haven't changed for the same row while scrolling, then skip update
     if (nextProps.isScrolling) {
       if (
         this.props.rowIndex === nextProps.rowIndex &&

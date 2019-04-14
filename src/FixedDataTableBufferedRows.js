@@ -97,6 +97,12 @@ class FixedDataTableBufferedRows extends React.Component {
       this._staticRowArray.length = rowsToRender.length;
     }
 
+    const height  = props.height;
+    // we translate all the rows together using a parent DIV
+    // the problem with this approach is that for HUGE numbers, multiple translates aren't accurate, so
+    // we limit the offset to our table height and position the rows relative to this offset.
+    const bufferIndex = Math.floor(props.scrollTop / height);
+
     for (let i = 0; i < rowsToRender.length; i++) {
       const rowIndex = rowsToRender[i];
 
@@ -112,7 +118,8 @@ class FixedDataTableBufferedRows extends React.Component {
 
       const currentRowHeight = this.props.rowSettings.rowHeightGetter(rowIndex);
       const currentSubRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
-      const rowOffsetTop = props.rowOffsets[rowIndex];
+      const rowBufferIndex = Math.floor(props.rowOffsets[rowIndex] / height);
+      const rowOffsetTop = (props.rowOffsets[rowIndex] % height) + (rowBufferIndex - bufferIndex) * height;
       const rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
       const hasBottomBorder = (rowIndex === props.rowSettings.rowsCount - 1) &&
         props.showLastRowBorder;
@@ -155,9 +162,10 @@ class FixedDataTableBufferedRows extends React.Component {
         />;
     }
 
+    // We translate all the rows together with a parent div. This saves a lot of renders.
     const style = {};
-    FixedDataTableTranslateDOMPosition(style, 0, props.offsetTop - props.scrollTop, false);
-    return <div style={style}>{this._staticRowArray}</div>;
+    FixedDataTableTranslateDOMPosition(style, 0, props.offsetTop - (props.scrollTop % height), false);
+    return <div style={style}> {this._staticRowArray} </div>;
   }
 
   getFakeRow(/*number*/key) /*object*/ {

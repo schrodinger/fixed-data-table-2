@@ -154,6 +154,11 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   shouldComponentUpdate(nextProps) {
+    // always render if fakeness has changed
+    if (this.props.fake !== nextProps.fake) {
+      return true;
+    }
+
     // only update the row if scrolling leads to change in horizontal offsets
     // the vertical offset is taken care of by the wrapper
     if (nextProps.isScrolling) {
@@ -483,7 +488,7 @@ class FixedDataTableRow extends React.Component {
       return true;
     }
 
-    // if offsets haven't changed for the same row index while scrolling then no need to update
+    // while scrolling if offsets haven't changed for the same row then skip update
     if (nextProps.isScrolling) {
       if (
         this.props.index === nextProps.index &&
