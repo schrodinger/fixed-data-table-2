@@ -154,6 +154,11 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   shouldComponentUpdate(nextProps) {
+    // if row is not visible then no need to render it
+    if (!nextProps.visible) {
+      return false;
+    }
+
     // always render if fakeness has changed
     if (this.props.fake !== nextProps.fake) {
       return true;
@@ -503,13 +508,13 @@ class FixedDataTableRow extends React.Component {
   }
 
   render() /*object*/ {
-    const { offsetTop, zIndex, visible, ...rowProps } = this.props;
+    const { offsetTop, zIndex, ...rowProps } = this.props;
 
     var style = {
       width: this.props.width,
       height: this.props.height,
       zIndex: (zIndex ? zIndex : 0),
-      display: (visible ? 'block' : 'none'),
+      display: (rowProps.visible ? 'block' : 'none'),
     };
     FixedDataTableTranslateDOMPosition(style, 0, offsetTop, this._initialRender);
 
