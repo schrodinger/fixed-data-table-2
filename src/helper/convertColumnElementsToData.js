@@ -30,6 +30,7 @@ function _extractProps(column) {
     'minWidth',
     'isReorderable',
     'isResizable',
+    'pureRendering',
     'width',
   ]);
 };
