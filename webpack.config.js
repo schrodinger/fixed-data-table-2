@@ -4,6 +4,7 @@ var path = require('path');
 var glob = require('glob');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var packageJSON = require('./package.json');
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 var isDev = JSON.stringify(process.env.NODE_ENV !== 'production');
 
@@ -42,14 +43,6 @@ var mainEntryPoints = glob.sync(
 mainEntryPoints.push('./src/FixedDataTableRoot.js');
 
 if (process.env.COMPRESS) {
-  plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false
-      },
-      output: {comments: false}
-    })
-  );
   entry['fixed-data-table-base.min'] = baseEntryPoints;
   entry['fixed-data-table-style.min'] = styleEntryPoints;
   entry['fixed-data-table.min'] = mainEntryPoints;
@@ -118,3 +111,18 @@ module.exports = {
 
   plugins: plugins
 };
+
+if (process.env.COMPRESS) {
+  module.exports.optimization = {
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          compressor: {
+            warnings: false
+          },
+          output: {comments: false}
+        }
+      })
+    ]
+  }
+}
