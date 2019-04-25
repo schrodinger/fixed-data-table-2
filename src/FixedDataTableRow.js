@@ -155,6 +155,7 @@ class FixedDataTableRowImpl extends React.Component {
 
   shouldComponentUpdate(nextProps) {
     // if row is not visible then no need to render it
+    // change in visibility is handled by the parent
     if (!nextProps.visible) {
       return false;
     }
@@ -166,15 +167,11 @@ class FixedDataTableRowImpl extends React.Component {
 
     // only update the row if scrolling leads to change in horizontal offsets
     // the vertical offset is taken care of by the wrapper
-    if (nextProps.isScrolling) {
-      if (
-        this.props.index === nextProps.index &&
-        this.props.scrollLeft === nextProps.scrollLeft
-      ) {
-        return false;
-      }
-    }
-    return true;
+    return !(
+      nextProps.isScrolling &&
+      this.props.index === nextProps.index &&
+      this.props.scrollLeft === nextProps.scrollLeft
+    );
   }
 
   render() /*object*/ {
@@ -493,18 +490,13 @@ class FixedDataTableRow extends React.Component {
       return true;
     }
 
-    // while scrolling if offsets haven't changed for the same row then skip update
-    if (nextProps.isScrolling) {
-      if (
-        this.props.index === nextProps.index &&
-        this.props.offsetTop === nextProps.offsetTop &&
-        this.props.scrollLeft === nextProps.scrollLeft
-      ) {
-        return false;
-      }
-    }
-
-    return true;
+    // if offsets haven't changed for the same row while scrolling, then skip update
+    return !(
+      nextProps.isScrolling &&
+      this.props.index === nextProps.index &&
+      this.props.offsetTop === nextProps.offsetTop &&
+      this.props.scrollLeft === nextProps.scrollLeft
+    );
   }
 
   render() /*object*/ {
