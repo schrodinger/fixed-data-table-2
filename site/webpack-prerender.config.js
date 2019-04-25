@@ -5,6 +5,8 @@ var resolvers = require('../build_helpers/resolvers');
 var isDev = process.env.NODE_ENV !== 'production';
 
 module.exports = {
+  mode: isDev ? 'development' : 'production',
+
   entry: path.join(__dirname, 'renderPath.js'),
 
   output: {
@@ -16,7 +18,7 @@ module.exports = {
   target: 'node',
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.md$/,
         loader: [

@@ -6,6 +6,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var isDev = process.env.NODE_ENV !== 'production';
 
 module.exports = {
+  mode: isDev ? 'development' : 'production',
 
   devtool: 'source-map',
 
@@ -20,7 +21,7 @@ module.exports = {
   target: 'web',
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.md$/,
         loader: [

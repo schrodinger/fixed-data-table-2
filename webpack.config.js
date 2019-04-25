@@ -5,6 +5,8 @@ var glob = require('glob');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var packageJSON = require('./package.json');
 
+var isDev = JSON.stringify(process.env.NODE_ENV !== 'production');
+
 var banner = (
   '/**\n' +
   ' * FixedDataTable v' + packageJSON.version + ' \n' +
@@ -21,7 +23,7 @@ var banner = (
 var plugins = [
   new ExtractTextPlugin('[name].css'),
   new webpack.DefinePlugin({
-    '__DEV__': JSON.stringify(process.env.NODE_ENV !== 'production')
+    '__DEV__': isDev
   })
 ];
 
@@ -62,6 +64,7 @@ plugins.push(
 );
 
 module.exports = {
+  mode: isDev ? 'development' : 'production',
   resolve: {
     plugins: [resolvers.resolveHasteDefines]
   },
