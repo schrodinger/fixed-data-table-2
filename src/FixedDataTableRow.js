@@ -474,20 +474,17 @@ class FixedDataTableRow extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    // if row is still fake or still not visible then no need to update
-    if (
-      !this.props.visible && !nextProps.visible ||
-      this.props.fake && nextProps.fake
-    ) {
-      return false;
-    }
-
     // if row's visibility or fakeness has changed, then update it
     if (
       this.props.visible !== nextProps.visible ||
       this.props.fake !== nextProps.fake
     ) {
       return true;
+    }
+
+    // if row is still fake or still not visible then no need to update
+    if (nextProps.fake || !nextProps.visible) {
+      return false;
     }
 
     // if offsets haven't changed for the same row while scrolling, then skip update
