@@ -40,6 +40,7 @@ export default function computeRenderedRows(state, scrollAnchor) {
   const { rowsCount } = rowSettings;
   const { bodyHeight } = tableHeightsSelector(newState);
   const maxScrollY = scrollContentHeight - bodyHeight;
+  let firstRowOffset;
 
   // NOTE (jordan) This handles #115 where resizing the viewport may
   // leave only a subset of rows shown, but no scrollbar to scroll up to the first rows.
@@ -51,18 +52,26 @@ export default function computeRenderedRows(state, scrollAnchor) {
       });
     }
 
-    newState.firstRowOffset = 0;
+    firstRowOffset = 0;
+  } else {
+    firstRowOffset = rowRange.firstOffset;
   }
+
+  const firstRowIndex = rowRange.firstViewportIdx;
+  const endRowIndex = rowRange.endViewportIdx;
 
   computeRenderedRowOffsets(newState, rowRange, state.scrolling);
 
   let scrollY = 0;
   if (rowsCount > 0) {
-    scrollY = newState.rowOffsets[rowRange.firstViewportIdx] - newState.firstRowOffset;
+    scrollY = newState.rowOffsets[rowRange.firstViewportIdx] - firstRowOffset;
   }
   scrollY = clamp(scrollY, 0, maxScrollY);
 
   return Object.assign(newState, {
+    firstRowIndex,
+    firstRowOffset,
+    endRowIndex,
     maxScrollY,
     scrollY,
   });
@@ -88,6 +97,7 @@ export default function computeRenderedRows(state, scrollAnchor) {
  *   endBufferIdx: number,
  *   endViewportIdx: number,
  *   firstBufferIdx: number,
+ *   firstOffset: number,
  *   firstViewportIdx: number,
  * }}
  * @private
@@ -101,6 +111,7 @@ function calculateRenderedRowRange(state, scrollAnchor) {
       endBufferIdx: 0,
       endViewportIdx: 0,
       firstBufferIdx: 0,
+      firstOffset: 0,
       firstViewportIdx: 0,
     };
   }
@@ -163,13 +174,11 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     }
   }
 
-  state.firstRowIndex = firstViewportIdx;
-  state.endRowIndex = endViewportIdx;
-  state.firstRowOffset = firstOffset;
   return {
     endBufferIdx,
     endViewportIdx,
     firstBufferIdx,
+    firstOffset,
     firstViewportIdx,
   };
 }
