@@ -140,6 +140,9 @@ describe('computeRenderedRows', function() {
       const newState = computeRenderedRows(oldState, scrollAnchor);
 
       assert.deepEqual(newState, Object.assign(oldState, {
+        endRowIndex: 0,
+        firstRowIndex: 0,
+        firstRowOffset: 0,
         maxScrollY: 9400,
         rowOffsets: {},
         rows: [],
