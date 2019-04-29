@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.17 
+ * FixedDataTable v1.0.0-beta.18 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -5610,7 +5610,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTableContainer2.default
 };
 
-FixedDataTableRoot.version = '1.0.0-beta.17';
+FixedDataTableRoot.version = '1.0.0-beta.18';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -15445,6 +15445,7 @@ function computeRenderedRows(state, scrollAnchor) {
       bodyHeight = _tableHeightsSelector.bodyHeight;
 
   var maxScrollY = scrollContentHeight - bodyHeight;
+  var firstRowOffset = void 0;
 
   // NOTE (jordan) This handles #115 where resizing the viewport may
   // leave only a subset of rows shown, but no scrollbar to scroll up to the first rows.
@@ -15456,18 +15457,26 @@ function computeRenderedRows(state, scrollAnchor) {
       });
     }
 
-    newState.firstRowOffset = 0;
+    firstRowOffset = 0;
+  } else {
+    firstRowOffset = rowRange.firstOffset;
   }
+
+  var firstRowIndex = rowRange.firstViewportIdx;
+  var endRowIndex = rowRange.endViewportIdx;
 
   computeRenderedRowOffsets(newState, rowRange, state.scrolling);
 
   var scrollY = 0;
   if (rowsCount > 0) {
-    scrollY = newState.rowOffsets[rowRange.firstViewportIdx] - newState.firstRowOffset;
+    scrollY = newState.rowOffsets[rowRange.firstViewportIdx] - firstRowOffset;
   }
   scrollY = (0, _clamp2.default)(scrollY, 0, maxScrollY);
 
   return _extends(newState, {
+    firstRowIndex: firstRowIndex,
+    firstRowOffset: firstRowOffset,
+    endRowIndex: endRowIndex,
     maxScrollY: maxScrollY,
     scrollY: scrollY
   });
@@ -15493,6 +15502,7 @@ function computeRenderedRows(state, scrollAnchor) {
  *   endBufferIdx: number,
  *   endViewportIdx: number,
  *   firstBufferIdx: number,
+ *   firstOffset: number,
  *   firstViewportIdx: number,
  * }}
  * @private
@@ -15509,6 +15519,7 @@ function calculateRenderedRowRange(state, scrollAnchor) {
       endBufferIdx: 0,
       endViewportIdx: 0,
       firstBufferIdx: 0,
+      firstOffset: 0,
       firstViewportIdx: 0
     };
   }
@@ -15575,13 +15586,11 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     }
   }
 
-  state.firstRowIndex = firstViewportIdx;
-  state.endRowIndex = endViewportIdx;
-  state.firstRowOffset = firstOffset;
   return {
     endBufferIdx: endBufferIdx,
     endViewportIdx: endViewportIdx,
     firstBufferIdx: firstBufferIdx,
+    firstOffset: firstOffset,
     firstViewportIdx: firstViewportIdx
   };
 }
@@ -15722,7 +15731,7 @@ var _pick2 = _interopRequireDefault(_pick);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _extractProps(column) {
-  return (0, _pick2.default)(column.props, ['align', 'allowCellsRecycling', 'cellClassName', 'columnKey', 'flexGrow', 'fixed', 'fixedRight', 'maxWidth', 'minWidth', 'isReorderable', 'isResizable', 'width']);
+  return (0, _pick2.default)(column.props, ['align', 'allowCellsRecycling', 'cellClassName', 'columnKey', 'flexGrow', 'fixed', 'fixedRight', 'maxWidth', 'minWidth', 'isReorderable', 'isResizable', 'pureRendering', 'width']);
 };
 
 function _extractTemplates(elementTemplates, columnElement) {
