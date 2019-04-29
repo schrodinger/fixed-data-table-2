@@ -305,6 +305,12 @@ var FixedDataTable = createReactClass({
     stopScrollPropagation: PropTypes.bool,
 
     /**
+     * If enabled onScrollEnd will be called only after state update -- fixes
+     * a bug (see #226) where wrong values are reported.
+     */
+    fixOnScrollEnd: PropTypes.bool,
+
+    /**
      * Callback that is called when `rowHeightGetter` returns a different height
      * for a row than the `rowHeight` prop. This is necessary because initially
      * table estimates heights of some parts of the content.
@@ -533,6 +539,12 @@ var FixedDataTable = createReactClass({
         this.props.scrollTop !== nextProps.scrollTop ||
         this.props.scrollLeft !== nextProps.scrollLeft) {
       this._didScrollStart();
+    }
+
+    // call didScrollStop only after state has been updated
+    if (this.props.fixOnScrollEnd) {
+      this.setState(this._calculateState(nextProps, this.state), this._didScrollStop);
+      return;
     }
 
     // Cancel any pending debounced scroll handling and handle immediately.
@@ -1295,6 +1307,9 @@ var FixedDataTable = createReactClass({
     if (!this._isScrolling) {
       this._didScrollStart();
     }
+
+    var newState = null;
+
     var x = this.state.scrollX;
     if (Math.abs(deltaY) > Math.abs(deltaX) &&
         this.props.overflowY !== 'hidden') {
@@ -1305,13 +1320,13 @@ var FixedDataTable = createReactClass({
           0,
           scrollState.contentHeight - this.state.bodyHeight
         );
-        this.setState({
+        newState = {
           firstRowIndex: scrollState.index,
           firstRowOffset: scrollState.offset,
           scrollY: scrollState.position,
           scrollContentHeight: scrollState.contentHeight,
           maxScrollY: maxScrollY,
-        });
+        };
       }
     } else if (deltaX && this.props.overflowX !== 'hidden') {
       x += deltaX;
@@ -1321,12 +1336,21 @@ var FixedDataTable = createReactClass({
       //NOTE (asif) This is a hacky workaround to prevent FDT from setting its internal state
       var onHorizontalScroll = this.props.onHorizontalScroll;
       if (onHorizontalScroll ? onHorizontalScroll(x) : true) {
-        this.setState({
+        newState = {
           scrollX: x,
-        });
+        };
       }
     }
 
+    // call didScrollStop only after state has been updated
+    if (this.props.fixOnScrollEnd) {
+      this.setState(newState, this._didScrollStop);
+      return;
+    }
+
+    if (newState !== null) {
+      this.setState(newState);
+    }
     this._didScrollStop();
   },
 
@@ -1339,6 +1363,17 @@ var FixedDataTable = createReactClass({
       this._didScrollStart();
     }
     var onHorizontalScroll = this.props.onHorizontalScroll;
+
+    // call didScrollStop only after state has been updated
+    if (this.props.fixOnScrollEnd) {
+      if (onHorizontalScroll ? onHorizontalScroll(scrollPos) : true) {
+        this.setState({ scrollX: scrollPos}, this._didScrollStop);
+      } else {
+        this._didScrollStop();
+      }
+      return;
+    }
+
     if (onHorizontalScroll ? onHorizontalScroll(scrollPos) : true) {
       this.setState({
         scrollX: scrollPos,
@@ -1358,6 +1393,23 @@ var FixedDataTable = createReactClass({
     var scrollState = this._scrollHelper.scrollTo(Math.round(scrollPos));
 
     var onVerticalScroll = this.props.onVerticalScroll;
+
+    // call didScrollStop only after state has been updated
+    if (this.props.fixOnScrollEnd) {
+      var onVerticalScroll = this.props.onVerticalScroll;
+      if (onVerticalScroll ? onVerticalScroll(scrollState.position) : true) {
+        this.setState({
+          firstRowIndex: scrollState.index,
+          firstRowOffset: scrollState.offset,
+          scrollY: scrollState.position,
+          scrollContentHeight: scrollState.contentHeight,
+        }, this._didScrollStop);
+      } else {
+        this._didScrollStop();
+      }
+      return;
+    }
+
     if (onVerticalScroll ? onVerticalScroll(scrollState.position) : true) {
       this.setState({
         firstRowIndex: scrollState.index,
