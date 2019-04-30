@@ -13,7 +13,7 @@
 'use strict';
 
 import FixedDataTableHelper from 'FixedDataTableHelper';
-import React from 'React';
+import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import FixedDataTableCell from 'FixedDataTableCell';
