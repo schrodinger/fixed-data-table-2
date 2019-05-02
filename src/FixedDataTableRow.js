@@ -89,7 +89,7 @@ class FixedDataTableRowImpl extends React.Component {
     columnsToRender: PropTypes.array,
 
     /**
-     * The offsets of the fixed columns
+     * The offsets of the scrollable columns
      */
     columnOffsets: PropTypes.oneOfType([PropTypes.object.isRequired, PropTypes.array.isRequired]),
 

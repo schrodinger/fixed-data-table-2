@@ -40,7 +40,7 @@ export default function computeRenderedColumns(state, columnAnchor) {
 /**
  * Determine the range of columns to render (buffer and viewport)
  * The leading and trailing buffer is based on a fixed count,
- * while the viewport columns are based on their height and the viewport height
+ * while the viewport columns are based on their width and the viewport width.
  * We use the columnAnchor to determine what either the first or last column
  * will be, as well as the offset.
  *
@@ -117,7 +117,7 @@ function calculateRenderedColumnRange(state, columnAnchor) {
     updateColumnWidth(state, columnIdy);
   }
 
-  // Calculate offset needed to position column row at the end of viewport
+  // Calculate offset needed to position column at the end of viewport
   // This should be negative and represent how far the first column needs to be offscreen
   if (lastIndex !== undefined) {
     firstOffset = Math.min(availableScrollWidth - totalWidth, 0);

@@ -30,7 +30,6 @@ const DRAG_SCROLL_BUFFER = 100;
  * @return {!Object}
  */
 function initialize(state, props, oldProps) {
-  const { scrollLeft } = props;
   let { columnResizingData, isColumnResizing, scrollX } = state;
 
   const columnAnchor = getColumnAnchor(state, props, oldProps);
@@ -53,7 +52,7 @@ function initialize(state, props, oldProps) {
 
 /**
  * Get the anchor for scrolling.
- * This will either be the first row's index and an offset, or the last row's index.
+ * This will either be the first columns's index and an offset, or the last columns's index.
  * We also pass a flag indicating if the anchor has changed from the state
  *
  * @param {!Object} state
@@ -67,11 +66,15 @@ function initialize(state, props, oldProps) {
  * }}
  */
 function getColumnAnchor(state, props, oldProps) {
-if (props.scrollToColumn !== undefined &&
+  // if scrollToColumn changed
+  if (props.scrollToColumn !== undefined &&
     props.scrollToColumn !== null &&
-    (!oldProps || props.scrollToColumn !== oldProps.scrollToColumn)) {
+    (!oldProps || props.scrollToColumn !== oldProps.scrollToColumn)
+  ) {
     return scrollToColumn(state, props.scrollToColumn);
   }
+
+  // if scrollLeft changed
   if (
     props.scrollLeft !== undefined &&
     props.scrollLeft !== null &&
@@ -102,7 +105,6 @@ if (props.scrollToColumn !== undefined &&
 function scrollToColumn(state, scrollToColumn) {
   const {
     availableScrollWidth,
-    columnOffsets,
     fixedColumns,
     scrollableColumns,
   } = columnWidths(state);

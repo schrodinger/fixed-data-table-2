@@ -181,7 +181,6 @@ function groupColumns(columnProps) {
  * }}
  */
 function columnOffsets(columnProps, columnGroupProps) {
-  const columnOffsets = [];
   const fixedColumnOffsets = [];
   const fixedRightColumnOffsets = [];
   const columnGroupOffsets = [];
@@ -191,7 +190,6 @@ function columnOffsets(columnProps, columnGroupProps) {
   // calculate offsets for columns
   let offsetFixed = 0;
   let offsetFixedRight = 0;
-  let offset = 0;
 
   forEach(columnProps, columnProp => {
     if (columnProp.fixed) {
@@ -200,14 +198,11 @@ function columnOffsets(columnProps, columnGroupProps) {
     } else if (columnProp.fixedRight) {
       fixedRightColumnOffsets.push(offsetFixedRight);
       offsetFixedRight += columnProp.width;
-    } else {
-      columnOffsets.push(offset);
-      offset += columnProp.width;
     }
   });
 
   // calculate offsets for column groups
-  offset = 0;
+  let offset = 0;
   offsetFixed = 0;
   offsetFixedRight = 0;
 
@@ -234,8 +229,8 @@ function columnOffsets(columnProps, columnGroupProps) {
 }
 
 export default shallowEqualSelector([
-    state => state.columnGroupProps,
-    state => state.columnProps,
-    state => scrollbarsVisible(state).scrollEnabledY,
-    state => state.tableSize.width,
+  state => state.columnGroupProps,
+  state => state.columnProps,
+  state => scrollbarsVisible(state).scrollEnabledY,
+  state => state.tableSize.width,
 ], columnWidths);

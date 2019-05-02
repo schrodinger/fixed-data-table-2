@@ -737,7 +737,6 @@ class FixedDataTable extends React.Component {
       footer =
         <FixedDataTableRow
           key="footer"
-          key2="footer"
           isScrolling={scrolling}
           className={joinClasses(
             cx('fixedDataTableLayout/footer'),

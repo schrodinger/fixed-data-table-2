@@ -99,15 +99,17 @@ class FixedDataTableCell extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
+    // if visibility changed then render
     if (nextProps.visible !== this.props.visible) {
       return true;
     }
 
     // no need to render if it's still not visible
-    if (!this.props.visible && !nextProps.visible) {
+    if (!nextProps.visible) {
       return false;
     }
 
+    // no need to render if scrolling changed neither row index nor column index
     if (nextProps.isScrolling &&
         this.props.rowIndex === nextProps.rowIndex && 
         this.props.columnKey === nextProps.columnKey

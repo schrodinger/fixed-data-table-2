@@ -75,6 +75,8 @@ function getInitialState() {
      * NOTE (jordan) rows may contain undefineds if we don't need all the buffer positions
      */
     columnOffsets: {},
+    fixedColumnOffsets: {},
+    fixedRightOffsets: {},
     columnsToRender: [],
     columnReorderingData: {},
     columnResizingData: {},
@@ -103,6 +105,7 @@ function getInitialState() {
     columnBufferSet: new IntegerBufferSet(),
     storedHeights: [],
     rowOffsetIntervalTree: null, // PrefixIntervalTree
+    columnOffsetIntervalTree: null, // PrefixIntervalTree
   };
 }
 
