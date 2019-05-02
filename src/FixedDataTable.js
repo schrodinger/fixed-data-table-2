@@ -13,7 +13,7 @@
 
 /*eslint no-bitwise:1*/
 
-import React from 'React';
+import React from 'react';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';

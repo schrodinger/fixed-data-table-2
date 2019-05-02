@@ -12,7 +12,7 @@
 
 'use strict';
 
-import React from 'React';
+import React from 'react';
 import PropTypes from 'prop-types';
 import FixedDataTableCellGroup from 'FixedDataTableCellGroup';
 import Scrollbar from 'Scrollbar';
