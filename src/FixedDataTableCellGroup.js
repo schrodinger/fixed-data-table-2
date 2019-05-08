@@ -70,7 +70,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
   componentWillMount() {
     this._initialRender = true;
     this._staticCellArray = [];
-    this._staticNonRecyclableCellArray = [];
   }
 
   componentDidMount() {
@@ -153,7 +152,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     /*boolean*/isColumnReordering,
     /*number*/columnGroupWidth,
   }) => {
-    const { allowColumnVirtualization, columns, columnOffsets, left } = this.props;
+    const { allowColumnVirtualization, columns } = this.props;
 
     // no need to compute non virtualized cells if column virtualization turned on
     if (allowColumnVirtualization) {
@@ -163,15 +162,10 @@ class FixedDataTableCellGroupImpl extends React.Component {
     const nonVirtualizedCells = [];
 
     for (let i = 0; i < columns.length; i++) {
-      const { allowCellsRecycling, width } = columns[i].props;
-
       // if allowCellsRecycling was true, then it would have be included by this._staticCellArray
-      if (allowCellsRecycling) {
+      if (columns[i].props.allowCellsRecycling) {
         continue;
       }
-
-      const currentPosition = columnOffsets[i];
-      const visible = currentPosition - left <= width && currentPosition - left + width >= 0;
 
       nonVirtualizedCells[i] = this._renderCell({
         columnIndex: i,
