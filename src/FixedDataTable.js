@@ -429,6 +429,13 @@ class FixedDataTable extends React.Component {
      * half of the number of visible rows.
      */
     bufferRowCount: PropTypes.number,
+
+    /**
+     * If this is turned on, Fixed Data Table will only request columns inside the viewport
+     * TODO (pradeep): Provide API for this. For now this will only act as
+     * performance check in FixedDataTableCellGroup
+     */
+    allowColumnVirtualization: PropTypes.bool,
   }
 
   static defaultProps = /*object*/ {
@@ -629,6 +636,7 @@ class FixedDataTable extends React.Component {
     } = tableHeightsSelector(this.props);
 
     const {
+      allowColumnVirtualization,
       className,
       columnOffsets,
       columnGroupOffsets,
@@ -663,6 +671,7 @@ class FixedDataTable extends React.Component {
     if (groupHeaderHeight > 0) {
       groupHeader = (
         <FixedDataTableRow
+          allowColumnVirtualization={allowColumnVirtualization}
           key="group_header"
           isScrolling={scrolling}
           className={joinClasses(
@@ -736,8 +745,8 @@ class FixedDataTable extends React.Component {
     if (footerHeight) {
       footer =
         <FixedDataTableRow
+          allowColumnVirtualization={allowColumnVirtualization}
           key="footer"
-          key2="footer"
           isScrolling={scrolling}
           className={joinClasses(
             cx('fixedDataTableLayout/footer'),
@@ -765,6 +774,7 @@ class FixedDataTable extends React.Component {
 
     const header =
       <FixedDataTableRow
+        allowColumnVirtualization={allowColumnVirtualization}
         key="header"
         isScrolling={scrolling}
         className={joinClasses(
@@ -870,6 +880,7 @@ class FixedDataTable extends React.Component {
     const props = this.props;
     return (
       <FixedDataTableBufferedRows
+        allowColumnVirtualization={props.allowColumnVirtualization}
         isScrolling={props.scrolling}
         fixedColumns={fixedCellTemplates}
         fixedRightColumns={fixedRightCellTemplates}

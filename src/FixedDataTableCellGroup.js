@@ -29,6 +29,10 @@ class FixedDataTableCellGroupImpl extends React.Component {
    * development, but please don't commit this component with enabled propTypes.
    */
   static propTypes_DISABLED_FOR_PERFORMANCE = {
+    /**
+     * Only columns within the viewport will be considered for rendering.
+     */
+    allowColumnVirtualization: PropTypes.bool,
 
     /**
      * Array of per column configuration properties.
@@ -66,6 +70,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
   componentWillMount() {
     this._initialRender = true;
     this._staticCellArray = [];
+    this._staticNonRecyclableCellArray = [];
   }
 
   componentDidMount() {
@@ -74,59 +79,20 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
   render() /*object*/ {
     const props = this.props;
-    const columnsToRender = props.columnsToRender;
     const columns = props.columns;
-    const contentWidth = sumPropWidths(columns);
+    const columnGroupWidth = sumPropWidths(columns);
 
     const isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
       return acc || props.columnReorderingData.columnKey === column.props.columnKey;
     }, false);
 
-    if (this.props.isScrolling) {
-      // We are scrolling, so there's no need to display any cells which lie outside the viewport.
-      // We still need to render them though, so as to not cause any unmounts.
-      this._staticCellArray.forEach((cell, i) => {
-        this._staticCellArray[i] = React.cloneElement(this._staticCellArray[i], { visible: false });
-      });
-    } else {
-      // reset the static cell array if scrolling is stopped
-      // this is done so that only cells inside the buffer are considered for vertical scrolling
-      this._staticCellArray = [];
-    }
-
-    for (let i = 0; i < props.columns.length; i++) {
-      const columnIndex = columnsToRender === undefined ? i : columnsToRender[i];
-
-      // if columnIndex doesn't exist, it means that the cell isn't visible or that it doesn't exist at all
-      if (columnIndex === undefined) {
-        continue;
-      }
-
-      const columnProps = columns[columnIndex].props;
-      const cellTemplate = columns[columnIndex].template;
-      const key = columnProps.columnKey || 'cell_' + i;
-
-      const currentPosition = props.columnOffsets[columnIndex];
-      const visible = currentPosition - props.left <= props.width &&
-        currentPosition - props.left + columnProps.width >= 0;
-
-      this._staticCellArray[i] = this._renderCell(
-        props.rowIndex,
-        props.rowHeight,
-        columnProps,
-        cellTemplate,
-        currentPosition,
-        visible,
-        key,
-        contentWidth,
-        isColumnReordering
-      );
-    }
+    this._computeVirtualizedCells({ isColumnReordering }); // mutates this._staticCellArray
+    const nonVirtualizedCells = this._computeNonVirtualizedCells({ columnGroupWidth, isColumnReordering });
 
     const style = {
       height: props.height,
       position: 'absolute',
-      width: contentWidth,
+      width: columnGroupWidth,
       zIndex: props.zIndex,
     };
 
@@ -138,26 +104,105 @@ class FixedDataTableCellGroupImpl extends React.Component {
         style={style}
       >
         {this._staticCellArray}
+        {nonVirtualizedCells}
       </div>
     );
   }
 
-  _renderCell = (
-    /*number*/ rowIndex,
-    /*number*/ height,
-    /*object*/ columnProps,
-    /*object*/ cellTemplate,
-    /*number*/ left,
-    /*boolean*/ visible,
-    /*string*/ key,
-    /*number*/ columnGroupWidth,
-    /*boolean*/ isColumnReordering
-  ) /*object*/ => {
+  _computeVirtualizedCells = ({
+    /*boolean*/isColumnReordering,
+  }) => {
+    const { columns, columnsToRender, isScrolling } = this.props;
+
+    if (isScrolling) {
+      // We are scrolling, so there's no need to display any cells which lie outside the viewport.
+      // We still need to render them though, so as to not cause any unmounts. So we'll set visible
+      // as false to everyone in _staticCellArray (which also hides previously rendered cells)
+      // later on, we'll update the visibility for cells inside the viewport
+      this._staticCellArray.forEach((cell, i) => {
+        this._staticCellArray[i] = React.cloneElement(this._staticCellArray[i], { visible: false });
+      });
+    } else {
+      // reset the static cell array if scrolling is stopped
+      // this is done so that only cells inside the buffer are considered for vertical scrolling
+      this._staticCellArray = [];
+    }
+
+    for (let i = 0; i < (columnsToRender || columns).length; i++) {
+      let columnIndex = columnsToRender === undefined ? i : columnsToRender[i];
+      if (columnIndex === undefined) {
+        continue;
+      }
+
+      // if cell can't be recycled, then we can't do virtualization since the cell will be
+      // rendered all the time (by computeNonVirtualizedCells)
+      if (!columns[columnIndex].props.allowCellsRecycling) {
+        continue;
+      }
+
+      this._staticCellArray[i] = this._renderCell({
+        columnIndex,
+        staticIndex: i,
+        columnGroupWidth: 0,
+        isColumnReordering,
+      });
+    }
+  };
+
+  _computeNonVirtualizedCells = ({
+    /*boolean*/isColumnReordering,
+    /*number*/columnGroupWidth,
+  }) => {
+    const { allowColumnVirtualization, columns, columnOffsets, left } = this.props;
+
+    // no need to compute non virtualized cells if column virtualization turned on
+    if (allowColumnVirtualization) {
+      return [];
+    }
+
+    const nonVirtualizedCells = [];
+
+    for (let i = 0; i < columns.length; i++) {
+      const { allowCellsRecycling, width } = columns[i].props;
+
+      // if allowCellsRecycling was true, then it would have be included by this._staticCellArray
+      if (allowCellsRecycling) {
+        continue;
+      }
+
+      const currentPosition = columnOffsets[i];
+      const visible = currentPosition - left <= width && currentPosition - left + width >= 0;
+
+      nonVirtualizedCells[i] = this._renderCell({
+        columnIndex: i,
+        staticIndex: i,
+        columnGroupWidth,
+        isColumnReordering,
+      });
+    }
+    return nonVirtualizedCells;
+  };
+
+  _renderCell = ({
+      columnIndex,
+      staticIndex,
+      columnGroupWidth,
+      isColumnReordering,
+    }) /*object*/ => {
+    const props = this.props;
+    const { columns, columnOffsets, left, rowIndex } = props;
+
+    const columnProps = columns[columnIndex].props;
+    const cellTemplate = columns[columnIndex].template;
+
+    const currentPosition = columnOffsets[columnIndex];
+    const visible = currentPosition - left <= props.width &&
+      currentPosition - left + columnProps.width >= 0;
 
     var cellIsResizable = columnProps.isResizable && this.props.onColumnResize;
     var onColumnResize = cellIsResizable ? this.props.onColumnResize : null;
 
-    var cellIsReorderable = columnProps.isReorderable && this.props.onColumnReorder && rowIndex === -1 && columnGroupWidth !== columnProps.width;
+    var cellIsReorderable = false;//columnProps.isReorderable && this.props.onColumnReorder && rowIndex === -1 && columnGroupWidth !== columnProps.width;
     var onColumnReorder = cellIsReorderable ? this.props.onColumnReorder : null;
 
     var className = columnProps.cellClassName;
@@ -165,11 +210,11 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     return (
       <FixedDataTableCell
-        isScrolling={this.props.isScrolling}
+        isScrolling={props.isScrolling}
         align={columnProps.align}
         className={className}
-        height={height}
-        key={key}
+        height={props.rowHeight}
+        key={staticIndex}
         maxWidth={columnProps.maxWidth}
         minWidth={columnProps.minWidth}
         touchEnabled={this.props.touchEnabled}
@@ -182,7 +227,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         rowIndex={rowIndex}
         columnKey={columnProps.columnKey}
         width={columnProps.width}
-        left={left}
+        left={currentPosition}
         cell={cellTemplate}
         columnGroupWidth={columnGroupWidth}
         pureRendering={pureRendering}

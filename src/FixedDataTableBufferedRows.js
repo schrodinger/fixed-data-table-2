@@ -20,6 +20,7 @@ import inRange from 'lodash/inRange';
 
 class FixedDataTableBufferedRows extends React.Component {
   static propTypes = {
+    allowColumnVirtualization: PropTypes.bool,
     isScrolling: PropTypes.bool,
     firstViewportRowIndex: PropTypes.number.isRequired,
     endViewportRowIndex: PropTypes.number.isRequired,
@@ -124,6 +125,7 @@ class FixedDataTableBufferedRows extends React.Component {
 
       this._staticRowArray[i] =
         <FixedDataTableRow
+          allowColumnVirtualization={props.allowColumnVirtualization}
           key={rowKey}
           isScrolling={props.isScrolling}
           index={rowIndex}

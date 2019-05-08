@@ -98,16 +98,23 @@ class FixedDataTableCell extends React.Component {
     reorderingDisplacement: 0
   }
 
+  // TODO (pradeep): Remove this when merging to Beta (acts as a quick check to see if cells are mounted)
+  componentDidMount() {
+    console.log("cell mounted");
+  }
+
   shouldComponentUpdate(nextProps) {
+    // if visibility changed then always render
     if (nextProps.visible !== this.props.visible) {
       return true;
     }
 
     // no need to render if it's still not visible
-    if (!this.props.visible && !nextProps.visible) {
+    if (!nextProps.visible) {
       return false;
     }
 
+    // no need to render if scrolling changed neither row index nor column index
     if (nextProps.isScrolling &&
         this.props.rowIndex === nextProps.rowIndex && 
         this.props.columnKey === nextProps.columnKey

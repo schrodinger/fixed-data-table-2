@@ -120,10 +120,10 @@ module.exports.RemovableHeaderCell = RemovableHeaderCell;
 
 class TextCell extends React.PureComponent {
   render() {
-    const {data, rowIndex, columnKey, ...props} = this.props;
+    const {data, rowIndex, columnKey, actualKey, ...props} = this.props;
     return (
       <Cell {...props}>
-        {data.getObjectAt(rowIndex)[columnKey]}
+        {data.getObjectAt(rowIndex)[actualKey || columnKey]}
       </Cell>
     );
   }
