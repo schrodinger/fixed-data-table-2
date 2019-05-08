@@ -86,6 +86,7 @@ class FixedDataTableContainer extends React.Component {
       'columnProps',
       'columnReorderingData',
       'columnResizingData',
+      'columnGroupsToRender',
       'columnsToRender',
       'elementHeights',
       'elementTemplates',

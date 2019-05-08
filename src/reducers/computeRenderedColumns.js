@@ -14,7 +14,7 @@
 import clamp from 'lodash/clamp';
 import columnWidths from 'columnWidths';
 import scrollbarsVisibleSelector from 'scrollbarsVisible';
-import updateColumnWidth from 'updateColumnWidth';
+import { updateColumnWidth, updateColumnGroupWidth } from 'updateColumnWidth';
 
 export default function computeRenderedColumns(state, columnAnchor) {
   // clone state
@@ -30,9 +30,12 @@ export default function computeRenderedColumns(state, columnAnchor) {
   const { scrollableColumns, maxScrollX } = columnWidths(state);
   let scrollX = 0;
   if (scrollableColumns.length > 0) {
-    scrollX = newState.columnOffsets[columnRange.firstViewportIdy] - newState.firstColumnOffset;
+    scrollX = newState.columnOffsets[columnRange.firstViewportCol] - newState.firstColumnOffset;
   }
   newState.scrollX = clamp(scrollX, 0, maxScrollX);
+
+  // update buffer and viewport range, buffer mapping, and offsets for column groups
+  calculateRenderedColumnGroups(newState, columnAnchor, columnRange);
 
   return newState;
 }
@@ -54,10 +57,10 @@ export default function computeRenderedColumns(state, columnAnchor) {
  *   lastIndex: number,
  * }} columnAnchor
  * @return {{
- *   endBufferIdy: number,
- *   endViewportIdy: number,
- *   firstBufferIdy: number,
- *   firstViewportIdy: number,
+ *   endBufferCol: number,
+ *   endViewportCol: number,
+ *   firstBufferCol: number,
+ *   firstViewportCol: number,
  * }}
  * @private
  */
@@ -68,10 +71,10 @@ function calculateRenderedColumnRange(state, columnAnchor) {
 
   if (columnCount === 0) {
     return {
-      endBufferIdy: 0,
-      endViewportIdy: 0,
-      firstBufferIdy: 0,
-      firstViewportIdy: 0,
+      endBufferCol: 0,
+      endViewportCol: 0,
+      firstBufferCol: 0,
+      firstViewportCol: 0,
     };
   }
 
@@ -94,27 +97,27 @@ function calculateRenderedColumnRange(state, columnAnchor) {
   }
 
   // Loop to walk the viewport until we've touched enough columns to fill its width
-  let columnIdy = startIdy;
-  let endIdy = columnIdy;
-  while (columnIdy < columnCount && columnIdy >= 0 &&
+  let columnIdx = startIdy;
+  let endIdy = columnIdx;
+  while (columnIdx < columnCount && columnIdx >= 0 &&
       totalWidth < availableScrollWidth) {
-    totalWidth += updateColumnWidth(state, columnIdy);
-    endIdy = columnIdy;
-    columnIdy += step;
+    totalWidth += updateColumnWidth(state, columnIdx);
+    endIdy = columnIdx;
+    columnIdx += step;
   }
 
   // Loop to walk the leading buffer
-  let firstViewportIdy = Math.min(startIdy, endIdy);
-  const firstBufferIdy = Math.max(firstViewportIdy - bufferColumnCount, 0);
-  for (columnIdy = firstBufferIdy; columnIdy < firstViewportIdy; columnIdy++) {
-    updateColumnWidth(state, columnIdy);
+  let firstViewportCol = Math.min(startIdy, endIdy);
+  const firstBufferCol = Math.max(firstViewportCol - bufferColumnCount, 0);
+  for (columnIdx = firstBufferCol; columnIdx < firstViewportCol; columnIdx++) {
+    updateColumnWidth(state, columnIdx);
   }
 
   // Loop to walk the trailing buffer
-  const endViewportIdy = Math.max(startIdy, endIdy) + 1;
-  const endBufferIdy = Math.min(endViewportIdy + bufferColumnCount, columnCount);
-  for (columnIdy = endViewportIdy; columnIdy < endBufferIdy; columnIdy++) {
-    updateColumnWidth(state, columnIdy);
+  const endViewportCol = Math.max(startIdy, endIdy) + 1;
+  const endBufferCol = Math.min(endViewportCol + bufferColumnCount, columnCount);
+  for (columnIdx = endViewportCol; columnIdx < endBufferCol; columnIdx++) {
+    updateColumnWidth(state, columnIdx);
   }
 
   // Calculate offset needed to position column at the end of viewport
@@ -123,16 +126,89 @@ function calculateRenderedColumnRange(state, columnAnchor) {
     firstOffset = Math.min(availableScrollWidth - totalWidth, 0);
   }
 
-  state.firstColumnIndex = firstViewportIdy;
-  state.endColumnIndex = endViewportIdy;
+  state.firstColumnIndex = firstViewportCol;
+  state.endColumnIndex = endViewportCol;
   state.firstColumnOffset = firstOffset;
 
   return {
-    endBufferIdy,
-    endViewportIdy,
-    firstBufferIdy,
-    firstViewportIdy,
+    endBufferCol,
+    endViewportCol,
+    firstBufferCol,
+    firstViewportCol,
   };
+}
+
+/**
+ * Determine the range of column groups to render (buffer and viewport)
+ *
+ * NOTE (jordan) This alters state so it shouldn't be called
+ * without state having been cloned first.
+ *
+ * @param {!Object} state
+ * @param {{
+ *   firstIndex: number,
+ *   firstOffset: number,
+ *   lastIndex: number,
+ * }} columnAnchor
+ * @param {{
+ *   endBufferCol: number,
+ *   endViewportCol: number,
+ *   firstBufferCol: number,
+ *   firstViewportCol: number,
+ * }} columnRange
+ * @private
+ */
+function calculateRenderedColumnGroups(state, columnAnchor, columnRange) {
+  const bufferColumnCount = 0; // TODO (pradeep): calculate this similar to bufferRowCount
+  const { columnGroupBufferSet, columnGroupOffsetIntervalTree } = state;
+
+  const { availableScrollWidth, scrollableColumns, scrollableColumnGroups, columnGroupProps, columnGroupIndex } = columnWidths(state);
+  const columnCount = scrollableColumns.length;
+  const columnGroupCount = scrollableColumnGroups.length;
+
+  if (columnCount === 0 || columnGroupCount === 0) {
+    return;
+  }
+
+  const { firstOffset } = columnAnchor;
+  const startIdx = columnGroupIndex[scrollableColumns[Math.max(0, columnRange.firstViewportCol)].groupIdx];
+  const endIdx = columnGroupIndex[scrollableColumns[Math.max(0, columnRange.endViewportCol - 1)].groupIdx];
+
+  // output for this function
+  const columns = []; // state.columnsToRender
+  const columnOffsets = {}; // state.columnOffsets
+
+  // update offsets for the columns
+  let totalWidth = firstOffset;
+  for (let currentIdx = startIdx; currentIdx <= endIdx; currentIdx++) {
+    totalWidth += updateColumnGroupWidth(state, currentIdx);
+
+    // no need to calculate if viewport has been filled
+    if (totalWidth >= availableScrollWidth) {
+      break;
+    }
+  }
+
+  const renderedColumnsCount = endIdx - startIdx + 2 * bufferColumnCount;
+
+  // incremental way for calculating columnOffset
+  let runningOffset = columnGroupOffsetIntervalTree.sumUntil(startIdx);
+
+  // compute column index and offsets for every columns inside the buffer
+  for (let columnIdx = startIdx; columnIdx <= endIdx; columnIdx++) {
+    // Update the offset for rendering the column
+    columnOffsets[columnIdx] = runningOffset;
+    runningOffset += columnGroupOffsetIntervalTree.get(columnIdx);
+
+    // Get position for the viewport column
+    const columnPosition = addColumnToBuffer(columnIdx, columnGroupBufferSet, startIdx, endIdx, renderedColumnsCount);
+    columns[columnPosition] = columnIdx;
+  }
+
+  state.firstColumnGroupIndex = startIdx;
+  state.endColumnGroupIndex = endIdx;
+  state.columnGroupsToRender = columns;
+  state.columnGroupOffsets = columnOffsets;
 }
 
 /**
@@ -144,10 +220,10 @@ function calculateRenderedColumnRange(state, columnAnchor) {
  *
  * @param {!Object} state
  * @param {{
- *   endBufferIdy: number,
- *   endViewportIdy: number,
- *   firstBufferIdy: number,
- *   firstViewportIdy: number,
+ *   endBufferCol: number,
+ *   endViewportCol: number,
+ *   firstBufferCol: number,
+ *   firstViewportCol: number,
  * }} columnRange
  * @param {boolean} viewportOnly
  * @private
@@ -155,36 +231,34 @@ function calculateRenderedColumnRange(state, columnAnchor) {
 function computeRenderedColumnOffsets(state, columnRange, viewportOnly) {
   const { columnBufferSet, columnOffsetIntervalTree } = state;
   const {
-    endBufferIdy,
-    endViewportIdy,
-    firstBufferIdy,
-    firstViewportIdy,
+    endBufferCol,
+    endViewportCol,
+    firstBufferCol,
+    firstViewportCol,
   } = columnRange;
 
   const {
     fixedColumnOffsets,
     fixedRightColumnOffsets,
-    columnGroupOffsets,
     fixedColumnGroupOffsets,
     fixedRightColumnGroupOffsets,
   } = columnWidths(state);
 
   // we are only doing calculations for scrollable columns
-  state.columnGroupOffsets = columnGroupOffsets;
   state.fixedColumnOffsets = fixedColumnOffsets;
   state.fixedRightColumnOffsets = fixedRightColumnOffsets;
   state.fixedColumnGroupOffsets = fixedColumnGroupOffsets;
   state.fixedRightColumnGroupOffsets = fixedRightColumnGroupOffsets;
 
-  const renderedColumnsCount = endBufferIdy - firstBufferIdy;
+  const renderedColumnsCount = endBufferCol - firstBufferCol;
   if (renderedColumnsCount === 0) {
     state.columnOffsets = {};
     state.columnsToRender = [];
     return;
   }
 
-  const startIdx = viewportOnly ? firstViewportIdy : firstBufferIdy;
-  const endIdx = viewportOnly ? endViewportIdy : endBufferIdy;
+  const startIdx = viewportOnly ? firstViewportCol : firstBufferCol;
+  const endIdx = viewportOnly ? endViewportCol : endBufferCol;
 
   // output for this function
   const columns = []; // state.columnsToRender
@@ -194,15 +268,15 @@ function computeRenderedColumnOffsets(state, columnRange, viewportOnly) {
   let runningOffset = columnOffsetIntervalTree.sumUntil(startIdx);
 
   // compute column index and offsets for every columns inside the buffer
-  for (let columnIdy = startIdx; columnIdy < endIdx; columnIdy++) {
+  for (let columnIdx = startIdx; columnIdx < endIdx; columnIdx++) {
 
     // Update the offset for rendering the column
-    columnOffsets[columnIdy] = runningOffset;
-    runningOffset += columnOffsetIntervalTree.get(columnIdy);
+    columnOffsets[columnIdx] = runningOffset;
+    runningOffset += columnOffsetIntervalTree.get(columnIdx);
 
     // Get position for the viewport column
-    const columnPosition = addColumnToBuffer(columnIdy, columnBufferSet, startIdx, endIdx, renderedColumnsCount);
-    columns[columnPosition] = columnIdy;
+    const columnPosition = addColumnToBuffer(columnIdx, columnBufferSet, startIdx, endIdx, renderedColumnsCount);
+    columns[columnPosition] = columnIdx;
   }
 
   // now we modify the state with the newly calculated columns and offsets
@@ -214,7 +288,7 @@ function computeRenderedColumnOffsets(state, columnRange, viewportOnly) {
  * Add the column to the buffer set if it doesn't exist.
  * If addition isn't possible due to max buffer size, it'll replace an existing element outside the given range.
  *
- * @param {!number} columnIdy
+ * @param {!number} columnIdx
  * @param {!number} columnBufferSet
  * @param {!number} startRange
  * @param {!number} endRange
@@ -223,21 +297,21 @@ function computeRenderedColumnOffsets(state, columnRange, viewportOnly) {
  * @return {?number} the position of the column after being added to the buffer set
  * @private
  */
-function addColumnToBuffer(columnIdy, columnBufferSet, startRange, endRange, maxBufferSize) {
+function addColumnToBuffer(columnIdx, columnBufferSet, startRange, endRange, maxBufferSize) {
   // Check if column already has a position in the buffer
-  let columnPosition = columnBufferSet.getValuePosition(columnIdy);
+  let columnPosition = columnBufferSet.getValuePosition(columnIdx);
 
   // Request a position in the buffer through eviction of another column
   if (columnPosition === null && columnBufferSet.getSize() >= maxBufferSize)  {
     columnPosition = columnBufferSet.replaceFurthestValuePosition(
       startRange,
       endRange - 1, // replaceFurthestValuePosition uses closed interval from startRange to endRange
-      columnIdy
+      columnIdx
     );
   }
 
   if (columnPosition === null) {
-    columnPosition = columnBufferSet.getNewPositionForValue(columnIdy);
+    columnPosition = columnBufferSet.getNewPositionForValue(columnIdx);
   }
 
   return columnPosition;

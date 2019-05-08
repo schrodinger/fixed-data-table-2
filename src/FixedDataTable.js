@@ -642,6 +642,7 @@ class FixedDataTable extends React.Component {
       columnGroupOffsets,
       columnReorderingData,
       columnResizingData,
+      columnGroupsToRender,
       columnsToRender,
       elementHeights,
       fixedColumnOffsets,
@@ -689,6 +690,7 @@ class FixedDataTable extends React.Component {
           fixedRightColumns={fixedRightColumnGroups}
           scrollableColumns={scrollableColumnGroups}
           columnOffsets={columnGroupOffsets}
+          columnsToRender={columnGroupsToRender}
           fixedColumnOffsets={fixedColumnGroupOffsets}
           fixedRightColumnOffsets={fixedRightColumnGroupOffsets}
           visible={true}
@@ -761,6 +763,7 @@ class FixedDataTable extends React.Component {
           fixedColumns={fixedColumns.footer}
           fixedRightColumns={fixedRightColumns.footer}
           scrollableColumns={scrollableColumns.footer}
+          columnsToRender={columnsToRender}
           columnOffsets={columnOffsets}
           fixedColumnOffsets={fixedColumnOffsets}
           fixedRightColumnOffsets={fixedRightColumnOffsets}

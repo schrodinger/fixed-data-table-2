@@ -15,7 +15,7 @@ import clamp from 'lodash/clamp';
 import columnWidths from 'columnWidths';
 import emptyFunction from 'emptyFunction';
 import isNil from 'lodash/isNil';
-import updateColumnWidth from 'updateColumnWidth';
+import { updateColumnWidth } from 'updateColumnWidth';
 
 const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;

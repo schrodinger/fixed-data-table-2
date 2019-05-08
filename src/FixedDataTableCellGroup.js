@@ -219,7 +219,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         isColumnReordering={isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
         rowIndex={rowIndex}
-        columnKey={columnProps.columnKey}
+        columnKey={columnProps.columnKey || columnIndex}
         width={columnProps.width}
         left={currentPosition}
         cell={cellTemplate}

@@ -53,12 +53,14 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     fixedColumns,
     fixedRightColumns,
     scrollableColumns,
-  } = groupColumns(newColumnProps);
+    fixedColumnGroups,
+    scrollableColumnGroups,
+    columnGroupIndex,
+  } = groupColumns(newColumnProps, newColumnGroupProps);
 
   const {
     fixedColumnOffsets,
     fixedRightColumnOffsets,
-    columnGroupOffsets,
     fixedColumnGroupOffsets,
     fixedRightColumnGroupOffsets,
   } = columnOffsets(newColumnProps, newColumnGroupProps);
@@ -66,15 +68,17 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
   const availableScrollWidth = viewportWidth - getTotalWidth(fixedColumns) - getTotalWidth(fixedRightColumns);
   const maxScrollX = Math.max(0, getTotalWidth(newColumnProps) - viewportWidth);
   return {
+    columnGroupIndex: columnGroupIndex,
     columnGroupProps: newColumnGroupProps,
-    columnGroupOffsets,
     columnProps: newColumnProps,
     availableScrollWidth,
     fixedColumns,
+    fixedColumnGroups,
     fixedColumnGroupOffsets,
     fixedRightColumns,
     fixedRightColumnGroupOffsets,
     scrollableColumns,
+    scrollableColumnGroups,
     fixedColumnOffsets,
     fixedRightColumnOffsets,
     maxScrollX,
@@ -141,16 +145,21 @@ function flexWidths(columnGroupProps, columnProps, viewportWidth) {
 
 /**
  * @param {!Array.<columnDefinition>} columnProps
+ * @param {!Array.<columnDefinition>} columnGroupProps
  * @return {{
  *   fixedColumns: !Array.<columnDefinition>,
  *   fixedRightColumns: !Array.<columnDefinition>,
  *   scrollableColumns: !Array.<columnDefinition>
  * }}
  */
-function groupColumns(columnProps) {
+function groupColumns(columnProps, columnGroupProps) {
   const fixedColumns = [];
+  const fixedColumnGroups = [];
   const fixedRightColumns = [];
+  const fixedRightColumnGroups = [];
   const scrollableColumns = [];
+  const scrollableColumnGroups = [];
+  const columnGroupIndex = [];
 
   forEach(columnProps, columnProp => {
     let container = scrollableColumns;
@@ -162,10 +171,25 @@ function groupColumns(columnProps) {
     container.push(columnProp);
   });
 
+  forEach(columnGroupProps, (columnProp, index) => {
+    let container = scrollableColumnGroups;
+    if (columnProp.fixed) {
+      container = fixedColumnGroups;
+    } else if (columnProp.fixedRight) {
+      container = fixedRightColumnGroups;
+    }
+    columnGroupIndex[index] = container.length;
+    container.push(columnProp);
+  });
+
   return {
     fixedColumns,
+    fixedColumnGroups,
     fixedRightColumns,
+    fixedRightColumnGroups,
     scrollableColumns,
+    scrollableColumnGroups,
+    columnGroupIndex,
   };
 }
 
@@ -175,7 +199,6 @@ function groupColumns(columnProps) {
  * @return {{
  *   fixedColumnOffsets: !Array.<number>,
  *   fixedRightColumnOffsets: !Array.<number>.
- *   columnGroupOffsets: !Array.<number>.
  *   fixedColumnGroupOffsets: !Array.<number>.
  *   fixedRightColumnGroupOffsets: !Array.<number>
  * }}
@@ -183,7 +206,6 @@ function groupColumns(columnProps) {
 function columnOffsets(columnProps, columnGroupProps) {
   const fixedColumnOffsets = [];
   const fixedRightColumnOffsets = [];
-  const columnGroupOffsets = [];
   const fixedColumnGroupOffsets = [];
   const fixedRightColumnGroupOffsets = [];
 
@@ -202,20 +224,16 @@ function columnOffsets(columnProps, columnGroupProps) {
   });
 
   // calculate offsets for column groups
-  let offset = 0;
   offsetFixed = 0;
   offsetFixedRight = 0;
 
   forEach(columnGroupProps, columnGroupProp => {
     if (columnGroupProp.fixed) {
-      fixedColumnGroupOffsets.push(offset);
+      fixedColumnGroupOffsets.push(offsetFixed);
       offsetFixed += columnGroupProp.width;
     } else if (columnGroupProp.fixedRight) {
-      fixedRightColumnGroupOffsets.push(offset);
+      fixedRightColumnGroupOffsets.push(offsetFixedRight);
       offsetFixedRight += columnGroupProp.width;
-    } else {
-      columnGroupOffsets.push(offset);
-      offset += columnGroupProp.width;
     }
   });
 
@@ -224,7 +242,6 @@ function columnOffsets(columnProps, columnGroupProps) {
     fixedRightColumnOffsets,
     fixedColumnGroupOffsets,
     fixedRightColumnGroupOffsets,
-    columnGroupOffsets,
   };
 }
 
