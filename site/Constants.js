@@ -163,6 +163,13 @@ exports.ExamplePages = {
     description: 'A table example using a data context to pass data to the cells.' +
     ' The table is paginated and filterable by first and last name.',
   },
+  COLUMN_VIRTUALIZATION_EXAMPLE: {
+    location: 'example-column-virtualization.html',
+    fileName: 'ColumnVirtualizationExample.js',
+    title: 'Column Virtualization',
+    description: 'A table example that can render thousands of columns without performance drops.' +
+    ' We use the new API for specifying columns.',
+  },
 };
 
 Object.keys(exports.ExamplePages).forEach(
