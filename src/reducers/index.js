@@ -19,7 +19,7 @@ import columnStateHelper from 'columnStateHelper'
 import columnWidths from 'columnWidths';
 import computeRenderedColumns from 'computeRenderedColumns';
 import computeRenderedRows from 'computeRenderedRows';
-import convertColumnElementsToData from 'convertColumnElementsToData';
+import getColumnData from 'convertColumnElementsToData';
 import pick from 'lodash/pick';
 import shallowEqual from 'shallowEqual';
 
@@ -265,22 +265,28 @@ function initializeColumnOffsets(state) {
  * @private
  */
 function setStateFromProps(state, props) {
+  // clone state
+  const newState = Object.assign({}, state);
+
+  // get column info from props
   const {
     columnGroupProps,
     columnProps,
     elementTemplates,
     useGroupHeader,
-  } = convertColumnElementsToData(props.children);
+  } = getColumnData(props);
 
-  const newState = Object.assign({}, state,
+  Object.assign(newState,
     { columnGroupProps, columnProps, elementTemplates });
 
+  // element heights
   newState.elementHeights = Object.assign({}, newState.elementHeights,
     pick(props, ['cellGroupWrapperHeight', 'footerHeight', 'groupHeaderHeight', 'headerHeight']));
   if (!useGroupHeader) {
     newState.elementHeights.groupHeaderHeight = 0;
   }
 
+  // row settings
   newState.rowSettings = Object.assign({}, newState.rowSettings,
     pick(props, ['bufferRowCount', 'rowHeight', 'rowsCount', 'subRowHeight']));
   const { rowHeight, subRowHeight } = newState.rowSettings;
@@ -289,9 +295,11 @@ function setStateFromProps(state, props) {
   newState.rowSettings.subRowHeightGetter =
     props.subRowHeightGetter || (() => subRowHeight || 0);
 
+  // scroll flags
   newState.scrollFlags = Object.assign({}, newState.scrollFlags,
     pick(props, ['overflowX', 'overflowY', 'showScrollbarX', 'showScrollbarY']));
 
+  // table size
   newState.tableSize = Object.assign({}, newState.tableSize,
     pick(props, ['height', 'maxHeight', 'ownerHeight', 'width']));
   newState.tableSize.useMaxHeight =

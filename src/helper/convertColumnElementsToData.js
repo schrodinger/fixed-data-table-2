@@ -26,6 +26,7 @@ function _extractProps(column) {
     'flexGrow',
     'fixed',
     'fixedRight',
+    'groupIdx', // only used when column virtualization is turned on
     'maxWidth',
     'minWidth',
     'isReorderable',
@@ -34,11 +35,30 @@ function _extractProps(column) {
   ]);
 };
 
+function _extractPropsFromData(column) {
+  return _extractProps({ props: column });
+}
+
 function _extractTemplates(elementTemplates, columnElement) {
   elementTemplates.cell.push(columnElement.props.cell);
   elementTemplates.footer.push(columnElement.props.footer);
   elementTemplates.header.push(columnElement.props.header);
 };
+
+function _extractTemplatesFromData(elementTemplates, column) {
+  elementTemplates.cell.push(column.cell);
+  elementTemplates.footer.push(column.footer);
+  elementTemplates.header.push(column.header);
+};
+
+function getDefaultElementTemplates() {
+  return {
+    cell: [],
+    footer: [],
+    groupHeader: [],
+    header: [],
+  };
+}
 
 /**
  * Converts React column / column group elements into props and cell rendering templates
@@ -55,12 +75,7 @@ function convertColumnElementsToData(childComponents) {
     children.push(child);
   });
 
-  const elementTemplates = {
-    cell: [],
-    footer: [],
-    groupHeader: [],
-    header: [],
-  };
+  const elementTemplates = getDefaultElementTemplates();
 
   const columnProps = [];
   const hasGroupHeader = children.length && children[0].type.__TableColumnGroup__;
@@ -98,4 +113,85 @@ function convertColumnElementsToData(childComponents) {
   };
 };
 
-export default convertColumnElementsToData;
+/**
+ *
+ */
+function collectPropsAndTemplatesFromColumnData(column, columnProps, elementTemplates) {
+  columnProps.push(_extractPropsFromData(column));
+  _extractTemplatesFromData(elementTemplates, column);
+}
+
+/**
+ * Uses columnGetter to fetch column props and cell rendering templates
+ *
+ * @param {!function(number)} columnGetter
+ * @param {!number} columnsCount
+ * @return {{
+ *   columnGroupProps: !Array.<columnDefinition>,
+ *   columnProps: !Array.<columnDefinition>,
+ *   elementTemplates: !Object.<string, Array>,
+ *   useGroupHeader: boolean,
+ * }}
+ */
+function fetchColumnData(columnGetter, columnsCount) {
+  let columnProps = [];
+  let columnGroupProps = [];
+  let columnsWithDefinedGroupIndex = 0;
+  let columnGroups = [];
+
+  const elementTemplates = getDefaultElementTemplates();
+
+  // fetch column props and templates for each column
+  for (let index = 0; index < columnsCount; index++) {
+    collectPropsAndTemplatesFromColumnData(columnGetter({ index }), columnProps, elementTemplates);
+  }
+
+  // keep a map of group indexes which will be used to fetch the column groups
+  forEach(columnProps, (column) => {
+    const groupIndex = column.groupIdx;
+    if (groupIndex !== undefined && groupIndex !== null) {
+      columnGroups[groupIndex] = true;
+      columnsWithDefinedGroupIndex++;
+    }
+  });
+
+  // if group index was specified, it should be given for every column
+  if (columnsWithDefinedGroupIndex > 0) {
+    invariant(columnsWithDefinedGroupIndex === columnProps.length,
+      'group index if specified must be given for every column');
+  }
+
+  // fetch the column groups
+  for (let index = 0; index < Object.keys(columnGroups).length; index++) {
+    columnGroups[index] = Object.assign({}, columnGetter({ index, group: true }, { index }));
+  }
+
+  // the column groups can be specified out of order, but our reducers/selectors require
+  // it to be specified in order. So we'll sort it.
+  columnGroups.sort((a, b) => a.index - b.index);
+
+  // fetch column group props and templates for each column group
+  for (let index = 0; index < columnGroups.length; index++) {
+    columnGroupProps.push(_extractPropsFromData(columnGroups[index]));
+    elementTemplates.groupHeader.push(columnGroups[index].header);
+  }
+
+  return {
+    columnGroupProps,
+    columnProps,
+    elementTemplates,
+    useGroupHeader: columnsWithDefinedGroupIndex > 0,
+  };
+}
+
+function getColumnData({ allowColumnVirtualization, children, columnGetter, columnsCount }) {
+  // use column getter API to get the column data
+  if (allowColumnVirtualization && columnGetter) {
+    return fetchColumnData(columnGetter, columnsCount);
+  }
+
+  // use legacy API (React Children) to get the column data
+  return convertColumnElementsToData(children);
+}
+
+export default getColumnData;

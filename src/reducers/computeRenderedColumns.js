@@ -162,7 +162,7 @@ function calculateRenderedColumnGroups(state, columnAnchor, columnRange) {
   const bufferColumnCount = 0; // TODO (pradeep): calculate this similar to bufferRowCount
   const { columnGroupBufferSet, columnGroupOffsetIntervalTree } = state;
 
-  const { availableScrollWidth, scrollableColumns, scrollableColumnGroups, columnGroupProps, columnGroupIndex } = columnWidths(state);
+  const { availableScrollWidth, scrollableColumns, scrollableColumnGroups, columnGroupIndex } = columnWidths(state);
   const columnCount = scrollableColumns.length;
   const columnGroupCount = scrollableColumnGroups.length;
 
