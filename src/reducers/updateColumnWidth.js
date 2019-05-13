@@ -46,10 +46,12 @@ function updateColumnWidth(state, columnIdx) {
  * @return {number} The new col width
  */
 function updateColumnGroupWidth(state, columnIdx) {
-  const { columnGroupProps } = columnWidths(state);
+  const { columnGroupProps, scrollableColumnGroupIndex } = columnWidths(state);
   const { columnGroupOffsetIntervalTree } = state;
-  const newWidth = columnGroupProps[columnIdx].width;
+
+  const newWidth = columnGroupProps[scrollableColumnGroupIndex[columnIdx]].width;
   const oldWidth = columnGroupOffsetIntervalTree.get(columnIdx);
+
   if (newWidth !== oldWidth) {
     columnGroupOffsetIntervalTree.set(columnIdx, newWidth);
   }

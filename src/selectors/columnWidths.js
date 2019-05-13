@@ -55,6 +55,7 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     scrollableColumns,
     fixedColumnGroups,
     scrollableColumnGroups,
+    scrollableColumnGroupIndex,
     columnGroupIndex,
   } = groupColumns(newColumnProps, newColumnGroupProps);
 
@@ -79,6 +80,7 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     fixedRightColumnGroupOffsets,
     scrollableColumns,
     scrollableColumnGroups,
+    scrollableColumnGroupIndex,
     fixedColumnOffsets,
     fixedRightColumnOffsets,
     maxScrollX,
@@ -160,6 +162,7 @@ function groupColumns(columnProps, columnGroupProps) {
   const scrollableColumns = [];
   const scrollableColumnGroups = [];
   const columnGroupIndex = [];
+  const scrollableColumnGroupIndex = [];
 
   forEach(columnProps, columnProp => {
     let container = scrollableColumns;
@@ -177,6 +180,8 @@ function groupColumns(columnProps, columnGroupProps) {
       container = fixedColumnGroups;
     } else if (columnProp.fixedRight) {
       container = fixedRightColumnGroups;
+    } else {
+      scrollableColumnGroupIndex.push(index);
     }
     columnGroupIndex[index] = container.length;
     container.push(columnProp);
@@ -190,6 +195,7 @@ function groupColumns(columnProps, columnGroupProps) {
     scrollableColumns,
     scrollableColumnGroups,
     columnGroupIndex,
+    scrollableColumnGroupIndex,
   };
 }
 
