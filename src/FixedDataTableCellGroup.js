@@ -63,7 +63,9 @@ var FixedDataTableCellGroupImpl = createReactClass({
 
     zIndex: PropTypes.number.isRequired,
 
-    touchEnabled: PropTypes.bool
+    touchEnabled: PropTypes.bool,
+
+    isHeaderOrFooter: PropTypes.bool,
   },
 
   componentWillMount() {
@@ -145,6 +147,7 @@ var FixedDataTableCellGroupImpl = createReactClass({
     return (
       <FixedDataTableCell
         isScrolling={this.props.isScrolling}
+        isHeaderOrFooter={this.props.isHeaderOrFooter}
         align={columnProps.align}
         className={className}
         height={height}
@@ -201,6 +204,8 @@ var FixedDataTableCellGroup = createReactClass({
      * header and footer in front of other rows.
      */
     zIndex: PropTypes.number.isRequired,
+
+    isHeaderOrFooter: PropTypes.bool,
   },
 
   shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {

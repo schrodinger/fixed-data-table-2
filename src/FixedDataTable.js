@@ -742,6 +742,8 @@ var FixedDataTable = createReactClass({
           scrollableColumns={state.footScrollableColumns}
           scrollLeft={state.scrollX}
           showScrollbarY={showScrollbarY}
+          isHeaderOrFooter={true}
+          ariaIndex={this.props.rowsCount+2}
         />;
     }
 
@@ -773,6 +775,8 @@ var FixedDataTable = createReactClass({
         isColumnReordering={!!state.isColumnReordering}
         columnReorderingData={state.columnReorderingData}
         showScrollbarY={showScrollbarY}
+        isHeaderOrFooter={true}
+        ariaIndex={1}
       />;
 
     var topShadow;
@@ -807,6 +811,10 @@ var FixedDataTable = createReactClass({
     if (this.props.keyboardPageEnabled || this.props.keyboardScrollEnabled) {
       tabIndex = 0
     }
+    var ariaRowCount = this.props.rowsCount + 1;
+    if (footer) {
+	    ariaRowCount++;
+    }
     return (
       <div
         className={joinClasses(
@@ -814,6 +822,8 @@ var FixedDataTable = createReactClass({
           cx('fixedDataTableLayout/main'),
           cx('public/fixedDataTable/main'),
         )}
+        role="grid"
+        aria-rowcount={ariaRowCount}
         tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
         onTouchStart={this._touchHandler.onTouchStart}
