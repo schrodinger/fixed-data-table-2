@@ -31,6 +31,7 @@ var FixedDataTableBufferedRows = createReactClass({
     firstRowOffset: PropTypes.number.isRequired,
     fixedColumns: PropTypes.array.isRequired,
     fixedRightColumns: PropTypes.array.isRequired,
+    hasGroupHeader: PropTypes.bool,
     height: PropTypes.number.isRequired,
     offsetTop: PropTypes.number.isRequired,
     onRowClick: PropTypes.func,
@@ -150,6 +151,10 @@ var FixedDataTableBufferedRows = createReactClass({
 
     var baseOffsetTop = props.firstRowOffset - props.rowPositionGetter(props.firstRowIndex) + props.offsetTop;
 
+    // offset to add to rowIndex to calculate aria-rowindex
+    // aria-rowindex is 1-indexed based, but also need to add 1 for header and group header
+    var ariaIndexOffset = props.hasGroupHeader ? 3 : 2;
+
     for (var i = 0; i < rowsToRender.length; ++i) {
       var rowIndex = rowsToRender[i];
       var currentRowHeight = this._getRowHeight(rowIndex);
@@ -165,7 +170,7 @@ var FixedDataTableBufferedRows = createReactClass({
           key={rowKey}
           isScrolling={props.isScrolling}
           index={rowIndex}
-          ariaIndex={rowIndex+2}
+          ariaIndex={rowIndex+ariaIndexOffset}
           width={props.width}
           height={currentRowHeight}
           subRowHeight={currentSubRowHeight}

@@ -150,7 +150,7 @@ class FixedDataTableRowImpl extends React.Component {
     isHeaderOrFooter: PropTypes.bool,
 
     /**
-    * The value of the aria-rowindex.
+    * The value of the aria-rowindex attribute.
     */
     ariaIndex: PropTypes.number,
   };

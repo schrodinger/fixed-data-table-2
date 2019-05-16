@@ -91,6 +91,9 @@ var FixedDataTableCell = createReactClass({
      */
     touchEnabled: PropTypes.bool,
 
+    /**
+     * Whether cell is in a header or footer row or not
+     */
     isHeaderOrFooter: PropTypes.bool,
   },
 
