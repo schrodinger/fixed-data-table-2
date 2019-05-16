@@ -189,4 +189,4 @@ class SortExample extends React.Component {
   }
 }
 
-module.exports = SortExample;
+export default SortExample;

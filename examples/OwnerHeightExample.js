@@ -61,4 +61,4 @@ class OwnerExample extends React.Component {
   }
 }
 
-module.exports = OwnerExample;
+export default OwnerExample;

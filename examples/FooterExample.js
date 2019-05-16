@@ -40,4 +40,4 @@ class FooterExample extends React.Component {
   }
 }
 
-module.exports = FooterExample;
+export default FooterExample;

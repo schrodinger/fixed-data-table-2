@@ -109,4 +109,4 @@ class FixedDataTableContainer extends React.Component {
   }
 }
 
-module.exports = FixedDataTableContainer;
+export default FixedDataTableContainer;

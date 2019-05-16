@@ -102,4 +102,4 @@ class LongClickExample extends React.Component {
   }
 }
 
-module.exports = LongClickExample;
+export default LongClickExample;

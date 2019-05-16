@@ -84,4 +84,4 @@ class ResizeExample extends React.Component {
   }
 }
 
-module.exports = ResizeExample;
+export default ResizeExample;

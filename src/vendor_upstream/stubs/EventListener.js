@@ -76,4 +76,4 @@ var EventListener = {
   registerDefault: function() {}
 };
 
-module.exports = EventListener;
+export default EventListener;

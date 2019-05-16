@@ -63,4 +63,4 @@ class TooltipExample extends React.Component {
   }
 }
 
-module.exports = TooltipExample;
+export default TooltipExample;

@@ -1,1 +1,1 @@
-module.exports = require('./internal/FixedDataTableRoot');
+export default require('./internal/FixedDataTableRoot');

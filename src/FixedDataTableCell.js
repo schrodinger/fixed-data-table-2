@@ -334,6 +334,5 @@ class FixedDataTableCell extends React.Component {
     event.preventDefault();
     event.stopPropagation();
   }
-};
-
-module.exports = FixedDataTableCell;
+}
+export default FixedDataTableCell;

@@ -80,4 +80,4 @@ const styles = StyleSheet.create({
   }
 });
 
-module.exports = StylingExample;
+export default StylingExample;

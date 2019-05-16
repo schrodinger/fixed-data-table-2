@@ -202,4 +202,4 @@ class FixedRowsExample extends React.Component {
   }
 }
 
-module.exports = FixedRowsExample;
+export default FixedRowsExample;

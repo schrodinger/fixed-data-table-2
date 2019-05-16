@@ -81,7 +81,5 @@ class ExampleImage extends React.Component {
       });
     }
   }
-};
-
-
-module.exports = ExampleImage;
+}
+export default ExampleImage;

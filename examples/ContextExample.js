@@ -230,4 +230,4 @@ class ContextExample extends React.Component {
   }
 }
 
-module.exports = ContextExample;
+export default ContextExample;

@@ -105,4 +105,4 @@ class ReorderExample extends React.Component {
   }
 }
 
-module.exports = ReorderExample;
+export default ReorderExample;

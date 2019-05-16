@@ -67,4 +67,4 @@ class TouchScrollExample extends React.Component {
   }
 }
 
-module.exports = TouchScrollExample;
+export default TouchScrollExample;

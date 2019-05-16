@@ -547,10 +547,10 @@ class Scrollbar extends React.PureComponent {
   _didScroll = () => {
     this.props.onScroll(this.state.position);
   }
-};
+}
 
 Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;
 Scrollbar.SIZE = parseInt(cssVar('scrollbar-size'), 10);
 Scrollbar.OFFSET = 1;
 
-module.exports = Scrollbar;
+export default Scrollbar;

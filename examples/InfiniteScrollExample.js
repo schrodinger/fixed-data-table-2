@@ -124,4 +124,4 @@ class InfiniteScrollExample extends React.Component {
   }
 }
 
-module.exports = InfiniteScrollExample;
+export default InfiniteScrollExample;

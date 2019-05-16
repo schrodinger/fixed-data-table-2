@@ -112,4 +112,4 @@ class FixedDataTableCellDefault extends React.Component {
   }
 }
 
-module.exports = FixedDataTableCellDefault;
+export default FixedDataTableCellDefault;

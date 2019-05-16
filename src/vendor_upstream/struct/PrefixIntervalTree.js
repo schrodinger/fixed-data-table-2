@@ -250,4 +250,4 @@ class PrefixIntervalTree {
   }
 }
 
-module.exports = PrefixIntervalTree;
+export default PrefixIntervalTree;

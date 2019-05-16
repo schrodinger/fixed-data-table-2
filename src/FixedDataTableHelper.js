@@ -19,4 +19,4 @@ var FixedDataTableHelper = {
   DIR_SIGN,
 };
 
-module.exports = FixedDataTableHelper;
+export default FixedDataTableHelper;

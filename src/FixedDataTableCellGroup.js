@@ -167,7 +167,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       />
     );
   }
-};
+}
 
 class FixedDataTableCellGroup extends React.Component {
   /**
@@ -251,7 +251,5 @@ class FixedDataTableCellGroup extends React.Component {
       event
     );
   }
-};
-
-
-module.exports = FixedDataTableCellGroup;
+}
+export default FixedDataTableCellGroup;

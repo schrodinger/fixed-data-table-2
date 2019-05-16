@@ -60,4 +60,4 @@ class FlexGrowExample extends React.Component {
   }
 }
 
-module.exports = FlexGrowExample;
+export default FlexGrowExample;

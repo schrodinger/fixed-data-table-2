@@ -157,4 +157,4 @@ class ScrollToRowExample extends React.Component {
   }
 }
 
-module.exports = ScrollToRowExample;
+export default ScrollToRowExample;

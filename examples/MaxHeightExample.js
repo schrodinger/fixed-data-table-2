@@ -51,4 +51,4 @@ class MaxHeightExample extends React.Component {
   }
 }
 
-module.exports = MaxHeightExample;
+export default MaxHeightExample;

@@ -58,7 +58,7 @@ class ResponsiveExample extends React.Component {
 
 // See react-dimensions for the best way to configure
 // https://github.com/digidem/react-dimensions
-module.exports = Dimensions({
+export default Dimensions({
   getHeight: function(element) {
     return window.innerHeight - 200;
   },

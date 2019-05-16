@@ -83,4 +83,4 @@ class FixedRightColumnsExample extends React.Component {
   }
 }
 
-module.exports = FixedRightColumnsExample;
+export default FixedRightColumnsExample;

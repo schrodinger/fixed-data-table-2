@@ -86,4 +86,4 @@ class HideColumnExample extends React.Component {
   }
 }
 
-module.exports = HideColumnExample;
+export default HideColumnExample;

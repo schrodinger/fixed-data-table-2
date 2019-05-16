@@ -133,4 +133,4 @@ const styles = StyleSheet.create({
   }
 });
 
-module.exports = ExpandedExample;
+export default ExpandedExample;

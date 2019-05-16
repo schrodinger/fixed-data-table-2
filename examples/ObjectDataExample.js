@@ -83,4 +83,4 @@ class ObjectDataExample extends React.Component {
   }
 }
 
-module.exports = ObjectDataExample;
+export default ObjectDataExample;

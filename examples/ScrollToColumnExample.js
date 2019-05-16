@@ -117,4 +117,4 @@ class ScrollToColumnExample extends React.Component {
   }
 }
 
-module.exports = ScrollToColumnExample;
+export default ScrollToColumnExample;

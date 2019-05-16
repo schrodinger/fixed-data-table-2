@@ -70,4 +70,4 @@ class ColumnGroupsExample extends React.Component {
   }
 }
 
-module.exports = ColumnGroupsExample;
+export default ColumnGroupsExample;

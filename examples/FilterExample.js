@@ -121,4 +121,4 @@ class FilterExample extends React.Component {
   }
 }
 
-module.exports = FilterExample;
+export default FilterExample;

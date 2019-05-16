@@ -58,4 +58,4 @@ class FakeObjectDataListStore {
   }
 }
 
-module.exports = FakeObjectDataListStore;
+export default FakeObjectDataListStore;

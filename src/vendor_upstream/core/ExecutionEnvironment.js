@@ -40,4 +40,4 @@ var ExecutionEnvironment = {
 
 };
 
-module.exports = ExecutionEnvironment;
+export default ExecutionEnvironment;
