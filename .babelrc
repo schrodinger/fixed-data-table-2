@@ -1,5 +1,6 @@
 {
   "plugins": [
+    ["@babel/plugin-transform-flow-strip-types", {"requireDirective": true}],
     "add-module-exports",
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-transform-object-assign",
@@ -8,7 +9,6 @@
   ],
   "presets": [
     ["@babel/preset-env", { "modules": "commonjs"}],
-    "@babel/preset-react",
-    "@babel/preset-flow"
+    "@babel/preset-react"
   ]
 }
