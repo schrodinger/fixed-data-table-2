@@ -751,7 +751,7 @@ var FixedDataTable = createReactClass({
         />;
     }
 
-    var rows = this._renderRows(bodyOffsetTop);
+    var rows = this._renderRows(bodyOffsetTop, ariaAttributes.ariaRowIndexOffset);
 
     var header =
       <FixedDataTableRow
@@ -815,10 +815,6 @@ var FixedDataTable = createReactClass({
     if (this.props.keyboardPageEnabled || this.props.keyboardScrollEnabled) {
       tabIndex = 0
     }
-    var ariaRowCount = this.props.rowsCount + 1;
-    if (footer) {
-	    ariaRowCount++;
-    }
     return (
       <div
         className={joinClasses(
@@ -853,19 +849,19 @@ var FixedDataTable = createReactClass({
     );
   },
 
-  _renderRows(/*number*/ offsetTop) /*object*/ {
+  _renderRows(/*number*/ offsetTop, /*number*/ ariaIndexOffset) /*object*/ {
     var state = this.state;
     var showScrollbarY = this._showScrollbarY(state);
 
     return (
       <FixedDataTableBufferedRows
+        ariaIndexOffset={ariaIndexOffset}
         isScrolling={this._isScrolling}
         defaultRowHeight={state.rowHeight}
         firstRowIndex={state.firstRowIndex}
         firstRowOffset={state.firstRowOffset}
         fixedColumns={state.bodyFixedColumns}
         fixedRightColumns={state.bodyFixedRightColumns}
-        hasGroupHeader={state.useGroupHeader}
         height={state.bodyHeight}
         offsetTop={offsetTop}
         onRowClick={state.onRowClick}
@@ -901,7 +897,7 @@ var FixedDataTable = createReactClass({
    * This is needed to calculate the aria attributes for the rows and grid. Specifically
    * the aria-rowindex and aria-rowcount. Note that aria-rowindex is 1-indexed based.
    */
-  _calculateAriaAttributes(state) {
+  _calculateAriaAttributes(/*object*/ state) /*object*/ {
     // Default index values
     var groupHeaderAriaIndex = 1;
 
@@ -914,10 +910,15 @@ var FixedDataTable = createReactClass({
     // assuming no group header or footer
     var ariaRowCount = state.rowsCount + 1; 
 
+    // offset to add to rowIndex (0-indexed) to calculate aria-rowindex
+    // Need to add 1 for the header
+    var ariaRowIndexOffset = 2;
+
     if (state.useGroupHeader) {
       headerAriaIndex++;
       ariaRowCount++;
       footerAriaIndex++;
+      ariaRowIndexOffset++;
     }
     if (state.footerHeight) {
       ariaRowCount++;
@@ -927,7 +928,8 @@ var FixedDataTable = createReactClass({
       groupHeaderAriaIndex,
       headerAriaIndex,
       footerAriaIndex,
-      ariaRowCount
+      ariaRowCount,
+      ariaRowIndexOffset,
     };
   },
 
