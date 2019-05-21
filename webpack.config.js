@@ -2,7 +2,7 @@ var webpack = require('webpack');
 var resolvers = require('./build_helpers/resolvers');
 var path = require('path');
 var glob = require('glob');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var packageJSON = require('./package.json');
 var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
@@ -70,13 +70,18 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            'css-loader',
-            path.join(__dirname, './build_helpers/cssTransformLoader.js')
-          ].join('!')
-        })
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              // only enable hot in development
+              hmr: isDev,
+              fallback: 'style-loader'
+            }
+          },
+          'css-loader',
+          path.join(__dirname, '../build_helpers/cssTransformLoader'),
+        ]
       },
     ],
   },
