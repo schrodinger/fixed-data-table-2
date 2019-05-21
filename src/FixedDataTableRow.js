@@ -146,6 +146,13 @@ class FixedDataTableRowImpl extends React.Component {
     onColumnReorderEnd: PropTypes.func,
 
     touchEnabled: PropTypes.bool,
+
+    isHeaderOrFooter: PropTypes.bool,
+
+    /**
+    * The value of the aria-rowindex attribute.
+    */
+    ariaIndex: PropTypes.number,
   };
 
   render() /*object*/ {
@@ -181,6 +188,7 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
+        isHeaderOrFooter={this.props.isHeaderOrFooter}
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
     var fixedRightColumnsWidth = this._getColumnsWidth(this.props.fixedRightColumns);
@@ -204,6 +212,7 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
+        isHeaderOrFooter={this.props.isHeaderOrFooter}
       />;
     var fixedRightColumnsShadow = fixedRightColumnsWidth ?
       this._renderFixedRightColumnsShadow(this.props.width - fixedRightColumnsWidth - scrollbarOffset - 5) : null;
@@ -228,6 +237,7 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
+        isHeaderOrFooter={this.props.isHeaderOrFooter}
       />;
     var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
@@ -255,6 +265,8 @@ class FixedDataTableRowImpl extends React.Component {
     return (
       <div
         className={joinClasses(className, this.props.className)}
+        role="row"
+        aria-rowindex={this.props.ariaIndex}
         onClick={this.props.onClick ? this._onClick : null}
         onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
         onContextMenu={this.props.onContextMenu ? this._onContextMenu : null}

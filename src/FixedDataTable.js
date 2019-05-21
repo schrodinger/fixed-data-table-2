@@ -627,6 +627,8 @@ var FixedDataTable = createReactClass({
     var showScrollbarX = state.maxScrollX > 0 && state.overflowX !== 'hidden' && state.showScrollbarX !== false;
     var showScrollbarY = this._showScrollbarY(state);
 
+    var ariaAttributes = this._calculateAriaAttributes(state);
+
     var groupHeader;
     if (state.useGroupHeader) {
       groupHeader = (
@@ -651,6 +653,8 @@ var FixedDataTable = createReactClass({
           onColumnReorder={onColumnReorder}
           onColumnReorderMove={this._onColumnReorderMove}
           showScrollbarY={showScrollbarY}
+          isHeaderOrFooter={true}
+          ariaIndex={ariaAttributes.groupHeaderAriaIndex}
         />
       );
     }
@@ -742,10 +746,12 @@ var FixedDataTable = createReactClass({
           scrollableColumns={state.footScrollableColumns}
           scrollLeft={state.scrollX}
           showScrollbarY={showScrollbarY}
+          isHeaderOrFooter={true}
+          ariaIndex={ariaAttributes.footerAriaIndex}
         />;
     }
 
-    var rows = this._renderRows(bodyOffsetTop);
+    var rows = this._renderRows(bodyOffsetTop, ariaAttributes.ariaRowIndexOffset);
 
     var header =
       <FixedDataTableRow
@@ -773,6 +779,8 @@ var FixedDataTable = createReactClass({
         isColumnReordering={!!state.isColumnReordering}
         columnReorderingData={state.columnReorderingData}
         showScrollbarY={showScrollbarY}
+        isHeaderOrFooter={true}
+        ariaIndex={ariaAttributes.headerAriaIndex}
       />;
 
     var topShadow;
@@ -814,6 +822,8 @@ var FixedDataTable = createReactClass({
           cx('fixedDataTableLayout/main'),
           cx('public/fixedDataTable/main'),
         )}
+        role="grid"
+        aria-rowcount={ariaAttributes.ariaRowCount}
         tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
         onTouchStart={this._touchHandler.onTouchStart}
@@ -839,12 +849,13 @@ var FixedDataTable = createReactClass({
     );
   },
 
-  _renderRows(/*number*/ offsetTop) /*object*/ {
+  _renderRows(/*number*/ offsetTop, /*number*/ ariaIndexOffset) /*object*/ {
     var state = this.state;
     var showScrollbarY = this._showScrollbarY(state);
 
     return (
       <FixedDataTableBufferedRows
+        ariaIndexOffset={ariaIndexOffset}
         isScrolling={this._isScrolling}
         defaultRowHeight={state.rowHeight}
         firstRowIndex={state.firstRowIndex}
@@ -880,6 +891,46 @@ var FixedDataTable = createReactClass({
         showScrollbarY={showScrollbarY}
       />
     );
+  },
+
+  /**
+   * This is needed to calculate the aria attributes for the rows and grid. Specifically
+   * the aria-rowindex and aria-rowcount. Note that aria-rowindex is 1-indexed based.
+   */
+  _calculateAriaAttributes(/*object*/ state) /*object*/ {
+    // Default index values
+    var groupHeaderAriaIndex = 1;
+
+    // assuming no group header
+    var headerAriaIndex = 1;
+
+    // assuming no group header
+    var footerAriaIndex = state.rowsCount + 2; 
+
+    // assuming no group header or footer
+    var ariaRowCount = state.rowsCount + 1; 
+
+    // offset to add to rowIndex (0-indexed) to calculate aria-rowindex
+    // Need to add 1 for the header
+    var ariaRowIndexOffset = 2;
+
+    if (state.useGroupHeader) {
+      headerAriaIndex++;
+      ariaRowCount++;
+      footerAriaIndex++;
+      ariaRowIndexOffset++;
+    }
+    if (state.footerHeight) {
+      ariaRowCount++;
+    }
+
+    return {
+      groupHeaderAriaIndex,
+      headerAriaIndex,
+      footerAriaIndex,
+      ariaRowCount,
+      ariaRowIndexOffset,
+    };
   },
 
   /**
