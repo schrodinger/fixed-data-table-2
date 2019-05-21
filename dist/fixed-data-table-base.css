@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.23 
+ * FixedDataTable v0.8.24 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
