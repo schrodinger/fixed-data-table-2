@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.25 
+ * FixedDataTable v0.8.26 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -2251,7 +2251,8 @@ var FixedDataTableRowImpl = function (_React$Component) {
         isColumnReordering: this.props.isColumnReordering,
         columnReorderingData: this.props.columnReorderingData,
         rowHeight: this.props.height,
-        rowIndex: this.props.index
+        rowIndex: this.props.index,
+        isHeaderOrFooter: this.props.isHeaderOrFooter
       });
       var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
       var fixedRightColumnsWidth = this._getColumnsWidth(this.props.fixedRightColumns);
@@ -2273,7 +2274,8 @@ var FixedDataTableRowImpl = function (_React$Component) {
         isColumnReordering: this.props.isColumnReordering,
         columnReorderingData: this.props.columnReorderingData,
         rowHeight: this.props.height,
-        rowIndex: this.props.index
+        rowIndex: this.props.index,
+        isHeaderOrFooter: this.props.isHeaderOrFooter
       });
       var fixedRightColumnsShadow = fixedRightColumnsWidth ? this._renderFixedRightColumnsShadow(this.props.width - fixedRightColumnsWidth - scrollbarOffset - 5) : null;
       var scrollableColumns = _react2.default.createElement(_FixedDataTableCellGroup2.default, {
@@ -2295,7 +2297,8 @@ var FixedDataTableRowImpl = function (_React$Component) {
         isColumnReordering: this.props.isColumnReordering,
         columnReorderingData: this.props.columnReorderingData,
         rowHeight: this.props.height,
-        rowIndex: this.props.index
+        rowIndex: this.props.index,
+        isHeaderOrFooter: this.props.isHeaderOrFooter
       });
       var scrollableColumnsWidth = this._getColumnsWidth(this.props.scrollableColumns);
       var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
@@ -2323,6 +2326,8 @@ var FixedDataTableRowImpl = function (_React$Component) {
         'div',
         {
           className: (0, _joinClasses2.default)(className, this.props.className),
+          role: 'row',
+          'aria-rowindex': this.props.ariaIndex,
           onClick: this.props.onClick ? this._onClick : null,
           onDoubleClick: this.props.onDoubleClick ? this._onDoubleClick : null,
           onContextMenu: this.props.onContextMenu ? this._onContextMenu : null,
@@ -2465,7 +2470,14 @@ FixedDataTableRowImpl.propTypes = {
    */
   onColumnReorderEnd: _propTypes2.default.func,
 
-  touchEnabled: _propTypes2.default.bool
+  touchEnabled: _propTypes2.default.bool,
+
+  isHeaderOrFooter: _propTypes2.default.bool,
+
+  /**
+  * The value of the aria-rowindex attribute.
+  */
+  ariaIndex: _propTypes2.default.number
 };
 
 var FixedDataTableRow = function (_React$Component2) {
@@ -3264,7 +3276,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTable2.default
 };
 
-FixedDataTableRoot.version = '0.8.25';
+FixedDataTableRoot.version = '0.8.26';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -3909,6 +3921,8 @@ var FixedDataTable = (0, _createReactClass2.default)({
     var showScrollbarX = state.maxScrollX > 0 && state.overflowX !== 'hidden' && state.showScrollbarX !== false;
     var showScrollbarY = this._showScrollbarY(state);
 
+    var ariaAttributes = this._calculateAriaAttributes(state);
+
     var groupHeader;
     if (state.useGroupHeader) {
       groupHeader = _react2.default.createElement(_FixedDataTableRow2.default, {
@@ -3928,7 +3942,9 @@ var FixedDataTable = (0, _createReactClass2.default)({
         onColumnResize: this._onColumnResize,
         onColumnReorder: onColumnReorder,
         onColumnReorderMove: this._onColumnReorderMove,
-        showScrollbarY: showScrollbarY
+        showScrollbarY: showScrollbarY,
+        isHeaderOrFooter: true,
+        ariaIndex: ariaAttributes.groupHeaderAriaIndex
       });
     }
 
@@ -4005,11 +4021,13 @@ var FixedDataTable = (0, _createReactClass2.default)({
         fixedRightColumns: state.footFixedRightColumns,
         scrollableColumns: state.footScrollableColumns,
         scrollLeft: state.scrollX,
-        showScrollbarY: showScrollbarY
+        showScrollbarY: showScrollbarY,
+        isHeaderOrFooter: true,
+        ariaIndex: ariaAttributes.footerAriaIndex
       });
     }
 
-    var rows = this._renderRows(bodyOffsetTop);
+    var rows = this._renderRows(bodyOffsetTop, ariaAttributes.ariaRowIndexOffset);
 
     var header = _react2.default.createElement(_FixedDataTableRow2.default, {
       key: 'header',
@@ -4032,7 +4050,9 @@ var FixedDataTable = (0, _createReactClass2.default)({
       onColumnReorderEnd: this._onColumnReorderEnd,
       isColumnReordering: !!state.isColumnReordering,
       columnReorderingData: state.columnReorderingData,
-      showScrollbarY: showScrollbarY
+      showScrollbarY: showScrollbarY,
+      isHeaderOrFooter: true,
+      ariaIndex: ariaAttributes.headerAriaIndex
     });
 
     var topShadow;
@@ -4058,6 +4078,8 @@ var FixedDataTable = (0, _createReactClass2.default)({
       'div',
       {
         className: (0, _joinClasses2.default)(this.state.className, (0, _cx2.default)('fixedDataTableLayout/main'), (0, _cx2.default)('public/fixedDataTable/main')),
+        role: 'grid',
+        'aria-rowcount': ariaAttributes.ariaRowCount,
         tabIndex: tabIndex,
         onKeyDown: this._onKeyDown,
         onTouchStart: this._touchHandler.onTouchStart,
@@ -4083,11 +4105,12 @@ var FixedDataTable = (0, _createReactClass2.default)({
       horizontalScrollbar
     );
   },
-  _renderRows: function _renderRows( /*number*/offsetTop) /*object*/{
+  _renderRows: function _renderRows( /*number*/offsetTop, /*number*/ariaIndexOffset) /*object*/{
     var state = this.state;
     var showScrollbarY = this._showScrollbarY(state);
 
     return _react2.default.createElement(_FixedDataTableBufferedRows2.default, {
+      ariaIndexOffset: ariaIndexOffset,
       isScrolling: this._isScrolling,
       defaultRowHeight: state.rowHeight,
       firstRowIndex: state.firstRowIndex,
@@ -4122,6 +4145,47 @@ var FixedDataTable = (0, _createReactClass2.default)({
       bufferRowCount: this.state.bufferRowCount,
       showScrollbarY: showScrollbarY
     });
+  },
+
+
+  /**
+   * This is needed to calculate the aria attributes for the rows and grid. Specifically
+   * the aria-rowindex and aria-rowcount. Note that aria-rowindex is 1-indexed based.
+   */
+  _calculateAriaAttributes: function _calculateAriaAttributes( /*object*/state) /*object*/{
+    // Default index values
+    var groupHeaderAriaIndex = 1;
+
+    // assuming no group header
+    var headerAriaIndex = 1;
+
+    // assuming no group header
+    var footerAriaIndex = state.rowsCount + 2;
+
+    // assuming no group header or footer
+    var ariaRowCount = state.rowsCount + 1;
+
+    // offset to add to rowIndex (0-indexed) to calculate aria-rowindex
+    // Need to add 1 for the header
+    var ariaRowIndexOffset = 2;
+
+    if (state.useGroupHeader) {
+      headerAriaIndex++;
+      ariaRowCount++;
+      footerAriaIndex++;
+      ariaRowIndexOffset++;
+    }
+    if (state.footerHeight) {
+      ariaRowCount++;
+    }
+
+    return {
+      groupHeaderAriaIndex: groupHeaderAriaIndex,
+      headerAriaIndex: headerAriaIndex,
+      footerAriaIndex: footerAriaIndex,
+      ariaRowCount: ariaRowCount,
+      ariaRowIndexOffset: ariaRowIndexOffset
+    };
   },
 
 
@@ -7932,6 +7996,7 @@ var FixedDataTableBufferedRows = (0, _createReactClass2.default)({
   displayName: 'FixedDataTableBufferedRows',
 
   propTypes: {
+    ariaIndexOffset: _propTypes2.default.number,
     bufferRowCount: _propTypes2.default.number,
     isScrolling: _propTypes2.default.bool,
     defaultRowHeight: _propTypes2.default.number.isRequired,
@@ -8041,6 +8106,7 @@ var FixedDataTableBufferedRows = (0, _createReactClass2.default)({
         key: rowKey,
         isScrolling: props.isScrolling,
         index: rowIndex,
+        ariaIndex: rowIndex + props.ariaIndexOffset,
         width: props.width,
         height: currentRowHeight,
         subRowHeight: currentSubRowHeight,
@@ -8702,7 +8768,9 @@ var FixedDataTableCellGroupImpl = (0, _createReactClass2.default)({
 
     zIndex: _propTypes2.default.number.isRequired,
 
-    touchEnabled: _propTypes2.default.bool
+    touchEnabled: _propTypes2.default.bool,
+
+    isHeaderOrFooter: _propTypes2.default.bool
   },
 
   componentWillMount: function componentWillMount() {
@@ -8768,6 +8836,7 @@ var FixedDataTableCellGroupImpl = (0, _createReactClass2.default)({
 
     return _react2.default.createElement(_FixedDataTableCell2.default, {
       isScrolling: this.props.isScrolling,
+      isHeaderOrFooter: this.props.isHeaderOrFooter,
       align: columnProps.align,
       className: className,
       height: height,
@@ -8821,7 +8890,9 @@ var FixedDataTableCellGroup = (0, _createReactClass2.default)({
      * Z-index on which the row will be displayed. Used e.g. for keeping
      * header and footer in front of other rows.
      */
-    zIndex: _propTypes2.default.number.isRequired
+    zIndex: _propTypes2.default.number.isRequired,
+
+    isHeaderOrFooter: _propTypes2.default.bool
   },
 
   shouldComponentUpdate: function shouldComponentUpdate( /*object*/nextProps) /*boolean*/{
@@ -8995,7 +9066,12 @@ var FixedDataTableCell = (0, _createReactClass2.default)({
     /**
      * Whether touch is enabled or not.
      */
-    touchEnabled: _propTypes2.default.bool
+    touchEnabled: _propTypes2.default.bool,
+
+    /**
+     * Whether cell is in a header or footer row or not
+     */
+    isHeaderOrFooter: _propTypes2.default.bool
   },
 
   getInitialState: function getInitialState() {
@@ -9115,7 +9191,8 @@ var FixedDataTableCell = (0, _createReactClass2.default)({
         height = _props2.height,
         width = _props2.width,
         columnKey = _props2.columnKey,
-        props = _objectWithoutProperties(_props2, ['height', 'width', 'columnKey']);
+        isHeaderOrFooter = _props2.isHeaderOrFooter,
+        props = _objectWithoutProperties(_props2, ['height', 'width', 'columnKey', 'isHeaderOrFooter']);
 
     var style = {
       height: height,
@@ -9207,9 +9284,11 @@ var FixedDataTableCell = (0, _createReactClass2.default)({
       );
     }
 
+    var role = isHeaderOrFooter ? "columnheader" : "gridcell";
+
     return _react2.default.createElement(
       'div',
-      { className: className, style: style },
+      { className: className, style: style, role: role },
       columnResizerComponent,
       columnReorderComponent,
       content
