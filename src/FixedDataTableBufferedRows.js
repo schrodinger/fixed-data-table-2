@@ -12,7 +12,7 @@
 
 import FixedDataTableRow from 'FixedDataTableRow';
 import PropTypes from 'prop-types';
-import React from 'React';
+import React from 'react';
 import cx from 'cx';
 import emptyFunction from 'emptyFunction';
 import joinClasses from 'joinClasses';

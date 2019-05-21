@@ -16,7 +16,7 @@ import FixedDataTableCell from 'FixedDataTableCell';
 import FixedDataTableHelper from 'FixedDataTableHelper';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 import PropTypes from 'prop-types';
-import React from 'React';
+import React from 'react';
 import cx from 'cx';
 import { sumPropWidths } from 'widthHelper';
 

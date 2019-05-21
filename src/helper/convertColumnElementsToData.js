@@ -11,7 +11,7 @@
 
 'use strict';
 
-import React from 'React';
+import React from 'react';
 import forEach from 'lodash/forEach';
 import invariant from 'invariant';
 import map from 'lodash/map';

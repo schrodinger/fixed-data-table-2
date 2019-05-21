@@ -12,7 +12,7 @@
 
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import Keys from 'Keys';
-import React from 'React';
+import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'ReactDOM';
 import ReactWheelHandler from 'ReactWheelHandler';

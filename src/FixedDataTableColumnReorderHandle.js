@@ -15,7 +15,7 @@
 
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import Locale from 'Locale';
-import React from 'React';
+import React from 'react';
 import PropTypes from 'prop-types';
 import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
 

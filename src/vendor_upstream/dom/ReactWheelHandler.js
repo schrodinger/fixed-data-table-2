@@ -67,8 +67,8 @@ class ReactWheelHandler {
     var normalizedEvent = normalizeWheel(event);
 
     // if shift is held, swap the axis of scrolling.
-    if (event.shiftKey) {
-      normalizedEvent = this._swapNormalizedWheelAxis(normalizedEvent);
+    if (event.shiftKey && ReactWheelHandler._allowInternalAxesSwap()) {
+      normalizedEvent = ReactWheelHandler._swapNormalizedWheelAxis(normalizedEvent);
     }
 
     var deltaX = this._deltaX + normalizedEvent.pixelX;
@@ -126,13 +126,17 @@ class ReactWheelHandler {
     return false;
   }
 
-  _swapNormalizedWheelAxis(/*object*/normalizedEvent) /*object*/{
+  static _swapNormalizedWheelAxis(/*object*/normalizedEvent) /*object*/{
     return {
       spinX: normalizedEvent.spinY,
       spinY: normalizedEvent.spinX,
       pixelX: normalizedEvent.pixelY,
       pixelY: normalizedEvent.pixelX,
     };
+  }
+
+  static _allowInternalAxesSwap() /*boolean*/{
+    return navigator.platform !== "MacIntel";
   }
 }
 

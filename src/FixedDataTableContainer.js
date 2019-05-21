@@ -14,7 +14,7 @@
 import * as ActionTypes from 'ActionTypes';
 import FixedDataTable from 'FixedDataTable';
 import FixedDataTableStore from 'FixedDataTableStore';
-import React from 'React';
+import React from 'react';
 import { bindActionCreators } from 'redux';
 import * as columnActions from 'columnActions';
 import invariant from 'invariant';

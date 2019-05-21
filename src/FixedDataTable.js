@@ -17,7 +17,7 @@ import FixedDataTableBufferedRows from 'FixedDataTableBufferedRows';
 import ColumnResizerLine from 'ColumnResizerLine';
 import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
 import FixedDataTableRow from 'FixedDataTableRow';
-import React from 'React';
+import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTouchHandler from 'ReactTouchHandler';
 import ReactWheelHandler from 'ReactWheelHandler';
