@@ -22,7 +22,9 @@ var banner = (
 );
 
 var plugins = [
-  new ExtractTextPlugin('[name].css'),
+  new MiniCssExtractPlugin({
+    filename: '[name].css',
+  }),
   new webpack.DefinePlugin({
     '__DEV__': isDev
   })
@@ -80,7 +82,7 @@ module.exports = {
             }
           },
           'css-loader',
-          path.join(__dirname, '../build_helpers/cssTransformLoader'),
+          path.join(__dirname, './build_helpers/cssTransformLoader'),
         ]
       },
     ],
