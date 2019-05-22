@@ -9,7 +9,7 @@
  * @providesModule Keys
  */
 
-module.exports = {
+export default {
   BACKSPACE:  8,
   TAB:        9,
   RETURN:    13,

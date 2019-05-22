@@ -14,7 +14,7 @@
 import reducers from 'reducers'
 import { createStore } from 'redux'
 
-module.exports = {
+export default {
   get: () => {
     return createStore(reducers)
   },

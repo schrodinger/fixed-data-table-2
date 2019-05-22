@@ -288,4 +288,4 @@ class ReactTouchHandler {
   }
 }
 
-module.exports = ReactTouchHandler;
+export default ReactTouchHandler;

@@ -52,7 +52,7 @@ function initialize(state, props, oldProps) {
     maxScrollX,
     scrollX,
   });
-};
+}
 
 /**
  * @param {!Object} state
@@ -153,7 +153,7 @@ function resizeColumn(state, resizeData) {
       key: columnKey
     }
   });
-};
+}
 
 function reorderColumn(state, reorderData) {
   let { columnKey, left, scrollStart, width } = reorderData;
@@ -176,7 +176,7 @@ function reorderColumn(state, reorderData) {
       columnAfter: undefined
     }
   });
-};
+}
 
 function reorderColumnMove(state, deltaX) {
   const { isFixed, originalLeft, scrollStart } = state.columnReorderingData;
@@ -206,11 +206,11 @@ function reorderColumnMove(state, deltaX) {
     scrollX: scrollX,
     columnReorderingData: reorderingData
   });
-};
+}
 
-module.exports = {
+export default {
   initialize,
   reorderColumn,
   reorderColumnMove,
   resizeColumn,
-}
+};

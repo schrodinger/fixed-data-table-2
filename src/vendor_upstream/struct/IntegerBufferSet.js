@@ -179,4 +179,4 @@ class IntegerBufferSet {
 
 }
 
-module.exports = IntegerBufferSet;
+export default IntegerBufferSet;

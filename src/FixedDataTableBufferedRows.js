@@ -182,6 +182,5 @@ class FixedDataTableBufferedRows extends React.Component {
   isRowInsideViewport(/*number*/rowIndex) {
     return inRange(rowIndex, this.props.firstViewportRowIndex, this.props.endViewportRowIndex);
   }
-};
-
-module.exports = FixedDataTableBufferedRows;
+}
+export default FixedDataTableBufferedRows;

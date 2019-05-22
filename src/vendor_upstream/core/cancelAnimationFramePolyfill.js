@@ -21,4 +21,4 @@ var cancelAnimationFrame =
   global.msCancelAnimationFrame     ||
   global.clearTimeout;
 
-module.exports = cancelAnimationFrame;
+export default cancelAnimationFrame;

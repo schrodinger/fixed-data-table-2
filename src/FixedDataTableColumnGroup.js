@@ -71,4 +71,4 @@ class FixedDataTableColumnGroup extends React.Component {
   }
 }
 
-module.exports = FixedDataTableColumnGroup;
+export default FixedDataTableColumnGroup;

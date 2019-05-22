@@ -4,11 +4,11 @@
 
 "use strict";
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { DateCell } = require('./helpers/cells');
-const { Table, Column, Cell } = require('fixed-data-table-2');
-const React = require('react');
-const Dimensions = require('react-dimensions');
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { DateCell } from './helpers/cells';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import React from 'react';
+import Dimensions from 'react-dimensions';
 
 class OwnerExample extends React.Component {
   constructor(props) {
@@ -61,4 +61,4 @@ class OwnerExample extends React.Component {
   }
 }
 
-module.exports = OwnerExample;
+export default OwnerExample;

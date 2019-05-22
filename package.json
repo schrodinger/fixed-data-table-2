@@ -27,6 +27,7 @@
     "babel-plugin-rewire": "^1.0.0-rc-4",
     "babel-plugin-syntax-trailing-function-commas": "^6.8.0",
     "bundle-loader": "^0.5.2",
+    "calypso-codemods": "^0.1.5",
     "chai": "4.2.0",
     "css-loader": "2.1.1",
     "except": "^0.1.3",

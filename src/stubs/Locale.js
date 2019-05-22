@@ -17,4 +17,4 @@ var Locale = {
   getDirection: () => 'LTR'
 };
 
-module.exports = Locale;
+export default Locale;
