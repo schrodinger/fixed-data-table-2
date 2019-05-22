@@ -11,10 +11,10 @@
 
 'use strict';
 
-import FixedDataTableContainer from 'FixedDataTableContainer';
-import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
-import FixedDataTableColumn from 'FixedDataTableColumn';
-import FixedDataTableColumnGroup from 'FixedDataTableColumnGroup';
+const FixedDataTableContainer = require('FixedDataTableContainer').default;
+const FixedDataTableCellDefault  = require('FixedDataTableCellDefault').default;
+const FixedDataTableColumn = require('FixedDataTableColumn').default;
+const FixedDataTableColumnGroup = require('FixedDataTableColumnGroup').default;
 
 var FixedDataTableRoot = {
   Cell: FixedDataTableCellDefault,
@@ -24,4 +24,4 @@ var FixedDataTableRoot = {
 };
 
 FixedDataTableRoot.version = '1.0.0-beta.17';
-export default FixedDataTableRoot;
+module.exports = FixedDataTableRoot;

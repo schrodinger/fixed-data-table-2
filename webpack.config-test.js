@@ -33,7 +33,7 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
-          plugins: 'babel-plugin-rewire'
+          plugins: ['babel-plugin-rewire'],
         }
       }
     ]
