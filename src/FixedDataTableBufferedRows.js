@@ -104,7 +104,7 @@ class FixedDataTableBufferedRows extends React.Component {
       if (rowIndex === undefined) {
         // if a previous row existed, let's just make use of that
         if (this._staticRowArray[i] === undefined) {
-          this._staticRowArray[i] = this.getStubRow(i, true);
+          this._staticRowArray[i] = this.getStubRow(i, true, -1);
         }
         continue;
       }
@@ -164,7 +164,7 @@ class FixedDataTableBufferedRows extends React.Component {
    *
    * @param {number} key
    * @param {boolean} fake
-   * @param {number=} index
+   * @param {number} index
    * @return {!Object}
    */
   getStubRow(key, fake, index) /*object*/ {
@@ -173,7 +173,7 @@ class FixedDataTableBufferedRows extends React.Component {
       <FixedDataTableRow
         key={key}
         isScrolling={props.isScrolling}
-        index={index || -1}
+        index={index}
         width={props.width}
         height={0}
         offsetTop={0}
