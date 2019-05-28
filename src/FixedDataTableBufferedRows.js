@@ -87,9 +87,7 @@ class FixedDataTableBufferedRows extends React.Component {
       this._staticRowArray.forEach((row, i) => {
         const rowOutsideViewport = !this.isRowInsideViewport(row.props.index);
         if (rowOutsideViewport) {
-          this._staticRowArray[i] = React.cloneElement(this._staticRowArray[i], {
-            visible: false,
-          });
+          this._staticRowArray[i] = this.getStubRow(i, false, row.props.index);
         }
       });
     } else {
@@ -106,7 +104,7 @@ class FixedDataTableBufferedRows extends React.Component {
       if (rowIndex === undefined) {
         // if a previous row existed, let's just make use of that
         if (this._staticRowArray[i] === undefined) {
-          this._staticRowArray[i] = this.getFakeRow(i);
+          this._staticRowArray[i] = this.getStubRow(i, true, -1);
         }
         continue;
       }
@@ -159,19 +157,29 @@ class FixedDataTableBufferedRows extends React.Component {
     return <div>{this._staticRowArray}</div>;
   }
 
-  getFakeRow(/*number*/key) /*object*/ {
+
+  /**
+   * Returns a stub row which won't be visible to the user.
+   * This allows us to still render a row and React won't unmount it.
+   *
+   * @param {number} key
+   * @param {boolean} fake
+   * @param {number} index
+   * @return {!Object}
+   */
+  getStubRow(key, fake, index) /*object*/ {
     const props = this.props;
     return (
       <FixedDataTableRow
         key={key}
         isScrolling={props.isScrolling}
-        index={key}
+        index={index}
         width={props.width}
         height={0}
         offsetTop={0}
         scrollLeft={Math.round(props.scrollLeft)}
         visible={false}
-        fake={true}
+        fake={fake}
         fixedColumns={props.fixedColumns}
         fixedRightColumns={props.fixedRightColumns}
         scrollableColumns={props.scrollableColumns}
