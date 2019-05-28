@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.19 
+ * FixedDataTable v1.0.0-beta.20 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -5601,7 +5601,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTableContainer2.default
 };
 
-FixedDataTableRoot.version = '1.0.0-beta.19';
+FixedDataTableRoot.version = '1.0.0-beta.20';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -7052,9 +7052,7 @@ var FixedDataTableBufferedRows = function (_React$Component) {
         this._staticRowArray.forEach(function (row, i) {
           var rowOutsideViewport = !_this2.isRowInsideViewport(row.props.index);
           if (rowOutsideViewport) {
-            _this2._staticRowArray[i] = _react2.default.cloneElement(_this2._staticRowArray[i], {
-              visible: false
-            });
+            _this2._staticRowArray[i] = _this2.getStubRow(i, false, row.props.index);
           }
         });
       } else {
@@ -7071,7 +7069,7 @@ var FixedDataTableBufferedRows = function (_React$Component) {
         if (rowIndex === undefined) {
           // if a previous row existed, let's just make use of that
           if (this._staticRowArray[i] === undefined) {
-            this._staticRowArray[i] = this.getFakeRow(i);
+            this._staticRowArray[i] = this.getStubRow(i, true, -1);
           }
           continue;
         }
@@ -7121,20 +7119,31 @@ var FixedDataTableBufferedRows = function (_React$Component) {
         this._staticRowArray
       );
     }
+
+    /**
+     * Returns a stub row which won't be visible to the user.
+     * This allows us to still render a row and React won't unmount it.
+     *
+     * @param {number} key
+     * @param {boolean} fake
+     * @param {number} index
+     * @return {!Object}
+     */
+
   }, {
-    key: 'getFakeRow',
-    value: function getFakeRow( /*number*/key) /*object*/{
+    key: 'getStubRow',
+    value: function getStubRow(key, fake, index) /*object*/{
       var props = this.props;
       return _react2.default.createElement(_FixedDataTableRow2.default, {
         key: key,
         isScrolling: props.isScrolling,
-        index: key,
+        index: index,
         width: props.width,
         height: 0,
         offsetTop: 0,
         scrollLeft: Math.round(props.scrollLeft),
         visible: false,
-        fake: true,
+        fake: fake,
         fixedColumns: props.fixedColumns,
         fixedRightColumns: props.fixedRightColumns,
         scrollableColumns: props.scrollableColumns
