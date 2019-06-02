@@ -826,10 +826,10 @@ var FixedDataTable = createReactClass({
         aria-rowcount={ariaAttributes.ariaRowCount}
         tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
-        onTouchStart={this._touchHandler.onTouchStart}
-        onTouchEnd={this._touchHandler.onTouchEnd}
-        onTouchMove={this._touchHandler.onTouchMove}
-        onTouchCancel={this._touchHandler.onTouchCancel}
+        onTouchStart={state.touchScrollEnabled ? this._touchHandler.onTouchStart : null}
+        onTouchEnd={state.touchScrollEnabled ? this._touchHandler.onTouchEnd : null}
+        onTouchMove={state.touchScrollEnabled ? this._touchHandler.onTouchMove : null}
+        onTouchCancel={state.touchScrollEnabled ? this._touchHandler.onTouchCancel : null}
         ref={this._onRef}
         style={{height: state.height, width: state.width}}>
         <div
