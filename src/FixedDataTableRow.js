@@ -153,6 +153,11 @@ class FixedDataTableRowImpl extends React.Component {
     touchEnabled: PropTypes.bool,
   };
 
+  shouldComponentUpdate(nextProps) {
+    // only render if row is visible
+    return nextProps.visible;
+  }
+
   render() /*object*/ {
     if (this.props.fake) {
       return null;
@@ -461,7 +466,7 @@ class FixedDataTableRow extends React.Component {
     };
     FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender);
 
-    const { offsetTop, zIndex, visible, ...rowProps } = this.props;
+    const { offsetTop, zIndex, ...rowProps } = this.props;
 
     return (
       <div
