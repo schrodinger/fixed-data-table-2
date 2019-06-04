@@ -153,11 +153,6 @@ class FixedDataTableRowImpl extends React.Component {
     touchEnabled: PropTypes.bool,
   };
 
-  shouldComponentUpdate(nextProps) {
-    // only render if row is visible
-    return nextProps.visible;
-  }
-
   render() /*object*/ {
     if (this.props.fake) {
       return null;
