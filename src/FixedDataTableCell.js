@@ -90,6 +90,15 @@ class FixedDataTableCell extends React.Component {
     reorderingDisplacement: 0
   }
 
+  componentDidMount() {
+    "use strict";
+    console.log("cell mounted");
+  }
+  componentWillUnmount() {
+    "use strict";
+    console.log("cell unmounted");
+  }
+
   shouldComponentUpdate(nextProps) {
     if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
       return false;
