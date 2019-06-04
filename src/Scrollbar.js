@@ -37,11 +37,11 @@ var KEYBOARD_SCROLL_AMOUNT = 40;
 var _lastScrolledScrollbar = null;
 
 var getTouchX = function(e) {
-  return Math.round(e.targetTouches[0].pageX - e.target.getBoundingClientRect().x);
+  return Math.round(e.targetTouches[0].clientX - e.target.getBoundingClientRect().x);
 };
 
 var getTouchY = function(e) {
-  return Math.round(e.targetTouches[0].pageY - e.target.getBoundingClientRect().y);
+  return Math.round(e.targetTouches[0].clientY - e.target.getBoundingClientRect().y);
 };
 
 var Scrollbar = createReactClass({
