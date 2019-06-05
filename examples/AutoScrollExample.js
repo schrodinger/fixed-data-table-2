@@ -24,7 +24,7 @@ class AutoScrollExample extends React.Component {
 
     this.columns = [];
     const cellRenderer = ({ columnKey, rowIndex }) =>
-      (<div className='autoScrollCell'> `${rowIndex}, ${columnKey}` </div>);
+      (<div className='autoScrollCell'> {rowIndex}, {columnKey} </div>);
 
     for (let i = 0; i < 100; i++) {
       this.columns[i] = (

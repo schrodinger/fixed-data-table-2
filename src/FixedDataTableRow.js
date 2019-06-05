@@ -461,7 +461,7 @@ class FixedDataTableRow extends React.Component {
     };
     FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender);
 
-    const { offsetTop, zIndex, ...rowProps } = this.props;
+    const { offsetTop, zIndex, visible, ...rowProps } = this.props;
 
     return (
       <div
