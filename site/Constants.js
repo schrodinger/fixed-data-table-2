@@ -169,6 +169,12 @@ exports.ExamplePages = {
     title: 'Fixed Rows',
     description: 'An example using multiple tables to mimic fixed rows.',
   },
+  AUTO_SCROLL_EXAMPLE: {
+    location: 'example-auto-scroll.html',
+    fileName: 'AutoScrollExample.js',
+    title: 'Auto Scroll',
+    description: 'An example using Controlled Scrolling to mimic auto scrolling',
+  },
 };
 
 Object.keys(exports.ExamplePages).forEach(

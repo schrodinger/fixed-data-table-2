@@ -50,6 +50,7 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.CONTEXT_EXAMPLE.location]: require('../../examples/ContextExample'),
   [ExamplePages.FIXED_RIGHT_COLUMNS_EXAMPLE.location]: require('../../examples/FixedRightColumnsExample'),
   [ExamplePages.FIXED_ROWS_EXAMPLE.location]: require('../../examples/FixedRowsExample'),
+  [ExamplePages.AUTO_SCROLL_EXAMPLE.location]: require('../../examples/AutoScrollExample'),
 };
 
 class ExamplesPage extends React.Component {
