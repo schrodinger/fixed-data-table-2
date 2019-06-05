@@ -23,7 +23,8 @@ class AutoScrollExample extends React.Component {
     };
 
     this.columns = [];
-    const cellRenderer = ({ columnKey, rowIndex }) => (`${rowIndex}, ${columnKey}`);
+    const cellRenderer = ({ columnKey, rowIndex }) =>
+      (<div className='autoScrollCell'> `${rowIndex}, ${columnKey}` </div>);
 
     for (let i = 0; i < 100; i++) {
       this.columns[i] = (
@@ -59,7 +60,7 @@ class AutoScrollExample extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='autoScrollContainer'>
         {this.renderControls()}
         {this.renderTable()}
       </div>
@@ -68,7 +69,7 @@ class AutoScrollExample extends React.Component {
 
   renderControls() {
     return (
-      <div className='autoScrollControlContainer'>
+      <div className='autoScrollControls'>
         <label>
           Auto Scroll Enabled
           <input type='checkbox' checked={this.state.autoScrollEnabled} onChange={this.toggleAutoScroll} />

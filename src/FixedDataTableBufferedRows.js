@@ -104,7 +104,7 @@ class FixedDataTableBufferedRows extends React.Component {
       });
     }
 
-    return <div>{this._staticRowArray}</div>;
+    return <div> {this._staticRowArray} </div>;
   }
 
   /**
@@ -142,8 +142,8 @@ class FixedDataTableBufferedRows extends React.Component {
     return (
       <FixedDataTableRow
         key={key}
-        isScrolling={props.isScrolling}
         index={rowIndex}
+        isScrolling={props.isScrolling}
         width={props.width}
         rowExpanded={props.rowExpanded}
         scrollLeft={Math.round(props.scrollLeft)}
