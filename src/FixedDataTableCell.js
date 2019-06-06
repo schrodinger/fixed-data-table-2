@@ -14,6 +14,7 @@ import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
 import FixedDataTableHelper from 'FixedDataTableHelper';
 import React from 'react';
+import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 import PropTypes from 'prop-types';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
@@ -81,8 +82,14 @@ class FixedDataTableCell extends React.Component {
     /**
      * Whether touch is enabled or not.
      */
-    touchEnabled: PropTypes.bool
-  }
+    touchEnabled: PropTypes.bool,
+
+    /**
+     * Whether the cell is present in the viewport.
+     * We use this to skip render.
+     */
+    visible: PropTypes.bool,
+  };
 
   state = {
     isReorderingThisColumn: false,
@@ -90,8 +97,32 @@ class FixedDataTableCell extends React.Component {
     reorderingDisplacement: 0
   }
 
+  // TODO (pradeep): Remove when merging to Beta (acts as a quick check to see if cells are mounted)
+  componentDidMount() {
+    console.log("cell mounted");
+  }
+
+  // TODO (pradeep): Remove when merging to Beta (acts as a quick check to see if cells are mounted)
+  componentWillUnmount() {
+    console.log("cell unmounted");
+  }
+
   shouldComponentUpdate(nextProps) {
-    if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
+    // render if visibility changed
+    if (nextProps.visible !== this.props.visible) {
+      return true;
+    }
+
+    // if cell is not visible then don't rerender
+    if (!nextProps.visible) {
+      return false;
+    }
+
+    // no need to render if scrolling changed neither row index nor column index
+    if (nextProps.isScrolling &&
+        this.props.rowIndex === nextProps.rowIndex && 
+        this.props.columnKey === nextProps.columnKey
+    ) {
       return false;
     }
 
@@ -197,24 +228,21 @@ class FixedDataTableCell extends React.Component {
   }
 
   render() /*object*/ {
-
-    var { height, width, columnKey, ...props } = this.props;
-
+    var { height, width, visible, columnKey, ...props } = this.props;
     var style = {
+      display: visible ? 'block' : 'none',
       height,
       width,
     };
 
-    if (DIR_SIGN === 1) {
-      style.left = props.left;
-    } else {
-      style.right = props.left;
-    }
+    let left = DIR_SIGN * props.left;
 
     if (this.state.isReorderingThisColumn) {
-      style.transform = `translateX(${this.state.displacement}px) translateZ(0)`;
+      left += this.state.displacement;
       style.zIndex = 1;
     }
+
+    FixedDataTableTranslateDOMPosition(style, left, 0, false);
 
     var className = joinClasses(
       cx({
@@ -228,7 +256,7 @@ class FixedDataTableCell extends React.Component {
         'public/fixedDataTableCell/hasReorderHandle': !!props.onColumnReorder,
         'public/fixedDataTableCell/reordering': this.state.isReorderingThisColumn,
       }),
-      props.className,
+      props.className
     );
 
     var columnResizerComponent;
@@ -247,7 +275,7 @@ class FixedDataTableCell extends React.Component {
           <div
             className={joinClasses(
               cx('fixedDataTableCellLayout/columnResizerKnob'),
-              cx('public/fixedDataTableCell/columnResizerKnob'),
+              cx('public/fixedDataTableCell/columnResizerKnob')
             )}
             style={columnResizerStyle}
           />
