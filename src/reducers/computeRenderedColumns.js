@@ -176,7 +176,7 @@ function calculateRenderedColumnGroups(state, columnAnchor, columnRange) {
 
   // get first and last scrollable columns in the view port
   const startScrollableColumn = scrollableColumns[Math.max(0, columnRange.firstViewportCol)];
-  const endScrollableColumn = scrollableColumns[Math.max(0, columnRange.endViewportCol - 1)] + 1;
+  const endScrollableColumn = scrollableColumns[Math.max(0, columnRange.endViewportCol - 1)];
 
   // now get the first and last scrollable group column's index in the view port
   const startIdx = columnGroupIndex[startScrollableColumn.groupIdx];
