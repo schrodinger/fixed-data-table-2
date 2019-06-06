@@ -429,6 +429,13 @@ class FixedDataTable extends React.Component {
      * half of the number of visible rows.
      */
     bufferRowCount: PropTypes.number,
+
+    /**
+     * Turn on column virtualization so that columns inside the viewport are rendered,
+     * regardless of allowCellsRecycling. This also avoids cell mounts by reusing the
+     * component.
+     */
+    allowColumnVirtualization: PropTypes.bool,
   }
 
   static defaultProps = /*object*/ {
@@ -629,9 +636,12 @@ class FixedDataTable extends React.Component {
     } = tableHeightsSelector(this.props);
 
     const {
+      allowColumnVirtualization,
       className,
+      columnOffsets,
       columnReorderingData,
       columnResizingData,
+      columnsToRender,
       elementHeights,
       isColumnReordering,
       isColumnResizing,
@@ -726,6 +736,7 @@ class FixedDataTable extends React.Component {
     if (footerHeight) {
       footer =
         <FixedDataTableRow
+          allowColumnVirtualization={allowColumnVirtualization}
           key="footer"
           isScrolling={scrolling}
           className={joinClasses(
@@ -741,6 +752,8 @@ class FixedDataTable extends React.Component {
           fixedColumns={fixedColumns.footer}
           fixedRightColumns={fixedRightColumns.footer}
           scrollableColumns={scrollableColumns.footer}
+          columnsToRender={columnsToRender}
+          columnOffsets={columnOffsets}
           scrollLeft={scrollX}
           showScrollbarY={scrollEnabledY}
         />;
@@ -751,6 +764,7 @@ class FixedDataTable extends React.Component {
 
     const header =
       <FixedDataTableRow
+        allowColumnVirtualization={allowColumnVirtualization}
         key="header"
         isScrolling={scrolling}
         className={joinClasses(
@@ -765,6 +779,8 @@ class FixedDataTable extends React.Component {
         offsetTop={groupHeaderHeight}
         scrollLeft={scrollX}
         visible={true}
+        columnOffsets={columnOffsets}
+        columnsToRender={columnsToRender}
         fixedColumns={fixedColumns.header}
         fixedRightColumns={fixedRightColumns.header}
         scrollableColumns={scrollableColumns.header}
@@ -852,12 +868,15 @@ class FixedDataTable extends React.Component {
     const props = this.props;
     return (
       <FixedDataTableBufferedRows
+        allowColumnVirtualization={props.allowColumnVirtualization}
         isScrolling={props.scrolling}
         fixedColumns={fixedCellTemplates}
         fixedRightColumns={fixedRightCellTemplates}
         firstViewportRowIndex={props.firstRowIndex}
         endViewportRowIndex={props.endRowIndex}
         height={bodyHeight}
+        columnsToRender={props.columnsToRender}
+        columnOffsets={props.columnOffsets}
         offsetTop={offsetTop}
         onRowClick={props.onRowClick}
         onRowContextMenu={props.onRowContextMenu}

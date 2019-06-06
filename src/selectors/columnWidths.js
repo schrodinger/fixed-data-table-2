@@ -48,13 +48,14 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     newColumnGroupProps,
     newColumnProps,
   } = flexWidths(columnGroupProps, columnProps, viewportWidth);
+
   const {
     fixedColumns,
     fixedRightColumns,
     scrollableColumns,
   } = groupColumns(newColumnProps);
 
-  const availableScrollWidth = viewportWidth - getTotalWidth(fixedColumns) - getTotalWidth(fixedRightColumns);
+  const availableScrollWidth = Math.max(viewportWidth - getTotalWidth(fixedColumns) - getTotalWidth(fixedRightColumns), 0);
   const maxScrollX = Math.max(0, getTotalWidth(newColumnProps) - viewportWidth);
   return {
     columnGroupProps: newColumnGroupProps,

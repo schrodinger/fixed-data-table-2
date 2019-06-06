@@ -16,6 +16,8 @@ import * as ActionTypes from 'ActionTypes';
 import IntegerBufferSet from 'IntegerBufferSet';
 import PrefixIntervalTree from 'PrefixIntervalTree';
 import columnStateHelper from 'columnStateHelper'
+import columnWidths from 'columnWidths';
+import computeRenderedColumns from 'computeRenderedColumns';
 import computeRenderedRows from 'computeRenderedRows';
 import convertColumnElementsToData from 'convertColumnElementsToData';
 import pick from 'lodash/pick';
@@ -72,8 +74,14 @@ function getInitialState() {
      * Output state passed as props to the the rendered FixedDataTable
      * NOTE (jordan) rows may contain undefineds if we don't need all the buffer positions
      */
+    columnOffsets: {},
+    fixedColumnOffsets: {},
+    fixedRightOffsets: {},
+    columnsToRender: [],
     columnReorderingData: {},
     columnResizingData: {},
+    firstColumnIndex: 0,
+    firstColumnOffset: 0,
     firstRowIndex: 0,
     firstRowOffset: 0,
     isColumnReordering: false,
@@ -94,8 +102,10 @@ function getInitialState() {
      * TODO (jordan) investigate if we want to move this to local or scoped state
      */
     rowBufferSet: new IntegerBufferSet(),
+    columnBufferSet: new IntegerBufferSet(),
     storedHeights: [],
     rowOffsetIntervalTree: null, // PrefixIntervalTree
+    columnOffsetIntervalTree: null, // PrefixIntervalTree
   };
 }
 
@@ -106,9 +116,11 @@ function reducers(state = getInitialState(), action) {
 
       let newState = setStateFromProps(state, props);
       newState = initializeRowHeightsAndOffsets(newState);
+      newState = initializeColumnOffsets(newState);
       const scrollAnchor = getScrollAnchor(newState, props);
       newState = computeRenderedRows(newState, scrollAnchor);
-      return columnStateHelper.initialize(newState, props, {});
+      newState = columnStateHelper.initialize(newState, props, {});
+      return computeRenderedColumns(newState, newState.columnAnchor);
     }
     case ActionTypes.PROP_CHANGE: {
       const { newProps, oldProps } = action;
@@ -135,6 +147,11 @@ function reducers(state = getInitialState(), action) {
 
       newState = columnStateHelper.initialize(newState, newProps, oldProps);
 
+      // if column anchor has changed, then update rendered columns
+      if (!shallowEqual(state, newState) || newState.columnAnchor.changed) {
+        newState = computeRenderedColumns(newState, newState.columnAnchor);
+      }
+
       // if scroll values have changed, then we're scrolling!
       if (newState.scrollX !== state.scrollX || newState.scrollY !== state.scrollY) {
         newState.scrolling = newState.scrolling || true;
@@ -147,7 +164,7 @@ function reducers(state = getInitialState(), action) {
       return newState;
     }
     case ActionTypes.SCROLL_END: {
-      const newState = Object.assign({}, state, {
+      let newState = Object.assign({}, state, {
         scrolling: false,
       });
       const previousScrollAnchor = {
@@ -155,7 +172,9 @@ function reducers(state = getInitialState(), action) {
         firstOffset: state.firstRowOffset,
         lastIndex: state.lastIndex,
       };
-      return computeRenderedRows(newState, previousScrollAnchor);
+      newState = computeRenderedRows(newState, previousScrollAnchor);
+      newState = computeRenderedColumns(newState, newState.columnAnchor);
+      return newState;
     }
     case ActionTypes.SCROLL_TO_Y: {
       let { scrollY } = action;
@@ -185,10 +204,12 @@ function reducers(state = getInitialState(), action) {
     }
     case ActionTypes.SCROLL_TO_X: {
       const { scrollX } = action;
-      return Object.assign({}, state, {
+      const newState = Object.assign({}, state, {
         scrolling: true,
         scrollX,
       });
+      newState.columnAnchor = columnStateHelper.scrollToPos(newState, scrollX);
+      return computeRenderedColumns(newState, newState.columnAnchor);
     }
     default: {
       return state;
@@ -215,6 +236,21 @@ function initializeRowHeightsAndOffsets(state) {
     rowOffsetIntervalTree,
     scrollContentHeight,
     storedHeights,
+  });
+}
+
+/**
+ * Initialize column offsets based on the given column props.
+ *
+ * @param {!Object} state
+ * @private
+ */
+function initializeColumnOffsets(state) {
+  const { scrollableColumns } = columnWidths(state);
+  const columnOffsetIntervalTree = new PrefixIntervalTree(scrollableColumns.map(column => column.width));
+
+  return Object.assign({}, state, {
+    columnOffsetIntervalTree,
   });
 }
 
