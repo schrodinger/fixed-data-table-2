@@ -167,8 +167,8 @@ function groupColumns(columnProps, columnGroupProps) {
   forEach(columnGroupProps, (columnProp, index) => {
     if (!columnProp.fixed && !columnProp.fixedRight) {
       scrollableColumnGroupIndex.push(index); // index of scrollable group in columnGroupProps
-      scrollableColumnGroups.push(columnProp);
       columnGroupIndex[index] = scrollableColumnGroups.length; // index of column group in scrollableColumnGroups
+      scrollableColumnGroups.push(columnProp);
     }
   });
 

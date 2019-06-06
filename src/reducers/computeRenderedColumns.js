@@ -69,7 +69,7 @@ function calculateRenderedColumnRange(state, columnAnchor) {
   const { availableScrollWidth, scrollableColumns } = columnWidths(state);
   const columnCount = scrollableColumns.length;
 
-  if (columnCount === 0) {
+  if (availableScrollWidth === 0 || columnCount === 0) {
     return {
       endBufferCol: 0,
       endViewportCol: 0,
@@ -174,16 +174,20 @@ function calculateRenderedColumnGroups(state, columnAnchor, columnRange) {
     return;
   }
 
-  const { firstOffset } = columnAnchor;
-  const startIdx = columnGroupIndex[scrollableColumns[Math.max(0, columnRange.firstViewportCol)].groupIdx];
-  const endIdx = columnGroupIndex[scrollableColumns[Math.max(0, columnRange.endViewportCol - 1)].groupIdx];
+  // get first and last scrollable columns in the view port
+  const startScrollableColumn = scrollableColumns[Math.max(0, columnRange.firstViewportCol)];
+  const endScrollableColumn = scrollableColumns[Math.max(0, columnRange.endViewportCol - 1)] + 1;
+
+  // now get the first and last scrollable group column's index in the view port
+  const startIdx = columnGroupIndex[startScrollableColumn.groupIdx];
+  const endIdx = columnGroupIndex[endScrollableColumn.groupIdx] + 1;
 
   // output for this function
   const columns = []; // state.columnsToRender
   const columnOffsets = {}; // state.columnOffsets
 
   // update offsets for the columns
-  let totalWidth = firstOffset;
+  let totalWidth = columnAnchor.firstOffset;
   for (let currentIdx = startIdx; currentIdx < endIdx; currentIdx++) {
     totalWidth += updateColumnGroupWidth(state, currentIdx);
 
