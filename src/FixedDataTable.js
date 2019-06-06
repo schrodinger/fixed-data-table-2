@@ -639,9 +639,11 @@ class FixedDataTable extends React.Component {
       allowColumnVirtualization,
       className,
       columnOffsets,
+      columnGroupOffsets,
       columnReorderingData,
       columnResizingData,
       columnsToRender,
+      columnGroupsToRender,
       elementHeights,
       isColumnReordering,
       isColumnResizing,
@@ -666,6 +668,7 @@ class FixedDataTable extends React.Component {
     if (groupHeaderHeight > 0) {
       groupHeader = (
         <FixedDataTableRow
+          allowColumnVirtualization={allowColumnVirtualization}
           key="group_header"
           isScrolling={scrolling}
           className={joinClasses(
@@ -682,6 +685,8 @@ class FixedDataTable extends React.Component {
           fixedColumns={fixedColumnGroups}
           fixedRightColumns={fixedRightColumnGroups}
           scrollableColumns={scrollableColumnGroups}
+          columnOffsets={columnGroupOffsets}
+          columnsToRender={columnGroupsToRender}
           visible={true}
           onColumnResize={this._onColumnResize}
           onColumnReorder={onColumnReorder}

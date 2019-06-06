@@ -196,6 +196,7 @@ class FixedDataTableRowImpl extends React.Component {
         width={fixedColumnsWidth}
         zIndex={2}
         columns={this.props.fixedColumns}
+        columnOffsets={this.props.fixedColumnOffsets}
         touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
         onColumnReorder={this.props.onColumnReorder}
@@ -219,6 +220,7 @@ class FixedDataTableRowImpl extends React.Component {
         width={fixedRightColumnsWidth}
         zIndex={2}
         columns={this.props.fixedRightColumns}
+        columnOffsets={this.props.fixedRightColumnOffsets}
         touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
         onColumnReorder={this.props.onColumnReorder}

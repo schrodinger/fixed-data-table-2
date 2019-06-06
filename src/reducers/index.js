@@ -103,9 +103,11 @@ function getInitialState() {
      */
     rowBufferSet: new IntegerBufferSet(),
     columnBufferSet: new IntegerBufferSet(),
+    columnGroupBufferSet: new IntegerBufferSet(),
     storedHeights: [],
     rowOffsetIntervalTree: null, // PrefixIntervalTree
     columnOffsetIntervalTree: null, // PrefixIntervalTree
+    columnGroupOffsetIntervalTree: null, // PrefixIntervalTree
   };
 }
 
@@ -246,11 +248,13 @@ function initializeRowHeightsAndOffsets(state) {
  * @private
  */
 function initializeColumnOffsets(state) {
-  const { scrollableColumns } = columnWidths(state);
+  const { scrollableColumns, scrollableColumnGroups } = columnWidths(state);
   const columnOffsetIntervalTree = new PrefixIntervalTree(scrollableColumns.map(column => column.width));
+  const columnGroupOffsetIntervalTree = new PrefixIntervalTree(scrollableColumnGroups.map(column => column.width));
 
   return Object.assign({}, state, {
     columnOffsetIntervalTree,
+    columnGroupOffsetIntervalTree,
   });
 }
 

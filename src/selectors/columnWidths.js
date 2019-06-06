@@ -53,17 +53,23 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     fixedColumns,
     fixedRightColumns,
     scrollableColumns,
-  } = groupColumns(newColumnProps);
+    scrollableColumnGroups,
+    scrollableColumnGroupIndex,
+    columnGroupIndex,
+  } = groupColumns(newColumnProps, newColumnGroupProps);
 
   const availableScrollWidth = Math.max(viewportWidth - getTotalWidth(fixedColumns) - getTotalWidth(fixedRightColumns), 0);
   const maxScrollX = Math.max(0, getTotalWidth(newColumnProps) - viewportWidth);
   return {
+    columnGroupIndex,
     columnGroupProps: newColumnGroupProps,
     columnProps: newColumnProps,
     availableScrollWidth,
     fixedColumns,
     fixedRightColumns,
     scrollableColumns,
+    scrollableColumnGroups,
+    scrollableColumnGroupIndex,
     maxScrollX,
   };
 }
@@ -128,16 +134,23 @@ function flexWidths(columnGroupProps, columnProps, viewportWidth) {
 
 /**
  * @param {!Array.<columnDefinition>} columnProps
+ * @param {!Array.<columnDefinition>} columnGroupProps
  * @return {{
+ *   columnGroupIndex: !Array.<number>,
  *   fixedColumns: !Array.<columnDefinition>,
  *   fixedRightColumns: !Array.<columnDefinition>,
- *   scrollableColumns: !Array.<columnDefinition>
+ *   scrollableColumns: !Array.<columnDefinition>,
+ *   scrollableColumnGroupIndex: !Array.<number>,
+ *   scrollableColumnGroups: !Array.<columnDefinition>,
  * }}
  */
-function groupColumns(columnProps) {
+function groupColumns(columnProps, columnGroupProps) {
   const fixedColumns = [];
   const fixedRightColumns = [];
   const scrollableColumns = [];
+  const scrollableColumnGroups = [];
+  const columnGroupIndex = [];
+  const scrollableColumnGroupIndex = [];
 
   forEach(columnProps, columnProp => {
     let container = scrollableColumns;
@@ -149,10 +162,23 @@ function groupColumns(columnProps) {
     container.push(columnProp);
   });
 
+  // group the scrollable column groups together and also provide
+  // index mapping (and inverse mapping) from the column group to it's order in the view
+  forEach(columnGroupProps, (columnProp, index) => {
+    if (!columnProp.fixed && !columnProp.fixedRight) {
+      scrollableColumnGroupIndex.push(index); // index of scrollable group in columnGroupProps
+      scrollableColumnGroups.push(columnProp);
+      columnGroupIndex[index] = scrollableColumnGroups.length; // index of column group in scrollableColumnGroups
+    }
+  });
+
   return {
     fixedColumns,
     fixedRightColumns,
     scrollableColumns,
+    scrollableColumnGroups,
+    columnGroupIndex,
+    scrollableColumnGroupIndex,
   };
 }
 
