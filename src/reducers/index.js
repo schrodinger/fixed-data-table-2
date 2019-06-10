@@ -15,11 +15,11 @@ import { getScrollAnchor, scrollTo } from 'scrollAnchor';
 import * as ActionTypes from 'ActionTypes';
 import IntegerBufferSet from 'IntegerBufferSet';
 import PrefixIntervalTree from 'PrefixIntervalTree';
+import columnData from 'columnData';
 import columnStateHelper from 'columnStateHelper'
 import columnWidths from 'columnWidths';
 import computeRenderedColumns from 'computeRenderedColumns';
 import computeRenderedRows from 'computeRenderedRows';
-import getColumnData from 'convertColumnElementsToData';
 import pick from 'lodash/pick';
 import shallowEqual from 'shallowEqual';
 
@@ -274,7 +274,7 @@ function setStateFromProps(state, props) {
     columnProps,
     elementTemplates,
     useGroupHeader,
-  } = getColumnData(props);
+  } = columnData(props);
 
   // column and cell props/templates
   Object.assign(newState, { columnGroupProps, columnProps, elementTemplates });

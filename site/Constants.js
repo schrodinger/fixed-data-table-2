@@ -175,6 +175,12 @@ exports.ExamplePages = {
     title: 'Auto Scroll',
     description: 'An example using Controlled Scrolling to mimic auto scrolling',
   },
+  COLUMN_VIRTUALIZATION_EXAMPLE: {
+    location: 'example-column-virtualization.html',
+    fileName: 'ColumnVirtualizationExample.js',
+    title: 'Column Virtualization',
+    description: 'An example using Column Virtualization API to render thousands of columns',
+  },
 };
 
 Object.keys(exports.ExamplePages).forEach(
