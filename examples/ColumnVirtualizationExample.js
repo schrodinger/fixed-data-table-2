@@ -4,9 +4,7 @@
 
 "use strict";
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { TextCell } = require('./helpers/cells');
-const { Table, Column, ColumnGroup, Cell } = require('fixed-data-table-2');
+const { Table } = require('fixed-data-table-2');
 const React = require('react');
 
 class ColumnVirtualizationExample extends React.Component {
