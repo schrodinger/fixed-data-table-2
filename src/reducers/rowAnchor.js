@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule scrollAnchor
+ * @providesModule rowAnchor
  */
 
 'use strict';
@@ -17,7 +17,7 @@ import updateRowHeight from 'updateRowHeight';
 import scrollbarsVisibleSelector from 'scrollbarsVisible';
 
 /**
- * Get the anchor for scrolling.
+ * Get the row anchor for scrolling.
  * This will either be the first row's index and an offset, or the last row's index.
  * We also pass a flag indicating if the anchor has changed from the state
  *
@@ -31,7 +31,7 @@ import scrollbarsVisibleSelector from 'scrollbarsVisible';
  *   changed: boolean,
  * }}
  */
-export function getScrollAnchor(state, newProps, oldProps) {
+export function getRowAnchor(state, newProps, oldProps) {
   if (newProps.scrollToRow !== undefined &&
       newProps.scrollToRow !== null &&
       (!oldProps || newProps.scrollToRow !== oldProps.scrollToRow)) {

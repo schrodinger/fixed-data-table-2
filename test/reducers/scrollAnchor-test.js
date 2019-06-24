@@ -2,9 +2,9 @@
  * Copyright Schrodinger, LLC
  */
 import { assert } from 'chai';
-import { __RewireAPI__, getScrollAnchor } from 'scrollAnchor';
+import { __RewireAPI__, getRowAnchor } from 'rowAnchor';
 
-describe('scrollAnchor', function() {
+describe('rowAnchor', function() {
   beforeEach(function() {
     __RewireAPI__.__Rewire__('scrollbarsVisibleSelector', () => ({
       availableHeight: 600,
@@ -31,8 +31,8 @@ describe('scrollAnchor', function() {
     });
 
     it('should scroll to row and offset of scrollY', function() {
-      const scrollAnchor = getScrollAnchor(oldState, { scrollTop: 2150 }, {});
-      assert.deepEqual(scrollAnchor, {
+      const rowAnchor = getRowAnchor(oldState, { scrollTop: 2150 }, {});
+      assert.deepEqual(rowAnchor, {
         firstIndex: 21,
         firstOffset: -50,
         lastIndex: undefined,
@@ -41,8 +41,8 @@ describe('scrollAnchor', function() {
     });
 
     it('should scroll to first index if scrollY < 0', function() {
-      const scrollAnchor = getScrollAnchor(oldState, { scrollTop: -200 }, {});
-      assert.deepEqual(scrollAnchor, {
+      const rowAnchor = getRowAnchor(oldState, { scrollTop: -200 }, {});
+      assert.deepEqual(rowAnchor, {
         firstIndex: 0,
         firstOffset: 0,
         lastIndex: undefined,
@@ -51,8 +51,8 @@ describe('scrollAnchor', function() {
     });
 
     it('should scroll to last index if scrollY is larger than max scroll', function() {
-      const scrollAnchor = getScrollAnchor(oldState, { scrollTop: 9500 }, {});
-      assert.deepEqual(scrollAnchor, {
+      const rowAnchor = getRowAnchor(oldState, { scrollTop: 9500 }, {});
+      assert.deepEqual(rowAnchor, {
         firstIndex: undefined,
         firstOffset: 0,
         lastIndex: 99,
@@ -63,8 +63,8 @@ describe('scrollAnchor', function() {
     it('should scroll to first index if rowsCount is 0', function() {
       oldState.rowSettings.rowsCount = 0;
 
-      const scrollAnchor = getScrollAnchor(oldState, { scrollTop: 9500 }, {});
-      assert.deepEqual(scrollAnchor, {
+      const rowAnchor = getRowAnchor(oldState, { scrollTop: 9500 }, {});
+      assert.deepEqual(rowAnchor, {
         firstIndex: 0,
         firstOffset: 0,
         lastIndex: undefined,
@@ -96,8 +96,8 @@ describe('scrollAnchor', function() {
     it('should scroll forward to row', function() {
       oldState.scrollY = 2000;
 
-      const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: 40 }, {});
-      assert.deepEqual(scrollAnchor, {
+      const rowAnchor = getRowAnchor(oldState, { scrollToRow: 40 }, {});
+      assert.deepEqual(rowAnchor, {
         firstIndex: undefined,
         firstOffset: 0,
         lastIndex: 40,
@@ -108,8 +108,8 @@ describe('scrollAnchor', function() {
     it('should scroll backward to row', function() {
       oldState.scrollY = 5000;
 
-      const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: 40 }, {});
-      assert.deepEqual(scrollAnchor, {
+      const rowAnchor = getRowAnchor(oldState, { scrollToRow: 40 }, {});
+      assert.deepEqual(rowAnchor, {
         firstIndex: 40,
         firstOffset: 0,
         lastIndex: undefined,
@@ -122,8 +122,8 @@ describe('scrollAnchor', function() {
       oldState.firstRowIndex = 38;
       oldState.firstRowOffset = 50;
 
-      const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: 40 }, {});
-      assert.deepEqual(scrollAnchor, {
+      const rowAnchor = getRowAnchor(oldState, { scrollToRow: 40 }, {});
+      assert.deepEqual(rowAnchor, {
         firstIndex: 38,
         firstOffset: 50,
         lastIndex: undefined,
@@ -136,8 +136,8 @@ describe('scrollAnchor', function() {
       oldState.firstRowOffset = 50;
       oldState.rowSettings.rowsCount = 0;
 
-      const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: 40 }, {});
-      assert.deepEqual(scrollAnchor, {
+      const rowAnchor = getRowAnchor(oldState, { scrollToRow: 40 }, {});
+      assert.deepEqual(rowAnchor, {
         firstIndex: 0,
         firstOffset: 0,
         lastIndex: undefined,
@@ -148,8 +148,8 @@ describe('scrollAnchor', function() {
     it('should treat a negative row index as 0', function() {
       oldState.scrollY = 2000;
 
-      const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: -20 }, {});
-      assert.deepEqual(scrollAnchor, {
+      const rowAnchor = getRowAnchor(oldState, { scrollToRow: -20 }, {});
+      assert.deepEqual(rowAnchor, {
         firstIndex: 0,
         firstOffset: 0,
         lastIndex: undefined,
@@ -160,8 +160,8 @@ describe('scrollAnchor', function() {
     it('should clamp to the max row', function() {
       oldState.scrollY = 2000;
 
-      const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: 200 }, {});
-      assert.deepEqual(scrollAnchor, {
+      const rowAnchor = getRowAnchor(oldState, { scrollToRow: 200 }, {});
+      assert.deepEqual(rowAnchor, {
         firstIndex: undefined,
         firstOffset: 0,
         lastIndex: 99,

@@ -32,6 +32,7 @@ export default function computeRenderedColumns(state, columnAnchor) {
     scrollX = newState.columnOffsets[columnRange.firstViewportCol] - newState.firstColumnOffset;
   }
   const { maxScrollX } = columnWidths(state);
+  newState.maxScrollX = maxScrollX;
   newState.scrollX = clamp(scrollX, 0, maxScrollX);
 
   // for column groups, update buffer and viewport range, buffer mapping, and offsets
@@ -88,33 +89,33 @@ function calculateRenderedColumnRange(state, columnAnchor) {
   // Walk the viewport until filled with columns
   // If lastIndex is set, walk backward so that column is the last in the viewport
   let step = 1;
-  let startIdy = firstIndex;
+  let startIdx = firstIndex;
   let totalWidth = firstOffset;
   if (lastIndex !== undefined) {
     step = -1;
-    startIdy = lastIndex;
+    startIdx = lastIndex;
     totalWidth = 0;
   }
 
   // Loop to walk the viewport until we've touched enough columns to fill its width
-  let columnIdx = startIdy;
-  let endIdy = columnIdx;
+  let columnIdx = startIdx;
+  let endIdx = columnIdx;
   while (columnIdx < columnCount && columnIdx >= 0 &&
       totalWidth < availableScrollWidth) {
     totalWidth += updateColumnWidth(state, columnIdx);
-    endIdy = columnIdx;
+    endIdx = columnIdx;
     columnIdx += step;
   }
 
   // Loop to walk the leading buffer
-  let firstViewportCol = Math.min(startIdy, endIdy);
+  let firstViewportCol = Math.min(startIdx, endIdx);
   const firstBufferCol = Math.max(firstViewportCol - bufferColumnCount, 0);
   for (columnIdx = firstBufferCol; columnIdx < firstViewportCol; columnIdx++) {
     updateColumnWidth(state, columnIdx);
   }
 
   // Loop to walk the trailing buffer
-  const endViewportCol = Math.max(startIdy, endIdy) + 1;
+  const endViewportCol = Math.max(startIdx, endIdx) + 1;
   const endBufferCol = Math.min(endViewportCol + bufferColumnCount, columnCount);
   for (columnIdx = endViewportCol; columnIdx < endBufferCol; columnIdx++) {
     updateColumnWidth(state, columnIdx);

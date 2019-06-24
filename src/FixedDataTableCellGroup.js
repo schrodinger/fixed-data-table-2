@@ -79,20 +79,23 @@ class FixedDataTableCellGroupImpl extends React.Component {
   render() /*object*/ {
     const props = this.props;
     const columns = props.columns;
-    const columnGroupWidth = sumPropWidths(columns);
+    const cellGroupWidth = sumPropWidths(columns);
 
     const isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
       return acc || props.columnReorderingData.columnKey === column.props.columnKey;
     }, false);
 
     // get list of cells
-    this._staticCellArray = this._computeVirtualizedCells({ columnGroupWidth, isColumnReordering });
-    const nonVirtualizedCells = this._computeNonVirtualizedCells({ columnGroupWidth, isColumnReordering });
+    if (this.props.allowColumnVirtualization) {
+      this._staticCellArray = this._computeVirtualizedCells({ cellGroupWidth, isColumnReordering });
+    } else {
+      this._staticCellArray = this._computeNonVirtualizedCells({ cellGroupWidth, isColumnReordering });
+    }
 
     const style = {
       height: props.height,
       position: 'absolute',
-      width: columnGroupWidth,
+      width: cellGroupWidth,
       zIndex: props.zIndex,
     };
 
@@ -104,7 +107,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
         style={style}
       >
         {this._staticCellArray}
-        {nonVirtualizedCells}
       </div>
     );
   }
@@ -116,20 +118,21 @@ class FixedDataTableCellGroupImpl extends React.Component {
    * Offsets for the cells are calculated by the reducer.
    */
   _computeVirtualizedCells = ({
-    /*number*/columnGroupWidth,
+    /*number*/cellGroupWidth,
     /*boolean*/isColumnReordering,
   }) => {
-    const { allowColumnVirtualization, columnsToRender, columnOffsets, isScrolling } = this.props;
+    const { columnsToRender, columnOffsets, isScrolling } = this.props;
 
-    if (!columnsToRender || !allowColumnVirtualization) {
+    if (!columnsToRender) {
       return [];
     }
 
     const virtualizedCells = [];
     if (isScrolling) {
+      // don't shrink unless scrolling has stopped (this prevents cell unmounts while scrolling)
       virtualizedCells.length = Math.max(this._staticCellArray.length, columnsToRender.length);
     } else {
-      // this is done so that only cells inside the buffer are considered for vertical scrolling
+      // shrink if scrolling has stopped (this makes sure only cells within buffer are considered for vertical scrolling)
       virtualizedCells.length = columnsToRender.length;
     }
 
@@ -145,7 +148,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       virtualizedCells[staticIndex] = this._renderCell({
         columnIndex,
         staticIndex,
-        columnGroupWidth,
+        cellGroupWidth,
         isColumnReordering,
         currentPosition: columnOffsets[columnIndex],
       });
@@ -161,15 +164,10 @@ class FixedDataTableCellGroupImpl extends React.Component {
    * hence horizontal scrolls can result in mounts/unmounts if allowCellsRecycling is on.
    */
   _computeNonVirtualizedCells = ({
-    /*number*/columnGroupWidth,
+    /*number*/cellGroupWidth,
     /*boolean*/isColumnReordering,
   }) => {
-    const { allowColumnVirtualization, columns } = this.props;
-
-    // no need to compute non-virtualized cells if column virtualization is turned on
-    if (allowColumnVirtualization) {
-      return [];
-    }
+    const { columns } = this.props;
 
     const nonVirtualizedCells = [];
     let currentPosition = 0;
@@ -179,7 +177,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       nonVirtualizedCells[i] = this._renderCell({
         columnIndex: i,
         staticIndex: i,
-        columnGroupWidth,
+        cellGroupWidth,
         currentPosition,
         isColumnReordering,
         recycle: columns[i].props.allowCellsRecycling,
@@ -194,7 +192,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
   _renderCell = ({
       columnIndex,
       staticIndex,
-      columnGroupWidth,
+      cellGroupWidth,
       currentPosition,
       isColumnReordering,
       recycle,
@@ -220,7 +218,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     var cellIsResizable = columnProps.isResizable && this.props.onColumnResize;
     var onColumnResize = cellIsResizable ? this.props.onColumnResize : null;
 
-    var cellIsReorderable = columnProps.isReorderable && this.props.onColumnReorder && rowIndex === -1 && columnGroupWidth !== columnProps.width;
+    var cellIsReorderable = columnProps.isReorderable && this.props.onColumnReorder && rowIndex === -1 && cellGroupWidth !== columnProps.width;
     var onColumnReorder = cellIsReorderable ? this.props.onColumnReorder : null;
 
     var className = columnProps.cellClassName;
@@ -248,7 +246,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         width={columnProps.width}
         left={currentPosition}
         cell={cellTemplate}
-        columnGroupWidth={columnGroupWidth}
+        cellGroupWidth={cellGroupWidth}
         pureRendering={pureRendering}
         visible={visible}
       />

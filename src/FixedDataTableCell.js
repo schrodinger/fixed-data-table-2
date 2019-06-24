@@ -31,6 +31,7 @@ class FixedDataTableCell extends React.Component {
   static propTypes_DISABLED_FOR_PERFORMANCE = {
     isScrolling: PropTypes.bool,
     align: PropTypes.oneOf(['left', 'center', 'right']),
+    cellGroupWidth: PropTypes.number,
     className: PropTypes.string,
     highlighted: PropTypes.bool,
     width: PropTypes.number.isRequired,
@@ -159,7 +160,7 @@ class FixedDataTableCell extends React.Component {
     if (props.isColumnReordering) {
       var originalLeft = props.columnReorderingData.originalLeft;
       var reorderCellLeft = originalLeft + props.columnReorderingData.dragDistance;
-      var farthestPossiblePoint = props.columnGroupWidth - props.columnReorderingData.columnWidth;
+      var farthestPossiblePoint = props.cellGroupWidth - props.columnReorderingData.columnWidth;
 
       // ensure the cell isn't being dragged out of the column group
       reorderCellLeft = Math.max(reorderCellLeft, 0);

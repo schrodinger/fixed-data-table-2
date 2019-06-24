@@ -21,20 +21,20 @@ import tableHeightsSelector from 'tableHeights';
  * Returns data about the rows to render
  * rows is a map of rowIndexes to render to their heights
  * firstRowIndex & firstRowOffset are calculated based on the lastIndex if
- * specified in scrollAnchor.
- * Otherwise, they are unchanged from the firstIndex & firstOffset scrollAnchor values.
+ * specified in rowAnchor.
+ * Otherwise, they are unchanged from the firstIndex & firstOffset rowAnchor values.
  *
  * @param {!Object} state
  * @param {{
  *   firstIndex: number,
  *   firstOffset: number,
  *   lastIndex: number,
- * }} scrollAnchor
+ * }} rowAnchor
  * @return {!Object} The updated state object
  */
-export default function computeRenderedRows(state, scrollAnchor) {
+export default function computeRenderedRows(state, rowAnchor) {
   const newState = Object.assign({}, state);
-  let rowRange = calculateRenderedRowRange(newState, scrollAnchor);
+  let rowRange = calculateRenderedRowRange(newState, rowAnchor);
 
   const { rowSettings, scrollContentHeight } = newState;
   const { rowsCount } = rowSettings;
@@ -81,7 +81,7 @@ export default function computeRenderedRows(state, scrollAnchor) {
  * Determine the range of rows to render (buffer and viewport)
  * The leading and trailing buffer is based on a fixed count,
  * while the viewport rows are based on their height and the viewport height
- * We use the scrollAnchor to determine what either the first or last row
+ * We use the rowAnchor to determine what either the first or last row
  * will be, as well as the offset.
  *
  * NOTE (jordan) This alters state so it shouldn't be called
@@ -92,7 +92,7 @@ export default function computeRenderedRows(state, scrollAnchor) {
  *   firstIndex: number,
  *   firstOffset: number,
  *   lastIndex: number,
- * }} scrollAnchor
+ * }} rowAnchor
  * @return {{
  *   endBufferIdx: number,
  *   endViewportIdx: number,
@@ -102,7 +102,7 @@ export default function computeRenderedRows(state, scrollAnchor) {
  * }}
  * @private
  */
-function calculateRenderedRowRange(state, scrollAnchor) {
+function calculateRenderedRowRange(state, rowAnchor) {
   const { bufferRowCount, maxAvailableHeight } = roughHeightsSelector(state);
   const rowsCount = state.rowSettings.rowsCount;
 
@@ -119,7 +119,7 @@ function calculateRenderedRowRange(state, scrollAnchor) {
 
   // If our first or last index is greater than our rowsCount,
   // treat it as if the last row is at the bottom of the viewport
-  let { firstIndex, firstOffset, lastIndex } = scrollAnchor;
+  let { firstIndex, firstOffset, lastIndex } = rowAnchor;
   if (firstIndex >= rowsCount || lastIndex >= rowsCount) {
     lastIndex = rowsCount - 1;
   }
