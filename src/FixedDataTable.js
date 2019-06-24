@@ -296,13 +296,13 @@ class FixedDataTable extends React.Component {
     scrollToRow: PropTypes.number,
 
     /**
-     * Callback that is called when scrolling starts. Current horizontal and vertical scroll values,
-     * and first and last row indexes will be provided to the callback.
+     * Callback that is called when scrolling starts. The current horizontal and vertical scroll values,
+     * and the current first and last row indexes will be provided to the callback.
      */
     onScrollStart: PropTypes.func,
 
     /**
-     * Callback that is called when scrolling starts. The new horizontal and vertical scroll values,
+     * Callback that is called when scrolling ends. The new horizontal and vertical scroll values,
      * and the new first and last row indexes will be provided to the callback.
      */
     onScrollEnd: PropTypes.func,
