@@ -11,7 +11,7 @@
 
 'use strict';
 
-import { getScrollAnchor, scrollTo } from 'scrollAnchor';
+import { getRowAnchor, scrollTo } from 'rowAnchor';
 import * as ActionTypes from 'ActionTypes';
 import IntegerBufferSet from 'IntegerBufferSet';
 import PrefixIntervalTree from 'PrefixIntervalTree';
@@ -75,8 +75,6 @@ function getInitialState() {
      * NOTE (jordan) rows may contain undefineds if we don't need all the buffer positions
      */
     columnOffsets: {},
-    fixedColumnOffsets: {},
-    fixedRightOffsets: {},
     columnsToRender: [],
     columnReorderingData: {},
     columnResizingData: {},
@@ -117,8 +115,8 @@ function reducers(state = getInitialState(), action) {
       let newState = setStateFromProps(state, props);
       newState = initializeRowHeightsAndOffsets(newState);
       newState = initializeColumnOffsets(newState);
-      const scrollAnchor = getScrollAnchor(newState, props);
-      newState = computeRenderedRows(newState, scrollAnchor);
+      const rowAnchor = getRowAnchor(newState, props);
+      newState = computeRenderedRows(newState, rowAnchor);
       newState = columnStateHelper.initialize(newState, props, {});
       return computeRenderedColumns(newState, newState.columnAnchor);
     }
@@ -138,11 +136,11 @@ function reducers(state = getInitialState(), action) {
         newState.rowBufferSet = new IntegerBufferSet();
       }
 
-      const scrollAnchor = getScrollAnchor(newState, newProps, oldProps);
+      const rowAnchor = getRowAnchor(newState, newProps, oldProps);
 
       // If anything has changed in state, update our rendered rows
-      if (!shallowEqual(state, newState) || scrollAnchor.changed) {
-        newState = computeRenderedRows(newState, scrollAnchor);
+      if (!shallowEqual(state, newState) || rowAnchor.changed) {
+        newState = computeRenderedRows(newState, rowAnchor);
       }
 
       newState = columnStateHelper.initialize(newState, newProps, oldProps);
@@ -181,8 +179,8 @@ function reducers(state = getInitialState(), action) {
       const newState = Object.assign({}, state, {
         scrolling: true,
       });
-      const scrollAnchor = scrollTo(newState, scrollY);
-      return computeRenderedRows(newState, scrollAnchor);
+      const rowAnchor = scrollTo(newState, scrollY);
+      return computeRenderedRows(newState, rowAnchor);
     }
     case ActionTypes.COLUMN_RESIZE: {
       const { resizeData } = action;
