@@ -25,6 +25,7 @@ class FixedDataTableBufferedRows extends React.Component {
     firstViewportRowIndex: PropTypes.number.isRequired,
     endViewportRowIndex: PropTypes.number.isRequired,
     columnsToRender: PropTypes.array.isRequired,
+    fixedColumns: PropTypes.array.isRequired,
     fixedRightColumns: PropTypes.array.isRequired,
     columnOffsets: PropTypes.object.isRequired,
     height: PropTypes.number.isRequired,

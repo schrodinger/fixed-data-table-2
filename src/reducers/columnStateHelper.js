@@ -21,7 +21,7 @@ const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
 
 /**
- * Initialize scrollX state
+ * Initialize column anchor and column resizing data
  * TODO (jordan) Audit this method for cases where deep values are not properly cloned
  *
  * @param {!Object} state
@@ -30,12 +30,9 @@ const DRAG_SCROLL_BUFFER = 100;
  * @return {!Object}
  */
 function initialize(state, props, oldProps) {
-  let { columnResizingData, isColumnResizing, scrollX } = state;
+  let { columnResizingData, isColumnResizing } = state;
 
   const columnAnchor = getColumnAnchor(state, props, oldProps);
-
-  const { maxScrollX } = columnWidths(state);
-  scrollX = clamp(scrollX, 0, maxScrollX);
 
   // isColumnResizing should be overwritten by value from props if available
   isColumnResizing = props.isColumnResizing !== undefined ? props.isColumnResizing : isColumnResizing;
@@ -45,8 +42,6 @@ function initialize(state, props, oldProps) {
     columnAnchor,
     columnResizingData,
     isColumnResizing,
-    maxScrollX,
-    scrollX,
   });
 }
 
@@ -111,8 +106,10 @@ function scrollToColumn(state, scrollToColumn) {
 
   const { scrollX, columnOffsetIntervalTree } = state;
 
-  const selectedColumnFixed = scrollToColumn < fixedColumns.length;
-  const selectedColumnFixedRight = scrollToColumn >= fixedColumns.length + scrollableColumns.length;
+  const fixedColumnsCount = fixedColumns.length;
+  const scrollableColumnsCount = scrollableColumns.length;
+  const selectedColumnFixed = scrollToColumn < fixedColumnsCount;
+  const selectedColumnFixedRight = scrollToColumn >= fixedColumnsCount + scrollableColumnsCount;
 
   // if target column is fixed, then don't do anything
   if (selectedColumnFixed || selectedColumnFixedRight) {
@@ -125,34 +122,33 @@ function scrollToColumn(state, scrollToColumn) {
   }
 
   // convert to scrollable column index where 0 denotes first scrollable column
-  const clampedColumnIndex = Math.min(scrollToColumn - fixedColumns.length, scrollableColumns.length - 1);
+  const clampedColumnIndex = Math.min(scrollToColumn - fixedColumnsCount, scrollableColumnsCount - 1);
   const columnBeginX = columnOffsetIntervalTree.sumUntil(clampedColumnIndex);
   const columnEndX = columnBeginX + updateColumnWidth(state, clampedColumnIndex);
 
-  let firstIndex = clampedColumnIndex;
-  let lastIndex = undefined;
+  // If column starts before the viewport, set as the first column in the viewport.
   if (columnBeginX < scrollX) {
-    // If column starts before the viewport, set as the first column in the viewport
-    // Uses defaults (from above)
-  } else if (scrollX < columnEndX - availableScrollWidth) {
-    // If after the viewport, set as the last column in the viewport
-    firstIndex = undefined;
-    lastIndex = clampedColumnIndex;
-  } else {
-    // If already in the viewport, do nothing.
     return {
-      firstIndex: state.firstColumnIndex,
-      firstOffset: state.firstColumnOffset,
-      lastIndex: undefined,
-      changed: false,
-    };
+      firstIndex: clampedColumnIndex,
+      firstOffset: 0,
+      changed: true,
+    }
   }
 
+  // If after the viewport, set as the last column in the viewport.
+  if (scrollX < columnEndX - availableScrollWidth) {
+    return {
+      lastIndex: clampedColumnIndex,
+      firstOffset: 0,
+      changed: true,
+    }
+  }
+
+  // If already in the viewport, do nothing.
   return {
-    firstIndex,
-    firstOffset: 0,
-    lastIndex,
-    changed: true,
+    firstIndex: state.firstColumnIndex,
+    firstOffset: state.firstColumnOffset,
+    changed: false,
   };
 }
 
