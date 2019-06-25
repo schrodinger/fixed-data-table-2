@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.20 
+ * FixedDataTable v1.0.0-beta.21 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -5601,7 +5601,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTableContainer2.default
 };
 
-FixedDataTableRoot.version = '1.0.0-beta.20';
+FixedDataTableRoot.version = '1.0.0-beta.21';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -6958,6 +6958,8 @@ module.exports = FixedDataTable;
 "use strict";
 
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _FixedDataTableRow = __webpack_require__(63);
@@ -7040,119 +7042,106 @@ var FixedDataTableBufferedRows = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() /*object*/{
-      var _this2 = this;
+      var _props = this.props,
+          offsetTop = _props.offsetTop,
+          scrollTop = _props.scrollTop,
+          isScrolling = _props.isScrolling,
+          rowsToRender = _props.rowsToRender;
 
-      var props = this.props;
-      var rowClassNameGetter = props.rowClassNameGetter || _emptyFunction2.default;
-      var rowsToRender = this.props.rowsToRender || [];
+      var baseOffsetTop = offsetTop - scrollTop;
+      rowsToRender = rowsToRender || [];
 
-      if (props.isScrolling) {
-        // We are scrolling, so there's no need to display any rows which lie outside the viewport.
-        // We still need to render them though, so as to not cause any mounts/unmounts.
-        this._staticRowArray.forEach(function (row, i) {
-          var rowOutsideViewport = !_this2.isRowInsideViewport(row.props.index);
-          if (rowOutsideViewport) {
-            _this2._staticRowArray[i] = _this2.getStubRow(i, false, row.props.index);
-          }
-        });
+      if (isScrolling) {
+        // allow static array to grow while scrolling
+        this._staticRowArray.length = Math.max(this._staticRowArray.length, rowsToRender.length);
       } else {
+        // when scrolling is done, static array can shrink to fit the buffer
         this._staticRowArray.length = rowsToRender.length;
       }
 
-      var baseOffsetTop = props.offsetTop - props.scrollTop;
-
-      for (var i = 0; i < rowsToRender.length; i++) {
+      // render each row from the buffer into the static row array
+      for (var i = 0; i < this._staticRowArray.length; i++) {
         var rowIndex = rowsToRender[i];
-
-        // if the row doesn't exist in the buffer, assign a fake row to it.
-        // this is so that we can get rid of unnecessary row mounts/unmounts
+        // if the row doesn't exist in the buffer set, then take the previous one
         if (rowIndex === undefined) {
-          // if a previous row existed, let's just make use of that
-          if (this._staticRowArray[i] === undefined) {
-            this._staticRowArray[i] = this.getStubRow(i, true, -1);
-          }
-          continue;
+          rowIndex = this._staticRowArray[i] && this._staticRowArray[i].props.index;
         }
 
-        var currentRowHeight = this.props.rowSettings.rowHeightGetter(rowIndex);
-        var currentSubRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
-        var rowOffsetTop = baseOffsetTop + props.rowOffsets[rowIndex];
-        var rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
-        var hasBottomBorder = rowIndex === props.rowSettings.rowsCount - 1 && props.showLastRowBorder;
-        var visible = this.isRowInsideViewport(rowIndex);
-
-        this._staticRowArray[i] = _react2.default.createElement(_FixedDataTableRow2.default, {
-          key: rowKey,
-          isScrolling: props.isScrolling,
-          index: rowIndex,
-          width: props.width,
-          height: currentRowHeight,
-          subRowHeight: currentSubRowHeight,
-          rowExpanded: props.rowExpanded,
-          scrollLeft: Math.round(props.scrollLeft),
-          offsetTop: Math.round(rowOffsetTop),
-          visible: visible,
-          fixedColumns: props.fixedColumns,
-          fixedRightColumns: props.fixedRightColumns,
-          scrollableColumns: props.scrollableColumns,
-          onClick: props.onRowClick,
-          onContextMenu: props.onRowContextMenu,
-          onDoubleClick: props.onRowDoubleClick,
-          onMouseDown: props.onRowMouseDown,
-          onMouseUp: props.onRowMouseUp,
-          onMouseEnter: props.onRowMouseEnter,
-          onMouseLeave: props.onRowMouseLeave,
-          onTouchStart: props.onRowTouchStart,
-          onTouchEnd: props.onRowTouchEnd,
-          onTouchMove: props.onRowTouchMove,
-          showScrollbarY: props.showScrollbarY,
-          className: (0, _joinClasses2.default)(rowClassNameGetter(rowIndex), (0, _cx2.default)('public/fixedDataTable/bodyRow'), (0, _cx2.default)({
-            'fixedDataTableLayout/hasBottomBorder': hasBottomBorder,
-            'public/fixedDataTable/hasBottomBorder': hasBottomBorder
-          }))
+        this._staticRowArray[i] = this.renderRow({
+          rowIndex: rowIndex,
+          key: i,
+          baseOffsetTop: baseOffsetTop
         });
       }
 
       return _react2.default.createElement(
         'div',
         null,
-        this._staticRowArray
+        ' ',
+        this._staticRowArray,
+        ' '
       );
     }
 
     /**
-     * Returns a stub row which won't be visible to the user.
-     * This allows us to still render a row and React won't unmount it.
-     *
+     * @param {number} rowIndex
      * @param {number} key
-     * @param {boolean} fake
-     * @param {number} index
+     * @param {number} baseOffsetTop
      * @return {!Object}
      */
 
   }, {
-    key: 'getStubRow',
-    value: function getStubRow(key, fake, index) /*object*/{
+    key: 'renderRow',
+    value: function renderRow(_ref) /*object*/{
+      var rowIndex = _ref.rowIndex,
+          key = _ref.key,
+          baseOffsetTop = _ref.baseOffsetTop;
+
       var props = this.props;
-      return _react2.default.createElement(_FixedDataTableRow2.default, {
+      var rowClassNameGetter = props.rowClassNameGetter || _emptyFunction2.default;
+      var fake = rowIndex === undefined;
+      var rowProps = {};
+
+      // if row exists, then calculate row specific props
+      if (!fake) {
+        rowProps.height = this.props.rowSettings.rowHeightGetter(rowIndex);
+        rowProps.subRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
+        rowProps.offsetTop = Math.round(baseOffsetTop + props.rowOffsets[rowIndex]);
+        rowProps.key = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : key;
+
+        var hasBottomBorder = rowIndex === props.rowSettings.rowsCount - 1 && props.showLastRowBorder;
+        rowProps.className = (0, _joinClasses2.default)(rowClassNameGetter(rowIndex), (0, _cx2.default)('public/fixedDataTable/bodyRow'), (0, _cx2.default)({
+          'fixedDataTableLayout/hasBottomBorder': hasBottomBorder,
+          'public/fixedDataTable/hasBottomBorder': hasBottomBorder
+        }));
+      }
+
+      var visible = (0, _inRange2.default)(rowIndex, this.props.firstViewportRowIndex, this.props.endViewportRowIndex);
+
+      return _react2.default.createElement(_FixedDataTableRow2.default, _extends({
         key: key,
+        index: rowIndex,
         isScrolling: props.isScrolling,
-        index: index,
         width: props.width,
-        height: 0,
-        offsetTop: 0,
+        rowExpanded: props.rowExpanded,
         scrollLeft: Math.round(props.scrollLeft),
-        visible: false,
-        fake: fake,
         fixedColumns: props.fixedColumns,
         fixedRightColumns: props.fixedRightColumns,
-        scrollableColumns: props.scrollableColumns
-      });
-    }
-  }, {
-    key: 'isRowInsideViewport',
-    value: function isRowInsideViewport( /*number*/rowIndex) {
-      return (0, _inRange2.default)(rowIndex, this.props.firstViewportRowIndex, this.props.endViewportRowIndex);
+        scrollableColumns: props.scrollableColumns,
+        onClick: props.onRowClick,
+        onContextMenu: props.onRowContextMenu,
+        onDoubleClick: props.onRowDoubleClick,
+        onMouseDown: props.onRowMouseDown,
+        onMouseUp: props.onRowMouseUp,
+        onMouseEnter: props.onRowMouseEnter,
+        onMouseLeave: props.onRowMouseLeave,
+        onTouchStart: props.onRowTouchStart,
+        onTouchEnd: props.onRowTouchEnd,
+        onTouchMove: props.onRowTouchMove,
+        showScrollbarY: props.showScrollbarY,
+        visible: visible,
+        fake: fake
+      }, rowProps));
     }
   }]);
 
