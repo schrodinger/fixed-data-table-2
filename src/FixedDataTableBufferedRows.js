@@ -77,118 +77,95 @@ class FixedDataTableBufferedRows extends React.Component {
   }
 
   render() /*object*/ {
-    var props = this.props;
-    var rowClassNameGetter = props.rowClassNameGetter || emptyFunction;
-    var rowsToRender = this.props.rowsToRender || [];
+    let { offsetTop, scrollTop, isScrolling, rowsToRender } = this.props;
+    const baseOffsetTop = offsetTop - scrollTop;
+    rowsToRender = rowsToRender || [];
 
-    if (props.isScrolling) {
-      // We are scrolling, so there's no need to display any rows which lie outside the viewport.
-      // We still need to render them though, so as to not cause any mounts/unmounts.
-      this._staticRowArray.forEach((row, i) => {
-        const rowOutsideViewport = !this.isRowInsideViewport(row.props.index);
-        if (rowOutsideViewport) {
-          this._staticRowArray[i] = this.getStubRow(i, false, row.props.index);
-        }
-      });
+    if (isScrolling) {
+      // allow static array to grow while scrolling
+      this._staticRowArray.length = Math.max(this._staticRowArray.length, rowsToRender.length);
     } else {
+      // when scrolling is done, static array can shrink to fit the buffer
       this._staticRowArray.length = rowsToRender.length;
     }
 
-    var baseOffsetTop = props.offsetTop - props.scrollTop;
-
-    for (let i = 0; i < rowsToRender.length; i++) {
-      const rowIndex = rowsToRender[i];
-
-      // if the row doesn't exist in the buffer, assign a fake row to it.
-      // this is so that we can get rid of unnecessary row mounts/unmounts
+    // render each row from the buffer into the static row array
+    for (let i = 0; i < this._staticRowArray.length; i++) {
+      let rowIndex = rowsToRender[i];
+      // if the row doesn't exist in the buffer set, then take the previous one
       if (rowIndex === undefined) {
-        // if a previous row existed, let's just make use of that
-        if (this._staticRowArray[i] === undefined) {
-          this._staticRowArray[i] = this.getStubRow(i, true, -1);
-        }
-        continue;
+        rowIndex = this._staticRowArray[i] && this._staticRowArray[i].props.index;
       }
 
-      const currentRowHeight = this.props.rowSettings.rowHeightGetter(rowIndex);
-      const currentSubRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
-      const rowOffsetTop = baseOffsetTop + props.rowOffsets[rowIndex];
-      const rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : i;
-      const hasBottomBorder = (rowIndex === props.rowSettings.rowsCount - 1) &&
-        props.showLastRowBorder;
-      const visible = this.isRowInsideViewport(rowIndex);
-
-      this._staticRowArray[i] =
-        <FixedDataTableRow
-          key={rowKey}
-          isScrolling={props.isScrolling}
-          index={rowIndex}
-          width={props.width}
-          height={currentRowHeight}
-          subRowHeight={currentSubRowHeight}
-          rowExpanded={props.rowExpanded}
-          scrollLeft={Math.round(props.scrollLeft)}
-          offsetTop={Math.round(rowOffsetTop)}
-          visible={visible}
-          fixedColumns={props.fixedColumns}
-          fixedRightColumns={props.fixedRightColumns}
-          scrollableColumns={props.scrollableColumns}
-          onClick={props.onRowClick}
-          onContextMenu={props.onRowContextMenu}
-          onDoubleClick={props.onRowDoubleClick}
-          onMouseDown={props.onRowMouseDown}
-          onMouseUp={props.onRowMouseUp}
-          onMouseEnter={props.onRowMouseEnter}
-          onMouseLeave={props.onRowMouseLeave}
-          onTouchStart={props.onRowTouchStart}
-          onTouchEnd={props.onRowTouchEnd}
-          onTouchMove={props.onRowTouchMove}
-          showScrollbarY={props.showScrollbarY}
-          className={joinClasses(
-            rowClassNameGetter(rowIndex),
-            cx('public/fixedDataTable/bodyRow'),
-            cx({
-              'fixedDataTableLayout/hasBottomBorder': hasBottomBorder,
-              'public/fixedDataTable/hasBottomBorder': hasBottomBorder,
-            })
-          )}
-        />;
+      this._staticRowArray[i] = this.renderRow({
+        rowIndex,
+        key: i,
+        baseOffsetTop,
+      });
     }
 
-    return <div>{this._staticRowArray}</div>;
+    return <div> {this._staticRowArray} </div>;
   }
 
-
   /**
-   * Returns a stub row which won't be visible to the user.
-   * This allows us to still render a row and React won't unmount it.
-   *
+   * @param {number} rowIndex
    * @param {number} key
-   * @param {boolean} fake
-   * @param {number} index
+   * @param {number} baseOffsetTop
    * @return {!Object}
    */
-  getStubRow(key, fake, index) /*object*/ {
+  renderRow({ rowIndex, key, baseOffsetTop }) /*object*/ {
     const props = this.props;
+    const rowClassNameGetter = props.rowClassNameGetter || emptyFunction;
+    const fake = rowIndex === undefined;
+    let rowProps = {};
+
+    // if row exists, then calculate row specific props
+    if (!fake) {
+      rowProps.height = this.props.rowSettings.rowHeightGetter(rowIndex);
+      rowProps.subRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
+      rowProps.offsetTop = Math.round(baseOffsetTop + props.rowOffsets[rowIndex]);
+      rowProps.key = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : key;
+
+      const hasBottomBorder = (rowIndex === props.rowSettings.rowsCount - 1) && props.showLastRowBorder;
+      rowProps.className = joinClasses(
+        rowClassNameGetter(rowIndex),
+        cx('public/fixedDataTable/bodyRow'),
+        cx({
+          'fixedDataTableLayout/hasBottomBorder': hasBottomBorder,
+          'public/fixedDataTable/hasBottomBorder': hasBottomBorder,
+        })
+      );
+    }
+
+    const visible = inRange(rowIndex, this.props.firstViewportRowIndex, this.props.endViewportRowIndex);
+
     return (
       <FixedDataTableRow
         key={key}
+        index={rowIndex}
         isScrolling={props.isScrolling}
-        index={index}
         width={props.width}
-        height={0}
-        offsetTop={0}
+        rowExpanded={props.rowExpanded}
         scrollLeft={Math.round(props.scrollLeft)}
-        visible={false}
-        fake={fake}
         fixedColumns={props.fixedColumns}
         fixedRightColumns={props.fixedRightColumns}
         scrollableColumns={props.scrollableColumns}
+        onClick={props.onRowClick}
+        onContextMenu={props.onRowContextMenu}
+        onDoubleClick={props.onRowDoubleClick}
+        onMouseDown={props.onRowMouseDown}
+        onMouseUp={props.onRowMouseUp}
+        onMouseEnter={props.onRowMouseEnter}
+        onMouseLeave={props.onRowMouseLeave}
+        onTouchStart={props.onRowTouchStart}
+        onTouchEnd={props.onRowTouchEnd}
+        onTouchMove={props.onRowTouchMove}
+        showScrollbarY={props.showScrollbarY}
+        visible={visible}
+        fake={fake}
+        {...rowProps}
       />
     );
-  }
-
-  isRowInsideViewport(/*number*/rowIndex) {
-    return inRange(rowIndex, this.props.firstViewportRowIndex, this.props.endViewportRowIndex);
   }
 };
 
