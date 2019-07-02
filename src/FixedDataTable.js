@@ -296,14 +296,14 @@ class FixedDataTable extends React.Component {
     scrollToRow: PropTypes.number,
 
     /**
-     * Callback that is called when scrolling starts with current horizontal
-     * and vertical scroll values.
+     * Callback that is called when scrolling starts. The current horizontal and vertical scroll values,
+     * and the current first and last row indexes will be provided to the callback.
      */
     onScrollStart: PropTypes.func,
 
     /**
-     * Callback that is called when scrolling ends or stops with new horizontal
-     * and vertical scroll values.
+     * Callback that is called when scrolling ends. The new horizontal and vertical scroll values,
+     * and the new first and last row indexes will be provided to the callback.
      */
     onScrollEnd: PropTypes.func,
 
@@ -1048,9 +1048,8 @@ class FixedDataTable extends React.Component {
     }
   }
 
-  /*
-    Appropriate
-    Handlers onScrollStart, onScrollEnd, onHorizontalScroll, and onVerticalScroll are called appropriately.
+  /**
+   * Calls the user specified scroll callbacks -- onScrollStart, onScrollEnd, onHorizontalScroll, and onVerticalScroll.
    */
   _didScroll = (/* !object */ nextProps) => {
     const {
@@ -1063,6 +1062,7 @@ class FixedDataTable extends React.Component {
     } = nextProps;
 
     const {
+      endRowIndex: oldEndRowIndex,
       firstRowIndex: oldFirstRowIndex,
       scrollX: oldScrollX,
       scrollY: oldScrollY,
@@ -1081,7 +1081,7 @@ class FixedDataTable extends React.Component {
 
     // only call onScrollStart if scrolling wasn't on previously
     if (!this.props.scrolling && onScrollStart) {
-      onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex)
+      onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex, oldEndRowIndex)
     }
 
     if (scrollXChanged && onHorizontalScroll) {
@@ -1101,6 +1101,7 @@ class FixedDataTable extends React.Component {
   // scroll handling.
   _didScrollStopSync = () => {
     const {
+      endRowIndex,
       firstRowIndex,
       onScrollEnd,
       scrollActions,
@@ -1116,7 +1117,7 @@ class FixedDataTable extends React.Component {
     scrollActions.stopScroll();
 
     if (onScrollEnd) {
-      onScrollEnd(scrollX, scrollY, firstRowIndex);
+      onScrollEnd(scrollX, scrollY, firstRowIndex, endRowIndex);
     }
   }
 };
