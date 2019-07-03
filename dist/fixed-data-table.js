@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.21 
+ * FixedDataTable v1.0.0-beta.22 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -5601,7 +5601,7 @@ var FixedDataTableRoot = {
   Table: _FixedDataTableContainer2.default
 };
 
-FixedDataTableRoot.version = '1.0.0-beta.21';
+FixedDataTableRoot.version = '1.0.0-beta.22';
 module.exports = FixedDataTableRoot;
 
 /***/ }),
@@ -6139,6 +6139,7 @@ var FixedDataTable = function (_React$Component) {
           onVerticalScroll = nextProps.onVerticalScroll,
           ownerHeight = nextProps.tableSize.ownerHeight;
       var _this$props7 = _this.props,
+          oldEndRowIndex = _this$props7.endRowIndex,
           oldFirstRowIndex = _this$props7.firstRowIndex,
           oldScrollX = _this$props7.scrollX,
           oldScrollY = _this$props7.scrollY,
@@ -6157,7 +6158,7 @@ var FixedDataTable = function (_React$Component) {
 
       // only call onScrollStart if scrolling wasn't on previously
       if (!_this.props.scrolling && onScrollStart) {
-        onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex);
+        onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex, oldEndRowIndex);
       }
 
       if (scrollXChanged && onHorizontalScroll) {
@@ -6172,6 +6173,7 @@ var FixedDataTable = function (_React$Component) {
       _this._didScrollStop();
     }, _this._didScrollStopSync = function () {
       var _this$props8 = _this.props,
+          endRowIndex = _this$props8.endRowIndex,
           firstRowIndex = _this$props8.firstRowIndex,
           onScrollEnd = _this$props8.onScrollEnd,
           scrollActions = _this$props8.scrollActions,
@@ -6187,7 +6189,7 @@ var FixedDataTable = function (_React$Component) {
       scrollActions.stopScroll();
 
       if (onScrollEnd) {
-        onScrollEnd(scrollX, scrollY, firstRowIndex);
+        onScrollEnd(scrollX, scrollY, firstRowIndex, endRowIndex);
       }
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
@@ -6505,9 +6507,8 @@ var FixedDataTable = function (_React$Component) {
      */
 
 
-    /*
-      Appropriate
-      Handlers onScrollStart, onScrollEnd, onHorizontalScroll, and onVerticalScroll are called appropriately.
+    /**
+     * Calls the user specified scroll callbacks -- onScrollStart, onScrollEnd, onHorizontalScroll, and onVerticalScroll.
      */
 
 
@@ -6733,14 +6734,14 @@ FixedDataTable.propTypes = {
   scrollToRow: _propTypes2.default.number,
 
   /**
-   * Callback that is called when scrolling starts with current horizontal
-   * and vertical scroll values.
+   * Callback that is called when scrolling starts. The current horizontal and vertical scroll values,
+   * and the current first and last row indexes will be provided to the callback.
    */
   onScrollStart: _propTypes2.default.func,
 
   /**
-   * Callback that is called when scrolling ends or stops with new horizontal
-   * and vertical scroll values.
+   * Callback that is called when scrolling ends. The new horizontal and vertical scroll values,
+   * and the new first and last row indexes will be provided to the callback.
    */
   onScrollEnd: _propTypes2.default.func,
 
