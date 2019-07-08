@@ -126,10 +126,16 @@ function reducers(state = getInitialState(), action) {
       const { newProps, oldProps } = action;
       let newState = setStateFromProps(state, newProps);
 
+      // recalculate row offsets if count or default row heights changed
       if (oldProps.rowsCount !== newProps.rowsCount ||
           oldProps.rowHeight !== newProps.rowHeight ||
           oldProps.subRowHeight !== newProps.subRowHeight) {
         newState = initializeRowHeightsAndOffsets(newState);
+      }
+
+      // recalculate column offsets if count or default column widths changed
+      if (state.columnProps.length !== newState.columnProps.length) {
+        newState = initializeColumnOffsets(newState);
       }
 
       if (oldProps.rowsCount !== newProps.rowsCount) {
