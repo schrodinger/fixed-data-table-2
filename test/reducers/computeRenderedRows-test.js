@@ -87,7 +87,7 @@ describe('computeRenderedRows', function() {
         firstRowOffset: -25,
         maxScrollY: 9400,
         rowOffsets: expectedRowOffsets,
-        rows: expectedRows,
+        rowsToRender: expectedRows,
         scrollY: 1900,
       }));
     });
@@ -124,7 +124,7 @@ describe('computeRenderedRows', function() {
         firstRowOffset: -25,
         maxScrollY: 9400,
         rowOffsets: expectedRowOffsets,
-        rows: expectedRows,
+        rowsToRender: expectedRows,
         scrollY: 3275,
       }));
     });
@@ -145,7 +145,7 @@ describe('computeRenderedRows', function() {
         firstRowOffset: 0,
         maxScrollY: 9400,
         rowOffsets: {},
-        rows: [],
+        rowsToRender: [],
         scrollY: 0,
       }));
     });
@@ -182,7 +182,7 @@ describe('computeRenderedRows', function() {
         firstRowOffset: -25,
         maxScrollY: 9400,
         rowOffsets: expectedRowOffsets,
-        rows: expectedRows,
+        rowsToRender: expectedRows,
         scrollY: 9400,
       }));
     });
@@ -195,11 +195,7 @@ describe('computeRenderedRows', function() {
       };
       oldState.rowSettings.rowHeightGetter = () => 200;
 
-      const rowOffsetIntervalTreeMock = sandbox.mock(PrefixIntervalTree.prototype);
       oldState.rowOffsetIntervalTree = PrefixIntervalTree.uniform(80, 125);
-      for (let rowIdx = 13; rowIdx < 21; rowIdx++) {
-        rowOffsetIntervalTreeMock.expects('set').once().withArgs(rowIdx, 200);
-      }
 
       const newState = computeRenderedRows(oldState, scrollAnchor);
       sandbox.verify();
@@ -222,7 +218,7 @@ describe('computeRenderedRows', function() {
         firstRowOffset: -25,
         maxScrollY: 10000,
         rowOffsets: expectedRowOffsets,
-        rows: expectedRows,
+        rowsToRender: expectedRows,
         scrollContentHeight: 10600,
         scrollY: 2050,
       }));

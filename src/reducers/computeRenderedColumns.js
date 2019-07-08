@@ -13,7 +13,7 @@
 
 import clamp from 'lodash/clamp';
 import columnWidths from 'columnWidths';
-import scrollbarsVisibleSelector from 'scrollbarsVisible';
+import computeVirtualizedElements from 'virtualizationHelper';
 import { updateColumnWidth, updateColumnGroupWidth } from 'updateColumnWidth';
 
 export default function computeRenderedColumns(state, columnAnchor) {
@@ -256,59 +256,15 @@ function computeRenderedColumnOffsets(state, columnRange, viewportOnly) {
   const startIdx = viewportOnly ? firstViewportCol : firstBufferCol;
   const endIdx = viewportOnly ? endViewportCol : endBufferCol;
 
-  // output for this function
-  const columns = []; // state.columnsToRender
-  const columnOffsets = {}; // state.columnOffsets
-
-  // incremental way for calculating columnOffset
-  let runningOffset = columnOffsetIntervalTree.sumUntil(startIdx);
-
-  // compute column index and offsets for every columns inside the buffer
-  for (let columnIdx = startIdx; columnIdx < endIdx; columnIdx++) {
-
-    // Update the offset for rendering the column
-    columnOffsets[columnIdx] = runningOffset;
-    runningOffset += columnOffsetIntervalTree.get(columnIdx);
-
-    // Get position for the viewport column
-    const columnPosition = addColumnToBuffer(columnIdx, columnBufferSet, startIdx, endIdx, renderedColumnsCount);
-    columns[columnPosition] = columnIdx;
-  }
+  const { elements, elementOffsets } = computeVirtualizedElements(
+    columnBufferSet,
+    columnOffsetIntervalTree,
+    startIdx,
+    endIdx,
+    renderedColumnsCount
+  );
 
   // now we modify the state with the newly calculated columns and offsets
-  state.columnsToRender = columns;
-  state.columnOffsets = columnOffsets;
-}
-
-/**
- * Add the column to the buffer set if it doesn't exist.
- * If addition isn't possible due to max buffer size, it'll replace an existing element outside the given range.
- *
- * @param {!number} columnIdx
- * @param {!number} columnBufferSet
- * @param {!number} startRange
- * @param {!number} endRange
- * @param {!number} maxBufferSize
- *
- * @return {?number} the position of the column after being added to the buffer set
- * @private
- */
-function addColumnToBuffer(columnIdx, columnBufferSet, startRange, endRange, maxBufferSize) {
-  // Check if column already has a position in the buffer
-  let columnPosition = columnBufferSet.getValuePosition(columnIdx);
-
-  // Request a position in the buffer through eviction of another column
-  if (columnPosition === null && columnBufferSet.getSize() >= maxBufferSize)  {
-    columnPosition = columnBufferSet.replaceFurthestValuePosition(
-      startRange,
-      endRange - 1, // replaceFurthestValuePosition uses closed interval from startRange to endRange
-      columnIdx
-    );
-  }
-
-  if (columnPosition === null) {
-    columnPosition = columnBufferSet.getNewPositionForValue(columnIdx);
-  }
-
-  return columnPosition;
+  state.columnsToRender = elements;
+  state.columnOffsets = elementOffsets;
 }

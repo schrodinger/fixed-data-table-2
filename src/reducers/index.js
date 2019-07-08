@@ -72,7 +72,7 @@ function getInitialState() {
 
     /*
      * Output state passed as props to the the rendered FixedDataTable
-     * NOTE (jordan) rows may contain undefineds if we don't need all the buffer positions
+     * NOTE (jordan) rowsToRender may contain undefined(s) if we don't need all the buffer positions
      */
     columnOffsets: {},
     columnsToRender: [],
@@ -87,7 +87,7 @@ function getInitialState() {
     maxScrollX: 0,
     maxScrollY: 0,
     rowOffsets: {},
-    rows: [], // rowsToRender
+    rowsToRender: [],
     scrollContentHeight: 0,
     scrollX: 0,
     scrollY: 0,

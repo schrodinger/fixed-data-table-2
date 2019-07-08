@@ -902,7 +902,7 @@ class FixedDataTable extends React.Component {
         scrollableColumns={scrollableCellTemplates}
         showLastRowBorder={true}
         width={props.tableSize.width}
-        rowsToRender={props.rows}
+        rowsToRender={props.rowsToRender}
         rowOffsets={props.rowOffsets}
         showScrollbarY={scrollEnabledY}
       />

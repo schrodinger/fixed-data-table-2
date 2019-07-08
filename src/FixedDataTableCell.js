@@ -98,16 +98,6 @@ class FixedDataTableCell extends React.Component {
     reorderingDisplacement: 0
   }
 
-  // TODO (pradeep): Remove when merging to Beta (acts as a quick check to see if cells are mounted)
-  componentDidMount() {
-    console.log("cell mounted");
-  }
-
-  // TODO (pradeep): Remove when merging to Beta (acts as a quick check to see if cells are mounted)
-  componentWillUnmount() {
-    console.log("cell unmounted");
-  }
-
   shouldComponentUpdate(nextProps) {
     // render if visibility changed
     if (nextProps.visible !== this.props.visible) {

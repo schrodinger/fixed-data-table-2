@@ -2,6 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
+import PrefixIntervalTree from 'PrefixIntervalTree';
 import columnStateHelper from 'columnStateHelper'
 import emptyFunction from 'emptyFunction';
 import { assert } from 'chai';
@@ -201,6 +202,7 @@ describe('columnStateHelper', function() {
         columnResizingData: {
           placeholder: true
         },
+        columnOffsetIntervalTree: PrefixIntervalTree.uniform(80, 150),
         isColumnResizing: true,
         scrollX: 300,
       };
@@ -216,28 +218,26 @@ describe('columnStateHelper', function() {
           { id: 4, width: 150 },
         ],
       }));
+
+      columnStateHelper.__Rewire__('updateColumnWidth', () => 150);
     });
 
     afterEach(function() {
       columnStateHelper.__ResetDependency__('columnWidths');
+      columnStateHelper.__ResetDependency__('updateColumnWidth');
     });
 
     it('should initialize column state as expected', function() {
       const result = columnStateHelper.initialize(oldState, {}, {});
 
       assert.deepEqual(result, Object.assign({
-        maxScrollX: 400,
+        columnAnchor: {
+          changed: false,
+          firstIndex: undefined,
+          lastIndex: undefined,
+          firstOffset: undefined,
+        }
       }, oldState));
-    });
-
-    it('should clamp scrollX to maxScrollX', function() {
-      oldState.scrollX = 700;
-      const result = columnStateHelper.initialize(oldState, {}, {});
-
-      assert.deepEqual(result, Object.assign({}, oldState, {
-        maxScrollX: 400,
-        scrollX: 400,
-      }));
     });
 
     it('should use scrollLeft when specified', function() {
@@ -246,8 +246,12 @@ describe('columnStateHelper', function() {
       }, {});
 
       assert.deepEqual(result, Object.assign({}, oldState, {
-        maxScrollX: 400,
-        scrollX: 100,
+        columnAnchor: {
+          changed: true,
+          firstIndex: 0,
+          lastIndex: undefined,
+          firstOffset: -100,
+        },
       }));
     });
 
@@ -257,9 +261,14 @@ describe('columnStateHelper', function() {
       }, {});
 
       assert.deepEqual(result, Object.assign({}, oldState, {
+        columnAnchor: {
+          changed: false,
+          firstIndex: undefined,
+          lastIndex: undefined,
+          firstOffset: undefined,
+        },
         columnResizingData: {},
         isColumnResizing: false,
-        maxScrollX: 400,
       }));
     });
 
@@ -271,8 +280,11 @@ describe('columnStateHelper', function() {
       }, {});
 
       assert.deepEqual(result, Object.assign({}, oldState, {
-        maxScrollX: 250,
-        scrollX: 100,
+        columnAnchor: {
+          changed: true,
+          lastIndex: 1,
+          firstOffset: 0,
+        },
       }));
     });
 
@@ -284,8 +296,11 @@ describe('columnStateHelper', function() {
       }, {});
 
       assert.deepEqual(result, Object.assign({}, oldState, {
-        maxScrollX: 250,
-        scrollX: 150,
+        columnAnchor: {
+          changed: true,
+          firstIndex: 1,
+          firstOffset: 0,
+        },
       }));
     });
 
@@ -297,7 +312,11 @@ describe('columnStateHelper', function() {
       }, {});
 
       assert.deepEqual(result, Object.assign({}, oldState, {
-        maxScrollX: 250,
+        columnAnchor: {
+          changed: false,
+          firstIndex: undefined,
+          firstOffset: undefined,
+        },
         scrollX: 125,
       }));
     });
@@ -310,7 +329,12 @@ describe('columnStateHelper', function() {
       }, {});
 
       assert.deepEqual(result, Object.assign({}, oldState, {
-        maxScrollX: 250,
+        columnAnchor: {
+          changed: false,
+          firstIndex: undefined,
+          lastIndex: undefined,
+          firstOffset: undefined,
+        },
         scrollX: 250,
       }));
     });
@@ -325,7 +349,12 @@ describe('columnStateHelper', function() {
       });
 
       assert.deepEqual(result, Object.assign({}, oldState, {
-        maxScrollX: 250,
+        columnAnchor: {
+          changed: false,
+          firstIndex: undefined,
+          lastIndex: undefined,
+          firstOffset: undefined,
+        },
         scrollX: 250,
       }));
     });
