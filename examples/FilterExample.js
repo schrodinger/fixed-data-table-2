@@ -4,11 +4,11 @@
 
 "use strict";
 
-const ExampleImage = require('./helpers/ExampleImage');
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { ImageCell, TextCell } = require('./helpers/cells');
-const { Table, Column, Cell } = require('fixed-data-table-2');
-const React = require('react');
+import ExampleImage from './helpers/ExampleImage';
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { ImageCell, TextCell } from './helpers/cells';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import React from 'react';
 
 class DataListWrapper {
   constructor(indexMap, data) {
@@ -121,4 +121,4 @@ class FilterExample extends React.Component {
   }
 }
 
-module.exports = FilterExample;
+export default FilterExample;

@@ -42,4 +42,4 @@ var BrowserSupportCore = {
   },
 };
 
-module.exports = BrowserSupportCore;
+export default BrowserSupportCore;

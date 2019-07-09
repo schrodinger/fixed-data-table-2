@@ -199,4 +199,4 @@ class FixedDataTableColumn extends React.Component {
  }
 }
 
-module.exports = FixedDataTableColumn;
+export default FixedDataTableColumn;

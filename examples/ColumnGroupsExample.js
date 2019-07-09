@@ -4,10 +4,10 @@
 
 "use strict";
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { TextCell } = require('./helpers/cells');
-const { Table, Column, ColumnGroup, Cell } = require('fixed-data-table-2');
-const React = require('react');
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { TextCell } from './helpers/cells';
+import { Table, Column, ColumnGroup, Cell } from 'fixed-data-table-2';
+import React from 'react';
 
 class ColumnGroupsExample extends React.Component {
   constructor(props) {
@@ -70,4 +70,4 @@ class ColumnGroupsExample extends React.Component {
   }
 }
 
-module.exports = ColumnGroupsExample;
+export default ColumnGroupsExample;

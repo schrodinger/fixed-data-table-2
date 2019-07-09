@@ -260,4 +260,4 @@ function setStateFromProps(state, props) {
   return newState;
 }
 
-module.exports = reducers;
+export default reducers;

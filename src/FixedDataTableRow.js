@@ -474,4 +474,4 @@ class FixedDataTableRow extends React.Component {
   }
 }
 
-module.exports = FixedDataTableRow;
+export default FixedDataTableRow;

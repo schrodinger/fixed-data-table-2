@@ -49,4 +49,4 @@ function cx(classNames) {
   return classNamesArray.map(getClassName).join(' ');
 }
 
-module.exports = cx;
+export default cx;

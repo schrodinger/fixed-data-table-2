@@ -178,4 +178,4 @@ normalizeWheel.getEventType = function() /*string*/ {
                : 'mousewheel';
 };
 
-module.exports = normalizeWheel;
+export default normalizeWheel;

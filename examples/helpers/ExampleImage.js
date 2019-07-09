@@ -2,9 +2,9 @@
  * Copyright Schrodinger, LLC
  */
 
-var React = require('react');
+import React from 'react';
 
-var PropTypes = require('prop-types');
+import PropTypes from 'prop-types';
 
 var PendingPool = {};
 var ReadyPool = {};
@@ -81,7 +81,7 @@ class ExampleImage extends React.Component {
       });
     }
   }
-};
+}
 
 
-module.exports = ExampleImage;
+export default ExampleImage;

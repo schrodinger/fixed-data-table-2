@@ -44,4 +44,4 @@ var translateDOMPositionXY = (function() {
   }
 })();
 
-module.exports = translateDOMPositionXY;
+export default translateDOMPositionXY;

@@ -4,10 +4,10 @@
 
 "use strict";
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { ImageCell, LinkCell } = require('./helpers/cells');
-const { Table, Column, Cell } = require('fixed-data-table-2');
-const React = require('react');
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { ImageCell, LinkCell } from './helpers/cells';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import React from 'react';
 
 class AutoScrollExample extends React.Component {
   constructor(props) {
@@ -154,4 +154,4 @@ class AutoScrollExample extends React.Component {
   }
 }
 
-module.exports = AutoScrollExample;
+export default AutoScrollExample;

@@ -140,6 +140,5 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
     });
     this.props.onColumnReorderMove(this._distance);
   }
-};
-
-module.exports = FixedDataTableColumnReorderHandle;
+}
+export default FixedDataTableColumnReorderHandle;

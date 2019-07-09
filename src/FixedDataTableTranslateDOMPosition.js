@@ -25,4 +25,4 @@ function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*nu
 
 }
 
-module.exports = FixedDataTableTranslateDOMPosition;
+export default FixedDataTableTranslateDOMPosition;

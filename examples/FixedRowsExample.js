@@ -4,10 +4,10 @@
 
 "use strict";
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { DateCell, ImageCell, LinkCell, TextCell } = require('./helpers/cells');
-const { Table, Column, Cell } = require('fixed-data-table-2');
-const React = require('react');
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { DateCell, ImageCell, LinkCell, TextCell } from './helpers/cells';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import React from 'react';
 
 // wrapper over a DataList that allows you to specify custom index mapping
 class DataListWrapper {
@@ -202,4 +202,4 @@ class FixedRowsExample extends React.Component {
   }
 }
 
-module.exports = FixedRowsExample;
+export default FixedRowsExample;

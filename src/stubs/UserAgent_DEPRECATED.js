@@ -279,4 +279,4 @@ var UserAgent_DEPRECATED = {
   }
 };
 
-module.exports = UserAgent_DEPRECATED;
+export default UserAgent_DEPRECATED;
