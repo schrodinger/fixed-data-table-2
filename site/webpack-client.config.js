@@ -1,11 +1,13 @@
 var path = require('path');
 var webpack = require('webpack');
 var resolvers = require('../build_helpers/resolvers');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 var isDev = process.env.NODE_ENV !== 'production';
 
 module.exports = {
+  mode: isDev ? 'development' : 'production',
 
   devtool: 'source-map',
 
@@ -20,7 +22,7 @@ module.exports = {
   target: 'web',
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.md$/,
         loader: [
@@ -35,20 +37,30 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            'css-loader',
-            path.join(__dirname, '../build_helpers/cssTransformLoader')
-          ].join('!')
-        })
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: isDev, // enable hot reload in development mode
+              fallback: 'style-loader'
+            }
+          },
+          'css-loader',
+          path.join(__dirname, '../build_helpers/cssTransformLoader')
+        ]
       },
       {
         test: /\.less$/,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader!less-loader'
-        })
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              fallback: 'style-loader',
+            }
+          },
+          'css-loader',
+          'less-loader'
+        ]
       },
       {
         test: /\.png$/,
@@ -67,27 +79,33 @@ module.exports = {
   },
 
   devServer: {
-    host: '0.0.0.0'
+    host: '0.0.0.0',
+    hot: true,
   },
 
   plugins: [
-    new ExtractTextPlugin(
-      isDev ? '[name].css' : '[name]-[hash].css'
-    ),
+    new MiniCssExtractPlugin({
+      filename: isDev ? '[name].css' : '[name]-[hash].css',
+    }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       // 'process.env.NODE_ENV': JSON.stringify('production'),
       '__DEV__': JSON.stringify(isDev || true)
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin(),
   ]
 };
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false
-      }
-    })
-  );
+  module.exports.optimization = {
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          compressor: {
+            warnings: false
+          }
+        }
+      })
+    ]
+  }
 }

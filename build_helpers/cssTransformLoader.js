@@ -15,10 +15,18 @@ function slashTransform(content) {
 
 module.exports = function(content) {
   content = slashTransform(content);
-  content = postcss()
-    .use(customProperties({variables: cssVars.CSS_VARS}))
-    .use(autoPrefixer())
-    .process(content).css;
+  var asyncCallback = this.async();
 
-  return content;
+  postcss([
+    customProperties({ variables: cssVars.CSS_VARS }),
+    autoPrefixer()
+  ])
+    .process(content, {
+      from: undefined,
+      to: undefined,
+      map: { inline: false },
+    })
+    .then(function(output) {
+      asyncCallback(null, output);
+    })
 };

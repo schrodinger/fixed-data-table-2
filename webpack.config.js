@@ -2,8 +2,11 @@ var webpack = require('webpack');
 var resolvers = require('./build_helpers/resolvers');
 var path = require('path');
 var glob = require('glob');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var packageJSON = require('./package.json');
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
+var isDev = JSON.stringify(process.env.NODE_ENV !== 'production');
 
 var banner = (
   '/**\n' +
@@ -19,9 +22,11 @@ var banner = (
 );
 
 var plugins = [
-  new ExtractTextPlugin('[name].css'),
+  new MiniCssExtractPlugin({
+    filename: '[name].css',
+  }),
   new webpack.DefinePlugin({
-    '__DEV__': JSON.stringify(process.env.NODE_ENV !== 'production')
+    '__DEV__': isDev
   })
 ];
 
@@ -40,14 +45,6 @@ var mainEntryPoints = glob.sync(
 mainEntryPoints.push('./src/FixedDataTableRoot.js');
 
 if (process.env.COMPRESS) {
-  plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false
-      },
-      output: {comments: false}
-    })
-  );
   entry['fixed-data-table-base.min'] = baseEntryPoints;
   entry['fixed-data-table-style.min'] = styleEntryPoints;
   entry['fixed-data-table.min'] = mainEntryPoints;
@@ -62,6 +59,7 @@ plugins.push(
 );
 
 module.exports = {
+  mode: isDev ? 'development' : 'production',
   resolve: {
     plugins: [resolvers.resolveHasteDefines]
   },
@@ -74,13 +72,18 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            'css-loader',
-            path.join(__dirname, './build_helpers/cssTransformLoader.js')
-          ].join('!')
-        })
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              // only enable hot in development
+              hmr: isDev,
+              fallback: 'style-loader'
+            }
+          },
+          'css-loader',
+          path.join(__dirname, './build_helpers/cssTransformLoader'),
+        ]
       },
     ],
   },
@@ -115,3 +118,18 @@ module.exports = {
 
   plugins: plugins
 };
+
+if (process.env.COMPRESS) {
+  module.exports.optimization = {
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          compressor: {
+            warnings: false
+          },
+          output: {comments: false}
+        }
+      })
+    ]
+  }
+}
