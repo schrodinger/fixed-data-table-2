@@ -5,10 +5,8 @@
 import { assert } from 'chai';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import FixedDataTable from '../src/FixedDataTableRoot';
+import { Table, Column } from '../src/FixedDataTableRoot';
 import { createRenderer, isElement, renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
-
-const { Table, Column } = FixedDataTable;
 
 describe('FixedDataTableRoot', function() {
   describe('render ', function() {
