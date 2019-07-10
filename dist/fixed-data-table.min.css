@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.22 
+ * FixedDataTable v1.0.0-beta.23 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -55,8 +55,7 @@
   border-right-style: solid;
   border-right-width: 1px;
   border-width: 0 1px 0 0;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   display: block;
   overflow: hidden;
   position: absolute;
@@ -130,8 +129,7 @@
 .fixedDataTableColumnResizerLineLayout_main {
   border-right-style: solid;
   border-right-width: 1px;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   position: absolute;
   z-index: 10;
   pointer-events: none;
@@ -162,8 +160,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 .fixedDataTableLayout_main {
   border-style: solid;
   border-width: 1px;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   overflow: hidden;
   position: relative;
 }
@@ -208,8 +205,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
  */
 
 .fixedDataTableRowLayout_main {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   overflow: hidden;
   position: absolute;
   top: 0;
@@ -222,8 +218,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .fixedDataTableRowLayout_rowExpanded {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   left: 0;
   position: absolute;
 }
@@ -264,8 +259,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
  */
 
 .ScrollbarLayout_main {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   outline: none;
   overflow: hidden;
   position: absolute;
@@ -285,7 +279,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 .ScrollbarLayout_mainHorizontal {
   height: 15px;
   left: 0;
-  -webkit-transition-property: background-color height;
   transition-property: background-color height;
 }
 
@@ -300,11 +293,8 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   overflow: hidden;
   position: absolute;
   z-index: 1;
-  -webkit-transition-duration: 250ms;
-          transition-duration: 250ms;
-  -webkit-transition-timing-function: ease;
-          transition-timing-function: ease;
-  -webkit-transition-property: width;
+  transition-duration: 250ms;
+  transition-timing-function: ease;
   transition-property: width;
 }
 
@@ -319,7 +309,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   content: '';
   display: block;
   position: absolute;
-  -webkit-transition: background-color 250ms ease;
   transition: background-color 250ms ease;
 }
 
@@ -391,7 +380,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 .public_fixedDataTable_scrollbarSpacer,
 .public_fixedDataTable_header .public_fixedDataTableCell_main {
   background-color: #f6f7f8;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#efefef));
   background-image: linear-gradient(#fff, #efefef);
 }
 
@@ -407,12 +395,10 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .public_fixedDataTable_topShadow {
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,0.1)), to(rgba(0,0,0,0)));
   background-image: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public_fixedDataTable_bottomShadow {
-  background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0,0,0,0.1)), to(rgba(0,0,0,0)));
   background-image: linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
@@ -517,7 +503,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .public_fixedDataTableRow_columnsShadow {
-  background-image: -webkit-gradient(linear, left top, right top, from(rgba(0,0,0,0.1)), to(rgba(0,0,0,0)));
   background-image: linear-gradient(90deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
