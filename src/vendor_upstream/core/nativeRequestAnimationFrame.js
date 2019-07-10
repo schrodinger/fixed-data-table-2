@@ -16,4 +16,4 @@ var nativeRequestAnimationFrame =
   global.oRequestAnimationFrame      ||
   global.msRequestAnimationFrame;
 
-module.exports = nativeRequestAnimationFrame;
+export default nativeRequestAnimationFrame;

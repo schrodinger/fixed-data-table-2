@@ -4,11 +4,11 @@
 
 "use strict";
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { TextCell } = require('./helpers/cells');
-const { Table, Column, Cell } = require('fixed-data-table-2');
-const React = require('react');
-const Dimensions = require('react-dimensions');
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { TextCell } from './helpers/cells';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import React from 'react';
+import Dimensions from 'react-dimensions';
 
 class ResponsiveExample extends React.Component {
   constructor(props) {
@@ -58,7 +58,7 @@ class ResponsiveExample extends React.Component {
 
 // See react-dimensions for the best way to configure
 // https://github.com/digidem/react-dimensions
-module.exports = Dimensions({
+export default Dimensions({
   getHeight: function(element) {
     return window.innerHeight - 200;
   },

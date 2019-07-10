@@ -4,10 +4,10 @@
 
 "use strict";
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { ImageCell, TextCell } = require('./helpers/cells');
-const { Table, Column, Cell } = require('fixed-data-table-2');
-const React = require('react');
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { ImageCell, TextCell } from './helpers/cells';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import React from 'react';
 
 class ScrollToRowExample extends React.Component {
   constructor(props) {
@@ -157,4 +157,4 @@ class ScrollToRowExample extends React.Component {
   }
 }
 
-module.exports = ScrollToRowExample;
+export default ScrollToRowExample;

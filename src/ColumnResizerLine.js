@@ -162,6 +162,5 @@ class ColumnResizerLine extends React.PureComponent {
       this.props.columnKey
     );
   }
-};
-
-module.exports = ColumnResizerLine;
+}
+export default ColumnResizerLine;

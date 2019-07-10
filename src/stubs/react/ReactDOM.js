@@ -9,4 +9,4 @@
  * @providesModule ReactDOM
  */
 
-module.exports = require('react-dom');
+export default require('react-dom');

@@ -1,9 +1,13 @@
 {
   "plugins": [
-    "transform-object-rest-spread",
-    "transform-object-assign",
-    "transform-class-properties",
+    ["@babel/plugin-transform-flow-strip-types", {"requireDirective": true}],
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-transform-object-assign",
+    "@babel/plugin-proposal-class-properties",
     "syntax-trailing-function-commas"
   ],
-  "presets": ["es2015", "react"]
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-react"
+  ]
 }

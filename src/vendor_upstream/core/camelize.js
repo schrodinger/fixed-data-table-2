@@ -27,4 +27,4 @@ function camelize(string) {
   });
 }
 
-module.exports = camelize;
+export default camelize;

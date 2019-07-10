@@ -72,7 +72,7 @@ class ExamplesPage extends React.Component {
   }
 
   _renderPage() {
-    var Example = EXAMPLE_COMPONENTS[this.props.page.location];
+    var Example = EXAMPLE_COMPONENTS[this.props.page.location].default;
 
     return (
       <Example

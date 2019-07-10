@@ -140,4 +140,4 @@ class ReactWheelHandler {
   }
 }
 
-module.exports = ReactWheelHandler;
+export default ReactWheelHandler;

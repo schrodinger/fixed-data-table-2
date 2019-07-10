@@ -1120,7 +1120,7 @@ class FixedDataTable extends React.Component {
       onScrollEnd(scrollX, scrollY, firstRowIndex, endRowIndex);
     }
   }
-};
+}
 
 class HorizontalScrollbar extends React.PureComponent {
   static propTypes = {
@@ -1173,6 +1173,5 @@ class HorizontalScrollbar extends React.PureComponent {
       </div>
     );
   }
-};
-
-module.exports = FixedDataTable;
+}
+export default FixedDataTable;

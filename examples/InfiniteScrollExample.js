@@ -4,10 +4,10 @@
 
 "use strict";
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { PagedCell } = require('./helpers/cells');
-const { Table, Column, Cell } = require('fixed-data-table-2');
-const React = require('react');
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { PagedCell } from './helpers/cells';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import React from 'react';
 
 class PagedData {
   constructor(callback) {
@@ -124,4 +124,4 @@ class InfiniteScrollExample extends React.Component {
   }
 }
 
-module.exports = InfiniteScrollExample;
+export default InfiniteScrollExample;
