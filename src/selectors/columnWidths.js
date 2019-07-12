@@ -54,14 +54,11 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     fixedRightColumns,
     scrollableColumns,
     scrollableColumnGroups,
-    scrollableColumnGroupIndex,
-    columnGroupIndex,
   } = groupColumns(newColumnProps, newColumnGroupProps);
 
   const availableScrollWidth = Math.max(viewportWidth - getTotalWidth(fixedColumns) - getTotalWidth(fixedRightColumns), 0);
   const maxScrollX = Math.max(0, getTotalWidth(newColumnProps) - viewportWidth);
   return {
-    columnGroupIndex,
     columnGroupProps: newColumnGroupProps,
     columnProps: newColumnProps,
     availableScrollWidth,
@@ -69,7 +66,6 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     fixedRightColumns,
     scrollableColumns,
     scrollableColumnGroups,
-    scrollableColumnGroupIndex,
     maxScrollX,
   };
 }
@@ -136,11 +132,9 @@ function flexWidths(columnGroupProps, columnProps, viewportWidth) {
  * @param {!Array.<columnDefinition>} columnProps
  * @param {!Array.<columnDefinition>} columnGroupProps
  * @return {{
- *   columnGroupIndex: !Array.<number>,
  *   fixedColumns: !Array.<columnDefinition>,
  *   fixedRightColumns: !Array.<columnDefinition>,
  *   scrollableColumns: !Array.<columnDefinition>,
- *   scrollableColumnGroupIndex: !Array.<number>,
  *   scrollableColumnGroups: !Array.<columnDefinition>,
  * }}
  */
@@ -149,8 +143,6 @@ function groupColumns(columnProps, columnGroupProps) {
   const fixedRightColumns = [];
   const scrollableColumns = [];
   const scrollableColumnGroups = [];
-  const columnGroupIndex = [];
-  const scrollableColumnGroupIndex = [];
 
   forEach(columnProps, columnProp => {
     let container = scrollableColumns;
@@ -162,13 +154,17 @@ function groupColumns(columnProps, columnGroupProps) {
     container.push(columnProp);
   });
 
-  // group the scrollable column groups together and also provide
-  // index mapping (and inverse mapping) from the column group to it's order in the view
-  forEach(columnGroupProps, (columnProp, index) => {
-    if (!columnProp.fixed && !columnProp.fixedRight) {
-      scrollableColumnGroupIndex.push(index); // index of scrollable group in columnGroupProps
-      columnGroupIndex[index] = scrollableColumnGroups.length; // index of column group in scrollableColumnGroups
-      scrollableColumnGroups.push(columnProp);
+  let cumilativeChildIndex = 0;
+
+  // group the scrollable column groups together and also provide index of the first child
+  forEach(columnGroupProps, (columnGroupProp) => {
+    if (!columnGroupProp.fixed && !columnGroupProp.fixedRight) {
+      columnGroupProp.firstChildIdx = cumilativeChildIndex;
+      for (let i = 0; i < columnGroupProp.childrenCount; i++) {
+        scrollableColumns[cumilativeChildIndex + i].parentIdx = scrollableColumnGroups.length;
+      }
+      cumilativeChildIndex += columnGroupProp.childrenCount;
+      scrollableColumnGroups.push(columnGroupProp);
     }
   });
 
@@ -177,8 +173,6 @@ function groupColumns(columnProps, columnGroupProps) {
     fixedRightColumns,
     scrollableColumns,
     scrollableColumnGroups,
-    columnGroupIndex,
-    scrollableColumnGroupIndex,
   };
 }
 

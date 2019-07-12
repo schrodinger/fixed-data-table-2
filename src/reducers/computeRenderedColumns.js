@@ -14,7 +14,7 @@
 import clamp from 'lodash/clamp';
 import columnWidths from 'columnWidths';
 import scrollbarsVisibleSelector from 'scrollbarsVisible';
-import { updateColumnWidth, updateColumnGroupWidth } from 'updateColumnWidth';
+import { updateColumnWidth } from 'updateColumnWidth';
 
 export default function computeRenderedColumns(state, columnAnchor) {
   // clone state
@@ -161,9 +161,9 @@ function calculateRenderedColumnRange(state, columnAnchor) {
  */
 function calculateRenderedColumnGroups(state, columnAnchor, columnRange) {
   const bufferColumnCount = 0; // TODO (pradeep): calculate this similar to bufferRowCount
-  const { columnGroupBufferSet, columnGroupOffsetIntervalTree } = state;
+  const { columnGroupBufferSet, columnOffsetIntervalTree } = state;
 
-  const { availableScrollWidth, scrollableColumns, scrollableColumnGroups, columnGroupIndex } = columnWidths(state);
+  const { availableScrollWidth, scrollableColumns, scrollableColumnGroups } = columnWidths(state);
   const columnCount = scrollableColumns.length;
   const columnGroupCount = scrollableColumnGroups.length;
 
@@ -180,8 +180,8 @@ function calculateRenderedColumnGroups(state, columnAnchor, columnRange) {
   const endScrollableColumn = scrollableColumns[Math.max(0, columnRange.endViewportCol - 1)];
 
   // now get the first and last scrollable group column's index in the view port
-  const startIdx = columnGroupIndex[startScrollableColumn.groupIdx];
-  const endIdx = columnGroupIndex[endScrollableColumn.groupIdx] + 1;
+  const startIdx = startScrollableColumn.parentIdx;
+  const endIdx = endScrollableColumn.parentIdx + 1;
 
   // output for this function
   const columns = []; // state.columnsToRender
@@ -190,7 +190,7 @@ function calculateRenderedColumnGroups(state, columnAnchor, columnRange) {
   // update offsets for the columns
   let totalWidth = columnAnchor.firstOffset;
   for (let currentIdx = startIdx; currentIdx < endIdx; currentIdx++) {
-    totalWidth += updateColumnGroupWidth(state, currentIdx);
+    totalWidth += scrollableColumnGroups[currentIdx].width;
 
     // no need to calculate if viewport has been filled
     if (totalWidth >= availableScrollWidth) {
@@ -201,13 +201,14 @@ function calculateRenderedColumnGroups(state, columnAnchor, columnRange) {
   const renderedColumnsCount = endIdx - startIdx + 2 * bufferColumnCount;
 
   // incremental way for calculating columnOffset
-  let runningOffset = columnGroupOffsetIntervalTree.sumUntil(startIdx);
+  let runningOffset = columnOffsetIntervalTree.sumUntil(scrollableColumnGroups[startIdx].firstChildIdx);
+  console.log(runningOffset, startIdx, scrollableColumnGroups[startIdx].firstChildIdx);
 
   // compute column index and offsets for every columns inside the viewport
   for (let columnIdx = startIdx; columnIdx < endIdx; columnIdx++) {
     // Update the offset for rendering the column
     columnOffsets[columnIdx] = runningOffset;
-    runningOffset += columnGroupOffsetIntervalTree.get(columnIdx);
+    runningOffset += scrollableColumnGroups[columnIdx].width;
 
     // Get position for the viewport column
     const columnPosition = addColumnToBuffer(columnIdx, columnGroupBufferSet, startIdx, endIdx, renderedColumnsCount);

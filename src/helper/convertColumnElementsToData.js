@@ -14,6 +14,7 @@
 import React from 'react';
 import forEach from 'lodash/forEach';
 import invariant from 'invariant';
+import get from 'lodash/get';
 import map from 'lodash/map';
 import pick from 'lodash/pick';
 
@@ -76,6 +77,7 @@ function convertColumnElementsToData(childComponents) {
         columnProps.push(column);
         _extractTemplates(elementTemplates, child);
       });
+      columnGroupProps[index].childrenCount = get(columnGroupElement, 'props.children.length', 0);
     });
 
     return {
