@@ -30,6 +30,7 @@ function updateColumnWidth(state, columnIdx) {
   const oldWidth = columnOffsetIntervalTree.get(columnIdx);
   if (newWidth !== oldWidth) {
     columnOffsetIntervalTree.set(columnIdx, newWidth);
+    state.scrollContentWidth += newWidth - oldWidth;
   }
 
   return newWidth;

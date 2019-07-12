@@ -105,6 +105,11 @@ class FixedDataTableRowImpl extends React.Component {
     scrollLeft: PropTypes.number.isRequired,
 
     /**
+     * The total width of the content that is scrollable.
+     */
+    scrollContentWidth: PropTypes.number.isRequired,
+
+    /**
      * Pass true to not render the row. This is used internally for buffering rows.
      */
     fake: PropTypes.bool,
@@ -248,6 +253,7 @@ class FixedDataTableRowImpl extends React.Component {
         columns={this.props.scrollableColumns}
         columnsToRender={this.props.columnsToRender}
         columnOffsets={this.props.columnOffsets}
+        cellGroupWidth={this.props.scrollContentWidth}
         touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
         onColumnReorder={this.props.onColumnReorder}
@@ -258,8 +264,7 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
       />;
-    var scrollableColumnsWidth = sumPropWidths(this.props.scrollableColumns);
-    var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
+    var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + this.props.scrollContentWidth);
     var rowExpanded = this._getRowExpanded(subRowHeight);
     var rowExpandedStyle = {
       height: subRowHeight,

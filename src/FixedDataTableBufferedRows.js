@@ -155,6 +155,7 @@ class FixedDataTableBufferedRows extends React.Component {
         fixedColumns={props.fixedColumns}
         fixedRightColumns={props.fixedRightColumns}
         scrollableColumns={props.scrollableColumns}
+        scrollContentWidth={props.scrollContentWidth}
         onClick={props.onRowClick}
         onContextMenu={props.onRowContextMenu}
         onDoubleClick={props.onRowDoubleClick}

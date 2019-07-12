@@ -41,7 +41,7 @@ function computeVirtualizedElements(elementBufferSet, elementOffsetIntervalTree,
     runningOffset += elementOffsetIntervalTree.get(columnIdx);
 
     // Get position for the viewport column
-    const position = _addElementToBuffer(columnIdx, elementBufferSet, startIdx, endIdx, maxBufferSize);
+    const position = addElementToBuffer(columnIdx, elementBufferSet, startIdx, endIdx, maxBufferSize);
     elements[position] = columnIdx;
   }
   
@@ -67,7 +67,7 @@ function computeVirtualizedElements(elementBufferSet, elementOffsetIntervalTree,
  * @return {?number} the position of the element after being added to the buffer set
  * @private
  */
-function _addElementToBuffer(elementIdx, elementBufferSet, startIdx, endIdx, maxBufferSize) {
+function addElementToBuffer(elementIdx, elementBufferSet, startIdx, endIdx, maxBufferSize) {
   // Check if element already has a position in the buffer
   let elementPosition = elementBufferSet.getValuePosition(elementIdx);
 
@@ -87,4 +87,5 @@ function _addElementToBuffer(elementIdx, elementBufferSet, startIdx, endIdx, max
   return elementPosition;
 }
 
+export { addElementToBuffer, computeVirtualizedElements };
 export default computeVirtualizedElements;

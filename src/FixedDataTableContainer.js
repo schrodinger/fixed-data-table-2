@@ -101,6 +101,7 @@ class FixedDataTableContainer extends React.Component {
       'rowSettings',
       'rowsToRender',
       'scrollContentHeight',
+      'scrollContentWidth',
       'scrollFlags',
       'scrollX',
       'scrollY',

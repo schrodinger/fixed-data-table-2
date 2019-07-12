@@ -255,9 +255,11 @@ function initializeRowHeightsAndOffsets(state) {
 function initializeColumnOffsets(state) {
   const { scrollableColumns } = columnWidths(state);
   const columnOffsetIntervalTree = new PrefixIntervalTree(scrollableColumns.map(column => column.width));
+  const scrollContentWidth = columnOffsetIntervalTree.sumUntil(scrollableColumns.length);
 
   return Object.assign({}, state, {
     columnOffsetIntervalTree,
+    scrollContentWidth,
   });
 }
 

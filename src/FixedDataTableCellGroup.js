@@ -52,6 +52,11 @@ class FixedDataTableCellGroupImpl extends React.Component {
     height: PropTypes.number.isRequired,
 
     /**
+     * Width of all cells in the group. If not specified, we will loop and calculate total width for all the columns.
+     */
+    cellGroupWidth: PropTypes.number,
+
+    /**
      * Height of fixedDataTableCellGroupLayout/cellGroupWrapper.
      */
     cellGroupWrapperHeight: PropTypes.number,
@@ -79,7 +84,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
   render() /*object*/ {
     const props = this.props;
     const columns = props.columns;
-    const cellGroupWidth = sumPropWidths(columns);
+    const cellGroupWidth = props.cellGroupWidth || sumPropWidths(columns);
 
     const isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
       return acc || props.columnReorderingData.columnKey === column.props.columnKey;

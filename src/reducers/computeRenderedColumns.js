@@ -13,7 +13,7 @@
 
 import clamp from 'lodash/clamp';
 import columnWidths from 'columnWidths';
-import computeVirtualizedElements from 'virtualizationHelper';
+import { computeVirtualizedElements, addElementToBuffer } from 'virtualizationHelper';
 import { updateColumnWidth, updateColumnGroupWidth } from 'updateColumnWidth';
 
 export default function computeRenderedColumns(state, columnAnchor) {
@@ -202,7 +202,6 @@ function calculateRenderedColumnGroups(state, columnAnchor, columnRange) {
 
   // incremental way for calculating columnOffset
   let runningOffset = columnOffsetIntervalTree.sumUntil(scrollableColumnGroups[startIdx].firstChildIdx);
-  console.log(runningOffset, startIdx, scrollableColumnGroups[startIdx].firstChildIdx);
 
   // compute column index and offsets for every columns inside the viewport
   for (let columnIdx = startIdx; columnIdx < endIdx; columnIdx++) {
@@ -211,7 +210,7 @@ function calculateRenderedColumnGroups(state, columnAnchor, columnRange) {
     runningOffset += scrollableColumnGroups[columnIdx].width;
 
     // Get position for the viewport column
-    const columnPosition = addColumnToBuffer(columnIdx, columnGroupBufferSet, startIdx, endIdx, renderedColumnsCount);
+    const columnPosition = addElementToBuffer(columnIdx, columnGroupBufferSet, startIdx, endIdx, renderedColumnsCount);
     columns[columnPosition] = columnIdx;
   }
 
