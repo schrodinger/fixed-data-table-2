@@ -79,7 +79,13 @@ describe('convertColumnElementsToData', function() {
       type: { __TableColumnGroup__: true },
     }]);
 
-    assert.deepEqual(columnGroupProps, [{ fixed: true }, { fixed: false }]);
+    assert.deepEqual(columnGroupProps, [{
+      childrenCount: 2,
+      fixed: true,
+    }, {
+      childrenCount: 1,
+      fixed: false,
+    }]);
     assert.deepEqual(columnProps, [{
       columnKey: 'bob',
       fixed: true,
