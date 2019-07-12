@@ -35,28 +35,4 @@ function updateColumnWidth(state, columnIdx) {
   return newWidth;
 }
 
-/**
- * Update our cached col group width for a specific index
- *
- * NOTE (jordan) This alters state so it shouldn't be called
- * without state having been cloned first.
- *
- * @param {!Object} state
- * @param {number} columnIdx
- * @return {number} The new col width
- */
-function updateColumnGroupWidth(state, columnIdx) {
-  const { columnGroupProps, scrollableColumnGroupIndex } = columnWidths(state);
-  const { columnGroupOffsetIntervalTree } = state;
-
-  const newWidth = columnGroupProps[scrollableColumnGroupIndex[columnIdx]].width;
-  const oldWidth = columnGroupOffsetIntervalTree.get(columnIdx);
-
-  if (newWidth !== oldWidth) {
-    columnGroupOffsetIntervalTree.set(columnIdx, newWidth);
-  }
-
-  return newWidth;
-}
-
-export { updateColumnGroupWidth, updateColumnWidth };
+export { updateColumnWidth };

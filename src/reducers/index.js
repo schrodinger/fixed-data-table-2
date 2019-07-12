@@ -74,6 +74,8 @@ function getInitialState() {
      * Output state passed as props to the the rendered FixedDataTable
      * NOTE (jordan) rowsToRender may contain undefined(s) if we don't need all the buffer positions
      */
+    columnGroupOffsets: {},
+    columnGroupsToRender: [],
     columnOffsets: {},
     columnsToRender: [],
     columnReorderingData: {},
@@ -105,7 +107,6 @@ function getInitialState() {
     storedHeights: [],
     rowOffsetIntervalTree: null, // PrefixIntervalTree
     columnOffsetIntervalTree: null, // PrefixIntervalTree
-    columnGroupOffsetIntervalTree: null, // PrefixIntervalTree
   };
 }
 
@@ -252,13 +253,11 @@ function initializeRowHeightsAndOffsets(state) {
  * @private
  */
 function initializeColumnOffsets(state) {
-  const { scrollableColumns, scrollableColumnGroups } = columnWidths(state);
+  const { scrollableColumns } = columnWidths(state);
   const columnOffsetIntervalTree = new PrefixIntervalTree(scrollableColumns.map(column => column.width));
-  const columnGroupOffsetIntervalTree = new PrefixIntervalTree(scrollableColumnGroups.map(column => column.width));
 
   return Object.assign({}, state, {
     columnOffsetIntervalTree,
-    columnGroupOffsetIntervalTree,
   });
 }
 
