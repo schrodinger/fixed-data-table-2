@@ -154,16 +154,16 @@ function groupColumns(columnProps, columnGroupProps) {
     container.push(columnProp);
   });
 
-  let cumilativeChildIndex = 0;
+  let cumulativeChildIndex = 0;
 
   // group the scrollable column groups together and also provide index of the first child
   forEach(columnGroupProps, (columnGroupProp) => {
     if (!columnGroupProp.fixed && !columnGroupProp.fixedRight) {
-      columnGroupProp.firstChildIdx = cumilativeChildIndex;
+      columnGroupProp.firstChildIdx = cumulativeChildIndex;
       for (let i = 0; i < columnGroupProp.childrenCount; i++) {
-        scrollableColumns[cumilativeChildIndex + i].parentIdx = scrollableColumnGroups.length;
+        scrollableColumns[cumulativeChildIndex + i].parentIdx = scrollableColumnGroups.length;
       }
-      cumilativeChildIndex += columnGroupProp.childrenCount;
+      cumulativeChildIndex += columnGroupProp.childrenCount;
       scrollableColumnGroups.push(columnGroupProp);
     }
   });

@@ -140,7 +140,7 @@ function calculateRenderedColumnRange(state, columnAnchor) {
 }
 
 /**
- * Determine the range amd offsets of column groups to be rendered (buffer and viewport)
+ * Determine the range and offsets of column groups to be rendered (buffer and viewport)
  *
  * NOTE (jordan) This alters state so it shouldn't be called
  * without state having been cloned first.
@@ -198,7 +198,10 @@ function calculateRenderedColumnGroups(state, columnAnchor, columnRange) {
     }
   }
 
-  const renderedColumnsCount = endIdx - startIdx + 2 * bufferColumnCount;
+  // calculate total number of columns to be rendered (which are the ones in the viewport and in the buffer)
+  const columnsCountBefore = Math.max(startIdx - bufferColumnCount, 0);
+  const columnsCountAfter = Math.min(startIdx - bufferColumnCount, columnGroupCount);
+  const renderedColumnsCount = endIdx - startIdx + columnsCountBefore + columnsCountAfter;
 
   // incremental way for calculating columnOffset
   let runningOffset = columnOffsetIntervalTree.sumUntil(scrollableColumnGroups[startIdx].firstChildIdx);
