@@ -22,6 +22,7 @@ import PropTypes from 'prop-types';
 import ReactTouchHandler from 'ReactTouchHandler';
 import ReactWheelHandler from 'ReactWheelHandler';
 import Scrollbar from 'Scrollbar';
+import ariaAttributesSelector from 'ariaAttributes';
 import columnTemplatesSelector from 'columnTemplates';
 import cx from 'cx';
 import debounceCore from 'debounceCore';
@@ -611,6 +612,14 @@ class FixedDataTable extends React.Component {
 
   render() /*object*/ {
     const {
+      ariaGroupHeaderIndex,
+      ariaHeaderIndex,
+      ariaFooterIndex,
+      ariaRowCount,
+      ariaRowIndexOffset,
+    } = ariaAttributesSelector(this.props);
+
+    const {
       fixedColumnGroups,
       fixedColumns,
       fixedRightColumnGroups,
@@ -657,6 +666,8 @@ class FixedDataTable extends React.Component {
       groupHeader = (
         <FixedDataTableRow
           key="group_header"
+          ariaRowIndex={ariaGroupHeaderIndex}
+          isHeaderOrFooter={true}
           isScrolling={scrolling}
           className={joinClasses(
             cx('fixedDataTableLayout/header'),
@@ -727,6 +738,8 @@ class FixedDataTable extends React.Component {
       footer =
         <FixedDataTableRow
           key="footer"
+          ariaRowIndex={ariaFooterIndex}
+          isHeaderOrFooter={true}
           isScrolling={scrolling}
           className={joinClasses(
             cx('fixedDataTableLayout/footer'),
@@ -747,11 +760,13 @@ class FixedDataTable extends React.Component {
     }
 
     const rows = this._renderRows(bodyOffsetTop, fixedColumns.cell, fixedRightColumns.cell,
-      scrollableColumns.cell, bodyHeight);
+      scrollableColumns.cell, bodyHeight, ariaRowIndexOffset);
 
     const header =
       <FixedDataTableRow
         key="header"
+        ariaRowIndex={ariaHeaderIndex}
+        isHeaderOrFooter={true}
         isScrolling={scrolling}
         className={joinClasses(
           cx('fixedDataTableLayout/header'),
@@ -816,6 +831,8 @@ class FixedDataTable extends React.Component {
           cx('fixedDataTableLayout/main'),
           cx('public/fixedDataTable/main'),
         )}
+        role="grid"
+        aria-rowcount={ariaRowCount}
         tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
         onTouchStart={this._touchHandler.onTouchStart}
@@ -847,11 +864,12 @@ class FixedDataTable extends React.Component {
   }
 
   _renderRows = (/*number*/ offsetTop, fixedCellTemplates, fixedRightCellTemplates, scrollableCellTemplates,
-    bodyHeight) /*object*/ => {
+    bodyHeight, /*number*/ ariaRowIndexOffset) /*object*/ => {
     const { scrollEnabledY } = scrollbarsVisible(this.props);
     const props = this.props;
     return (
       <FixedDataTableBufferedRows
+        ariaRowIndexOffset={ariaRowIndexOffset}
         isScrolling={props.scrolling}
         fixedColumns={fixedCellTemplates}
         fixedRightColumns={fixedRightCellTemplates}

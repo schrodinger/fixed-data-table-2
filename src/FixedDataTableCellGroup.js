@@ -61,6 +61,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
     zIndex: PropTypes.number.isRequired,
 
     touchEnabled: PropTypes.bool,
+
+    isHeaderOrFooter: PropTypes.bool,
   }
 
   componentWillMount() {
@@ -144,6 +146,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     return (
       <FixedDataTableCell
         isScrolling={this.props.isScrolling}
+        isHeaderOrFooter={this.props.isHeaderOrFooter}
         align={columnProps.align}
         className={className}
         height={height}
