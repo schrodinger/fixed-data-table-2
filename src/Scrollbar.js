@@ -512,11 +512,11 @@ class Scrollbar extends React.PureComponent {
   }
 
   getTouchX = (/*object*/ e) => {
-    return Math.round(e.targetTouches[0].pageX - e.target.getBoundingClientRect().x);
+    return Math.round(e.targetTouches[0].clientX - e.target.getBoundingClientRect().x);
   }
 
   getTouchY = (/*object*/ e) => {
-    return Math.round(e.targetTouches[0].pageY - e.target.getBoundingClientRect().y);
+    return Math.round(e.targetTouches[0].clientY - e.target.getBoundingClientRect().y);
   }
 
   _setNextState = (/*object*/ nextState, /*?object*/ props) => {

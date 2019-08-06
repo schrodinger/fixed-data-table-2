@@ -594,11 +594,13 @@ class FixedDataTable extends React.Component {
       this._wheelHandler.onWheel,
       { passive: false }
     );
-    this._divRef && this._divRef.addEventListener(
-      'touchmove',
-      this._touchHandler.onTouchMove,
-      { passive: false }
-    );
+    if (this.props.touchScrollEnabled) {
+      this._divRef && this._divRef.addEventListener(
+        'touchmove',
+        this._touchHandler.onTouchMove,
+        { passive: false }
+      );
+    }
     this._reportContentHeight();
   }
 
@@ -835,9 +837,9 @@ class FixedDataTable extends React.Component {
         aria-rowcount={ariaRowCount}
         tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
-        onTouchStart={this._touchHandler.onTouchStart}
-        onTouchEnd={this._touchHandler.onTouchEnd}
-        onTouchCancel={this._touchHandler.onTouchCancel}
+        onTouchStart={touchScrollEnabled ? this._touchHandler.onTouchStart : null}
+        onTouchEnd={touchScrollEnabled ? this._touchHandler.onTouchEnd : null}
+        onTouchCancel={touchScrollEnabled ? this._touchHandler.onTouchCancel : null}
         ref={this._onRef}
         style={{
           height: componentHeight,
