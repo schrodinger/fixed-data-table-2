@@ -81,7 +81,12 @@ class FixedDataTableCell extends React.Component {
     /**
      * Whether touch is enabled or not.
      */
-    touchEnabled: PropTypes.bool
+    touchEnabled: PropTypes.bool,
+
+    /**
+     * Whether the cell group is part of the header or footer
+     */
+    isHeaderOrFooter: PropTypes.bool,
   }
 
   state = {
@@ -198,7 +203,7 @@ class FixedDataTableCell extends React.Component {
 
   render() /*object*/ {
 
-    var { height, width, columnKey, ...props } = this.props;
+    var { height, width, columnKey, isHeaderOrFooter, ...props } = this.props;
 
     var style = {
       height,
@@ -293,8 +298,10 @@ class FixedDataTableCell extends React.Component {
       );
     }
 
+    const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
+
     return (
-      <div className={className} style={style}>
+      <div className={className} style={style} role={role}>
         {columnResizerComponent}
         {columnReorderComponent}
         {content}
