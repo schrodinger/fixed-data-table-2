@@ -278,7 +278,7 @@ class FixedDataTableRowImpl extends React.Component {
       <div
         className={joinClasses(className, this.props.className)}
         role={'row'}
-        aria-rowIndex={this.props.ariaRowIndex}
+        aria-rowindex={this.props.ariaRowIndex}
         onClick={this.props.onClick ? this._onClick : null}
         onContextMenu={this.props.onContextMenu ? this._onContextMenu : null}
         onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
