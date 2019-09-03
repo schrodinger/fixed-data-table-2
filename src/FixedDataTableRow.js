@@ -265,7 +265,9 @@ class FixedDataTableRowImpl extends React.Component {
       var spacerStyles = {
         width: scrollbarOffset,
         height: this.props.height,
-        left: this.props.width - scrollbarOffset,
+        // Since the box-sizing = border-box the border on the table is included in the width
+        // so we need to account for the left and right border
+        left: this.props.width - scrollbarOffset - 2,
       };
       scrollbarSpacer =
         <div 
