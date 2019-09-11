@@ -149,4 +149,4 @@ var FixedDataTableColumnReorderHandle = createReactClass({
   },
 });
 
-module.exports = FixedDataTableColumnReorderHandle;
+export default FixedDataTableColumnReorderHandle;

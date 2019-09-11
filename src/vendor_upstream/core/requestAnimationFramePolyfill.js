@@ -32,4 +32,4 @@ var requestAnimationFrame =
 // Works around a rare bug in Safari 6 where the first request is never invoked.
 requestAnimationFrame(emptyFunction);
 
-module.exports = requestAnimationFrame;
+export default requestAnimationFrame;

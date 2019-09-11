@@ -194,4 +194,4 @@ class DOMMouseMoveTracker {
   }
 }
 
-module.exports = DOMMouseMoveTracker;
+export default DOMMouseMoveTracker;

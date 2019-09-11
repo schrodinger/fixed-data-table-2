@@ -291,4 +291,4 @@ class FixedDataTableScrollHelper {
   }
 }
 
-module.exports = FixedDataTableScrollHelper;
+export default FixedDataTableScrollHelper;

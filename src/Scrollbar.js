@@ -19,7 +19,7 @@ import ReactDOM from 'ReactDOM';
 import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
 import ReactWheelHandler from 'ReactWheelHandler';
 
-import cssVar from 'cssVar';
+const cssVar = require('cssVar');
 import cx from 'cx';
 import emptyFunction from 'emptyFunction';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
@@ -563,4 +563,4 @@ Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;
 Scrollbar.SIZE = parseInt(cssVar('scrollbar-size'), 10);
 Scrollbar.OFFSET = 1;
 
-module.exports = Scrollbar;
+export default Scrollbar;

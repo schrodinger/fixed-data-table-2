@@ -151,4 +151,4 @@ class Heap {
   }
 }
 
-module.exports = Heap;
+export default Heap;

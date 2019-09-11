@@ -171,4 +171,4 @@ var FixedDataTableColumnResizeHandle = createReactClass({
   },
 });
 
-module.exports = FixedDataTableColumnResizeHandle;
+export default FixedDataTableColumnResizeHandle;

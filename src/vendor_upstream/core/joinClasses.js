@@ -36,4 +36,4 @@ function joinClasses(className/*, ... */) {
   return className;
 }
 
-module.exports = joinClasses;
+export default joinClasses;

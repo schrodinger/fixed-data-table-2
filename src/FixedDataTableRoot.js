@@ -11,17 +11,17 @@
 
 'use strict';
 
-import FixedDataTable from 'FixedDataTable';
-import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
-import FixedDataTableColumn from 'FixedDataTableColumn';
-import FixedDataTableColumnGroup from 'FixedDataTableColumnGroup';
+import Table from 'FixedDataTable';
+import Cell from 'FixedDataTableCellDefault';
+import Column from 'FixedDataTableColumn';
+import ColumnGroup from 'FixedDataTableColumnGroup';
 
-var FixedDataTableRoot = {
-  Cell: FixedDataTableCellDefault,
-  Column: FixedDataTableColumn,
-  ColumnGroup: FixedDataTableColumnGroup,
-  Table: FixedDataTable,
+const version = '1.0.0-beta.17';
+
+export {
+  Cell,
+  Column,
+  ColumnGroup,
+  Table,
+  version,
 };
-
-FixedDataTableRoot.version = '0.8.27';
-module.exports = FixedDataTableRoot;

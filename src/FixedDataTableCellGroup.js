@@ -272,4 +272,4 @@ var FixedDataTableCellGroup = createReactClass({
 });
 
 
-module.exports = FixedDataTableCellGroup;
+export default FixedDataTableCellGroup;

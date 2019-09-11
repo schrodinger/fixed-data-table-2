@@ -140,4 +140,4 @@ class FixedDataTableRowBuffer {
   }
 }
 
-module.exports = FixedDataTableRowBuffer;
+export default FixedDataTableRowBuffer;

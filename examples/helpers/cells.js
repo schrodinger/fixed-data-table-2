@@ -4,10 +4,10 @@
 
 "use strict";
 
-const ExampleImage = require('./ExampleImage');
-const { Cell } = require('fixed-data-table-2');
-const React = require('react');
-const ReactTooltip = require('react-tooltip');
+import ExampleImage from './ExampleImage';
+import { Cell } from 'fixed-data-table-2';
+import React from 'react';
+import ReactTooltip from 'react-tooltip';
 
 class CollapseCell extends React.PureComponent {
   render() {
@@ -20,8 +20,7 @@ class CollapseCell extends React.PureComponent {
       </Cell>
     );
   }
-};
-module.exports.CollapseCell = CollapseCell;
+}
 
 class ColoredTextCell extends React.PureComponent {
   render() {
@@ -41,8 +40,7 @@ class ColoredTextCell extends React.PureComponent {
       return <span style={{color}} key={val}>{letter}</span>;
     });
   }
-};
-module.exports.ColoredTextCell = ColoredTextCell;
+}
 
 class DateCell extends React.PureComponent {
   render() {
@@ -53,8 +51,7 @@ class DateCell extends React.PureComponent {
       </Cell>
     );
   }
-};
-module.exports.DateCell = DateCell;
+}
 
 class ImageCell extends React.PureComponent {
   render() {
@@ -65,8 +62,7 @@ class ImageCell extends React.PureComponent {
       />
     );
   }
-};
-module.exports.ImageCell = ImageCell;
+}
 
 class LinkCell extends React.PureComponent {
   render() {
@@ -77,8 +73,7 @@ class LinkCell extends React.PureComponent {
       </Cell>
     );
   }
-};
-module.exports.LinkCell = LinkCell;
+}
 
 class PendingCell extends React.PureComponent {
   render() {
@@ -90,7 +85,7 @@ class PendingCell extends React.PureComponent {
       </Cell>
     );
   }
-};
+}
 const PagedCell = ({data, ...props}) => {
   const dataVersion = data.getDataVersion();
   return (
@@ -101,7 +96,6 @@ const PagedCell = ({data, ...props}) => {
     </PendingCell>
   );
 };
-module.exports.PagedCell = PagedCell;
 
 class RemovableHeaderCell extends React.PureComponent {
   render() {
@@ -115,8 +109,7 @@ class RemovableHeaderCell extends React.PureComponent {
       </Cell>
     );
   }
-};
-module.exports.RemovableHeaderCell = RemovableHeaderCell;
+}
 
 class TextCell extends React.PureComponent {
   render() {
@@ -127,8 +120,7 @@ class TextCell extends React.PureComponent {
       </Cell>
     );
   }
-};
-module.exports.TextCell = TextCell;
+}
 
 class TooltipCell extends React.PureComponent {
   render() {
@@ -145,5 +137,5 @@ class TooltipCell extends React.PureComponent {
       </Cell>
     );
   }
-};
-module.exports.TooltipCell = TooltipCell;
+}
+export { CollapseCell, ColoredTextCell, DateCell, ImageCell, LinkCell, PagedCell, RemovableHeaderCell, TextCell, TooltipCell };

@@ -152,4 +152,4 @@ var FixedDataTableWidthHelper = {
   adjustColumnGroupWidths,
 };
 
-module.exports = FixedDataTableWidthHelper;
+export default FixedDataTableWidthHelper;
