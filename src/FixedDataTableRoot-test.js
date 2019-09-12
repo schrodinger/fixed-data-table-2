@@ -4,11 +4,9 @@
 
 import { assert } from 'chai';
 import React from 'react';
-import FixedDataTable from './FixedDataTableRoot';
+import { Table, Column } from './FixedDataTableRoot';
 import { createRenderer, isElement, renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
 import Scrollbar from 'Scrollbar';
-
-const { Table, Column } = FixedDataTable;
 
 describe('FixedDataTableRoot', function() {
   describe('render ', function() {
