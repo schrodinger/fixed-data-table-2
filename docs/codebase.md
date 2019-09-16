@@ -89,7 +89,7 @@ File Descriptions
   * Calculates scrollbar state (i.e., if it should be visible or not needed)
   * Also calculates the height available for the viewport
 * tableHeights.js
-  * Calcalates height and offset for different components of the table (full table, viewport, scrollbar, etc.)  
+  * Calculates height and offset for different components of the table (full table, viewport, scrollbar, etc.)  
 
 ### Helpers
 * ReactTouchHandler.js
