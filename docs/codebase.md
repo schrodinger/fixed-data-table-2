@@ -34,7 +34,7 @@ File Descriptions
 * FixedDataTableRow.js
   * Renders a single row
   * Also used for headers & footers
-  * Renders FixedDataTableCellGroup, one each for fixed, scrollable, and fixedRight
+  * Renders FixedDataTableCellGroup, one each for fixed, scrollable, and fixedRight columns
 * FixedDataTableCellGroup.js
   * Renders a div containing the cells for a row
   * Also handles cell recycling
@@ -61,62 +61,52 @@ File Descriptions
   * Scroll anchor decides the first/last row's index amd offset from edge of table
    
 * computeRenderedRows.js
-  * uses the scroll anchor to find the range of rows displayed in the viewport
-  * it also updates the height of these rows using `updateRowHeight`
+  * Uses the scroll anchor to find the range of rows displayed in the viewport
+  * It also updates the height of these rows using `updateRowHeight`
 
 * updateRowHeight.js
-  * updates the row height, caches it, and keeps total scroll height in sync
-  
+  * Updates the row height, caches it, and keeps total scroll height in sync
 * columnStateHelper.js
-  * finds horizontal scroll offset
-  * also manages column reordering and resizing
+  * Finds horizontal scroll offset
+  * Also manages column reordering and resizing
  
 ### Selectors
 * ariaAttributes.js
   * Calculates the aria roles and attributes to be given to our columns, rows, cells, .etc
-
 * columnTemplates.js
-  * finds the props and template (renderer) for the cells, and categorizes them into a useful format
-  * has lot of logic shared with convertColumnElementsToData and relies on columnWidths
-  * really needs a refactor/cleanup/elimination
-  
+  * Finds the props and template (renderer) for the cells, and categorizes them into a useful format
+  * Has lot of logic shared with convertColumnElementsToData and relies on columnWidths
+  * Really needs a refactor/cleanup/elimination
 * columnWidths.js
-  * finds the width of each column (and column group if present)
-  * also calculates flex widths
-  * determines max horizontal scroll
-  
+  * Finds the width of each column (and column group if present)
+  * Also calculates flex widths
+  * Determines max horizontal scroll
 * roughHeights.js
-  * calculates estimates for the dimensions of the content view port
-  * accounts for scroll bar presence and hence gives min/max dimensions
-  * also decides count of buffered rows
-  
+  * Calculates estimates for the dimensions of the content view port
+  * Accounts for scroll bar presence and hence gives min/max dimensions
+  * Also decides count of buffered rows
 * scrollbarsVisible.js
-  * calculates scrollbar state (i.e., if it should be visible or not needed)
-  * also calculates the height available for the viewport
-
+  * Calculates scrollbar state (i.e., if it should be visible or not needed)
+  * Also calculates the height available for the viewport
 * tableHeights.js
-  * calcalates height and offset for different components of the table (full table, viewport, scrollbar, etc.)  
+  * Calcalates height and offset for different components of the table (full table, viewport, scrollbar, etc.)  
 
 ### Helpers
 * ReactTouchHandler.js
   * Handles touch events and converts them to scroll events
   * Used by FixedDataTable.js
   * Semi-experimental
-  
 * FixedDataTableTranslateDOMPosition.js
   * Helper to shim Facebook's translateDOMPositionXY to work for server-side rendering
-  
 * FixedDataTableHelper.js
-  * Dead code - let's delete it! (how dead is this? it's used by FDTCell and FDTCellGroup)
-  
+  * Dead code - let's delete it!
 * convertColumnElementsToData.js
-  * parses columns (passed as React component)
-  * gives the templates (cell renderer) for the header, footer, and content
-  * also extracts column specific props (like `width`, `pureRendering`, etc.)
-  
+  * Parses columns (passed as React component)
+  * Gives the templates (cell renderer) for the header, footer, and content
+  * Also extracts column specific props (like `width`, `pureRendering`, etc.)
 * shallowEqualSelector.js
-  * creates a selector that gets recomputed only if a shallow equal check over the arguments fail
-  * used to create most of our selectors
+  * Creates a selector that gets recomputed only if a shallow equal check over the arguments fail
+  * Used to create most of our selectors
 
 Public API Index
 ---------------
