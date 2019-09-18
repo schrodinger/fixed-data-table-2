@@ -105,7 +105,7 @@ class FixedDataTableBufferedRows extends React.Component {
       });
     }
 
-    return <div> {this._staticRowArray} </div>;
+    return <div>{this._staticRowArray}</div>;
   }
 
   /**
