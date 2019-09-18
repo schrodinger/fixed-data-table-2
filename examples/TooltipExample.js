@@ -4,12 +4,12 @@
 
 "use strict";
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { ImageCell, TooltipCell } = require('./helpers/cells');
-const { Table, Column, Cell } = require('fixed-data-table-2');
-const React = require('react');
-const ReactTooltip = require('react-tooltip');
-const {findDOMNode} = require('react-dom');
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { ImageCell, TooltipCell } from './helpers/cells';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import React from 'react';
+import ReactTooltip from 'react-tooltip';
+import { findDOMNode } from 'react-dom';
 
 class TooltipExample extends React.Component {
   constructor(props) {
@@ -63,4 +63,4 @@ class TooltipExample extends React.Component {
   }
 }
 
-module.exports = TooltipExample;
+export default TooltipExample;

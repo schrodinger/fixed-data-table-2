@@ -350,4 +350,4 @@ var FixedDataTableCell = createReactClass({
   },
 });
 
-module.exports = FixedDataTableCell;
+export default FixedDataTableCell;

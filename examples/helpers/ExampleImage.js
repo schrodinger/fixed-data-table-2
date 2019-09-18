@@ -2,11 +2,10 @@
  * Copyright Schrodinger, LLC
  */
 
-var React = require('react');
+import React from 'react';
 
-var PropTypes = require('prop-types');
-
-var createReactClass = require('create-react-class');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 
 var PendingPool = {};
 var ReadyPool = {};
@@ -90,4 +89,4 @@ var ExampleImage = createReactClass({
 });
 
 
-module.exports = ExampleImage;
+export default ExampleImage;

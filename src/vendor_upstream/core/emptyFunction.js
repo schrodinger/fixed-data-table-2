@@ -29,4 +29,4 @@ emptyFunction.thatReturnsNull = makeEmptyFunction(null);
 emptyFunction.thatReturnsThis = function() { return this; };
 emptyFunction.thatReturnsArgument = function(arg) { return arg; };
 
-module.exports = emptyFunction;
+export default emptyFunction;

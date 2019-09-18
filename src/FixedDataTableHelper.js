@@ -101,4 +101,4 @@ var FixedDataTableHelper = {
   mapColumns,
 };
 
-module.exports = FixedDataTableHelper;
+export default FixedDataTableHelper;

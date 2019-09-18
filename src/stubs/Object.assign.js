@@ -44,4 +44,4 @@ function assign(target, sources) {
   return to;
 }
 
-module.exports = assign;
+export default assign;

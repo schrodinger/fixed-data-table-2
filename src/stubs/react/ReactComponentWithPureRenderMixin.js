@@ -70,4 +70,4 @@ var ReactComponentWithPureRenderMixin = {
   }
 };
 
-module.exports = ReactComponentWithPureRenderMixin;
+export default ReactComponentWithPureRenderMixin;

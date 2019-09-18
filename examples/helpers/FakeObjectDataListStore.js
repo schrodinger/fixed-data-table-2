@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-var faker = require('faker');
+import faker from 'faker';
 
 class FakeObjectDataListStore {
   constructor(/*number*/ size){
@@ -58,4 +58,4 @@ class FakeObjectDataListStore {
   }
 }
 
-module.exports = FakeObjectDataListStore;
+export default FakeObjectDataListStore;

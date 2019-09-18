@@ -1638,4 +1638,4 @@ var HorizontalScrollbar = createReactClass({
   },
 });
 
-module.exports = FixedDataTable;
+export default FixedDataTable;

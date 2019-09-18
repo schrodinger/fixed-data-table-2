@@ -214,4 +214,4 @@ var FixedDataTableBufferedRows = createReactClass({
   },
 });
 
-module.exports = FixedDataTableBufferedRows;
+export default FixedDataTableBufferedRows;

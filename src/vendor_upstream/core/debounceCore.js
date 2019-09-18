@@ -58,4 +58,4 @@ function debounce(func, wait, context, setTimeoutFunc, clearTimeoutFunc) {
   return debouncer;
 }
 
-module.exports = debounce;
+export default debounce;

@@ -4,10 +4,10 @@
 
 "use strict";
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { TextCell } = require('./helpers/cells');
-const { Table, Column, Cell } = require('fixed-data-table-2');
-const React = require('react');
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { TextCell } from './helpers/cells';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import React from 'react';
 
 var SortTypes = {
   ASC: 'ASC',
@@ -189,4 +189,4 @@ class SortExample extends React.Component {
   }
 }
 
-module.exports = SortExample;
+export default SortExample;

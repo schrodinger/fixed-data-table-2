@@ -46,4 +46,4 @@ function shallowEqual(objA: mixed, objB: mixed): boolean {
   return true;
 }
 
-module.exports = shallowEqual;
+export default shallowEqual;
