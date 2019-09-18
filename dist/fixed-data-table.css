@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.0-beta.27 
+ * FixedDataTable v1.0.0-beta.28 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -454,7 +454,8 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 	position: absolute;
 	top: 50%;
 	left: 1px;
-	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+	        transform: translateY(-50%);
 }
 /**
  * Copyright Schrodinger, LLC
@@ -506,7 +507,8 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .public_fixedDataTableRow_columnsRightShadow {
-  transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
 }
 /**
  * Copyright Schrodinger, LLC
