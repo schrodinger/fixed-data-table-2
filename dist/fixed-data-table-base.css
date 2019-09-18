@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v0.8.27 
+ * FixedDataTable v0.8.28 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -55,8 +55,7 @@
   border-right-style: solid;
   border-right-width: 1px;
   border-width: 0 1px 0 0;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   display: block;
   overflow: hidden;
   position: absolute;
@@ -130,8 +129,7 @@
 .fixedDataTableColumnResizerLineLayout_main {
   border-right-style: solid;
   border-right-width: 1px;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   position: absolute;
   z-index: 10;
   pointer-events: none;
@@ -162,8 +160,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 .fixedDataTableLayout_main {
   border-style: solid;
   border-width: 1px;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   overflow: hidden;
   position: relative;
 }
@@ -213,8 +210,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
  */
 
 .fixedDataTableRowLayout_main {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   overflow: hidden;
   position: absolute;
   top: 0;
@@ -227,8 +223,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .fixedDataTableRowLayout_rowExpanded {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   left: 0;
   position: absolute;
 }
@@ -269,8 +264,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
  */
 
 .ScrollbarLayout_main {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   outline: none;
   overflow: hidden;
   position: absolute;
@@ -291,7 +285,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   bottom: 0;
   height: 15px;
   left: 0;
-  -webkit-transition-property: background-color height;
   transition-property: background-color height;
 }
 
@@ -306,11 +299,8 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   overflow: hidden;
   position: absolute;
   z-index: 1;
-  -webkit-transition-duration: 250ms;
-          transition-duration: 250ms;
-  -webkit-transition-timing-function: ease;
-          transition-timing-function: ease;
-  -webkit-transition-property: width;
+  transition-duration: 250ms;
+  transition-timing-function: ease;
   transition-property: width;
 }
 
@@ -325,7 +315,6 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   content: '';
   display: block;
   position: absolute;
-  -webkit-transition: background-color 250ms ease;
   transition: background-color 250ms ease;
 }
 
