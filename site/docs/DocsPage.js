@@ -12,7 +12,6 @@ var DocsPages = Constants.DocsPages;
 
 var DOCS_MARKDOWN_FILES = {
   [DocsPages.DOCS.GETTING_STARTED.location]: require('../../docs/README.md'),
-  [DocsPages.DOCS.V6_MIGRATION.location]: require('../../docs/v6-migration.md'),
   [DocsPages.DOCS.ROADMAP.location]: require('../../docs/roadmap.md'),
   [DocsPages.DOCS.CODEBASE_OVERVIEW.location]: require('../../docs/codebase.md'),
 
@@ -21,11 +20,6 @@ var DOCS_MARKDOWN_FILES = {
   [DocsPages.API.COLUMN_API.location]: require('../../docs/api/ColumnAPI.md'),
   [DocsPages.API.COLUMNGROUP_API.location]: require('../../docs/api/ColumnGroupAPI.md'),
   [DocsPages.API.CELL_API.location]: require('../../docs/api/CellAPI.md'),
-
-  // API - v0.5
-  [DocsPages.API_V5.TABLE_API.location]: require('../../docs/api-v0.5/TableAPI.md'),
-  [DocsPages.API_V5.COLUMN_API.location]: require('../../docs/api-v0.5/ColumnAPI.md'),
-  [DocsPages.API_V5.COLUMNGROUP_API.location]: require('../../docs/api-v0.5/ColumnGroupAPI.md'),
 };
 
 class DocsPage extends React.Component {
