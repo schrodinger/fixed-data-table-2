@@ -430,6 +430,20 @@ class FixedDataTable extends React.Component {
      * half of the number of visible rows.
      */
     bufferRowCount: PropTypes.number,
+
+    // TODO (pradeep): Move elementHeights to a selector instead of passing it through redux as state variables
+    /**
+     * Row heights of the header, groupheader, footer, and cell group wrapper
+     * grouped into a single object.
+     *
+     * @ignore
+     */
+    elementHeights: PropTypes.shape({
+      cellGroupWrapperHeight: PropTypes.number,
+      footerHeight: PropTypes.number,
+      groupHeaderHeight: PropTypes.number,
+      headerHeight: PropTypes.number,
+    })
   }
 
   static defaultProps = /*object*/ {

@@ -44,7 +44,15 @@ function generatePropDefaultValue(value) {
   return 'defaultValue: `' + value.value + '`\n';
 }
 
+function shouldIgnoreProp(prop) {
+  return (prop.description || '').includes('@ignore')
+}
+
 function generateProp(propName, prop) {
+  if (shouldIgnoreProp(prop)) {
+    return '';
+  }
+
   return (
     '### `' + propName + '`' + (prop.required ? ' (required)' : '') + '\n' +
     '\n' +
