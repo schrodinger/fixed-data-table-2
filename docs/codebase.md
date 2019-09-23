@@ -8,10 +8,10 @@ File Descriptions
 ### Public API
 * FixedDataTableRoot.js
   * Provides public exports
-* FixedDataTable.js
-  * Provides Table
+* FixedDataTableContainer.js
   * Top level of component tree
-  * Manages all state (prior to Redux migration)
+  * Wraps Actual Table component with the Redux store
+* FixedDataTable.js
   * Uses FixedDataTableBufferedRows for table rows
   * Uses FixedDataTableRow for table headers and footer
 * FixedDataTableCellDefault.js
@@ -29,12 +29,12 @@ File Descriptions
 
 ### Table Render / Component Tree
 * FixedDataTableBufferedRows.js
-  * Renders visible table rows
-  * Uses FixedDataTableRowBuffer for the windowing logic
+  * Renders visible table rows (plus some buffered rows)
+  * Uses FixedDataTableRow
 * FixedDataTableRow.js
-  * Renders the currently visible table rows
+  * Renders a single row
   * Also used for headers & footers
-  * Renders a FixedDataTableCellGroup for each of frozen and non-frozen columns
+  * Renders FixedDataTableCellGroup, one each for fixed, scrollable, and fixedRight columns
 * FixedDataTableCellGroup.js
   * Renders a div containing the cells for a row
   * Also handles cell recycling
@@ -52,32 +52,63 @@ File Descriptions
   * Renders the line displayed while resizing a column
   * Used by FixedDataTable.js
 * FixedDataTableColumnReorderHandle.js
-  * Renders the element to reorder a column
+  * Renders the knob used to reorder a column
   * Used by FixedDataTableCell.js
 
-### State Management Helpers
-* FixedDataTableRowBuffer.js
-  * Provides the windowing logic for which rows to display on screen
-  * Used by FixedDataTableBufferedRows.js
-* FixedDataTableScrollHelper.js
-  * Handles the logic for programatically scrolling to a rows
-  * Handles scroll events
-  * Used by FixedDataTable.js
+### State Management  
+* scrollAnchor.js
+  * Finds the vertical scroll 'anchor'
+  * Scroll anchor decides the first/last row's index amd offset from edge of table
+* computeRenderedRows.js
+  * Uses the scroll anchor to find the range of rows displayed in the viewport
+  * It also updates the height of these rows using `updateRowHeight`
+* updateRowHeight.js
+  * Updates the row height, caches it, and keeps total scroll height in sync
+* columnStateHelper.js
+  * Finds horizontal scroll offset
+  * Also manages column reordering and resizing
+ 
+### Selectors
+* ariaAttributes.js
+  * Calculates the aria roles and attributes to be given to our columns, rows, cells, .etc
+* columnTemplates.js
+  * Finds the props and template (renderer) for the cells, and categorizes them into a useful format
+  * Has lot of logic shared with convertColumnElementsToData and relies on columnWidths
+  * Really needs a refactor/cleanup/elimination
+* columnWidths.js
+  * Finds the width of each column (and column group if present)
+  * Also calculates flex widths
+  * Determines max horizontal scroll
+* roughHeights.js
+  * Calculates estimates for the dimensions of the content view port
+  * Accounts for scroll bar presence and hence gives min/max dimensions
+  * Also decides count of buffered rows
+* scrollbarsVisible.js
+  * Calculates scrollbar state (i.e., if it should be visible or not needed)
+  * Also calculates the height available for the viewport
+* tableHeights.js
+  * Calculates height and offset for different components of the table (full table, viewport, scrollbar, etc.)  
+
+### Helpers
 * ReactTouchHandler.js
   * Handles touch events and converts them to scroll events
   * Used by FixedDataTable.js
   * Semi-experimental
 * FixedDataTableTranslateDOMPosition.js
   * Helper to shim Facebook's translateDOMPositionXY to work for server-side rendering
-* FixedDataTableWidthHelper.js
-  * Helper logic for supporting flex column widths
-  * Used by FixedDataTable.js
 * FixedDataTableHelper.js
   * Dead code - let's delete it!
+* convertColumnElementsToData.js
+  * Parses columns (passed as React component)
+  * Gives the templates (cell renderer) for the header, footer, and content
+  * Also extracts column specific props (like `width`, `pureRendering`, etc.)
+* shallowEqualSelector.js
+  * Creates a selector that gets recomputed only if a shallow equal check over the arguments fail
+  * Used to create most of our selectors
 
 Public API Index
 ---------------
-  * Table (FixedDataTable.js)
+  * Table (FixedDataTableContainer.js)
   * Cell (FixedDataTableCellDefault.js)
   * Column (FixedDataTableColumn.js)
   * ColumnGroup (FixedDataTableColumnGroup.js)
