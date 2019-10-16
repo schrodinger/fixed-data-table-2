@@ -443,7 +443,12 @@ class FixedDataTable extends React.Component {
       footerHeight: PropTypes.number,
       groupHeaderHeight: PropTypes.number,
       headerHeight: PropTypes.number,
-    })
+    }),
+
+    /**
+     * Whether the grid is multiselectable.
+     */
+    isMultiselectable: PropTypes.bool,
   }
 
   static defaultProps = /*object*/ {
@@ -660,6 +665,7 @@ class FixedDataTable extends React.Component {
       elementHeights,
       isColumnReordering,
       isColumnResizing,
+      isMultiselectable,
       maxScrollX,
       maxScrollY,
       onColumnReorderEndCallback,
@@ -849,6 +855,7 @@ class FixedDataTable extends React.Component {
         )}
         role="grid"
         aria-rowcount={ariaRowCount}
+        aria-multiselectable={isMultiselectable}
         tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
         onTouchStart={touchScrollEnabled ? this._touchHandler.onTouchStart : null}

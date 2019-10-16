@@ -161,6 +161,11 @@ class FixedDataTableRowImpl extends React.Component {
      * The value of the aria-rowindex attribute.
      */
     ariaRowIndex: PropTypes.number,
+
+    /**
+     * DOM attributes to be applied to the row.
+     */
+    attributes: PropTypes.object,
   };
 
   render() /*object*/ {
@@ -281,6 +286,7 @@ class FixedDataTableRowImpl extends React.Component {
         className={joinClasses(className, this.props.className)}
         role={'row'}
         aria-rowindex={this.props.ariaRowIndex}
+        {...this.props.attributes}
         onClick={this.props.onClick ? this._onClick : null}
         onContextMenu={this.props.onContextMenu ? this._onContextMenu : null}
         onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
