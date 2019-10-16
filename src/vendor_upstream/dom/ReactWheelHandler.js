@@ -18,6 +18,9 @@
 import emptyFunction from 'emptyFunction';
 import normalizeWheel from 'normalizeWheel';
 import requestAnimationFramePolyfill from 'requestAnimationFramePolyfill';
+import FixedDataTableHelper from 'FixedDataTableHelper';
+
+const DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
 class ReactWheelHandler {
   /**
@@ -71,7 +74,7 @@ class ReactWheelHandler {
       normalizedEvent = ReactWheelHandler._swapNormalizedWheelAxis(normalizedEvent);
     }
 
-    var deltaX = this._deltaX + normalizedEvent.pixelX;
+    var deltaX = this._deltaX + normalizedEvent.pixelX * DIR_SIGN;
     var deltaY = this._deltaY + normalizedEvent.pixelY;
     var handleScrollX = this._handleScrollX(deltaX, deltaY);
     var handleScrollY = this._handleScrollY(deltaY, deltaX);
@@ -83,7 +86,7 @@ class ReactWheelHandler {
       return;
     }
 
-    this._deltaX += handleScrollX ? normalizedEvent.pixelX : 0;
+    this._deltaX += handleScrollX ? normalizedEvent.pixelX * DIR_SIGN : 0;
     this._deltaY += handleScrollY ? normalizedEvent.pixelY : 0;
 
     // This will result in a scroll to the table, so there's no need to let the parent containers scroll

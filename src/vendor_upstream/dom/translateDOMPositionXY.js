@@ -13,11 +13,15 @@
 'use strict';
 
 import BrowserSupportCore from 'BrowserSupportCore';
+import Locale from 'Locale';
+import FixedDataTableHelper from 'FixedDataTableHelper'
 
 import getVendorPrefixedName from 'getVendorPrefixedName';
 
 var TRANSFORM = getVendorPrefixedName('transform');
 var BACKFACE_VISIBILITY = getVendorPrefixedName('backfaceVisibility');
+
+const DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
 var translateDOMPositionXY = (function() {
   if (BrowserSupportCore.hasCSSTransforms()) {
@@ -29,16 +33,21 @@ var translateDOMPositionXY = (function() {
     // Use 2D translation instead.
     if (!isSafari && BrowserSupportCore.hasCSS3DTransforms()) {
       return function(/*object*/ style, /*number*/ x, /*number*/ y) {
-        style[TRANSFORM] ='translate3d(' + x + 'px,' + y + 'px,0)';
+        style[TRANSFORM] ='translate3d(' + x * DIR_SIGN + 'px,' + y + 'px,0)';
       };
     } else {
       return function(/*object*/ style, /*number*/ x, /*number*/ y) {
-        style[TRANSFORM] = 'translate(' + x + 'px,' + y + 'px)';
+        style[TRANSFORM] = 'translate(' + x * DIR_SIGN + 'px,' + y + 'px)';
       };
     }
   } else {
     return function(/*object*/ style, /*number*/ x, /*number*/ y) {
       style.left = x + 'px';
+      if (Locale.isRTL()) {
+        style.right = style.left;
+        style.left = 'auto';
+      }
+
       style.top = y + 'px';
     };
   }

@@ -16,6 +16,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'ReactDOM';
 import ReactWheelHandler from 'ReactWheelHandler';
+import Locale from 'Locale';
 
 const cssVar = require('cssVar');
 import cx from 'cx';
@@ -49,6 +50,8 @@ class Scrollbar extends React.PureComponent {
     verticalTop: PropTypes.number
   }
 
+  DIR_SIGN = 1;
+
   constructor(props) /*object*/ {
     super(props)
     this.state = this._calculateState(
@@ -57,6 +60,9 @@ class Scrollbar extends React.PureComponent {
       props.contentSize,
       props.orientation
     );
+    if (props.orientation == 'horizontal' && Locale.isRTL()) {
+      this.DIR_SIGN = -1;
+    }
   }
 
   componentWillReceiveProps(/*object*/ nextProps) {
@@ -134,7 +140,9 @@ class Scrollbar extends React.PureComponent {
         width: size,
       };
       faceStyle = {
-        width: faceSize - FACE_MARGIN_2
+        width: faceSize - FACE_MARGIN_2,
+        top: 0,
+        bottom: 0,
       };
       FixedDataTableTranslateDOMPosition(faceStyle, position, 0, this._initialRender);
     } else {
@@ -142,10 +150,16 @@ class Scrollbar extends React.PureComponent {
         top: verticalTop,
         height: size,
       };
+      if (Locale.isRTL()) {
+        mainStyle.left = mainStyle.right || 0;
+        mainStyle.right = 'auto';
+      }
       faceStyle = {
         height: faceSize - FACE_MARGIN_2,
       };
       FixedDataTableTranslateDOMPosition(faceStyle, 0, position, this._initialRender);
+      faceStyle.left = 0;
+      faceStyle.right = 0;
     }
 
     mainStyle.touchAction = 'none';
@@ -239,7 +253,7 @@ class Scrollbar extends React.PureComponent {
 
   _shouldHandleChange = (/*number*/ delta) /*boolean*/ => {
     var nextState = this._calculateState(
-      this.state.position + delta,
+      this.state.position + delta * this.DIR_SIGN,
       this.props.size,
       this.props.contentSize,
       this.props.orientation
@@ -324,7 +338,7 @@ class Scrollbar extends React.PureComponent {
     // Use `requestAnimationFrame` to avoid over-updating.
     this._setNextState(
       this._calculateState(
-        this.state.position + delta,
+        this.state.position + delta * this.DIR_SIGN,
         props.size,
         props.contentSize,
         props.orientation
@@ -348,7 +362,7 @@ class Scrollbar extends React.PureComponent {
       var props = this.props;
       position /= this.state.scale;
       nextState = this._calculateState(
-        position - (this.state.faceSize * 0.5 / this.state.scale),
+        position - (this.state.faceSize * 0.5 / this.state.scale) * this.DIR_SIGN,
         props.size,
         props.contentSize,
         props.orientation
@@ -389,7 +403,7 @@ class Scrollbar extends React.PureComponent {
 
     this._setNextState(
       this._calculateState(
-        this.state.position + delta,
+        this.state.position + delta * this.DIR_SIGN,
         props.size,
         props.contentSize,
         props.orientation
@@ -477,7 +491,7 @@ class Scrollbar extends React.PureComponent {
     var props = this.props;
     this._setNextState(
       this._calculateState(
-        this.state.position + (distance * direction),
+        this.state.position + (distance * direction * this.DIR_SIGN),
         props.size,
         props.contentSize,
         props.orientation

@@ -140,9 +140,8 @@ class FixedDataTableCell extends React.Component {
       reorderCellLeft = Math.min(reorderCellLeft, farthestPossiblePoint);
 
       if (props.columnKey === props.columnReorderingData.columnKey) {
-        newState.displacement = reorderCellLeft - props.left;
+        newState.displacement = (reorderCellLeft - props.left) * DIR_SIGN;
         newState.isReorderingThisColumn = true;
-
       } else {
         var reorderCellRight = reorderCellLeft + props.columnReorderingData.columnWidth;
         var reorderCellCenter = reorderCellLeft + (props.columnReorderingData.columnWidth / 2);
@@ -152,8 +151,6 @@ class FixedDataTableCell extends React.Component {
         var cellWasOriginallyBeforeOneBeingDragged = originalLeft > props.left;
         var changedPosition = false;
 
-
-        var dragPoint, thisCellPoint;
         if (cellIsBeforeOneBeingDragged) {
           if (reorderCellLeft < centerOfThisColumn) {
             changedPosition = true;

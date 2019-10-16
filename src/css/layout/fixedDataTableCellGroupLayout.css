@@ -28,3 +28,8 @@
   position: absolute;
   top: 0;
 }
+
+[dir="rtl"] .fixedDataTableCellGroupLayout/cellGroup {
+  right: 0;
+  left: auto;
+}

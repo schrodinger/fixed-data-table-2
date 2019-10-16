@@ -11,6 +11,7 @@
  */
 
 import translateDOMPositionXY from 'translateDOMPositionXY';
+import Locale from 'Locale';
 
 function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*number*/ y, /*boolean*/ initialRender = false) {
   if (style.display === 'none') {
@@ -18,6 +19,11 @@ function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*nu
   }
   if (initialRender) {
     style.left = x + 'px';
+    if (Locale.isRTL()) {
+      style.right = style.left;
+      style.left = 'auto';
+    }
+    
     style.top = y + 'px';
   } else {
     translateDOMPositionXY(style, x, y);

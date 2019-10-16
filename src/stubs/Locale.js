@@ -13,8 +13,7 @@
 
 // Hard code this for now.
 var Locale = {
-  isRTL: () => false,
-  getDirection: () => 'LTR'
+  isRTL: () => true
 };
 
 export default Locale;

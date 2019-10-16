@@ -20,6 +20,7 @@ import Scrollbar from 'Scrollbar';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
 import { sumPropWidths } from 'widthHelper';
+import Locale from 'Locale';
 
 // .fixedDataTableLayout/header border-bottom-width
 var HEADER_BORDER_BOTTOM_WIDTH = 1;
@@ -211,7 +212,8 @@ class FixedDataTableRowImpl extends React.Component {
         isScrolling={this.props.isScrolling}
         height={this.props.height}
         cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
-        offsetLeft={this.props.width - fixedRightColumnsWidth - scrollbarOffset}
+        offsetLeft={Locale.isRTL() ? scrollbarOffset : this.props.width - fixedRightColumnsWidth - scrollbarOffset}
+        fixedRight={true}
         width={fixedRightColumnsWidth}
         zIndex={2}
         columns={this.props.fixedRightColumns}
@@ -235,7 +237,7 @@ class FixedDataTableRowImpl extends React.Component {
         height={this.props.height}
         cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
         align="right"
-        left={this.props.scrollLeft}
+        left={Locale.isRTL() ? -(this.props.scrollLeft) : this.props.scrollLeft}
         offsetLeft={fixedColumnsWidth}
         width={this.props.width - fixedColumnsWidth - fixedRightColumnsWidth - scrollbarOffset}
         zIndex={0}
@@ -267,7 +269,7 @@ class FixedDataTableRowImpl extends React.Component {
         height: this.props.height,
         // Since the box-sizing = border-box the border on the table is included in the width
         // so we need to account for the left and right border
-        left: this.props.width - scrollbarOffset - 2,
+        left: Locale.isRTL() ? 0 : this.props.width - scrollbarOffset - 2,
       };
       scrollbarSpacer =
         <div 
@@ -342,6 +344,10 @@ class FixedDataTableRowImpl extends React.Component {
        left: left,
        height: dividerHeight
      };
+     if (Locale.isRTL()) {
+       style.right = left;
+       style.left = 'auto';
+     }
      return <div className={className} style={style} />;
   };
 
@@ -358,6 +364,10 @@ class FixedDataTableRowImpl extends React.Component {
       height: this.props.height,
       left: left
     };
+    if (Locale.isRTL()) {
+      style.right = left;
+      style.left = 'auto';
+    }
     return <div className={className} style={style} />;
   };
 

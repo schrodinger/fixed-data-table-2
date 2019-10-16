@@ -19,6 +19,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'cx';
 import { sumPropWidths } from 'widthHelper';
+import Locale from 'Locale';
 
 var DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
@@ -38,6 +39,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
     isScrolling: PropTypes.bool,
 
     left: PropTypes.number,
+
+    fixedRight: PropTypes.bool,
 
     onColumnResize: PropTypes.func,
 
@@ -78,6 +81,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     var columns = props.columns;
     var cells = new Array(columns.length);
     var contentWidth = sumPropWidths(columns);
+    const left = props.left * DIR_SIGN;
 
     var isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
       return acc || props.columnReorderingData.columnKey === column.props.columnKey;
@@ -89,8 +93,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
       var cellTemplate = columns[i].template;
       var recyclable = columnProps.allowCellsRecycling && !isColumnReordering;
       if (!recyclable || (
-        currentPosition - props.left <= props.width &&
-        currentPosition - props.left + columnProps.width >= 0)) {
+        currentPosition - left <= props.width &&
+        currentPosition - left + columnProps.width >= 0)) {
         var key = columnProps.columnKey || 'cell_' + i;
         cells[i] = this._renderCell(
           props.rowIndex,
@@ -111,7 +115,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       width: contentWidth,
       zIndex: props.zIndex,
     };
-    FixedDataTableTranslateDOMPosition(style, -1 * DIR_SIGN * props.left, 0, this._initialRender);
+    FixedDataTableTranslateDOMPosition(style, -1 * left, 0, this._initialRender);
 
     return (
       <div
@@ -213,13 +217,18 @@ class FixedDataTableCellGroup extends React.Component {
 
     var style = {
       height: props.cellGroupWrapperHeight || props.height,
-      width: props.width
+      width: props.width,
+      left: offsetLeft,
     };
 
-    if (DIR_SIGN === 1) {
-      style.left = offsetLeft;
-    } else {
-      style.right = offsetLeft;
+    if (Locale.isRTL()) {
+      if (props.fixedRight) {
+        style.left = offsetLeft;
+        style.right = 'auto';
+      } else {
+        style.right = offsetLeft;
+        style.left = 'auto';
+      }
     }
 
     var onColumnResize = props.onColumnResize ? this._onColumnResize : null;

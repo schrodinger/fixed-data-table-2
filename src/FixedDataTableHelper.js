@@ -14,7 +14,7 @@
 
 import Locale from 'Locale';
 
-var DIR_SIGN = (Locale.isRTL() ? -1 : +1);
+var DIR_SIGN = (Locale.isRTL() ? -1 : 1);
 var FixedDataTableHelper = {
   DIR_SIGN,
 };
