@@ -17,7 +17,9 @@ import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import React from 'react';
 import PropTypes from 'prop-types';
 import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
+import FixedDataTableHelper from 'FixedDataTableHelper';
 import cx from 'cx';
+
 const DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
 class FixedDataTableColumnReorderHandle extends React.PureComponent {
