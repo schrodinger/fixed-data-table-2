@@ -682,7 +682,7 @@ class FixedDataTable extends React.Component {
     const { cellGroupWrapperHeight, footerHeight, groupHeaderHeight, headerHeight } = elementHeights;
     const { scrollEnabledX, scrollEnabledY } = scrollbarsVisible(this.props);
     const onColumnReorder = onColumnReorderEndCallback ? this._onColumnReorder : null;
-    const attributes = gridAttributesGetter();
+    const attributes = gridAttributesGetter && gridAttributesGetter();
 
     let groupHeader;
     if (groupHeaderHeight > 0) {
