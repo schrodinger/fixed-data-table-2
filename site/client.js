@@ -4,7 +4,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var IndexPage = require('./IndexPage');
 
-document.dir = "rtl";
+document.documentElement.dir = "rtl";
 
 ReactDOM.render(
   <IndexPage

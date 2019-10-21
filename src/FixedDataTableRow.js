@@ -269,7 +269,7 @@ class FixedDataTableRowImpl extends React.Component {
         height: this.props.height,
         // Since the box-sizing = border-box the border on the table is included in the width
         // so we need to account for the left and right border
-        left: Locale.isRTL() ? 0 : this.props.width - scrollbarOffset - 2,
+        left: Locale.isRTL() ? 2 : this.props.width - scrollbarOffset - 2,
       };
       scrollbarSpacer =
         <div 

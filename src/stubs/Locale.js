@@ -11,9 +11,8 @@
 
 "use strict";
 
-// Hard code this for now.
 var Locale = {
-  isRTL: () => true
+  isRTL: () => document.documentElement.dir === "rtl"
 };
 
 export default Locale;
