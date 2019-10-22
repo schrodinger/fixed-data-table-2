@@ -13,15 +13,12 @@
 'use strict';
 
 import FixedDataTableCell from 'FixedDataTableCell';
-import FixedDataTableHelper from 'FixedDataTableHelper';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'cx';
 import { sumPropWidths } from 'widthHelper';
 import Locale from 'Locale';
-
-var DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
 class FixedDataTableCellGroupImpl extends React.Component {
   /**
@@ -81,7 +78,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
     var columns = props.columns;
     var cells = new Array(columns.length);
     var contentWidth = sumPropWidths(columns);
-    const left = props.left * DIR_SIGN;
 
     var isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
       return acc || props.columnReorderingData.columnKey === column.props.columnKey;
@@ -93,8 +89,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
       var cellTemplate = columns[i].template;
       var recyclable = columnProps.allowCellsRecycling && !isColumnReordering;
       if (!recyclable || (
-        currentPosition - left <= props.width &&
-        currentPosition - left + columnProps.width >= 0)) {
+        currentPosition - props.left <= props.width &&
+        currentPosition - props.left + columnProps.width >= 0)) {
         var key = columnProps.columnKey || 'cell_' + i;
         cells[i] = this._renderCell(
           props.rowIndex,
@@ -115,7 +111,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       width: contentWidth,
       zIndex: props.zIndex,
     };
-    FixedDataTableTranslateDOMPosition(style, -1 * left, 0, this._initialRender);
+    FixedDataTableTranslateDOMPosition(style, -1 * props.left, 0, this._initialRender);
 
     return (
       <div

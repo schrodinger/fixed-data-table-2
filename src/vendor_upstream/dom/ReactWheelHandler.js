@@ -72,9 +72,11 @@ class ReactWheelHandler {
     // if shift is held, swap the axis of scrolling.
     if (event.shiftKey && ReactWheelHandler._allowInternalAxesSwap()) {
       normalizedEvent = ReactWheelHandler._swapNormalizedWheelAxis(normalizedEvent);
+    } else {
+      normalizedEvent.pixelX *= DIR_SIGN;
     }
 
-    var deltaX = this._deltaX + normalizedEvent.pixelX * DIR_SIGN;
+    var deltaX = this._deltaX + normalizedEvent.pixelX;
     var deltaY = this._deltaY + normalizedEvent.pixelY;
     var handleScrollX = this._handleScrollX(deltaX, deltaY);
     var handleScrollY = this._handleScrollY(deltaY, deltaX);
@@ -86,7 +88,7 @@ class ReactWheelHandler {
       return;
     }
 
-    this._deltaX += handleScrollX ? normalizedEvent.pixelX * DIR_SIGN : 0;
+    this._deltaX += handleScrollX ? normalizedEvent.pixelX : 0;
     this._deltaY += handleScrollY ? normalizedEvent.pixelY : 0;
 
     // This will result in a scroll to the table, so there's no need to let the parent containers scroll

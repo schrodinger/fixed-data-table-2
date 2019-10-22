@@ -17,6 +17,9 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'ReactDOM';
 import ReactWheelHandler from 'ReactWheelHandler';
 import Locale from 'Locale';
+import FixedDataTableHelper from 'FixedDataTableHelper';
+
+const DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
 const cssVar = require('cssVar');
 import cx from 'cx';
@@ -50,8 +53,6 @@ class Scrollbar extends React.PureComponent {
     verticalTop: PropTypes.number
   }
 
-  DIR_SIGN = 1;
-
   constructor(props) /*object*/ {
     super(props)
     this.state = this._calculateState(
@@ -60,9 +61,6 @@ class Scrollbar extends React.PureComponent {
       props.contentSize,
       props.orientation
     );
-    if (props.orientation == 'horizontal' && Locale.isRTL()) {
-      this.DIR_SIGN = -1;
-    }
   }
 
   componentWillReceiveProps(/*object*/ nextProps) {
@@ -197,7 +195,7 @@ class Scrollbar extends React.PureComponent {
 
     this._wheelHandler = new ReactWheelHandler(
       onWheel,
-      this._shouldHandleX, // Should hanlde horizontal scroll
+      this._shouldHandleX, // Should handle horizontal scroll
       this._shouldHandleY // Should handle vertical scroll
     );
     this._initialRender = true;
@@ -253,7 +251,7 @@ class Scrollbar extends React.PureComponent {
 
   _shouldHandleChange = (/*number*/ delta) /*boolean*/ => {
     var nextState = this._calculateState(
-      this.state.position + delta * this.DIR_SIGN,
+      this.state.position + delta,
       this.props.size,
       this.props.contentSize,
       this.props.orientation
@@ -338,7 +336,7 @@ class Scrollbar extends React.PureComponent {
     // Use `requestAnimationFrame` to avoid over-updating.
     this._setNextState(
       this._calculateState(
-        this.state.position + delta * this.DIR_SIGN,
+        this.state.position + delta,
         props.size,
         props.contentSize,
         props.orientation
@@ -362,7 +360,7 @@ class Scrollbar extends React.PureComponent {
       var props = this.props;
       position /= this.state.scale;
       nextState = this._calculateState(
-        position - (this.state.faceSize * 0.5 / this.state.scale) * this.DIR_SIGN,
+        position - (this.state.faceSize * 0.5 / this.state.scale),
         props.size,
         props.contentSize,
         props.orientation
@@ -398,12 +396,12 @@ class Scrollbar extends React.PureComponent {
 
   _onMouseMove = (/*number*/ deltaX, /*number*/ deltaY) => {
     var props = this.props;
-    var delta = this.state.isHorizontal ? deltaX : deltaY;
+    var delta = this.state.isHorizontal ? deltaX * DIR_SIGN : deltaY;
     delta /= this.state.scale;
 
     this._setNextState(
       this._calculateState(
-        this.state.position + delta * this.DIR_SIGN,
+        this.state.position + delta,
         props.size,
         props.contentSize,
         props.orientation
@@ -491,7 +489,7 @@ class Scrollbar extends React.PureComponent {
     var props = this.props;
     this._setNextState(
       this._calculateState(
-        this.state.position + (distance * direction * this.DIR_SIGN),
+        this.state.position + (distance * direction),
         props.size,
         props.contentSize,
         props.orientation
