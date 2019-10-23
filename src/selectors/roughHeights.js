@@ -133,14 +133,14 @@ function roughHeights(columnProps, elementHeights, rowSettings,
 function getScrollStateX(columnProps, scrollFlags, width) {
   const { overflowX, showScrollbarX } = scrollFlags;
   const minColWidth = getTotalWidth(columnProps);
+  const adjustedWidth = width - 1; // Reserve space for last column border
   if (overflowX === 'hidden' || showScrollbarX === false) {
     return ScrollbarState.HIDDEN;
-  } else if (minColWidth > width) {
+  } else if (minColWidth > adjustedWidth) {
     return ScrollbarState.VISIBLE;
   }
 
-  const scrollbarSpace = Scrollbar.SIZE + Scrollbar.OFFSET;
-  if (minColWidth > width - scrollbarSpace) {
+  if (minColWidth > adjustedWidth - Scrollbar.SIZE) {
     return ScrollbarState.JOINT_SCROLLBARS;
   }
   return ScrollbarState.HIDDEN;

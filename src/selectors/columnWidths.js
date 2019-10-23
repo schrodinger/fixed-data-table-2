@@ -41,8 +41,8 @@ let columnDefinition;
  * }} The total width of all columns.
  */
 function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
-  const scrollbarSpace = scrollEnabledY ? Scrollbar.SIZE + Scrollbar.OFFSET : 0;
-  const viewportWidth = width - scrollbarSpace;
+  const scrollbarSpace = scrollEnabledY ? Scrollbar.SIZE : 0;
+  const viewportWidth = width - scrollbarSpace - 1; // Reserve space for last column border
 
   const {
     newColumnGroupProps,
