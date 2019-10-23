@@ -93,7 +93,7 @@ describe('FixedDataTableRoot', function() {
 
     it('should set scrollToColumn correctly', function() {
       let table = renderTable({scrollToColumn: 3});
-      // extra 18 comes from Scrollbar.SIZE & Scrollbar.OFFSET
+      // extra 16 comes from Scrollbar.SIZE & reserved space for right border
       assert.equal(table.getTableState().scrollX, 300 * 2 + 16, 'should be third visible column');
     });
 
@@ -123,7 +123,7 @@ describe('FixedDataTableRoot', function() {
 
     it('should update scrollToColumn correctly', function() {
       let table = renderTable({scrollToColumn: 3});
-      // extra 18 comes from Scrollbar.SIZE & Scrollbar.OFFSET
+      // extra 16 comes from Scrollbar.SIZE & reserved space for right border
       assert.equal(table.getTableState().scrollX, 300 * 2 + 16, 'should be third visible column');
       table = renderTable({scrollToColumn: 1});
       assert.equal(table.getTableState().scrollX, 300, 'should be first visible column');

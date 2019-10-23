@@ -107,7 +107,7 @@ describe('columnWidths', function() {
   });
 
   it('should distribute flex width', function() {
-    width = 640;
+    width = 641;
 
     const {
       columnGroupProps,
@@ -150,7 +150,7 @@ describe('columnWidths', function() {
   });
 
   it('should compute availableScrollWidth and maxScrollX', function() {
-    width = 300;
+    width = 301;
 
     const {
       availableScrollWidth,
