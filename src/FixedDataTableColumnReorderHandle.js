@@ -17,10 +17,8 @@ import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import React from 'react';
 import PropTypes from 'prop-types';
 import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
-import FixedDataTableHelper from 'FixedDataTableHelper';
+import Locale from 'Locale';
 import cx from 'cx';
-
-const DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
 class FixedDataTableColumnReorderHandle extends React.PureComponent {
   static propTypes = {
@@ -119,7 +117,7 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
   }
 
   _onMove = (/*number*/ deltaX) => {
-    this._distance = this.state.dragDistance + deltaX * DIR_SIGN;
+    this._distance = this.state.dragDistance + deltaX * Locale.DIR_SIGN();
   }
 
   _onColumnReorderEnd = (/*boolean*/ cancelReorder) => {

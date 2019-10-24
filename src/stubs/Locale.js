@@ -12,8 +12,16 @@
 "use strict";
 
 // Hard code this for now.
-var Locale = {
-  isRTL: () => true
+
+function isRTL() {
+  return document.documentElement.dir === "rtl";
 };
 
-export default Locale;
+function DIR_SIGN() {
+  return isRTL() ? -1 : 1;
+};
+
+export default {
+  isRTL,
+  DIR_SIGN
+};

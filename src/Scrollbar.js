@@ -17,9 +17,6 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'ReactDOM';
 import ReactWheelHandler from 'ReactWheelHandler';
 import Locale from 'Locale';
-import FixedDataTableHelper from 'FixedDataTableHelper';
-
-const DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
 const cssVar = require('cssVar');
 import cx from 'cx';
@@ -396,7 +393,7 @@ class Scrollbar extends React.PureComponent {
 
   _onMouseMove = (/*number*/ deltaX, /*number*/ deltaY) => {
     var props = this.props;
-    var delta = this.state.isHorizontal ? deltaX * DIR_SIGN : deltaY;
+    var delta = this.state.isHorizontal ? deltaX * Locale.DIR_SIGN() : deltaY;
     delta /= this.state.scale;
 
     this._setNextState(

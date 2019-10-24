@@ -12,14 +12,12 @@
 
 import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
-import FixedDataTableHelper from 'FixedDataTableHelper';
+import Locale from 'Locale';
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
 import shallowEqual from 'shallowEqual';
-
-const DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -207,14 +205,14 @@ class FixedDataTableCell extends React.Component {
       width,
     };
 
-    if (DIR_SIGN === 1) {
+    if (!Locale.isRTL()) {
       style.left = props.left;
     } else {
       style.right = props.left;
     }
 
     if (this.state.isReorderingThisColumn) {
-      style.transform = `translateX(${this.state.displacement * DIR_SIGN}px) translateZ(0)`;
+      style.transform = `translateX(${this.state.displacement * Locale.DIR_SIGN()}px) translateZ(0)`;
       style.zIndex = 1;
     }
 
