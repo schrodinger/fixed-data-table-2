@@ -205,10 +205,10 @@ class FixedDataTableCell extends React.Component {
       width,
     };
 
-    if (!Locale.isRTL()) {
-      style.left = props.left;
-    } else {
+    if (Locale.isRTL()) {
       style.right = props.left;
+    } else {
+      style.left = props.left;
     }
 
     if (this.state.isReorderingThisColumn) {
