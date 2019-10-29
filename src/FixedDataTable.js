@@ -443,7 +443,12 @@ class FixedDataTable extends React.Component {
       footerHeight: PropTypes.number,
       groupHeaderHeight: PropTypes.number,
       headerHeight: PropTypes.number,
-    })
+    }),
+
+    /**
+     * Callback that returns an object of html attributes to add to the grid element
+     */
+    gridAttributesGetter: PropTypes.func,
   }
 
   static defaultProps = /*object*/ {
@@ -660,6 +665,7 @@ class FixedDataTable extends React.Component {
       elementHeights,
       isColumnReordering,
       isColumnResizing,
+      gridAttributesGetter,
       maxScrollX,
       maxScrollY,
       onColumnReorderEndCallback,
@@ -676,6 +682,7 @@ class FixedDataTable extends React.Component {
     const { cellGroupWrapperHeight, footerHeight, groupHeaderHeight, headerHeight } = elementHeights;
     const { scrollEnabledX, scrollEnabledY } = scrollbarsVisible(this.props);
     const onColumnReorder = onColumnReorderEndCallback ? this._onColumnReorder : null;
+    const attributes = gridAttributesGetter && gridAttributesGetter();
 
     let groupHeader;
     if (groupHeaderHeight > 0) {
@@ -849,6 +856,7 @@ class FixedDataTable extends React.Component {
         )}
         role="grid"
         aria-rowcount={ariaRowCount}
+        {...attributes}
         tabIndex={tabIndex}
         onKeyDown={this._onKeyDown}
         onTouchStart={touchScrollEnabled ? this._touchHandler.onTouchStart : null}

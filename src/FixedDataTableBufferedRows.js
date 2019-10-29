@@ -46,6 +46,7 @@ class FixedDataTableBufferedRows extends React.Component {
     rowOffsets: PropTypes.object.isRequired,
     rowKeyGetter: PropTypes.func,
     rowSettings: PropTypes.shape({
+      rowAttributesGetter: PropTypes.func,
       rowHeightGetter: PropTypes.func,
       rowsCount: PropTypes.number.isRequired,
       subRowHeightGetter: PropTypes.func,
@@ -126,6 +127,7 @@ class FixedDataTableBufferedRows extends React.Component {
       rowProps.subRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
       rowProps.offsetTop = Math.round(baseOffsetTop + props.rowOffsets[rowIndex]);
       rowProps.key = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : key;
+      rowProps.attributes = props.rowSettings.rowAttributesGetter && props.rowSettings.rowAttributesGetter(rowIndex);
 
       const hasBottomBorder = (rowIndex === props.rowSettings.rowsCount - 1) && props.showLastRowBorder;
       rowProps.className = joinClasses(

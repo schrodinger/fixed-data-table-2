@@ -48,6 +48,7 @@ function getInitialState() {
     },
     rowSettings: {
       bufferRowCount: undefined,
+      rowAttributesGetter: undefined,
       rowHeight: 0,
       rowHeightGetter: () => 0,
       rowsCount: 0,
@@ -248,6 +249,7 @@ function setStateFromProps(state, props) {
     props.rowHeightGetter || (() => rowHeight);
   newState.rowSettings.subRowHeightGetter =
     props.subRowHeightGetter || (() => subRowHeight || 0);
+  newState.rowSettings.rowAttributesGetter = props.rowAttributesGetter;
 
   newState.scrollFlags = Object.assign({}, newState.scrollFlags,
     pick(props, ['overflowX', 'overflowY', 'showScrollbarX', 'showScrollbarY']));
