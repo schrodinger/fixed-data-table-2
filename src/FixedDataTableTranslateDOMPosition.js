@@ -10,6 +10,7 @@
  * @typechecks
  */
 
+import BrowserSupportCore from 'BrowserSupportCore';
 import translateDOMPositionXY from 'translateDOMPositionXY';
 import Locale from 'Locale';
 
@@ -19,14 +20,18 @@ function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*nu
   }
   if (initialRender) {
     style.left = x + 'px';
-    if (Locale.isRTL()) {
-      style.right = style.left;
-      style.left = 'auto';
-    }
-    
     style.top = y + 'px';
   } else {
+    if (BrowserSupportCore.hasCSSTransforms() && Locale.isRTL()) {
+      x *= Locale.DIR_SIGN();
+    }
+
     translateDOMPositionXY(style, x, y);
+  }
+
+  if (Locale.isRTL()) {
+    style.right = style.left;
+    style.left = 'auto';
   }
 
 }

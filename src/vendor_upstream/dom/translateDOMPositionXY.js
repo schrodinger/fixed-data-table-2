@@ -13,7 +13,6 @@
 'use strict';
 
 import BrowserSupportCore from 'BrowserSupportCore';
-import Locale from 'Locale';
 
 import getVendorPrefixedName from 'getVendorPrefixedName';
 
@@ -30,21 +29,16 @@ var translateDOMPositionXY = (function() {
     // Use 2D translation instead.
     if (!isSafari && BrowserSupportCore.hasCSS3DTransforms()) {
       return function(/*object*/ style, /*number*/ x, /*number*/ y) {
-        style[TRANSFORM] = 'translate3d(' + x * Locale.DIR_SIGN() + 'px,' + y + 'px,0)';
+        style[TRANSFORM] = 'translate3d(' + x + 'px,' + y + 'px,0)';
       };
     } else {
       return function(/*object*/ style, /*number*/ x, /*number*/ y) {
-        style[TRANSFORM] = 'translate(' + x * Locale.DIR_SIGN() + 'px,' + y + 'px)';
+        style[TRANSFORM] = 'translate(' + x + 'px,' + y + 'px)';
       };
     }
   } else {
     return function(/*object*/ style, /*number*/ x, /*number*/ y) {
       style.left = x + 'px';
-      if (Locale.isRTL()) {
-        style.right = style.left;
-        style.left = 'auto';
-      }
-
       style.top = y + 'px';
     };
   }
