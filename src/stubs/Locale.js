@@ -17,11 +17,11 @@ function isRTL() {
   return document.documentElement.dir === "rtl";
 };
 
-function DIR_SIGN() {
+function getDirSign() {
   return isRTL() ? -1 : 1;
 };
 
 export default {
   isRTL,
-  DIR_SIGN
+  getDirSign
 };

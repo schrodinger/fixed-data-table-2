@@ -117,7 +117,7 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
   }
 
   _onMove = (/*number*/ deltaX) => {
-    this._distance = this.state.dragDistance + deltaX * Locale.DIR_SIGN();
+    this._distance = this.state.dragDistance + deltaX * Locale.getDirSign();
   }
 
   _onColumnReorderEnd = (/*boolean*/ cancelReorder) => {

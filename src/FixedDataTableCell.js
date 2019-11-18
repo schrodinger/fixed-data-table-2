@@ -212,7 +212,7 @@ class FixedDataTableCell extends React.Component {
     }
 
     if (this.state.isReorderingThisColumn) {
-      style.transform = `translateX(${this.state.displacement * Locale.DIR_SIGN()}px) translateZ(0)`;
+      style.transform = `translateX(${this.state.displacement * Locale.getDirSign()}px) translateZ(0)`;
       style.zIndex = 1;
     }
 

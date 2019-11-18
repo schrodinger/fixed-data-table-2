@@ -22,8 +22,8 @@ function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*nu
     style.left = x + 'px';
     style.top = y + 'px';
   } else {
-    if (BrowserSupportCore.hasCSSTransforms() && Locale.isRTL()) {
-      x *= Locale.DIR_SIGN();
+    if (BrowserSupportCore.hasCSSTransforms()) {
+      x *= Locale.getDirSign();
     }
 
     translateDOMPositionXY(style, x, y);

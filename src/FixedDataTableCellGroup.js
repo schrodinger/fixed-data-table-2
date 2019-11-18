@@ -37,8 +37,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     left: PropTypes.number,
 
-    fixedRight: PropTypes.bool,
-
     onColumnResize: PropTypes.func,
 
     onColumnReorder: PropTypes.func,
@@ -213,18 +211,13 @@ class FixedDataTableCellGroup extends React.Component {
 
     var style = {
       height: props.cellGroupWrapperHeight || props.height,
-      width: props.width,
-      left: offsetLeft,
+      width: props.width
     };
 
     if (Locale.isRTL()) {
-      if (props.fixedRight) {
-        style.left = offsetLeft;
-        style.right = 'auto';
-      } else {
-        style.right = offsetLeft;
-        style.left = 'auto';
-      }
+      style.right = offsetLeft;
+    } else {
+      style.left = offsetLeft;
     }
 
     var onColumnResize = props.onColumnResize ? this._onColumnResize : null;

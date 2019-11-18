@@ -191,7 +191,7 @@ describe('FixedDataTableRoot', function() {
 
       beforeEach(function() {
         rtlStub = sinon.stub(Locale, "isRTL").returns(true);
-        dir_signStub = sinon.stub(Locale, "DIR_SIGN").returns(-1);
+        dir_signStub = sinon.stub(Locale, "getDirSign").returns(-1);
       });
 
       afterEach(function() {
@@ -270,7 +270,7 @@ describe('FixedDataTableRoot', function() {
 
       beforeEach(function() {
         rtlStub = sinon.stub(Locale, "isRTL").returns(false);
-        dir_signStub = sinon.stub(Locale, "DIR_SIGN").returns(1);
+        dir_signStub = sinon.stub(Locale, "getDirSign").returns(1);
       });
 
       afterEach(function() {

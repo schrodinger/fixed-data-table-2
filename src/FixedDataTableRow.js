@@ -212,8 +212,7 @@ class FixedDataTableRowImpl extends React.Component {
         isScrolling={this.props.isScrolling}
         height={this.props.height}
         cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
-        offsetLeft={Locale.isRTL() ? scrollbarOffset : this.props.width - fixedRightColumnsWidth - scrollbarOffset}
-        fixedRight={true}
+        offsetLeft={this.props.width - fixedRightColumnsWidth - scrollbarOffset}
         width={fixedRightColumnsWidth}
         zIndex={2}
         columns={this.props.fixedRightColumns}

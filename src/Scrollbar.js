@@ -393,7 +393,7 @@ class Scrollbar extends React.PureComponent {
 
   _onMouseMove = (/*number*/ deltaX, /*number*/ deltaY) => {
     var props = this.props;
-    var delta = this.state.isHorizontal ? deltaX * Locale.DIR_SIGN() : deltaY;
+    var delta = this.state.isHorizontal ? deltaX * Locale.getDirSign() : deltaY;
     delta /= this.state.scale;
 
     this._setNextState(

@@ -64,14 +64,14 @@ class ReactWheelHandler {
     if (this._preventDefault) {
       event.preventDefault();
     }
-    
+
     var normalizedEvent = normalizeWheel(event);
-    
+
     // if shift is held, swap the axis of scrolling.
     if (event.shiftKey && ReactWheelHandler._allowInternalAxesSwap()) {
       normalizedEvent = ReactWheelHandler._swapNormalizedWheelAxis(normalizedEvent);
-    } else {
-      normalizedEvent.pixelX *= Locale.DIR_SIGN();
+    } else if (!event.shiftKey) {
+      normalizedEvent.pixelX *= Locale.getDirSign();
     }
 
     var deltaX = this._deltaX + normalizedEvent.pixelX;
