@@ -57,6 +57,7 @@ class FixedDataTableBufferedRows extends React.Component {
     showLastRowBorder: PropTypes.bool,
     showScrollbarY: PropTypes.bool,
     width: PropTypes.number.isRequired,
+    isRTL: PropTypes.bool,
   }
 
   componentWillMount() {
@@ -163,6 +164,7 @@ class FixedDataTableBufferedRows extends React.Component {
         onTouchEnd={props.onRowTouchEnd}
         onTouchMove={props.onRowTouchMove}
         showScrollbarY={props.showScrollbarY}
+        isRTL={props.isRTL}
         visible={visible}
         fake={fake}
         {...rowProps}

@@ -20,7 +20,6 @@ import Scrollbar from 'Scrollbar';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
 import { sumPropWidths } from 'widthHelper';
-import Locale from 'Locale';
 
 // .fixedDataTableLayout/header border-bottom-width
 var HEADER_BORDER_BOTTOM_WIDTH = 1;
@@ -162,6 +161,11 @@ class FixedDataTableRowImpl extends React.Component {
      * The value of the aria-rowindex attribute.
      */
     ariaRowIndex: PropTypes.number,
+
+    /**
+     * Whether the grid should be in RTL mode
+     */
+    isRTL: PropTypes.bool,
   };
 
   render() /*object*/ {
@@ -202,6 +206,7 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
+        isRTL={this.props.isRTL}
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
     var fixedRightColumnsWidth = sumPropWidths(this.props.fixedRightColumns);
@@ -226,6 +231,7 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
+        isRTL={this.props.isRTL}
       />;
     var fixedRightColumnsShadow = fixedRightColumnsWidth ?
       this._renderFixedRightColumnsShadow(this.props.width - fixedRightColumnsWidth - scrollbarOffset - 5) : null;
@@ -251,6 +257,7 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
+        isRTL={this.props.isRTL}
       />;
     var scrollableColumnsWidth = sumPropWidths(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
@@ -268,7 +275,7 @@ class FixedDataTableRowImpl extends React.Component {
         height: this.props.height,
         // Since the box-sizing = border-box the border on the table is included in the width
         // so we need to account for the left and right border
-        left: Locale.isRTL() ? 2 : this.props.width - scrollbarOffset - 2,
+        left: this.props.isRTL ? 2 : this.props.width - scrollbarOffset - 2,
       };
       scrollbarSpacer =
         <div 
@@ -343,7 +350,7 @@ class FixedDataTableRowImpl extends React.Component {
        left: left,
        height: dividerHeight
      };
-     if (Locale.isRTL()) {
+     if (this.props.isRTL) {
        style.right = left;
        style.left = 'auto';
      }
@@ -363,7 +370,7 @@ class FixedDataTableRowImpl extends React.Component {
       height: this.props.height,
       left: left
     };
-    if (Locale.isRTL()) {
+    if (this.props.isRTL) {
       style.right = left;
       style.left = 'auto';
     }
@@ -485,7 +492,7 @@ class FixedDataTableRow extends React.Component {
       zIndex: (this.props.zIndex ? this.props.zIndex : 0),
       display: (this.props.visible ? 'block' : 'none'),
     };
-    FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender);
+    FixedDataTableTranslateDOMPosition(style, 0, this.props.offsetTop, this._initialRender, this.props.isRTL);
 
     const { offsetTop, zIndex, visible, ...rowProps } = this.props;
 

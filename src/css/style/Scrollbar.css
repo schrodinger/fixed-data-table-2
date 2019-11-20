@@ -21,8 +21,8 @@
   border-left: 1px solid var(--border-color);
 }
 
-html[dir="rtl"] .public/Scrollbar/main.public/Scrollbar/mainActive,
-html[dir="rtl"] .public/Scrollbar/main {
+.fixedDataTable_isRTL .public/Scrollbar/main.public/Scrollbar/mainActive,
+.fixedDataTable_isRTL .public/Scrollbar/main {
   border-right: 1px solid var(--border-color);
   border-left-width: 0;
 }

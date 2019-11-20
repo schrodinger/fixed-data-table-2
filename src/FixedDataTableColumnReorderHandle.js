@@ -17,7 +17,6 @@ import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import React from 'react';
 import PropTypes from 'prop-types';
 import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
-import Locale from 'Locale';
 import cx from 'cx';
 
 class FixedDataTableColumnReorderHandle extends React.PureComponent {
@@ -40,13 +39,21 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
      * Whether the reorder handle should respond to touch events or not.
      */
     touchEnabled: PropTypes.bool,
+
+    /**
+     * If the component should render for RTL direction
+     */
+    isRTL: PropTypes.bool,
   }
+
+  DIR_SIGN = 1
 
   state = /*object*/ {
     dragDistance: 0
   }
 
   componentWillReceiveProps(/*object*/ newProps) {
+    this.DIR_SIGN = newProps.isRTL ? -1 : 1;
   }
 
   componentWillUnmount() {
@@ -117,7 +124,7 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
   }
 
   _onMove = (/*number*/ deltaX) => {
-    this._distance = this.state.dragDistance + deltaX * Locale.getDirSign();
+    this._distance = this.state.dragDistance + deltaX * this.DIR_SIGN;
   }
 
   _onColumnReorderEnd = (/*boolean*/ cancelReorder) => {

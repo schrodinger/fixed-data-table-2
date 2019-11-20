@@ -7,7 +7,6 @@ import sinon from 'sinon';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Table, Column } from '../src/FixedDataTableRoot';
-import Locale from '../src/stubs/Locale';
 import * as requestAnimation from '../src/vendor_upstream/core/requestAnimationFramePolyfill';
 import { 
   createRenderer,
@@ -186,22 +185,9 @@ describe('FixedDataTableRoot', function() {
 
   describe('RTL scroll', function () {
     describe('RTL', function() {
-      let rtlStub;
-      let dir_signStub;
-
-      beforeEach(function() {
-        rtlStub = sinon.stub(Locale, "isRTL").returns(true);
-        dir_signStub = sinon.stub(Locale, "getDirSign").returns(-1);
-      });
-
-      afterEach(function() {
-        rtlStub.restore();
-        dir_signStub.restore();
-      });
-
       it('should flip wheel sign', function(done) {
         const scroll = -50;
-        let renderedTree = ReactDOM.render(<TestTable className="my-test-table"/>, node);
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={true}/>, node);
         let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
         let tableComponent = findRenderedComponentWithType(renderedTree, TestTable);
         let scrollToXSpy = sinon.spy(tableComponent._tableRef.scrollActions, "scrollToX");
@@ -222,7 +208,7 @@ describe('FixedDataTableRoot', function() {
 
       it('should not scroll past 0 bounds', function(done) {
         const scroll = 50;
-        let renderedTree = ReactDOM.render(<TestTable className="my-test-table"/>, node);
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={true}/>, node);
         let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
         let tableComponent = findRenderedComponentWithType(renderedTree, TestTable);
         let scrollToXSpy = sinon.spy(tableComponent._tableRef.scrollActions, "scrollToX");
@@ -242,7 +228,7 @@ describe('FixedDataTableRoot', function() {
 
       it('should apply correct left/right transform', function(done) {
         const scroll = -50;
-        let renderedTree = ReactDOM.render(<TestTable className="my-test-table"/>, node);
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={true}/>, node);
         let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
 
         let wheelEvent = document.createEvent("mouseevent");
@@ -265,22 +251,9 @@ describe('FixedDataTableRoot', function() {
     });
 
     describe('LTR', function() {
-      let rtlStub;
-      let dir_signStub;
-
-      beforeEach(function() {
-        rtlStub = sinon.stub(Locale, "isRTL").returns(false);
-        dir_signStub = sinon.stub(Locale, "getDirSign").returns(1);
-      });
-
-      afterEach(function() {
-        rtlStub.restore();
-        dir_signStub.restore();
-      });
-
       it('should flip wheel sign', function(done) {
         const scroll = 50;
-        let renderedTree = ReactDOM.render(<TestTable className="my-test-table"/>, node);
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={false}/>, node);
         let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
         let tableComponent = findRenderedComponentWithType(renderedTree, TestTable);
         let scrollToXSpy = sinon.spy(tableComponent._tableRef.scrollActions, "scrollToX");
@@ -301,7 +274,7 @@ describe('FixedDataTableRoot', function() {
 
       it('should not scroll past 0 bounds', function(done) {
         const scroll = -50;
-        let renderedTree = ReactDOM.render(<TestTable className="my-test-table"/>, node);
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={false}/>, node);
         let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
         let tableComponent = findRenderedComponentWithType(renderedTree, TestTable);
         let scrollToXSpy = sinon.spy(tableComponent._tableRef.scrollActions, "scrollToX");
@@ -321,7 +294,7 @@ describe('FixedDataTableRoot', function() {
 
       it('should apply correct left/right transform', function(done) {
         const scroll = 50;
-        let renderedTree = ReactDOM.render(<TestTable className="my-test-table"/>, node);
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={false}/>, node);
         let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
 
         let wheelEvent = document.createEvent("mouseevent");

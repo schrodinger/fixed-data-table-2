@@ -16,7 +16,7 @@
   width: 12px;
 }
 
-html[dir="rtl"] .fixedDataTableColumnResizerLineLayout/mouseArea  {
+.fixedDataTable_isRTL .fixedDataTableColumnResizerLineLayout/mouseArea  {
   right: auto;
   left: -5px;
 }
@@ -30,7 +30,7 @@ html[dir="rtl"] .fixedDataTableColumnResizerLineLayout/mouseArea  {
   pointer-events: none;
 }
 
-html[dir="rtl"] .fixedDataTableColumnResizerLineLayout/main {
+.fixedDataTable_isRTL .fixedDataTableColumnResizerLineLayout/main {
   border-right-width: 0;
   border-left-style: solid;
   border-left-width: 1px;

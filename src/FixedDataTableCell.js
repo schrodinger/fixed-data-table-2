@@ -12,7 +12,6 @@
 
 import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
-import Locale from 'Locale';
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'cx';
@@ -85,7 +84,14 @@ class FixedDataTableCell extends React.Component {
      * Whether the cell group is part of the header or footer
      */
     isHeaderOrFooter: PropTypes.bool,
+
+    /**
+     * If the component should render for RTL direction
+     */
+    isRTL: PropTypes.bool,
   }
+
+  DIR_SIGN = 1;
 
   state = {
     isReorderingThisColumn: false,
@@ -188,6 +194,8 @@ class FixedDataTableCell extends React.Component {
       newState.displacement = 0;
     }
 
+    this.DIR_SIGN = props.isRTL ? -1 : 1;
+
     this.setState(newState);
   }
 
@@ -205,14 +213,14 @@ class FixedDataTableCell extends React.Component {
       width,
     };
 
-    if (Locale.isRTL()) {
+    if (this.props.isRTL) {
       style.right = props.left;
     } else {
       style.left = props.left;
     }
 
     if (this.state.isReorderingThisColumn) {
-      style.transform = `translateX(${this.state.displacement * Locale.getDirSign()}px) translateZ(0)`;
+      style.transform = `translateX(${this.state.displacement * this.DIR_SIGN}px) translateZ(0)`;
       style.zIndex = 1;
     }
 

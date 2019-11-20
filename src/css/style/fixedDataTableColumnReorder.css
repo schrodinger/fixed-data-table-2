@@ -10,7 +10,7 @@
   cursor: move;
 }
 
-html[dir="rtl"] .fixedDataTableCellLayout/columnReorderContainer {
+.fixedDataTable_isRTL .fixedDataTableCellLayout/columnReorderContainer {
   margin-right: auto;
   margin-left: -12px;
   float: right;
@@ -24,7 +24,7 @@ html[dir="rtl"] .fixedDataTableCellLayout/columnReorderContainer {
 	transform: translateY(-50%);
 }
 
-html[dir="rtl"] .fixedDataTableCellLayout/columnReorderContainer:after {
+.fixedDataTable_isRTL .fixedDataTableCellLayout/columnReorderContainer:after {
   left: auto;
   right: 1px;
 }

@@ -39,7 +39,7 @@
   width: 0;
 }
 
-html[dir="rtl"] .fixedDataTableRowLayout/fixedColumnsDivider {
+.fixedDataTable_isRTL .fixedDataTableRowLayout/fixedColumnsDivider {
   border-left-width: 0;
   border-right-style: solid;
   border-right-width: 1px;
@@ -54,7 +54,7 @@ html[dir="rtl"] .fixedDataTableRowLayout/fixedColumnsDivider {
   right: 1px;
 }
 
-html[dir="rtl"] .fixedDataTableRowLayout/columnsRightShadow {
+.fixedDataTable_isRTL .fixedDataTableRowLayout/columnsRightShadow {
   left: 1px;
   right: auto;
 }

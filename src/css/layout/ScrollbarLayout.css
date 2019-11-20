@@ -73,8 +73,8 @@
   width: 100%;
 }
 
-html[dir="rtl"] .ScrollbarLayout/faceHorizontal,
-html[dir="rtl"] .ScrollbarLayout/faceHorizontal:after {
+.fixedDataTable_isRTL .ScrollbarLayout/faceHorizontal,
+.fixedDataTable_isRTL .ScrollbarLayout/faceHorizontal:after {
   right: 0;
   left: auto;
 }

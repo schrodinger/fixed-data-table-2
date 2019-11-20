@@ -18,7 +18,6 @@
 import emptyFunction from 'emptyFunction';
 import normalizeWheel from 'normalizeWheel';
 import requestAnimationFramePolyfill from 'requestAnimationFramePolyfill';
-import Locale from 'Locale';
 
 class ReactWheelHandler {
   /**
@@ -31,8 +30,9 @@ class ReactWheelHandler {
     /*function*/ onWheel,
     /*boolean|function*/ handleScrollX,
     /*boolean|function*/ handleScrollY,
+    /*?boolean*/ isRTL,
     /*?boolean*/ preventDefault,
-    /*?boolean*/ stopPropagation
+    /*?boolean*/ stopPropagation,
   ) {
     this._animationFrameID = null;
     this._deltaX = 0;
@@ -58,6 +58,8 @@ class ReactWheelHandler {
     this._stopPropagation = stopPropagation;
     this._onWheelCallback = onWheel;
     this.onWheel = this.onWheel.bind(this);
+
+    this._isRTL = isRTL;
   }
 
   onWheel(/*object*/ event) {
@@ -71,7 +73,7 @@ class ReactWheelHandler {
     if (event.shiftKey && ReactWheelHandler._allowInternalAxesSwap()) {
       normalizedEvent = ReactWheelHandler._swapNormalizedWheelAxis(normalizedEvent);
     } else if (!event.shiftKey) {
-      normalizedEvent.pixelX *= Locale.getDirSign();
+      normalizedEvent.pixelX *= (this._isRTL ? -1 : 1);
     }
 
     var deltaX = this._deltaX + normalizedEvent.pixelX;

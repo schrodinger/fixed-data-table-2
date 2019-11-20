@@ -20,7 +20,7 @@
   white-space: normal;
 }
 
-html[dir="rtl"] .fixedDataTableCellLayout/main {
+.fixedDataTable_isRTL .fixedDataTableCellLayout/main {
   border-right-width: 0;
   border-left-style: solid;
   border-left-width: 1px;
@@ -58,7 +58,7 @@ html[dir="rtl"] .fixedDataTableCellLayout/main {
   z-index: 1;
 }
 
-html[dir="rtl"] .fixedDataTableCellLayout/columnResizerContainer {
+.fixedDataTable_isRTL .fixedDataTableCellLayout/columnResizerContainer {
   left: 0px;
   right: auto;
 }
@@ -78,7 +78,7 @@ html[dir="rtl"] .fixedDataTableCellLayout/columnResizerContainer {
   width: 4px;
 }
 
-html[dir="rtl"] .fixedDataTableCellLayout/columnResizerKnob {
+.fixedDataTable_isRTL .fixedDataTableCellLayout/columnResizerKnob {
   left: 0px;
   right: auto;
 }

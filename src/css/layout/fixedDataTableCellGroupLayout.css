@@ -18,7 +18,7 @@
   white-space: nowrap;
 }
 
-html[dir="rtl"] .fixedDataTableCellGroupLayout/cellGroup {
+.fixedDataTable_isRTL .fixedDataTableCellGroupLayout/cellGroup {
   right: 0;
   left: auto;
 }
