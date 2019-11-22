@@ -1,10 +1,13 @@
 var path = require('path');
 var webpack = require('webpack');
 var resolvers = require('../build_helpers/resolvers');
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 var isDev = process.env.NODE_ENV !== 'production';
 
 module.exports = {
+  mode: isDev ? 'development' : 'production',
+
   entry: path.join(__dirname, 'renderPath.js'),
 
   output: {
@@ -16,7 +19,7 @@ module.exports = {
   target: 'node',
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.md$/,
         loader: [
@@ -62,11 +65,15 @@ module.exports = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false
-      }
-    })
-  );
+  module.exports.optimization = {
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          compressor: {
+            warnings: false
+          }
+        }
+      })
+    ]
+  }
 }

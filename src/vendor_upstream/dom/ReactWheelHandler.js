@@ -30,12 +30,15 @@ class ReactWheelHandler {
     /*function*/ onWheel,
     /*boolean|function*/ handleScrollX,
     /*boolean|function*/ handleScrollY,
-    /*?boolean|?function*/ stopPropagation
+    /*?boolean*/ preventDefault,
+    /*?boolean*/ stopPropagation
   ) {
     this._animationFrameID = null;
     this._deltaX = 0;
     this._deltaY = 0;
     this._didWheel = this._didWheel.bind(this);
+    this._rootRef = null;
+
     if (typeof handleScrollX !== 'function') {
       handleScrollX = handleScrollX ?
         emptyFunction.thatReturnsTrue :
@@ -48,21 +51,26 @@ class ReactWheelHandler {
         emptyFunction.thatReturnsFalse;
     }
 
-    if (typeof stopPropagation !== 'function') {
-      stopPropagation = stopPropagation ?
-        emptyFunction.thatReturnsTrue :
-        emptyFunction.thatReturnsFalse;
-    }
-
     this._handleScrollX = handleScrollX;
     this._handleScrollY = handleScrollY;
+    this._preventDefault = preventDefault;
     this._stopPropagation = stopPropagation;
     this._onWheelCallback = onWheel;
     this.onWheel = this.onWheel.bind(this);
   }
 
   onWheel(/*object*/ event) {
+    if (this._preventDefault) {
+      event.preventDefault();
+    }
+
     var normalizedEvent = normalizeWheel(event);
+
+    // if shift is held, swap the axis of scrolling.
+    if (event.shiftKey && ReactWheelHandler._allowInternalAxesSwap()) {
+      normalizedEvent = ReactWheelHandler._swapNormalizedWheelAxis(normalizedEvent);
+    }
+
     var deltaX = this._deltaX + normalizedEvent.pixelX;
     var deltaY = this._deltaY + normalizedEvent.pixelY;
     var handleScrollX = this._handleScrollX(deltaX, deltaY);
@@ -71,13 +79,21 @@ class ReactWheelHandler {
       return;
     }
 
+    if (this._rootRef && !this._contains(event.target)) {
+      return;
+    }
+
     this._deltaX += handleScrollX ? normalizedEvent.pixelX : 0;
     this._deltaY += handleScrollY ? normalizedEvent.pixelY : 0;
-    event.preventDefault();
+
+    // This will result in a scroll to the table, so there's no need to let the parent containers scroll
+    if (!event.defaultPrevented) {
+      event.preventDefault();
+    }
 
     var changed;
     if (this._deltaX !== 0 || this._deltaY !== 0) {
-      if (this._stopPropagation()) {
+      if (this._stopPropagation) {
         event.stopPropagation();
       }
       changed = true;
@@ -88,12 +104,40 @@ class ReactWheelHandler {
     }
   }
 
+  setRoot(rootRef) {
+    this._rootRef = rootRef;
+  }
+
   _didWheel() {
     this._animationFrameID = null;
     this._onWheelCallback(this._deltaX, this._deltaY);
     this._deltaX = 0;
     this._deltaY = 0;
   }
+
+  _contains(target) {
+    var parent = target;
+    while (parent != document.body) {
+      if (parent === this._rootRef) {
+        return true;
+      }
+      parent = parent.parentNode;
+    }
+    return false;
+  }
+
+  static _swapNormalizedWheelAxis(/*object*/normalizedEvent) /*object*/{
+    return {
+      spinX: normalizedEvent.spinY,
+      spinY: normalizedEvent.spinX,
+      pixelX: normalizedEvent.pixelY,
+      pixelY: normalizedEvent.pixelX,
+    };
+  }
+
+  static _allowInternalAxesSwap() /*boolean*/{
+    return navigator.platform !== "MacIntel";
+  }
 }
 
-module.exports = ReactWheelHandler;
+export default ReactWheelHandler;

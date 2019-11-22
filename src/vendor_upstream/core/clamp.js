@@ -10,13 +10,13 @@
  * @typechecks
  */
 
- /**
-  * Clamps (or clips or confines) the value to be between min and max.
-  * @param {number} value
-  * @param {number} min
-  * @param {number} max
-  * @return {number}
-  */
+/**
+ * Clamps (or clips or confines) the value to be between min and max.
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ * @return {number}
+ */
 function clamp(value, min, max) {
   if (value < min) {
     return min;
@@ -27,4 +27,4 @@ function clamp(value, min, max) {
   return value;
 }
 
-module.exports = clamp;
+export default clamp;

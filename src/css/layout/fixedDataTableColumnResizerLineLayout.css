@@ -22,6 +22,7 @@
   box-sizing: border-box;
   position: absolute;
   z-index: 10;
+  pointer-events: none;
 }
 
 body[dir="rtl"] .fixedDataTableColumnResizerLineLayout/main {

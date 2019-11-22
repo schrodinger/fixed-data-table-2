@@ -5,7 +5,7 @@
 var glob = require('glob');
 var path = require('path');
 var fs = require('fs');
-var babel = require('babel-core');
+var babel = require('@babel/core');
 
 var internalPath = path.join(__dirname, '../internal');
 if (!fs.existsSync(internalPath)) {
@@ -13,8 +13,8 @@ if (!fs.existsSync(internalPath)) {
 }
 
 var providesModuleRegex = /@providesModule ([^\s*]+)/;
-var moduleRequireRegex = /=\s+require\((?:'|")([\w\.\/]+)(?:'|")\);/gm;
-var excludePathRegex = /^react($|\/)/;
+var moduleRequireRegex = /require\((?:'|")([\w\.\/]+)(?:'|")\)/gm;
+var excludePathRegex = /^(react|lodash|redux|reselect)($|\/)/;
 var findDEVRegex = /__DEV__/g;
 
 function replaceRequirePath(match, modulePath) {
@@ -24,7 +24,7 @@ function replaceRequirePath(match, modulePath) {
     path = './' + path;
   }
 
-  return '= require(\'' + path + '\');';
+  return 'require(\'' + path + '\')';
 }
 
 var babelConf = JSON.parse(

@@ -25,7 +25,6 @@
 }
 
 .ScrollbarLayout/mainHorizontal {
-  bottom: 0;
   height: var(--scrollbar-size);
   left: 0;
   transition-property: background-color height;
@@ -44,7 +43,7 @@
   z-index: 1;
   transition-duration: 250ms;
   transition-timing-function: ease;
-  transition-property: background-color width position;
+  transition-property: width;
 }
 
 /**

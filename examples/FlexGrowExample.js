@@ -4,10 +4,10 @@
 
 "use strict";
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { TextCell, ColoredTextCell } = require('./helpers/cells');
-const { Table, Column, Cell } = require('fixed-data-table-2');
-const React = require('react');
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { TextCell, ColoredTextCell } from './helpers/cells';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import React from 'react';
 
 class FlexGrowExample extends React.Component {
   constructor(props) {
@@ -60,4 +60,4 @@ class FlexGrowExample extends React.Component {
   }
 }
 
-module.exports = FlexGrowExample;
+export default FlexGrowExample;

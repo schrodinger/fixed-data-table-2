@@ -4,10 +4,10 @@
 
 "use strict";
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { TextCell } = require('./helpers/cells');
-const { Table, Column, Cell } = require('fixed-data-table-2');
-const React = require('react');
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { TextCell } from './helpers/cells';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import React from 'react';
 
 var SortTypes = {
   ASC: 'ASC',
@@ -30,7 +30,7 @@ class SortHeaderCell extends React.Component {
     return (
       <Cell {...props}>
         <a onClick={this._onSortChange}>
-          {children} {sortDir ? (sortDir === SortTypes.DESC ? '↑' : '↓') : ''}
+          {children} {sortDir ? (sortDir === SortTypes.DESC ? '↓' : '↑') : ''}
         </a>
       </Cell>
     );
@@ -99,7 +99,7 @@ class SortExample extends React.Component {
       if (valueA < valueB) {
         sortVal = -1;
       }
-      if (sortVal !== 0 && sortDir === SortTypes.ASC) {
+      if (sortVal !== 0 && sortDir === SortTypes.DESC) {
         sortVal = sortVal * -1;
       }
 
@@ -189,4 +189,4 @@ class SortExample extends React.Component {
   }
 }
 
-module.exports = SortExample;
+export default SortExample;

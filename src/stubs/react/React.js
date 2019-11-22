@@ -9,4 +9,4 @@
  * @providesModule React
  */
 
-module.exports = require('react');
+export default require('react');

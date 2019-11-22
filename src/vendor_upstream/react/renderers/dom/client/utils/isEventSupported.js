@@ -60,4 +60,4 @@ function isEventSupported(eventNameSuffix, capture) {
   return isSupported;
 }
 
-module.exports = isEventSupported;
+export default isEventSupported;

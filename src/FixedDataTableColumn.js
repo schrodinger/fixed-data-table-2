@@ -10,7 +10,7 @@
  * @typechecks
  */
 
-import React from 'React';
+import React from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -149,9 +149,9 @@ class FixedDataTableColumn extends React.Component {
    flexGrow: PropTypes.number,
 
    /**
-    * Whether the column can be resized with the
-    * FixedDataTableColumnResizeHandle. Please note that if a column
-    * has a flex grow, once you resize the column this will be set to 0.
+    * Whether the column can be resized.
+    * Please note that if a column has a flex grow, once you resize
+    * the column, this will be set to 0.
     *
     * This property only provides the UI for the column resizing. If this
     * is set to true, you will need to set the onColumnResizeEndCallback table
@@ -199,4 +199,4 @@ class FixedDataTableColumn extends React.Component {
  }
 }
 
-module.exports = FixedDataTableColumn;
+export default FixedDataTableColumn;

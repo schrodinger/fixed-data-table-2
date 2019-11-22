@@ -10,25 +10,20 @@
  * that when you click on a column that is resizable appears and allows
  * you to resize the corresponding column.
  *
- * @providesModule FixedDataTableColumnResizeHandle
+ * @providesModule ColumnResizerLine
  * @typechecks
  */
 
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import Locale from 'Locale';
-import React from 'React';
-import createReactClass from 'create-react-class';
+import React from 'react';
 import PropTypes from 'prop-types';
-import ReactComponentWithPureRenderMixin from 'ReactComponentWithPureRenderMixin';
 
 import clamp from 'clamp';
 import cx from 'cx';
 
-var FixedDataTableColumnResizeHandle = createReactClass({
-  displayName: 'FixedDataTableColumnResizeHandle',
-  mixins: [ReactComponentWithPureRenderMixin],
-
-  propTypes: {
+class ColumnResizerLine extends React.PureComponent {
+  static propTypes = {
     visible: PropTypes.bool.isRequired,
 
     /**
@@ -87,14 +82,12 @@ var FixedDataTableColumnResizeHandle = createReactClass({
      * Whether the resize handle should respond to touch events or not.
      */
     touchEnabled: PropTypes.bool,
-  },
+  }
 
-  getInitialState() /*object*/ {
-    return {
-      width: 0,
-      cursorDelta: 0
-    };
-  },
+  state = /*object*/ {
+    width: 0,
+    cursorDelta: 0,
+  }
 
   componentWillReceiveProps(/*object*/ newProps) {
     if (newProps.initialEvent && !this._mouseMoveTracker.isDragging()) {
@@ -104,7 +97,7 @@ var FixedDataTableColumnResizeHandle = createReactClass({
         cursorDelta: newProps.initialWidth
       });
     }
-  },
+  }
 
   componentDidMount() {
     this._mouseMoveTracker = new DOMMouseMoveTracker(
@@ -113,12 +106,12 @@ var FixedDataTableColumnResizeHandle = createReactClass({
       document.body,
       this.props.touchEnabled
     );
-  },
+  }
 
   componentWillUnmount() {
     this._mouseMoveTracker.releaseMouseMoves();
     this._mouseMoveTracker = null;
-  },
+  }
 
   render() /*object*/ {
     var style = {
@@ -140,13 +133,13 @@ var FixedDataTableColumnResizeHandle = createReactClass({
         style={style}>
         <div
           className={cx('fixedDataTableColumnResizerLineLayout/mouseArea')}
-          style={{height: this.props.height}}
+          style={{ height: this.props.height }}
         />
       </div>
     );
-  },
+  }
 
-  _onMove(/*number*/ deltaX) {
+  _onMove = (/*number*/ deltaX) => {
     if (Locale.isRTL()) {
       deltaX = -deltaX;
     }
@@ -160,15 +153,14 @@ var FixedDataTableColumnResizeHandle = createReactClass({
       width: newColumnWidth,
       cursorDelta: newWidth
     });
-  },
+  }
 
-  _onColumnResizeEnd() {
+  _onColumnResizeEnd = () => {
     this._mouseMoveTracker.releaseMouseMoves();
     this.props.onColumnResizeEnd(
       this.state.width,
       this.props.columnKey
     );
-  },
-});
-
-module.exports = FixedDataTableColumnResizeHandle;
+  }
+}
+export default ColumnResizerLine;

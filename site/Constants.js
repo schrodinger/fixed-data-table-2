@@ -10,7 +10,6 @@ exports.DocsPages = {
   DOCS: {
     groupTitle: 'Guides',
     GETTING_STARTED: {location: 'getting-started.html', title: 'Getting Started'},
-    V6_MIGRATION: {location: 'v6-migration.html', title: 'v0.6 API Migration'},
     ROADMAP: {location: 'roadmap.html', title: 'Roadmap'},
     CODEBASE_OVERVIEW: {location: 'codebase.html', title: 'Codebase Overview'},
   },
@@ -21,12 +20,6 @@ exports.DocsPages = {
     COLUMNGROUP_API: {location: 'api-columngroup.html', title: 'Column Group'},
     CELL_API: {location: 'api-cell.html', title: 'Cell'},
   },
-  API_V5: {
-    groupTitle: 'API - v0.5',
-    TABLE_API: {location: 'api-table-v0.5.html', title: 'Table'},
-    COLUMN_API: {location: 'api-column-v0.5.html', title: 'Column'},
-    COLUMNGROUP_API: {location: 'api-columngroup-v0.5.html', title: 'Column Group'},
-  }
 };
 
 exports.ExamplePages = {
@@ -96,10 +89,10 @@ exports.ExamplePages = {
     title: 'Column Groups',
     description: 'Table with column groupings.',
   },
-  PAGINATION_EXAMPLE: {
-    location: 'example-pagination.html',
-    fileName: 'PaginationExample.js',
-    title: 'Pagination',
+  INFINITE_SCROLL_EXAMPLE: {
+    location: 'example-infinite-scroll.html',
+    fileName: 'InfiniteScrollExample.js',
+    title: 'Infinite Scroll',
     description: 'A table example that pages in data as the user scrolls. We fake this by having a promise that resolves after a few milliseconds',
   },
   FILTER_EXAMPLE: {
@@ -132,6 +125,24 @@ exports.ExamplePages = {
     title: 'Tooltips',
     description: 'A table example that displays additional information in a tooltip.'
   },
+  FOOTER_EXAMPLE: {
+    location: 'example-footer.html',
+    fileName: 'FooterExample.js',
+    title: 'Footer',
+    description: 'A table example that displays a footer.'
+  },
+  MAX_HEIGHT_EXAMPLE: {
+    location: 'example-max-height.html',
+    fileName: 'MaxHeightExample.js',
+    title: 'Max Height',
+    description: 'A table example that displays a table growing to it\'s max height.'
+  },
+  OWNER_HEIGHT_EXAMPLE: {
+    location: 'example-owner-height.html',
+    fileName: 'OwnerHeightExample.js',
+    title: 'Owner Height',
+    description: 'A table example that displays a table footer sticking to the screen.'
+  },
   LONG_CLICK_EXAMPLE: {
     location: 'example-long-click.html',
     fileName: 'LongClickExample.js',
@@ -144,6 +155,18 @@ exports.ExamplePages = {
     title: 'Data Context (Advanced)',
     description: 'A table example using a data context to pass data to the cells.' +
     ' The table is paginated and filterable by first and last name.',
+  },
+  FIXED_ROWS_EXAMPLE: {
+    location: 'example-fixed-rows.html',
+    fileName: 'FixedRowsExample.js',
+    title: 'Fixed Rows',
+    description: 'An example using multiple tables to mimic fixed rows.',
+  },
+  AUTO_SCROLL_EXAMPLE: {
+    location: 'example-auto-scroll.html',
+    fileName: 'AutoScrollExample.js',
+    title: 'Auto Scroll',
+    description: 'An example using Controlled Scrolling to mimic auto scrolling',
   },
 };
 

@@ -36,6 +36,7 @@
 .public/fixedDataTable/scrollbarSpacer {
   position: absolute;
   z-index: 99;
+  top: 0;
 }
 
 .public/fixedDataTable/footer .public/fixedDataTableCell/main {
@@ -44,11 +45,11 @@
 }
 
 .public/fixedDataTable/topShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAF0lEQVR4AWPUkNeSBhHCjJoK2twgFisAFagCCp3pJlAAAAAASUVORK5CYII=) repeat-x;
+  background-image: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public/fixedDataTable/bottomShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAHElEQVQI12MwNjZmZdAT1+Nm0JDWEGZQk1GTBgAWkwIeAEp52AAAAABJRU5ErkJggg==) repeat-x;
+  background-image: linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public/fixedDataTable/horizontalScrollbar .public/Scrollbar/mainHorizontal {

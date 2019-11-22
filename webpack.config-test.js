@@ -2,7 +2,11 @@ var webpack = require('webpack');
 var resolvers = require('./build_helpers/resolvers');
 var path = require('path');
 
+var isDev = JSON.stringify(process.env.NODE_ENV !== 'production');
+
 module.exports = {
+  mode: isDev ? 'development' : 'production',
+
   resolve: {
     plugins: [resolvers.resolveHasteDefines]
   },
@@ -23,18 +27,21 @@ module.exports = {
   },
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader?plugins=babel-plugin-rewire'
+        loader: 'babel-loader',
+        options: {
+          plugins: ['babel-plugin-rewire']
+        }
       }
     ]
   },
 
   plugins: [
     new webpack.DefinePlugin({
-      '__DEV__': JSON.stringify(process.env.NODE_ENV !== 'production')
+      '__DEV__': isDev
     })
   ]
 };

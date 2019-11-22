@@ -37,4 +37,4 @@ var FixedDataTableEventHelper = {
     getCoordinatesFromEvent,
   };
 
-module.exports = FixedDataTableEventHelper;
+export default FixedDataTableEventHelper;

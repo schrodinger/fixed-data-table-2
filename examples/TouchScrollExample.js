@@ -4,10 +4,10 @@
 
 "use strict";
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { TextCell } = require('./helpers/cells');
-const { Table, Column, Cell } = require('fixed-data-table-2');
-const React = require('react');
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { TextCell } from './helpers/cells';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import React from 'react';
 
 class TouchScrollExample extends React.Component {
   constructor(props) {
@@ -18,54 +18,53 @@ class TouchScrollExample extends React.Component {
   }
 
   render() {
-    let {dataList, collapsedRows} = this.state;
+    const { dataList } = this.state;
 
     return (
-      <div>
-        <Table
-          rowHeight={50}
-          rowsCount={dataList.getSize()}
-          headerHeight={50}
-          touchScrollEnabled={true}
-          width={1000}
-          height={500}
-          {...this.props}>
-          <Column
-            columnKey="firstName"
-            header={<Cell>First Name</Cell>}
-            cell={<TextCell data={dataList} />}
-            fixed={true}
-            width={100}
-          />
-          <Column
-            columnKey="lastName"
-            header={<Cell>Last Name</Cell>}
-            cell={<TextCell data={dataList} />}
-            fixed={true}
-            width={100}
-          />
-          <Column
-            columnKey="city"
-            header={<Cell>City</Cell>}
-            cell={<TextCell data={dataList} />}
-            width={100}
-          />
-          <Column
-            columnKey="street"
-            header={<Cell>Street</Cell>}
-            cell={<TextCell data={dataList} />}
-            width={200}
-          />
-          <Column
-            columnKey="zipCode"
-            header={<Cell>Zip Code</Cell>}
-            cell={<TextCell data={dataList} />}
-            width={200}
-          />
-        </Table>
-      </div>
+      <Table
+        rowHeight={50}
+        rowsCount={dataList.getSize()}
+        headerHeight={50}
+        touchScrollEnabled={true}
+        width={1000}
+        height={500}
+        {...this.props}
+      >
+        <Column
+          columnKey="firstName"
+          header={<Cell>First Name</Cell>}
+          cell={<TextCell data={dataList} />}
+          fixed={true}
+          width={100}
+        />
+        <Column
+          columnKey="lastName"
+          header={<Cell>Last Name</Cell>}
+          cell={<TextCell data={dataList} />}
+          fixed={true}
+          width={100}
+        />
+        <Column
+          columnKey="city"
+          header={<Cell>City</Cell>}
+          cell={<TextCell data={dataList} />}
+          width={100}
+        />
+        <Column
+          columnKey="street"
+          header={<Cell>Street</Cell>}
+          cell={<TextCell data={dataList} />}
+          width={200}
+        />
+        <Column
+          columnKey="zipCode"
+          header={<Cell>Zip Code</Cell>}
+          cell={<TextCell data={dataList} />}
+          width={200}
+        />
+      </Table>
     );
   }
 }
 
-module.exports = TouchScrollExample;
+export default TouchScrollExample;

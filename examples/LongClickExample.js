@@ -4,22 +4,22 @@
 
 'use strict';
 
-const FakeObjectDataListStore = require('./helpers/FakeObjectDataListStore');
-const { TextCell } = require('./helpers/cells');
-const { Table, Column, Cell } = require('fixed-data-table-2');
-const React = require('react');
+import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
+import { TextCell } from './helpers/cells';
+import { Table, Column, Cell } from 'fixed-data-table-2';
+import React from 'react';
 
 class LongClickExample extends React.Component {
 
   longClickTimer = null;
-  
+
   displayColumns = {
     firstName: 'First Name',
     lastName: 'Last Name',
     city: 'City',
     street: 'zipCode',
   };
-  
+
   constructor(props) {
     super(props);
 
@@ -72,12 +72,12 @@ class LongClickExample extends React.Component {
 
   getCell(rowIndex, columnKey) {
     let isCellHighlighted = this.state.longPressedRowIndex === rowIndex;
-      
+
     let rowStyle = {
       backgroundColor: isCellHighlighted ? 'yellow' : 'transparent',
       width: '100%',
       height: '100%'
-    } 
+    }
 
     return <TextCell style={rowStyle}
       data={this.state.dataList}
@@ -102,4 +102,4 @@ class LongClickExample extends React.Component {
   }
 }
 
-module.exports = LongClickExample;
+export default LongClickExample;
