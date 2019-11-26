@@ -46,14 +46,11 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
     isRTL: PropTypes.bool,
   }
 
-  DIR_SIGN = 1
-
   state = /*object*/ {
     dragDistance: 0
   }
 
   componentWillReceiveProps(/*object*/ newProps) {
-    this.DIR_SIGN = newProps.isRTL ? -1 : 1;
   }
 
   componentWillUnmount() {
@@ -124,7 +121,7 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
   }
 
   _onMove = (/*number*/ deltaX) => {
-    this._distance = this.state.dragDistance + deltaX * this.DIR_SIGN;
+    this._distance = this.state.dragDistance + deltaX * (this.props.isRTL ? -1 : 1);
   }
 
   _onColumnReorderEnd = (/*boolean*/ cancelReorder) => {
