@@ -215,8 +215,8 @@ class FixedDataTableCell extends React.Component {
       style.left = props.left;
     }
     
-    const DIR_SIGN = this.props.isRTL ? -1 : 1;
     if (this.state.isReorderingThisColumn) {
+      const DIR_SIGN = this.props.isRTL ? -1 : 1;
       style.transform = `translateX(${this.state.displacement * DIR_SIGN}px) translateZ(0)`;
       style.zIndex = 1;
     }
