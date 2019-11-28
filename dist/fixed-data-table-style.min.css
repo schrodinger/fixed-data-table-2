@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.0.1 
+ * FixedDataTable v1.0.2 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -97,7 +97,12 @@
   background-color: #0284ff;
 }
 .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_cellContent {
-	margin-left: 12px;
+  margin-left: 12px;
+}
+
+.fixedDataTable_isRTL .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_cellContent {
+  margin-left: auto;
+  margin-right: 12px;
 }
 /**
  * Column reorder goodies.
@@ -110,12 +115,24 @@
   float: left;
   cursor: move;
 }
+
+.fixedDataTable_isRTL .fixedDataTableCellLayout_columnReorderContainer {
+  margin-right: auto;
+  margin-left: -12px;
+  float: right;
+}
+
 .fixedDataTableCellLayout_columnReorderContainer:after {
 	content: '::';
 	position: absolute;
 	top: 50%;
 	left: 1px;
 	transform: translateY(-50%);
+}
+
+.fixedDataTable_isRTL .fixedDataTableCellLayout_columnReorderContainer:after {
+  left: auto;
+  right: 1px;
 }
 /**
  * Copyright Schrodinger, LLC
@@ -166,6 +183,10 @@
   background-image: linear-gradient(90deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
+.fixedDataTable_isRTL .public_fixedDataTableRow_columnsShadow {
+  background-image: linear-gradient(270deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
+}
+
 .public_fixedDataTableRow_columnsRightShadow {
   transform: rotate(180deg);
 }
@@ -190,6 +211,12 @@
 .public_Scrollbar_main {
   background-color: #fff;
   border-left: 1px solid #d3d3d3;
+}
+
+.fixedDataTable_isRTL .public_Scrollbar_main.public_Scrollbar_mainActive,
+.fixedDataTable_isRTL .public_Scrollbar_main {
+  border-right: 1px solid #d3d3d3;
+  border-left-width: 0;
 }
 
 .public_Scrollbar_mainOpaque,
