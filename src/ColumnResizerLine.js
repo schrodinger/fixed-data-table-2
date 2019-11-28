@@ -15,7 +15,6 @@
  */
 
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
-import Locale from 'Locale';
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -82,6 +81,11 @@ class ColumnResizerLine extends React.PureComponent {
      * Whether the resize handle should respond to touch events or not.
      */
     touchEnabled: PropTypes.bool,
+
+    /**
+     * Whether the line should render in RTL mode
+     */
+    isRTL: PropTypes.bool,
   }
 
   state = /*object*/ {
@@ -118,7 +122,7 @@ class ColumnResizerLine extends React.PureComponent {
       width: this.state.width,
       height: this.props.height,
     };
-    if (Locale.isRTL()) {
+    if (this.props.isRTL) {
       style.right = this.props.leftOffset;
     } else {
       style.left = this.props.leftOffset;
@@ -140,7 +144,7 @@ class ColumnResizerLine extends React.PureComponent {
   }
 
   _onMove = (/*number*/ deltaX) => {
-    if (Locale.isRTL()) {
+    if (this.props.isRTL) {
       deltaX = -deltaX;
     }
     var newWidth = this.state.cursorDelta + deltaX;

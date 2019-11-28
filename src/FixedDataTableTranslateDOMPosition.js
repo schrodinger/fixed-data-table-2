@@ -10,9 +10,10 @@
  * @typechecks
  */
 
+import BrowserSupportCore from 'BrowserSupportCore';
 import translateDOMPositionXY from 'translateDOMPositionXY';
 
-function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*number*/ y, /*boolean*/ initialRender = false) {
+function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*number*/ y, /*boolean*/ initialRender = false, /*boolean*/ isRTL = false) {
   if (style.display === 'none') {
     return;
   }
@@ -20,7 +21,16 @@ function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*nu
     style.left = x + 'px';
     style.top = y + 'px';
   } else {
+    if (BrowserSupportCore.hasCSSTransforms()) {
+      x *= (isRTL ? -1 : 1);
+    }
+
     translateDOMPositionXY(style, x, y);
+  }
+
+  if (isRTL) {
+    style.right = style.left;
+    style.left = 'auto';
   }
 
 }

@@ -18,6 +18,11 @@
   white-space: nowrap;
 }
 
+.fixedDataTable_isRTL .fixedDataTableCellGroupLayout/cellGroup {
+  right: 0;
+  left: auto;
+}
+
 .fixedDataTableCellGroupLayout/cellGroup > .public/fixedDataTableCell/main {
   display: inline-block;
   vertical-align: top;

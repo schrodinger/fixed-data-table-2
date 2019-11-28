@@ -9,10 +9,22 @@
   float: left;
   cursor: move;
 }
+
+.fixedDataTable_isRTL .fixedDataTableCellLayout/columnReorderContainer {
+  margin-right: auto;
+  margin-left: -12px;
+  float: right;
+}
+
 .fixedDataTableCellLayout/columnReorderContainer:after {
 	content: '::';
 	position: absolute;
 	top: 50%;
 	left: 1px;
 	transform: translateY(-50%);
+}
+
+.fixedDataTable_isRTL .fixedDataTableCellLayout/columnReorderContainer:after {
+  left: auto;
+  right: 1px;
 }

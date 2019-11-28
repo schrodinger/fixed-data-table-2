@@ -29,5 +29,10 @@
   background-color: #0284ff;
 }
 .public/fixedDataTableCell/hasReorderHandle .public/fixedDataTableCell/cellContent {
-	margin-left: 12px;
+  margin-left: 12px;
+}
+
+.fixedDataTable_isRTL .public/fixedDataTableCell/hasReorderHandle .public/fixedDataTableCell/cellContent {
+  margin-left: auto;
+  margin-right: 12px;
 }

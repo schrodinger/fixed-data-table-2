@@ -12,14 +12,11 @@
 
 import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
-import FixedDataTableHelper from 'FixedDataTableHelper';
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
 import shallowEqual from 'shallowEqual';
-
-const DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -87,6 +84,11 @@ class FixedDataTableCell extends React.Component {
      * Whether the cell group is part of the header or footer
      */
     isHeaderOrFooter: PropTypes.bool,
+
+    /**
+     * If the component should render for RTL direction
+     */
+    isRTL: PropTypes.bool,
   }
 
   state = {
@@ -142,7 +144,6 @@ class FixedDataTableCell extends React.Component {
       if (props.columnKey === props.columnReorderingData.columnKey) {
         newState.displacement = reorderCellLeft - props.left;
         newState.isReorderingThisColumn = true;
-
       } else {
         var reorderCellRight = reorderCellLeft + props.columnReorderingData.columnWidth;
         var reorderCellCenter = reorderCellLeft + (props.columnReorderingData.columnWidth / 2);
@@ -152,8 +153,6 @@ class FixedDataTableCell extends React.Component {
         var cellWasOriginallyBeforeOneBeingDragged = originalLeft > props.left;
         var changedPosition = false;
 
-
-        var dragPoint, thisCellPoint;
         if (cellIsBeforeOneBeingDragged) {
           if (reorderCellLeft < centerOfThisColumn) {
             changedPosition = true;
@@ -204,20 +203,21 @@ class FixedDataTableCell extends React.Component {
   render() /*object*/ {
 
     var { height, width, columnKey, isHeaderOrFooter, ...props } = this.props;
-
+    
     var style = {
       height,
       width,
     };
-
-    if (DIR_SIGN === 1) {
-      style.left = props.left;
-    } else {
+    
+    if (this.props.isRTL) {
       style.right = props.left;
+    } else {
+      style.left = props.left;
     }
-
+    
     if (this.state.isReorderingThisColumn) {
-      style.transform = `translateX(${this.state.displacement}px) translateZ(0)`;
+      const DIR_SIGN = this.props.isRTL ? -1 : 1;
+      style.transform = `translateX(${this.state.displacement * DIR_SIGN}px) translateZ(0)`;
       style.zIndex = 1;
     }
 

@@ -18,6 +18,7 @@
 
 .fixedDataTableRowLayout/body {
   left: 0;
+  right: 0;
   position: absolute;
   top: 0;
 }
@@ -38,6 +39,12 @@
   width: 0;
 }
 
+.fixedDataTable_isRTL .fixedDataTableRowLayout/fixedColumnsDivider {
+  border-left-width: 0;
+  border-right-style: solid;
+  border-right-width: 1px;
+}
+
 .fixedDataTableRowLayout/columnsShadow {
   position: absolute;
   width: 4px;
@@ -45,6 +52,11 @@
 
 .fixedDataTableRowLayout/columnsRightShadow {
   right: 1px;
+}
+
+.fixedDataTable_isRTL .fixedDataTableRowLayout/columnsRightShadow {
+  left: 1px;
+  right: auto;
 }
 
 .fixedDataTableRowLayout/rowWrapper {

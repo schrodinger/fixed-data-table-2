@@ -46,7 +46,8 @@ class Scrollbar extends React.PureComponent {
     trackColor: PropTypes.oneOf(['gray']),
     touchEnabled: PropTypes.bool,
     zIndex: PropTypes.number,
-    verticalTop: PropTypes.number
+    verticalTop: PropTypes.number,
+    isRTL: PropTypes.bool
   }
 
   constructor(props) /*object*/ {
@@ -134,18 +135,26 @@ class Scrollbar extends React.PureComponent {
         width: size,
       };
       faceStyle = {
-        width: faceSize - FACE_MARGIN_2
+        width: faceSize - FACE_MARGIN_2,
+        top: 0,
+        bottom: 0,
       };
-      FixedDataTableTranslateDOMPosition(faceStyle, position, 0, this._initialRender);
+      FixedDataTableTranslateDOMPosition(faceStyle, position, 0, this._initialRender, this.props.isRTL);
     } else {
       mainStyle = {
         top: verticalTop,
         height: size,
       };
+      if (this.props.isRTL) {
+        mainStyle.left = mainStyle.right || 0;
+        mainStyle.right = 'auto';
+      }
       faceStyle = {
         height: faceSize - FACE_MARGIN_2,
       };
-      FixedDataTableTranslateDOMPosition(faceStyle, 0, position, this._initialRender);
+      FixedDataTableTranslateDOMPosition(faceStyle, 0, position, this._initialRender, this.props.isRTL);
+      faceStyle.left = 0;
+      faceStyle.right = 0;
     }
 
     mainStyle.touchAction = 'none';
@@ -183,8 +192,9 @@ class Scrollbar extends React.PureComponent {
 
     this._wheelHandler = new ReactWheelHandler(
       onWheel,
-      this._shouldHandleX, // Should hanlde horizontal scroll
-      this._shouldHandleY // Should handle vertical scroll
+      this._shouldHandleX, // Should handle horizontal scroll
+      this._shouldHandleY, // Should handle vertical scroll
+      this.props.isRTL
     );
     this._initialRender = true;
   }
@@ -384,7 +394,7 @@ class Scrollbar extends React.PureComponent {
 
   _onMouseMove = (/*number*/ deltaX, /*number*/ deltaY) => {
     var props = this.props;
-    var delta = this.state.isHorizontal ? deltaX : deltaY;
+    var delta = this.state.isHorizontal ? deltaX * (this.props.isRTL ? -1 : 1) : deltaY;
     delta /= this.state.scale;
 
     this._setNextState(

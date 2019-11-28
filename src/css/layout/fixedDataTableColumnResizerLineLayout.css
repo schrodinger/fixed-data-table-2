@@ -16,6 +16,11 @@
   width: 12px;
 }
 
+.fixedDataTable_isRTL .fixedDataTableColumnResizerLineLayout/mouseArea  {
+  right: auto;
+  left: -5px;
+}
+
 .fixedDataTableColumnResizerLineLayout/main {
   border-right-style: solid;
   border-right-width: 1px;
@@ -25,12 +30,10 @@
   pointer-events: none;
 }
 
-body[dir="rtl"] .fixedDataTableColumnResizerLineLayout/main {
-  /* the resizer line is in the wrong position in RTL with no easy fix.
-   * Disabling is more useful than displaying it.
-   * #167 (github) should look into this and come up with a permanent fix.
-   */
-  display: none !important;
+.fixedDataTable_isRTL .fixedDataTableColumnResizerLineLayout/main {
+  border-right-width: 0;
+  border-left-style: solid;
+  border-left-width: 1px;
 }
 
 .fixedDataTableColumnResizerLineLayout/hiddenElem {

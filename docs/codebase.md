@@ -96,8 +96,6 @@ File Descriptions
   * Semi-experimental
 * FixedDataTableTranslateDOMPosition.js
   * Helper to shim Facebook's translateDOMPositionXY to work for server-side rendering
-* FixedDataTableHelper.js
-  * Dead code - let's delete it!
 * convertColumnElementsToData.js
   * Parses columns (passed as React component)
   * Gives the templates (cell renderer) for the header, footer, and content

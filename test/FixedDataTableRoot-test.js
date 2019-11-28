@@ -3,10 +3,17 @@
  */
 
 import { assert } from 'chai';
+import sinon from 'sinon';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Table, Column } from '../src/FixedDataTableRoot';
-import { createRenderer, isElement, renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils';
+import * as requestAnimation from '../src/vendor_upstream/core/requestAnimationFramePolyfill';
+import { 
+  createRenderer,
+  findRenderedComponentWithType,
+  findRenderedDOMComponentWithClass,
+  isElement,
+} from 'react-addons-test-utils';
 
 describe('FixedDataTableRoot', function() {
   describe('render ', function() {
@@ -175,4 +182,138 @@ describe('FixedDataTableRoot', function() {
       assert.equal(table.getTableState().scrollY, 30 * 100, 'should be scrolled to 30th row');
     });
   });
+
+  describe('RTL scroll', function () {
+    describe('RTL', function() {
+      it('should flip wheel sign', function(done) {
+        const scroll = -50;
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={true}/>, node);
+        let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
+        let tableComponent = findRenderedComponentWithType(renderedTree, TestTable);
+        let scrollToXSpy = sinon.spy(tableComponent._tableRef.scrollActions, "scrollToX");
+
+        let wheelEvent = document.createEvent("mouseevent");
+        wheelEvent.initEvent("wheel", true, false);
+        wheelEvent.deltaMode = 0;
+        wheelEvent.deltaX = scroll;
+        tableDiv.dispatchEvent(wheelEvent);
+
+        setTimeout(() => {
+          assert(scrollToXSpy.calledOnce, "scrollToX should be called");
+          assert.equal(scrollToXSpy.getCall(0).args[0], -scroll, "scrollToX should be called with the correctly flipped value");
+          scrollToXSpy.restore();
+          done();
+        });
+      });
+
+      it('should not scroll past 0 bounds', function(done) {
+        const scroll = 50;
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={true}/>, node);
+        let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
+        let tableComponent = findRenderedComponentWithType(renderedTree, TestTable);
+        let scrollToXSpy = sinon.spy(tableComponent._tableRef.scrollActions, "scrollToX");
+
+        let wheelEvent = document.createEvent("mouseevent");
+        wheelEvent.initEvent("wheel", true, false);
+        wheelEvent.deltaMode = 0;
+        wheelEvent.deltaX = scroll;
+        tableDiv.dispatchEvent(wheelEvent);
+
+        setTimeout(() => {
+          assert(scrollToXSpy.notCalled, "scrollToX should not be called, since the scroll is past zero");
+          scrollToXSpy.restore();
+          done();
+        });
+      });
+
+      it('should apply correct left/right transform', function(done) {
+        const scroll = -50;
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={true}/>, node);
+        let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
+
+        let wheelEvent = document.createEvent("mouseevent");
+        wheelEvent.initEvent("wheel", true, false);
+        wheelEvent.deltaMode = 0;
+        wheelEvent.deltaX = scroll;
+        tableDiv.dispatchEvent(wheelEvent);
+
+        setTimeout(() => {
+          let tableBody = findRenderedDOMComponentWithClass(renderedTree, "public_fixedDataTable_header");
+          let cellGroupElements = tableBody.getElementsByClassName("fixedDataTableCellGroupLayout_cellGroup");
+          let scrollableCellGroup = cellGroupElements[1]; // The scrollable columns group (the middle index of [fixed left, scrollable, fixed right])
+
+          assert.equal(scrollableCellGroup.style.right, `${scroll}px`, "should translate the cell's right value when in RTL");
+          assert.equal(scrollableCellGroup.style.left, "", "should negate the cell's left value when in RTL");
+
+          done();
+        });
+      });
+    });
+
+    describe('LTR', function() {
+      it('should flip wheel sign', function(done) {
+        const scroll = 50;
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={false}/>, node);
+        let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
+        let tableComponent = findRenderedComponentWithType(renderedTree, TestTable);
+        let scrollToXSpy = sinon.spy(tableComponent._tableRef.scrollActions, "scrollToX");
+
+        let wheelEvent = document.createEvent("mouseevent");
+        wheelEvent.initEvent("wheel", true, false);
+        wheelEvent.deltaMode = 0;
+        wheelEvent.deltaX = scroll;
+        tableDiv.dispatchEvent(wheelEvent);
+
+        setTimeout(() => {
+          assert(scrollToXSpy.calledOnce, "scrollToX should be called");
+          assert.equal(scrollToXSpy.getCall(0).args[0], scroll, "scrollToX should be called with the correctly flipped value");
+          scrollToXSpy.restore();
+          done();
+        });
+      });
+
+      it('should not scroll past 0 bounds', function(done) {
+        const scroll = -50;
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={false}/>, node);
+        let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
+        let tableComponent = findRenderedComponentWithType(renderedTree, TestTable);
+        let scrollToXSpy = sinon.spy(tableComponent._tableRef.scrollActions, "scrollToX");
+
+        let wheelEvent = document.createEvent("mouseevent");
+        wheelEvent.initEvent("wheel", true, false);
+        wheelEvent.deltaMode = 0;
+        wheelEvent.deltaX = scroll;
+        tableDiv.dispatchEvent(wheelEvent);
+
+        setTimeout(() => {
+          assert(scrollToXSpy.notCalled, "scrollToX should not be called, since the scroll is past zero");
+          scrollToXSpy.restore();
+          done();
+        });
+      });
+
+      it('should apply correct left/right transform', function(done) {
+        const scroll = 50;
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={false}/>, node);
+        let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
+
+        let wheelEvent = document.createEvent("mouseevent");
+        wheelEvent.initEvent("wheel", true, false);
+        wheelEvent.deltaMode = 0;
+        wheelEvent.deltaX = scroll;
+        tableDiv.dispatchEvent(wheelEvent);
+
+        setTimeout(() => {
+          let tableBody = findRenderedDOMComponentWithClass(renderedTree, "public_fixedDataTable_header");
+          let cellGroupElements = tableBody.getElementsByClassName("fixedDataTableCellGroupLayout_cellGroup");
+          let scrollableCellGroup = cellGroupElements[1]; // The scrollable columns group (the middle index of [fixed left, scrollable, fixed right])
+
+          assert.equal(scrollableCellGroup.style.left, `${-scroll}px`, "should translate the cell's left value when in LTR");
+          assert.equal(scrollableCellGroup.style.right, "", "should negate the cell's right value when in LTR");
+
+          done();
+        });
+      });
+    });
+  })
 });

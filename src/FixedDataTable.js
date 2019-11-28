@@ -424,6 +424,11 @@ class FixedDataTable extends React.Component {
      */
     isColumnReordering: PropTypes.bool,
 
+    /**
+     * Whether the grid should be in RTL mode
+     */
+    isRTL: PropTypes.bool,
+
     // TODO (jordan) Remove propType of bufferRowCount without losing documentation
     /**
      * The number of rows outside the viewport to prerender. Defaults to roughly
@@ -472,6 +477,7 @@ class FixedDataTable extends React.Component {
       this._onScroll,
       this._shouldHandleWheelX,
       this._shouldHandleWheelY,
+      this.props.isRTL,
       this.props.stopScrollDefaultHandling,
       this.props.stopScrollPropagation
     );
@@ -711,6 +717,7 @@ class FixedDataTable extends React.Component {
           onColumnReorder={onColumnReorder}
           onColumnReorderMove={this._onColumnReorderMove}
           showScrollbarY={scrollEnabledY}
+          isRTL={this.props.isRTL}
         />
       );
     }
@@ -725,6 +732,7 @@ class FixedDataTable extends React.Component {
           verticalTop={bodyOffsetTop}
           position={scrollY}
           touchEnabled={touchScrollEnabled}
+          isRTL={this.props.isRTL}
         />;
     }
 
@@ -738,6 +746,7 @@ class FixedDataTable extends React.Component {
           position={scrollX}
           size={width}
           touchEnabled={touchScrollEnabled}
+          isRTL={this.props.isRTL}
         />;
     }
 
@@ -754,6 +763,7 @@ class FixedDataTable extends React.Component {
         onColumnResizeEnd={onColumnResizeEndCallback}
         columnKey={columnResizingData.key}
         touchEnabled={touchScrollEnabled}
+        isRTL={this.props.isRTL}
       />;
 
     let footer = null;
@@ -779,6 +789,7 @@ class FixedDataTable extends React.Component {
           scrollableColumns={scrollableColumns.footer}
           scrollLeft={scrollX}
           showScrollbarY={scrollEnabledY}
+          isRTL={this.props.isRTL}
         />;
     }
 
@@ -814,6 +825,7 @@ class FixedDataTable extends React.Component {
         isColumnReordering={!!isColumnReordering}
         columnReorderingData={columnReorderingData}
         showScrollbarY={scrollEnabledY}
+        isRTL={this.props.isRTL}
       />;
 
     let topShadow;
@@ -847,10 +859,16 @@ class FixedDataTable extends React.Component {
     if (this.props.keyboardPageEnabled || this.props.keyboardScrollEnabled) {
       tabIndex = 0;
     }
+
+    let tableClassName = className;
+    if (this.props.isRTL) {
+      tableClassName = joinClasses(tableClassName, 'fixedDataTable_isRTL');
+    }
+
     return (
       <div
         className={joinClasses(
-          className,
+          tableClassName,
           cx('fixedDataTableLayout/main'),
           cx('public/fixedDataTable/main'),
         )}
@@ -923,6 +941,7 @@ class FixedDataTable extends React.Component {
         rowsToRender={props.rows}
         rowOffsets={props.rowOffsets}
         showScrollbarY={scrollEnabledY}
+        isRTL={props.isRTL}
       />
     );
   }
@@ -1171,6 +1190,7 @@ class HorizontalScrollbar extends React.PureComponent {
     onScroll: PropTypes.func.isRequired,
     position: PropTypes.number.isRequired,
     size: PropTypes.number.isRequired,
+    isRTL: PropTypes.bool,
   }
 
   componentWillMount() {

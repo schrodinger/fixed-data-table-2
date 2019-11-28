@@ -21,6 +21,12 @@
   border-left: 1px solid var(--border-color);
 }
 
+.fixedDataTable_isRTL .public/Scrollbar/main.public/Scrollbar/mainActive,
+.fixedDataTable_isRTL .public/Scrollbar/main {
+  border-right: 1px solid var(--border-color);
+  border-left-width: 0;
+}
+
 .public/Scrollbar/mainOpaque,
 .public/Scrollbar/mainOpaque.public/Scrollbar/mainActive,
 .public/Scrollbar/mainOpaque:hover {

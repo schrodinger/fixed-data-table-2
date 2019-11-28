@@ -73,6 +73,12 @@
   width: 100%;
 }
 
+.fixedDataTable_isRTL .ScrollbarLayout/faceHorizontal,
+.fixedDataTable_isRTL .ScrollbarLayout/faceHorizontal:after {
+  right: 0;
+  left: auto;
+}
+
 .ScrollbarLayout/faceHorizontal.public/Scrollbar/faceActive:after,
 .ScrollbarLayout/main:hover .ScrollbarLayout/faceHorizontal:after {
   bottom: calc(var(--scrollbar-face-margin)/2);

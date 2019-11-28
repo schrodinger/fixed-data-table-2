@@ -13,14 +13,11 @@
 'use strict';
 
 import FixedDataTableCell from 'FixedDataTableCell';
-import FixedDataTableHelper from 'FixedDataTableHelper';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'cx';
 import { sumPropWidths } from 'widthHelper';
-
-var DIR_SIGN = FixedDataTableHelper.DIR_SIGN;
 
 class FixedDataTableCellGroupImpl extends React.Component {
   /**
@@ -63,6 +60,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
     touchEnabled: PropTypes.bool,
 
     isHeaderOrFooter: PropTypes.bool,
+
+    isRTL: PropTypes.bool,
   }
 
   componentWillMount() {
@@ -111,7 +110,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       width: contentWidth,
       zIndex: props.zIndex,
     };
-    FixedDataTableTranslateDOMPosition(style, -1 * DIR_SIGN * props.left, 0, this._initialRender);
+    FixedDataTableTranslateDOMPosition(style, -1 * props.left, 0, this._initialRender, this.props.isRTL);
 
     return (
       <div
@@ -167,6 +166,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         cell={cellTemplate}
         columnGroupWidth={columnGroupWidth}
         pureRendering={pureRendering}
+        isRTL={this.props.isRTL}
       />
     );
   }
@@ -216,10 +216,10 @@ class FixedDataTableCellGroup extends React.Component {
       width: props.width
     };
 
-    if (DIR_SIGN === 1) {
-      style.left = offsetLeft;
-    } else {
+    if (this.props.isRTL) {
       style.right = offsetLeft;
+    } else {
+      style.left = offsetLeft;
     }
 
     var onColumnResize = props.onColumnResize ? this._onColumnResize : null;
