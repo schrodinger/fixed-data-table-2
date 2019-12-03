@@ -123,6 +123,7 @@ blockquote > :last-child {
 .highlight-row .public_fixedDataTableCell_main {
   background: lightyellow;
 }
+
 .homePage .header {
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -252,7 +253,7 @@ blockquote > :last-child {
   border: 2px solid #4183C4;
   border-radius: 4px;
   padding: 8px 16px;
-  transition-duration: .3s;
+  transition-duration: 0.3s;
   text-transform: uppercase;
   font-weight: 600;
 }
@@ -294,6 +295,7 @@ blockquote > :last-child {
     padding: 0 12px;
   }
 }
+
 /**
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -306,8 +308,7 @@ blockquote > :last-child {
  */
 
 .ScrollbarLayout_main {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   outline: none;
   overflow: hidden;
   position: absolute;
@@ -325,10 +326,8 @@ blockquote > :last-child {
 }
 
 .ScrollbarLayout_mainHorizontal {
-  bottom: 0;
   height: 15px;
   left: 0;
-  -webkit-transition-property: background-color height;
   transition-property: background-color height;
 }
 
@@ -343,12 +342,9 @@ blockquote > :last-child {
   overflow: hidden;
   position: absolute;
   z-index: 1;
-  -webkit-transition-duration: 250ms;
-          transition-duration: 250ms;
-  -webkit-transition-timing-function: ease;
-          transition-timing-function: ease;
-  -webkit-transition-property: background-color width position;
-  transition-property: background-color width position;
+  transition-duration: 250ms;
+  transition-timing-function: ease;
+  transition-property: width;
 }
 
 /**
@@ -362,7 +358,6 @@ blockquote > :last-child {
   content: '';
   display: block;
   position: absolute;
-  -webkit-transition: background-color 250ms ease;
   transition: background-color 250ms ease;
 }
 
@@ -377,6 +372,12 @@ blockquote > :last-child {
   left: 0;
   top: 4px;
   width: 100%;
+}
+
+.fixedDataTable_isRTL .ScrollbarLayout_faceHorizontal,
+.fixedDataTable_isRTL .ScrollbarLayout_faceHorizontal:after {
+  right: 0;
+  left: auto;
 }
 
 .ScrollbarLayout_faceHorizontal.public_Scrollbar_faceActive:after,
@@ -416,8 +417,7 @@ blockquote > :last-child {
 .fixedDataTableLayout_main {
   border-style: solid;
   border-width: 1px;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   overflow: hidden;
   position: relative;
 }
@@ -450,11 +450,6 @@ blockquote > :last-child {
   overflow: hidden;
   position: relative;
 }
-
-.fixedDataTableLayout_horizontalScrollbar {
-  bottom: 0;
-  position: absolute;
-}
 /**
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -470,12 +465,17 @@ blockquote > :last-child {
   border-right-style: solid;
   border-right-width: 1px;
   border-width: 0 1px 0 0;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   display: block;
   overflow: hidden;
   position: absolute;
   white-space: normal;
+}
+
+.fixedDataTable_isRTL .fixedDataTableCellLayout_main {
+  border-right-width: 0;
+  border-left-style: solid;
+  border-left-width: 1px;
 }
 
 .fixedDataTableCellLayout_lastChild {
@@ -510,6 +510,11 @@ blockquote > :last-child {
   z-index: 1;
 }
 
+.fixedDataTable_isRTL .fixedDataTableCellLayout_columnResizerContainer {
+  left: 0px;
+  right: auto;
+}
+
 .fixedDataTableCellLayout_columnResizerContainer:hover {
   cursor: ew-resize;
 }
@@ -523,6 +528,11 @@ blockquote > :last-child {
   right: 0px;
   visibility: hidden;
   width: 4px;
+}
+
+.fixedDataTable_isRTL .fixedDataTableCellLayout_columnResizerKnob {
+  left: 0px;
+  right: auto;
 }
 /**
  * Copyright Schrodinger, LLC
@@ -543,6 +553,11 @@ blockquote > :last-child {
   position: absolute;
   top: 0;
   white-space: nowrap;
+}
+
+.fixedDataTable_isRTL .fixedDataTableCellGroupLayout_cellGroup {
+  right: 0;
+  left: auto;
 }
 
 .fixedDataTableCellGroupLayout_cellGroup > .public_fixedDataTableCell_main {
@@ -573,21 +588,24 @@ blockquote > :last-child {
   width: 12px;
 }
 
+.fixedDataTable_isRTL .fixedDataTableColumnResizerLineLayout_mouseArea  {
+  right: auto;
+  left: -5px;
+}
+
 .fixedDataTableColumnResizerLineLayout_main {
   border-right-style: solid;
   border-right-width: 1px;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   position: absolute;
   z-index: 10;
+  pointer-events: none;
 }
 
-body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
-  /* the resizer line is in the wrong position in RTL with no easy fix.
-   * Disabling is more useful than displaying it.
-   * #167 (github) should look into this and come up with a permanent fix.
-   */
-  display: none !important;
+.fixedDataTable_isRTL .fixedDataTableColumnResizerLineLayout_main {
+  border-right-width: 0;
+  border-left-style: solid;
+  border-left-width: 1px;
 }
 
 .fixedDataTableColumnResizerLineLayout_hiddenElem {
@@ -605,8 +623,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
  */
 
 .fixedDataTableRowLayout_main {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   overflow: hidden;
   position: absolute;
   top: 0;
@@ -614,13 +631,13 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 
 .fixedDataTableRowLayout_body {
   left: 0;
+  right: 0;
   position: absolute;
   top: 0;
 }
 
 .fixedDataTableRowLayout_rowExpanded {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   left: 0;
   position: absolute;
 }
@@ -636,6 +653,12 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   width: 0;
 }
 
+.fixedDataTable_isRTL .fixedDataTableRowLayout_fixedColumnsDivider {
+  border-left-width: 0;
+  border-right-style: solid;
+  border-right-width: 1px;
+}
+
 .fixedDataTableRowLayout_columnsShadow {
   position: absolute;
   width: 4px;
@@ -643,6 +666,11 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 
 .fixedDataTableRowLayout_columnsRightShadow {
   right: 1px;
+}
+
+.fixedDataTable_isRTL .fixedDataTableRowLayout_columnsRightShadow {
+  left: 1px;
+  right: auto;
 }
 
 .fixedDataTableRowLayout_rowWrapper {
@@ -681,13 +709,13 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 .public_fixedDataTable_scrollbarSpacer,
 .public_fixedDataTable_header .public_fixedDataTableCell_main {
   background-color: #f6f7f8;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#efefef));
   background-image: linear-gradient(#fff, #efefef);
 }
 
 .public_fixedDataTable_scrollbarSpacer {
   position: absolute;
   z-index: 99;
+  top: 0;
 }
 
 .public_fixedDataTable_footer .public_fixedDataTableCell_main {
@@ -696,11 +724,11 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .public_fixedDataTable_topShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAF0lEQVR4AWPUkNeSBhHCjJoK2twgFisAFagCCp3pJlAAAAAASUVORK5CYII=) repeat-x;
+  background-image: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public_fixedDataTable_bottomShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAHElEQVQI12MwNjZmZdAT1+Nm0JDWEGZQk1GTBgAWkwIeAEp52AAAAABJRU5ErkJggg==) repeat-x;
+  background-image: linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public_fixedDataTable_horizontalScrollbar .public_Scrollbar_mainHorizontal {
@@ -737,7 +765,12 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   background-color: #0284ff;
 }
 .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_cellContent {
-	margin-left: 12px;
+  margin-left: 12px;
+}
+
+.fixedDataTable_isRTL .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_cellContent {
+  margin-left: auto;
+  margin-right: 12px;
 }
 /**
  * Copyright Schrodinger, LLC
@@ -785,12 +818,15 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .public_fixedDataTableRow_columnsShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==) repeat-y;
+  background-image: linear-gradient(90deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
+}
+
+.fixedDataTable_isRTL .public_fixedDataTableRow_columnsShadow {
+  background-image: linear-gradient(270deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
 }
 
 .public_fixedDataTableRow_columnsRightShadow {
-  -webkit-transform: rotate(180deg);
-          transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 /**
  * Copyright Schrodinger, LLC
@@ -813,6 +849,12 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 .public_Scrollbar_main {
   background-color: #fff;
   border-left: 1px solid #d3d3d3;
+}
+
+.fixedDataTable_isRTL .public_Scrollbar_main.public_Scrollbar_mainActive,
+.fixedDataTable_isRTL .public_Scrollbar_main {
+  border-right: 1px solid #d3d3d3;
+  border-left-width: 0;
 }
 
 .public_Scrollbar_mainOpaque,
@@ -1180,11 +1222,12 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 .docsPage p:last-child {
   margin-bottom: 0;
 }
+
 .miniHeader {
   background: #435052;
   position: fixed;
   width: 100%;
-  z-index: 1;
+  z-index: 100;
   top: 0;
 }
 .miniHeader .miniLogo {
@@ -1238,6 +1281,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
     display: none;
   }
 }
+
 /**
  * Column reorder goodies.
  */
@@ -1249,13 +1293,24 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   float: left;
   cursor: move;
 }
+
+.fixedDataTable_isRTL .fixedDataTableCellLayout_columnReorderContainer {
+  margin-right: auto;
+  margin-left: -12px;
+  float: right;
+}
+
 .fixedDataTableCellLayout_columnReorderContainer:after {
 	content: '::';
 	position: absolute;
 	top: 50%;
 	left: 1px;
-	-webkit-transform: translateY(-50%);
-	        transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+.fixedDataTable_isRTL .fixedDataTableCellLayout_columnReorderContainer:after {
+  left: auto;
+  right: 1px;
 }
 /**
  * Copyright Schrodinger, LLC
@@ -1647,5 +1702,20 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   height: 50px;
   width: 50px;
 }
+.autoScrollContainer .autoScrollControls {
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+}
+.autoScrollContainer .autoScrollCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+html[dir="rtl"] .exampleContents {
+  margin-right: 160px;
+}
 
-/*# sourceMappingURL=main-e2f7f712a126dbbbd459.css.map*/
+
+/*# sourceMappingURL=main-076ff61a5c6f0fd50ba2.css.map*/
