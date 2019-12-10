@@ -20,8 +20,16 @@ import * as columnActions from 'columnActions';
 import invariant from 'invariant';
 import pick from 'lodash/pick';
 import * as scrollActions from 'scrollActions';
+import ScrollContainer from 'ScrollContainer';
+import Scrollbar from 'Scrollbar';
 
 class FixedDataTableContainer extends React.Component {
+  static defaultProps = {
+      defaultScrollbars: true,
+      scrollbarXHeight: Scrollbar.SIZE,
+      scrollbarYWidth: Scrollbar.SIZE
+  };
+
   constructor(props) {
     super(props);
 
@@ -68,14 +76,23 @@ class FixedDataTableContainer extends React.Component {
   }
 
   render() {
-    return (
-      <FixedDataTable
-        {...this.state}
-        {...this.props}
-        scrollActions={this.scrollActions}
-        columnActions={this.columnActions}
-      />
+    const fdt = (
+        <FixedDataTable
+            {...this.state}
+            {...this.props}
+            scrollActions={this.scrollActions}
+            columnActions={this.columnActions}
+        />
     );
+    // For backward compatibility, by default we render FDT-2 scrollbars
+    if (this.props.defaultScrollbars) {
+      return (
+          <ScrollContainer {...this.props}>
+            {fdt}
+          </ScrollContainer>
+      );
+    }
+    return fdt;
   }
 
   getBoundState() {

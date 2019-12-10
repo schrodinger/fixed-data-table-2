@@ -215,7 +215,7 @@ class FixedDataTableRowImpl extends React.Component {
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
     var fixedRightColumnsWidth = sumPropWidths(this.props.fixedRightColumns);
-    var scrollbarOffset = this.props.showScrollbarY ? Scrollbar.SIZE : 0;
+    var scrollbarOffset = this.props.showScrollbarY ? this.props.scrollbarYWidth : 0;
     var fixedRightColumns = 
       <FixedDataTableCellGroup
         key="fixed_right_cells"

@@ -167,6 +167,7 @@ class FixedDataTableBufferedRows extends React.Component {
         onTouchEnd={props.onRowTouchEnd}
         onTouchMove={props.onRowTouchMove}
         showScrollbarY={props.showScrollbarY}
+        scrollbarYWidth={props.scrollbarYWidth}
         isRTL={props.isRTL}
         visible={visible}
         fake={fake}

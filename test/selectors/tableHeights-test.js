@@ -3,6 +3,7 @@
  */
 import { assert } from 'chai';
 import tableHeights from 'tableHeights';
+import Scrollbar from 'Scrollbar';
 
 describe('tableHeights', function() {
   let elementHeights;
@@ -30,7 +31,7 @@ describe('tableHeights', function() {
 
   it('should compute appropriate component heights', function() {
     const result = tableHeights.resultFunc(elementHeights, ownerHeight,
-      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight);
+      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight, Scrollbar.SIZE);
 
     assert.deepEqual(result, {
       bodyHeight: 713,
@@ -51,7 +52,7 @@ describe('tableHeights', function() {
     };
 
     const result = tableHeights.resultFunc(elementHeights, ownerHeight,
-      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight);
+      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight, Scrollbar.SIZE);
 
     assert.deepEqual(result, {
       bodyHeight: 698,
@@ -69,7 +70,7 @@ describe('tableHeights', function() {
     scrollContentHeight = 100;
 
     const result = tableHeights.resultFunc(elementHeights, ownerHeight,
-      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight);
+      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight, Scrollbar.SIZE);
 
     assert.deepEqual(result, {
       bodyHeight: 100,
@@ -87,7 +88,7 @@ describe('tableHeights', function() {
     useMaxHeight = true;
 
     const result = tableHeights.resultFunc(elementHeights, ownerHeight,
-      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight);
+      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight, Scrollbar.SIZE);
 
     assert.deepEqual(result, {
       bodyHeight: 713,
@@ -106,7 +107,7 @@ describe('tableHeights', function() {
     useMaxHeight = true;
 
     const result = tableHeights.resultFunc(elementHeights, ownerHeight,
-      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight);
+      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight, Scrollbar.SIZE);
 
     assert.deepEqual(result, {
       bodyHeight: 100,
@@ -124,7 +125,7 @@ describe('tableHeights', function() {
     ownerHeight = 300;
 
     const result = tableHeights.resultFunc(elementHeights, ownerHeight,
-      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight);
+      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight, Scrollbar.SIZE);
 
     assert.deepEqual(result, {
       bodyHeight: 713,
@@ -144,7 +145,7 @@ describe('tableHeights', function() {
     useMaxHeight = true;
 
     const result = tableHeights.resultFunc(elementHeights, ownerHeight,
-      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight);
+      reservedHeight, scrollContentHeight, scrollbarsVisible, useMaxHeight, Scrollbar.SIZE);
 
     assert.deepEqual(result, {
       bodyHeight: 100,
