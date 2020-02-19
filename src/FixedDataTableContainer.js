@@ -28,33 +28,34 @@ class FixedDataTableContainer extends React.Component {
     this.update = this.update.bind(this);
 
     this.reduxStore = FixedDataTableStore.get();
-    this.unsubscribe = this.reduxStore.subscribe(this.update);
 
     this.scrollActions = bindActionCreators(scrollActions, this.reduxStore.dispatch);
     this.columnActions = bindActionCreators(columnActions, this.reduxStore.dispatch);
-  }
-
-  componentWillMount() {
-    const props = this.props;
 
     this.reduxStore.dispatch({
       type: ActionTypes.INITIALIZE,
-      props: props
+      props,
     });
 
-    this.update();
+    this.unsubscribe = this.reduxStore.subscribe(this.update);
+    this.state = this.getBoundState();
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
+    // Only react to prop changes - ignore updates due to internal state
+    if (this.props === prevProps) {
+      return;
+    }
+
     invariant(
-      nextProps.height !== undefined || nextProps.maxHeight !== undefined,
+      this.props.height !== undefined || this.props.maxHeight !== undefined,
       'You must set either a height or a maxHeight'
     );
 
     this.reduxStore.dispatch({
       type: ActionTypes.PROP_CHANGE,
-      newProps: nextProps,
-      oldProps: this.props,
+      newProps: this.props,
+      oldProps: prevProps,
     });
   }
 
@@ -69,15 +70,15 @@ class FixedDataTableContainer extends React.Component {
   render() {
     return (
       <FixedDataTable
-        {...this.props}
         {...this.state}
+        {...this.props}
         scrollActions={this.scrollActions}
         columnActions={this.columnActions}
       />
     );
   }
 
-  update() {
+  getBoundState() {
     const state = this.reduxStore.getState();
     const boundState = pick(state, [
       'columnGroupProps',
@@ -104,8 +105,11 @@ class FixedDataTableContainer extends React.Component {
       'scrollJumpedY',
       'tableSize',
     ]);
+    return boundState;
+  }
 
-    this.setState(boundState);
+  update() {
+    this.setState(this.getBoundState());
   }
 }
 

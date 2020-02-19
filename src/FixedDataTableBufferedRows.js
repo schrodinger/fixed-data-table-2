@@ -61,7 +61,8 @@ class FixedDataTableBufferedRows extends React.Component {
     isRTL: PropTypes.bool,
   }
 
-  componentWillMount() {
+  constructor(props) {
+    super(props);
     this._staticRowArray = [];
     this._initialRender = true;
   }

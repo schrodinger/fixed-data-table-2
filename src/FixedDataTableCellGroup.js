@@ -64,7 +64,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
     isRTL: PropTypes.bool,
   }
 
-  componentWillMount() {
+  constructor(props) {
+    super(props);
     this._initialRender = true;
   }
 
@@ -209,7 +210,7 @@ class FixedDataTableCellGroup extends React.Component {
   }
 
   render() /*object*/ {
-    var {offsetLeft, ...props} = this.props;
+    var { offsetLeft, ...props } = this.props;
 
     var style = {
       height: props.cellGroupWrapperHeight || props.height,

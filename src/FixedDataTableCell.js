@@ -125,7 +125,12 @@ class FixedDataTableCell extends React.Component {
     return false;
   }
 
-  componentWillReceiveProps(props) {
+  componentDidUpdate(prevProps) {
+    if (prevProps === this.props) {
+      return;
+    }
+
+    const props = this.props;
     var left = props.left + this.state.displacement;
 
     var newState = {
@@ -203,18 +208,18 @@ class FixedDataTableCell extends React.Component {
   render() /*object*/ {
 
     var { height, width, columnKey, isHeaderOrFooter, ...props } = this.props;
-    
+
     var style = {
       height,
       width,
     };
-    
+
     if (this.props.isRTL) {
       style.right = props.left;
     } else {
       style.left = props.left;
     }
-    
+
     if (this.state.isReorderingThisColumn) {
       const DIR_SIGN = this.props.isRTL ? -1 : 1;
       style.transform = `translateX(${this.state.displacement * DIR_SIGN}px) translateZ(0)`;

@@ -483,7 +483,8 @@ class FixedDataTableRow extends React.Component {
     width: PropTypes.number.isRequired,
   };
 
-  componentWillMount() {
+  constructor(props) {
+    super(props);
     this._initialRender = true;
   }
 

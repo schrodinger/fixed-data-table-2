@@ -93,12 +93,12 @@ class ColumnResizerLine extends React.PureComponent {
     cursorDelta: 0,
   }
 
-  componentWillReceiveProps(/*object*/ newProps) {
-    if (newProps.initialEvent && !this._mouseMoveTracker.isDragging()) {
-      this._mouseMoveTracker.captureMouseMoves(newProps.initialEvent);
+  componentDidUpdate() {
+    if (this.props.initialEvent && !this._mouseMoveTracker.isDragging()) {
+      this._mouseMoveTracker.captureMouseMoves(this.props.initialEvent);
       this.setState({
-        width: newProps.initialWidth,
-        cursorDelta: newProps.initialWidth
+        width: this.props.initialWidth,
+        cursorDelta: this.props.initialWidth,
       });
     }
   }
