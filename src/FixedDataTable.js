@@ -469,7 +469,9 @@ class FixedDataTable extends React.Component {
     stopScrollPropagation: false,
   }
 
-  componentWillMount() {
+  constructor(props) {
+    super(props);
+
     this._didScrollStop = debounceCore(this._didScrollStopSync, 200, this);
     this._onKeyDown = this._onKeyDown.bind(this);
 
@@ -629,11 +631,10 @@ class FixedDataTable extends React.Component {
     this._reportContentHeight();
   }
 
-  componentWillReceiveProps(/*object*/ nextProps) {
-    this._didScroll(nextProps);
-  }
-
-  componentDidUpdate() {
+  componentDidUpdate(/*object*/ prevProps) {
+    if (prevProps !== this.props) {
+      this._didScroll(prevProps);
+    }
     this._reportContentHeight();
   }
 
@@ -836,7 +837,7 @@ class FixedDataTable extends React.Component {
             cx('fixedDataTableLayout/topShadow'),
             cx('public/fixedDataTable/topShadow'),
           )}
-          style={{top: bodyOffsetTop}}
+          style={{ top: bodyOffsetTop }}
         />;
     }
 
@@ -852,7 +853,7 @@ class FixedDataTable extends React.Component {
             cx('fixedDataTableLayout/bottomShadow'),
             cx('public/fixedDataTable/bottomShadow'),
           )}
-          style={{top: footOffsetTop}}
+          style={{ top: footOffsetTop }}
         />;
     }
     var tabIndex = null;
@@ -1112,7 +1113,7 @@ class FixedDataTable extends React.Component {
   /**
    * Calls the user specified scroll callbacks -- onScrollStart, onScrollEnd, onHorizontalScroll, and onVerticalScroll.
    */
-  _didScroll = (/* !object */ nextProps) => {
+  _didScroll = (/* !object */ prevProps) => {
     const {
       onScrollStart,
       scrollX,
@@ -1120,7 +1121,7 @@ class FixedDataTable extends React.Component {
       onHorizontalScroll,
       onVerticalScroll,
       tableSize: { ownerHeight },
-    } = nextProps;
+    } = this.props;
 
     const {
       endRowIndex: oldEndRowIndex,
@@ -1128,7 +1129,7 @@ class FixedDataTable extends React.Component {
       scrollX: oldScrollX,
       scrollY: oldScrollY,
       tableSize: { ownerHeight: oldOwnerHeight },
-    } = this.props;
+    } = prevProps;
 
     // check if scroll values have changed - we have an extra check on NaN because (NaN !== NaN)
     const ownerHeightChanged = ownerHeight !== oldOwnerHeight && !(isNaN(ownerHeight) && isNaN(oldOwnerHeight));
@@ -1191,14 +1192,6 @@ class HorizontalScrollbar extends React.PureComponent {
     position: PropTypes.number.isRequired,
     size: PropTypes.number.isRequired,
     isRTL: PropTypes.bool,
-  }
-
-  componentWillMount() {
-    this._initialRender = true;
-  }
-
-  componentDidMount() {
-    this._initialRender = false;
   }
 
   render() /*object*/ {

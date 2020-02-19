@@ -27,10 +27,10 @@ function DataCtxt(Wrapped) {
       };
     }
 
-    componentWillReceiveProps(nextProps) {
-      if (JSON.stringify(nextProps.data) !== JSON.stringify(this.state.data)) {
+    componentDidUpdate() {
+      if (JSON.stringify(this.props.data) !== JSON.stringify(this.state.data)) {
         this.setState({
-          data: nextProps.data,
+          data: this.props.data,
         });
       }
     }

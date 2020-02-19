@@ -19,15 +19,15 @@ class ExampleImage extends React.Component {
     ready: false,
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.componentId = imageIdCounter++;
     this._load(this.props.src);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.src !== this.props.src) {
-      this.setState({src: null});
-      this._load(nextProps.src);
+  componentDidUpdate(prevProps) {
+    if (prevProps.src !== this.props.src) {
+      this.setState({ src: null });
+      this._load(this.props.src);
     }
   }
 

@@ -50,9 +50,6 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
     dragDistance: 0
   }
 
-  componentWillReceiveProps(/*object*/ newProps) {
-  }
-
   componentWillUnmount() {
     if (this._mouseMoveTracker) {
       cancelAnimationFrame(this.frameId);

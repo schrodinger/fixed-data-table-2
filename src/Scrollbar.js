@@ -58,28 +58,29 @@ class Scrollbar extends React.PureComponent {
       props.contentSize,
       props.orientation
     );
+    this._initialRender = true;
   }
 
-  componentWillReceiveProps(/*object*/ nextProps) {
-    var controlledPosition = nextProps.position;
+  componentDidUpdate() {
+    var controlledPosition = this.props.position;
     if (controlledPosition === undefined) {
       this._setNextState(
         this._calculateState(
           this.state.position,
-          nextProps.size,
-          nextProps.contentSize,
-          nextProps.orientation
+          this.props.size,
+          this.props.contentSize,
+          this.props.orientation
         )
       );
     } else {
       this._setNextState(
         this._calculateState(
           controlledPosition,
-          nextProps.size,
-          nextProps.contentSize,
-          nextProps.orientation
+          this.props.size,
+          this.props.contentSize,
+          this.props.orientation
         ),
-        nextProps
+        this.props
       );
     }
   }
@@ -186,7 +187,7 @@ class Scrollbar extends React.PureComponent {
     );
   }
 
-  componentWillMount() {
+  componentDidMount() {
     var isHorizontal = this.props.orientation === 'horizontal';
     var onWheel = isHorizontal ? this._onWheelX : this._onWheelY;
 
@@ -196,10 +197,7 @@ class Scrollbar extends React.PureComponent {
       this._shouldHandleY, // Should handle vertical scroll
       this.props.isRTL
     );
-    this._initialRender = true;
-  }
 
-  componentDidMount() {
     this._rootRef && this._rootRef.addEventListener(
         'wheel',
         this._wheelHandler.onWheel,
