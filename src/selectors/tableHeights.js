@@ -41,11 +41,11 @@ import shallowEqualSelector from 'shallowEqualSelector';
  * }}
  */
 function tableHeights(elementHeights, ownerHeight, reservedHeight,
-    scrollContentHeight, scrollbarsVisible, useMaxHeight) {
+    scrollContentHeight, scrollbarsVisible, useMaxHeight, scrollbarXHeight) {
   const { availableHeight, scrollEnabledX } = scrollbarsVisible;
   let reservedWithScrollbar = reservedHeight;
   if (scrollEnabledX) {
-    reservedWithScrollbar += Scrollbar.SIZE;
+    reservedWithScrollbar += scrollbarXHeight;
   }
 
   // If less content than space for rows (bodyHeight), then
@@ -102,4 +102,5 @@ export default shallowEqualSelector([
   state => state.scrollContentHeight,
   scrollbarsVisible,
   state => state.tableSize.useMaxHeight,
+  state => state.scrollbarXHeight
 ], tableHeights);

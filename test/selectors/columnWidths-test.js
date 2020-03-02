@@ -3,6 +3,7 @@
  */
 import { assert } from 'chai';
 import columnWidths from 'columnWidths';
+import Scrollbar from 'Scrollbar';
 
 describe('columnWidths', function() {
   let columnGroupPropsIn;
@@ -80,7 +81,7 @@ describe('columnWidths', function() {
       fixedColumns,
       scrollableColumns,
     } = columnWidths.resultFunc(columnGroupPropsIn, columnPropsIn,
-      scrollEnabledY, width);
+      scrollEnabledY, width, Scrollbar.SIZE);
     assert.deepEqual(columnProps.map(column => column.id),
       [2, 4, 1, 3, 5, 7, 6]);
     assert.deepEqual(fixedColumns.map(column => column.id), [2, 4, 5, 7]);
@@ -94,7 +95,7 @@ describe('columnWidths', function() {
       fixedColumns,
       scrollableColumns,
     } = columnWidths.resultFunc(columnGroupPropsIn, columnPropsIn,
-      scrollEnabledY, width);
+      scrollEnabledY, width, Scrollbar.SIZE);
 
     assert.deepEqual(columnGroupProps.map(column => column.width),
       [110, 70, 100, 100]);
@@ -115,7 +116,7 @@ describe('columnWidths', function() {
       fixedColumns,
       scrollableColumns,
     } = columnWidths.resultFunc(columnGroupPropsIn, columnPropsIn,
-      scrollEnabledY, width);
+      scrollEnabledY, width, Scrollbar.SIZE);
 
     assert.deepEqual(columnGroupProps.map(column => column.width),
       [110 + 100, 70 + 150, 100, 100 + 10]);
@@ -137,16 +138,16 @@ describe('columnWidths', function() {
       fixedColumns,
       scrollableColumns,
     } = columnWidths.resultFunc(columnGroupPropsIn, columnPropsIn,
-      scrollEnabledY, width);
+      scrollEnabledY, width, Scrollbar.SIZE);
 
     assert.deepEqual(columnGroupProps.map(column => column.width),
-      [110 + 100, 70 + 150, 100, 100 + 10]);
+      [110 + 100, 70 + 150, 100, 100 + 11]);
     assert.deepEqual(columnProps.map(column => column.width),
-      [50 + 100, 60, 50 + 50, 20 + 100, 90, 10, 100 + 10]);
+      [50 + 100, 60, 50 + 50, 20 + 100, 90, 10, 100 + 11]);
     assert.deepEqual(fixedColumns.map(column => column.width),
       [50 + 100, 60, 90, 10]);
     assert.deepEqual(scrollableColumns.map(column => column.width),
-      [50 + 50, 20 + 100, 100 + 10]);
+      [50 + 50, 20 + 100, 100 + 11]);
   });
 
   it('should compute availableScrollWidth and maxScrollX', function() {
@@ -156,7 +157,7 @@ describe('columnWidths', function() {
       availableScrollWidth,
       maxScrollX,
     } = columnWidths.resultFunc(columnGroupPropsIn, columnPropsIn,
-      scrollEnabledY, width);
+      scrollEnabledY, width, Scrollbar.SIZE);
 
     assert.strictEqual(availableScrollWidth, 90, 'availableScrollWidth incorrect');
     assert.strictEqual(maxScrollX, 80, 'maxScrollX incorrect');

@@ -76,7 +76,7 @@ export const ScrollbarState = {
  * }}
  */
 function roughHeights(columnProps, elementHeights, rowSettings,
-    scrollFlags, tableSize) {
+    scrollFlags, tableSize, scrollbarXHeight, scrollbarYWidth) {
   const { cellGroupWrapperHeight, footerHeight, headerHeight, groupHeaderHeight } = elementHeights;
   // we don't need border height to be added to the table if we are using cellGroupWrapperHeight
   const borderHeight = cellGroupWrapperHeight ? 0 : 2 * BORDER_HEIGHT;
@@ -87,7 +87,7 @@ function roughHeights(columnProps, elementHeights, rowSettings,
   const maxComponentHeight = Math.round(useMaxHeight ? maxHeight : height);
   const roughAvailableHeight = maxComponentHeight - reservedHeight;
 
-  const scrollStateX = getScrollStateX(columnProps, scrollFlags, width);
+  const scrollStateX = getScrollStateX(columnProps, scrollFlags, width, scrollbarYWidth);
 
   /*
    * Early estimates of how much height we have to show rows.
@@ -100,12 +100,12 @@ function roughHeights(columnProps, elementHeights, rowSettings,
   let maxAvailableHeight = roughAvailableHeight;
   switch (scrollStateX) {
     case ScrollbarState.VISIBLE: {
-      minAvailableHeight -= Scrollbar.SIZE;
-      maxAvailableHeight -= Scrollbar.SIZE;
+      minAvailableHeight -= scrollbarXHeight;
+      maxAvailableHeight -= scrollbarXHeight;
       break;
     }
     case ScrollbarState.JOINT_SCROLLBARS: {
-      minAvailableHeight -= Scrollbar.SIZE;
+      minAvailableHeight -= scrollbarXHeight;
       break;
     }
   }
@@ -130,7 +130,7 @@ function roughHeights(columnProps, elementHeights, rowSettings,
  * @param {number} width
  * @return {ScrollbarState}
  */
-function getScrollStateX(columnProps, scrollFlags, width) {
+function getScrollStateX(columnProps, scrollFlags, width, scrollbarYWidth) {
   const { overflowX, showScrollbarX } = scrollFlags;
   const minColWidth = getTotalWidth(columnProps);
   if (overflowX === 'hidden' || showScrollbarX === false) {
@@ -139,8 +139,7 @@ function getScrollStateX(columnProps, scrollFlags, width) {
     return ScrollbarState.VISIBLE;
   }
 
-  const scrollbarSpace = Scrollbar.SIZE + Scrollbar.OFFSET;
-  if (minColWidth > width - scrollbarSpace) {
+  if (minColWidth > width - scrollbarYWidth) {
     return ScrollbarState.JOINT_SCROLLBARS;
   }
   return ScrollbarState.HIDDEN;
@@ -177,4 +176,6 @@ export default shallowEqualSelector([
   state => state.rowSettings,
   state => state.scrollFlags,
   state => state.tableSize,
+  state => state.scrollbarXHeight,
+  state => state.scrollbarYWidth
 ], roughHeights);

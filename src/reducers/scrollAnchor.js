@@ -12,7 +12,6 @@
 'use strict';
 
 import clamp from 'clamp';
-import set from 'lodash/set';
 import updateRowHeight from 'updateRowHeight';
 import scrollbarsVisibleSelector from 'scrollbarsVisible';
 

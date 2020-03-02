@@ -20,6 +20,7 @@ import computeRenderedRows from 'computeRenderedRows';
 import convertColumnElementsToData from 'convertColumnElementsToData';
 import pick from 'lodash/pick';
 import shallowEqual from 'shallowEqual';
+import Scrollbar from 'Scrollbar';
 
 /**
  * Returns the default initial state for the redux store.
@@ -85,7 +86,9 @@ function getInitialState() {
     rows: [], // rowsToRender
     scrollContentHeight: 0,
     scrollX: 0,
+    scrollbarXHeight: Scrollbar.SIZE,
     scrollY: 0,
+    scrollbarYWidth: Scrollbar.SIZE,
     scrolling: false,
 
     /*
@@ -259,6 +262,8 @@ function setStateFromProps(state, props) {
   newState.tableSize.useMaxHeight =
     newState.tableSize.height === undefined;
 
+  newState.scrollbarXHeight = props.scrollbarXHeight;
+  newState.scrollbarYWidth = props.scrollbarYWidth;
   return newState;
 }
 

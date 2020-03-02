@@ -40,8 +40,8 @@ let columnDefinition;
  *   maxScrollX: number,
  * }} The total width of all columns.
  */
-function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
-  const scrollbarSpace = scrollEnabledY ? Scrollbar.SIZE + Scrollbar.OFFSET : 0;
+function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width, scrollbarYWidth) {
+  const scrollbarSpace = scrollEnabledY ? scrollbarYWidth : 0;
   const viewportWidth = width - scrollbarSpace;
 
   const {
@@ -160,4 +160,5 @@ export default shallowEqualSelector([
   state => state.columnProps,
   state => scrollbarsVisible(state).scrollEnabledY,
   state => state.tableSize.width,
+  state => state.scrollbarYWidth
 ], columnWidths);
