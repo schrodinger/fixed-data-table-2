@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "lodash": "^4.17.4",
-    "prop-types": "15.7.2",
-    "redux": "4.0.1",
-    "reselect": "4.0.0"
+    "prop-types": "^15.7.2",
+    "redux": "^4.0.1",
+    "reselect": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
