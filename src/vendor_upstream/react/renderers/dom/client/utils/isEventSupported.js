@@ -11,7 +11,7 @@
 
 'use strict';
 
-import ExecutionEnvironment from 'ExecutionEnvironment';
+import ExecutionEnvironment from '../../../../../core/ExecutionEnvironment';
 
 var useHasFeature;
 if (ExecutionEnvironment.canUseDOM) {
@@ -39,7 +39,7 @@ if (ExecutionEnvironment.canUseDOM) {
  */
 function isEventSupported(eventNameSuffix, capture) {
   if (!ExecutionEnvironment.canUseDOM ||
-      capture && !('addEventListener' in document)) {
+    capture && !('addEventListener' in document)) {
     return false;
   }
 

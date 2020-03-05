@@ -13,11 +13,12 @@
  * @typechecks
  */
 
-import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import React from 'react';
 import PropTypes from 'prop-types';
-import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
-import cx from 'cx';
+
+import cx from './vendor_upstream/stubs/cx';
+import DOMMouseMoveTracker from './vendor_upstream/dom/DOMMouseMoveTracker';
+import FixedDataTableEventHelper from './FixedDataTableEventHelper';
 
 class FixedDataTableColumnReorderHandle extends React.PureComponent {
   static propTypes = {
@@ -112,7 +113,7 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
      * This prevents the rows from moving around when we drag the
      * headers on touch devices.
      */
-    if(this.props.touchEnabled) {
+    if (this.props.touchEnabled) {
       event.stopPropagation();
     }
   }

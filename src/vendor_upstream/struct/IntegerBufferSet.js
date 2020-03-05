@@ -12,7 +12,7 @@
 
 'use strict';
 
-import Heap from 'Heap';
+import Heap from './Heap';
 
 import invariant from 'invariant';
 
@@ -164,7 +164,7 @@ class IntegerBufferSet {
 
   _cleanHeap(/*object*/ heap) {
     while (!heap.empty() &&
-        this._valueToPositionMap[heap.peek().value] === undefined) {
+      this._valueToPositionMap[heap.peek().value] === undefined) {
       heap.pop();
     }
   }

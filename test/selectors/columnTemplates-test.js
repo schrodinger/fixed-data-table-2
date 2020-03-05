@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 import { assert } from 'chai';
-import columnTemplates from 'columnTemplates';
+import columnTemplates from '../../src/selectors/columnTemplates';
 
 describe('columnTemplates', function() {
   it('should organize props and templates appropriately', function() {
@@ -17,10 +17,10 @@ describe('columnTemplates', function() {
     const columnProps = [{
       id: 1,
       fixed: true,
-    },{
+    }, {
       id: 2,
       fixed: true,
-    },{
+    }, {
       id: 3,
       fixed: false,
     }];
@@ -56,38 +56,38 @@ describe('columnTemplates', function() {
     assert.deepEqual(fixedColumns, {
       cell: [{
         props: { id: 1, fixed: true },
-        template: { id: 'c1'},
-      },{
+        template: { id: 'c1' },
+      }, {
         props: { id: 2, fixed: true },
-        template: { id: 'c2'},
+        template: { id: 'c2' },
       }],
       footer: [{
         props: { id: 1, fixed: true },
-        template: { id: 'f1'},
-      },{
+        template: { id: 'f1' },
+      }, {
         props: { id: 2, fixed: true },
-        template: { id: 'f2'},
+        template: { id: 'f2' },
       }],
       header: [{
         props: { id: 1, fixed: true },
-        template: { id: 'h1'},
-      },{
+        template: { id: 'h1' },
+      }, {
         props: { id: 2, fixed: true },
-        template: { id: 'h2'},
+        template: { id: 'h2' },
       }],
     });
     assert.deepEqual(scrollableColumns, {
       cell: [{
         props: { id: 3, fixed: false },
-        template: { id: 'c3'},
+        template: { id: 'c3' },
       }],
       footer: [{
         props: { id: 3, fixed: false },
-        template: { id: 'f3'},
+        template: { id: 'f3' },
       }],
       header: [{
         props: { id: 3, fixed: false },
-        template: { id: 'h3'},
+        template: { id: 'h3' },
       }],
     });
   });

@@ -10,17 +10,18 @@
  * @typechecks
  */
 
-import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
-import Keys from 'Keys';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import ReactDOM from 'ReactDOM';
-import ReactWheelHandler from 'ReactWheelHandler';
 
-const cssVar = require('cssVar');
-import cx from 'cx';
-import emptyFunction from 'emptyFunction';
-import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
+import cx from '../vendor_upstream/stubs/cx';
+import emptyFunction from '../vendor_upstream/core/emptyFunction';
+import Keys from '../vendor_upstream/core/Keys';
+import ReactWheelHandler from '../vendor_upstream/dom/ReactWheelHandler';
+import DOMMouseMoveTracker from '../vendor_upstream/dom/DOMMouseMoveTracker';
+
+import cssVar from '../stubs/cssVar';
+import FixedDataTableTranslateDOMPosition from '../FixedDataTableTranslateDOMPosition';
 
 var UNSCROLLABLE_STATE = {
   position: 0,
@@ -103,7 +104,9 @@ class Scrollbar extends React.PureComponent {
     }
 
     var size = this.props.size;
+    /** @type {React.CSSProperties} */
     var mainStyle;
+    /** @type {React.CSSProperties} */
     var faceStyle;
     var isHorizontal = this.state.isHorizontal;
     var isVertical = !isHorizontal;
@@ -199,9 +202,9 @@ class Scrollbar extends React.PureComponent {
     );
 
     this._rootRef && this._rootRef.addEventListener(
-        'wheel',
-        this._wheelHandler.onWheel,
-        { passive: false }
+      'wheel',
+      this._wheelHandler.onWheel,
+      { passive: false }
     );
     this._mouseMoveTracker = new DOMMouseMoveTracker(
       this._onMouseMove,
@@ -219,9 +222,9 @@ class Scrollbar extends React.PureComponent {
 
   componentWillUnmount() {
     this._rootRef && this._rootRef.removeEventListener(
-        'wheel',
-        this._wheelHandler.onWheel,
-        { passive: false }
+      'wheel',
+      this._wheelHandler.onWheel,
+      { passive: false }
     );
     this._nextState = null;
     this._mouseMoveTracker.releaseMouseMoves();
@@ -341,6 +344,7 @@ class Scrollbar extends React.PureComponent {
   }
 
   _onMouseDown = (/*object*/ event) => {
+    /** @type {object} */
     var nextState;
 
     if (event.target !== this._faceRef) {
@@ -411,7 +415,7 @@ class Scrollbar extends React.PureComponent {
     this.setState({ isDragging: false });
   }
 
-  _onKeyDown = (/*object*/ event) =>{
+  _onKeyDown = (/*object*/ event) => {
     var keyCode = event.keyCode;
 
     if (keyCode === Keys.TAB) {

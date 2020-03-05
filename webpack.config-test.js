@@ -1,5 +1,4 @@
 var webpack = require('webpack');
-var resolvers = require('./build_helpers/resolvers');
 var path = require('path');
 
 var isDev = JSON.stringify(process.env.NODE_ENV !== 'production');
@@ -7,9 +6,6 @@ var isDev = JSON.stringify(process.env.NODE_ENV !== 'production');
 module.exports = {
   mode: isDev ? 'development' : 'production',
 
-  resolve: {
-    plugins: [resolvers.resolveHasteDefines]
-  },
   devServer: {
     host: 'localhost',
     port: '8081'

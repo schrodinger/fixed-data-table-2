@@ -2,8 +2,8 @@
  * Copyright Schrodinger, LLC
  */
 import { assert } from 'chai';
-import columnWidths from 'columnWidths';
-import Scrollbar from 'Scrollbar';
+import columnWidths from '../../src/selectors/columnWidths';
+import Scrollbar from '../../src/plugins/Scrollbar'
 
 describe('columnWidths', function() {
   let columnGroupPropsIn;
@@ -21,7 +21,7 @@ describe('columnWidths', function() {
       flexGrow: 10,
       width: 50,
       groupIdx: 0,
-    },{
+    }, {
       id: 4,
       fixed: true,
       width: 60,
@@ -32,7 +32,7 @@ describe('columnWidths', function() {
       fixed: true,
       width: 90,
       groupIdx: 2,
-    },{
+    }, {
       id: 7,
       fixed: true,
       width: 10,
@@ -44,7 +44,7 @@ describe('columnWidths', function() {
       flexGrow: 5,
       width: 50,
       groupIdx: 1,
-    },{
+    }, {
       id: 3,
       fixed: false,
       flexGrow: 10,

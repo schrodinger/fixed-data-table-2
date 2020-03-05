@@ -2,8 +2,8 @@
  * Copyright Schrodinger, LLC
  */
 import { assert } from 'chai';
-import tableHeights from 'tableHeights';
-import Scrollbar from 'Scrollbar';
+import tableHeights from '../../src/selectors/tableHeights';
+import Scrollbar from '../../src/plugins/Scrollbar';
 
 describe('tableHeights', function() {
   let elementHeights;

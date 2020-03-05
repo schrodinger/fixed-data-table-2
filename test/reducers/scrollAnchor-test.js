@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 import { assert } from 'chai';
-import { __RewireAPI__, getScrollAnchor } from 'scrollAnchor';
+import { __RewireAPI__, getScrollAnchor } from '../../src/reducers/scrollAnchor';
 
 describe('scrollAnchor', function() {
   beforeEach(function() {

@@ -12,10 +12,11 @@
 'use strict';
 
 import clamp from 'lodash/clamp';
-import updateRowHeight from 'updateRowHeight';
-import roughHeightsSelector from 'roughHeights';
-import scrollbarsVisibleSelector from 'scrollbarsVisible';
-import tableHeightsSelector from 'tableHeights';
+
+import roughHeightsSelector from '../selectors/roughHeights';
+import scrollbarsVisibleSelector from '../selectors/scrollbarsVisible';
+import tableHeightsSelector from '../selectors/tableHeights';
+import updateRowHeight from './updateRowHeight';
 
 /**
  * Returns data about the rows to render
@@ -89,7 +90,7 @@ export default function computeRenderedRows(state, scrollAnchor) {
  *
  * @param {!Object} state
  * @param {{
- *   firstIndex: number,
+ *   firstIndex?: number,
  *   firstOffset: number,
  *   lastIndex: number,
  * }} scrollAnchor
@@ -139,7 +140,7 @@ function calculateRenderedRowRange(state, scrollAnchor) {
   let rowIdx = startIdx;
   let endIdx = rowIdx;
   while (rowIdx < rowsCount && rowIdx >= 0 &&
-      totalHeight < maxAvailableHeight) {
+    totalHeight < maxAvailableHeight) {
     totalHeight += updateRowHeight(state, rowIdx);
     endIdx = rowIdx;
     rowIdx += step;
@@ -261,7 +262,7 @@ function addRowToBuffer(rowIdx, rowBufferSet, startRange, endRange, maxBufferSiz
   let rowPosition = rowBufferSet.getValuePosition(rowIdx);
 
   // Request a position in the buffer through eviction of another row
-  if (rowPosition === null && rowBufferSet.getSize() >= maxBufferSize)  {
+  if (rowPosition === null && rowBufferSet.getSize() >= maxBufferSize) {
     rowPosition = rowBufferSet.replaceFurthestValuePosition(
       startRange,
       endRange - 1, // replaceFurthestValuePosition uses closed interval from startRange to endRange

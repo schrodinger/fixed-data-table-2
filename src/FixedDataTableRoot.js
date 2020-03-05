@@ -11,10 +11,10 @@
 
 'use strict';
 
-import Table from 'FixedDataTableContainer';
-import Cell from 'FixedDataTableCellDefault';
-import Column from 'FixedDataTableColumn';
-import ColumnGroup from 'FixedDataTableColumnGroup';
+import Table from './FixedDataTableContainer';
+import Cell from './FixedDataTableCellDefault';
+import Column from './FixedDataTableColumn';
+import ColumnGroup from './FixedDataTableColumnGroup';
 
 const version = '1.0.2';
 

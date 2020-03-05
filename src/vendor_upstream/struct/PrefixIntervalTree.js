@@ -85,7 +85,7 @@ class PrefixIntervalTree {
     }
 
     for (i = this._half - 1; i > 0; --i) {
-      this._heap[i] =  this._heap[2 * i] + this._heap[2 * i + 1];
+      this._heap[i] = this._heap[2 * i] + this._heap[2 * i + 1];
     }
   }
 

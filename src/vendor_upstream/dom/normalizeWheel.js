@@ -12,13 +12,11 @@
 
 'use strict';
 
-import UserAgent_DEPRECATED from 'UserAgent_DEPRECATED';
-
-import isEventSupported from 'isEventSupported';
-
+import UserAgent_DEPRECATED from '../../stubs/UserAgent_DEPRECATED';
+import isEventSupported from '../react/renderers/dom/client/utils/isEventSupported';
 
 // Reasonable defaults
-var PIXEL_STEP  = 10;
+var PIXEL_STEP = 10;
 var LINE_HEIGHT = 40;
 var PAGE_HEIGHT = 800;
 
@@ -124,16 +122,16 @@ var PAGE_HEIGHT = 800;
  */
 function normalizeWheel(/*object*/ event) /*object*/ {
   var sX = 0, sY = 0,       // spinX, spinY
-      pX = 0, pY = 0;       // pixelX, pixelY
+    pX = 0, pY = 0;       // pixelX, pixelY
 
   // Legacy
-  if ('detail'      in event) { sY = event.detail; }
-  if ('wheelDelta'  in event) { sY = -event.wheelDelta / 120; }
+  if ('detail' in event) { sY = event.detail; }
+  if ('wheelDelta' in event) { sY = -event.wheelDelta / 120; }
   if ('wheelDeltaY' in event) { sY = -event.wheelDeltaY / 120; }
   if ('wheelDeltaX' in event) { sX = -event.wheelDeltaX / 120; }
 
   // side scrolling on FF with DOMMouseScroll
-  if ( 'axis' in event && event.axis === event.HORIZONTAL_AXIS ) {
+  if ('axis' in event && event.axis === event.HORIZONTAL_AXIS) {
     sX = sY;
     sY = 0;
   }
@@ -158,10 +156,12 @@ function normalizeWheel(/*object*/ event) /*object*/ {
   if (pX && !sX) { sX = (pX < 1) ? -1 : 1; }
   if (pY && !sY) { sY = (pY < 1) ? -1 : 1; }
 
-  return { spinX  : sX,
-           spinY  : sY,
-           pixelX : pX,
-           pixelY : pY };
+  return {
+    spinX: sX,
+    spinY: sY,
+    pixelX: pX,
+    pixelY: pY
+  };
 }
 
 
@@ -172,10 +172,10 @@ function normalizeWheel(/*object*/ event) /*object*/ {
  */
 normalizeWheel.getEventType = function() /*string*/ {
   return (UserAgent_DEPRECATED.firefox())
-           ? 'DOMMouseScroll'
-           : (isEventSupported('wheel'))
-               ? 'wheel'
-               : 'mousewheel';
+    ? 'DOMMouseScroll'
+    : (isEventSupported('wheel'))
+      ? 'wheel'
+      : 'mousewheel';
 };
 
 export default normalizeWheel;

@@ -11,11 +11,13 @@
  */
 
 import React from 'react';
-import Scrollbar from 'Scrollbar';
 import PropTypes from 'prop-types';
-import joinClasses from 'joinClasses';
-import cx from 'cx';
 import isEmpty from 'lodash/isEmpty'
+
+import cx from '../vendor_upstream/stubs/cx';
+import joinClasses from '../vendor_upstream/core/joinClasses';
+
+import Scrollbar from './Scrollbar';
 
 class ScrollContainer extends React.Component {
     state = {};

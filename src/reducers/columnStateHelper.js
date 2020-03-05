@@ -11,10 +11,12 @@
 
 'use strict';
 
-import emptyFunction from 'emptyFunction';
 import isNil from 'lodash/isNil';
-import columnWidths from 'columnWidths';
 import clamp from 'lodash/clamp';
+
+import emptyFunction from '../vendor_upstream/core/emptyFunction';
+
+import columnWidths from '../selectors/columnWidths';
 
 const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
@@ -33,7 +35,7 @@ function initialize(state, props, oldProps) {
   let { columnResizingData, isColumnResizing, scrollX } = state;
 
   if (scrollLeft !== undefined &&
-      (!oldProps || scrollLeft !== oldProps.scrollLeft)) {
+    (!oldProps || scrollLeft !== oldProps.scrollLeft)) {
     scrollX = scrollLeft;
   }
 

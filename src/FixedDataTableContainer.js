@@ -11,23 +11,24 @@
  * @noflow
  */
 
-import * as ActionTypes from 'ActionTypes';
-import FixedDataTable from 'FixedDataTable';
-import FixedDataTableStore from 'FixedDataTableStore';
 import React from 'react';
 import { bindActionCreators } from 'redux';
-import * as columnActions from 'columnActions';
 import invariant from 'invariant';
 import pick from 'lodash/pick';
-import * as scrollActions from 'scrollActions';
-import ScrollContainer from 'ScrollContainer';
-import Scrollbar from 'Scrollbar';
+
+import * as ActionTypes from './actions/ActionTypes';
+import * as columnActions from './actions/columnActions';
+import * as scrollActions from './actions/scrollActions';
+import FixedDataTable from './FixedDataTable';
+import FixedDataTableStore from './FixedDataTableStore';
+import Scrollbar from './plugins/Scrollbar';
+import ScrollContainer from './plugins/ScrollContainer';
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
-      defaultScrollbars: true,
-      scrollbarXHeight: Scrollbar.SIZE,
-      scrollbarYWidth: Scrollbar.SIZE
+    defaultScrollbars: true,
+    scrollbarXHeight: Scrollbar.SIZE,
+    scrollbarYWidth: Scrollbar.SIZE
   };
 
   constructor(props) {
@@ -77,19 +78,19 @@ class FixedDataTableContainer extends React.Component {
 
   render() {
     const fdt = (
-        <FixedDataTable
-            {...this.state}
-            {...this.props}
-            scrollActions={this.scrollActions}
-            columnActions={this.columnActions}
-        />
+      <FixedDataTable
+        {...this.state}
+        {...this.props}
+        scrollActions={this.scrollActions}
+        columnActions={this.columnActions}
+      />
     );
     // For backward compatibility, by default we render FDT-2 scrollbars
     if (this.props.defaultScrollbars) {
       return (
-          <ScrollContainer {...this.props}>
-            {fdt}
-          </ScrollContainer>
+        <ScrollContainer {...this.props}>
+          {fdt}
+        </ScrollContainer>
       );
     }
     return fdt;

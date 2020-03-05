@@ -1,5 +1,4 @@
 var webpack = require('webpack');
-var resolvers = require('./build_helpers/resolvers');
 var path = require('path');
 var glob = require('glob');
 var MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -60,9 +59,6 @@ plugins.push(
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
-  resolve: {
-    plugins: [resolvers.resolveHasteDefines]
-  },
   module: {
     rules: [
       {
@@ -127,7 +123,7 @@ if (process.env.COMPRESS) {
           compressor: {
             warnings: false
           },
-          output: {comments: false}
+          output: { comments: false }
         }
       })
     ]

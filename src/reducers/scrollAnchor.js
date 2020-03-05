@@ -11,9 +11,10 @@
 
 'use strict';
 
-import clamp from 'clamp';
-import updateRowHeight from 'updateRowHeight';
-import scrollbarsVisibleSelector from 'scrollbarsVisible';
+import clamp from '../vendor_upstream/core/clamp';
+
+import scrollbarsVisibleSelector from '../selectors/scrollbarsVisible';
+import updateRowHeight from './updateRowHeight';
 
 /**
  * Get the anchor for scrolling.
@@ -22,7 +23,7 @@ import scrollbarsVisibleSelector from 'scrollbarsVisible';
  *
  * @param {!Object} state
  * @param {!Object} newProps
- * @param {!Object} oldProps
+ * @param {!Object} [oldProps]
  * @return {{
  *   firstIndex: number,
  *   firstOffset: number,
@@ -32,14 +33,14 @@ import scrollbarsVisibleSelector from 'scrollbarsVisible';
  */
 export function getScrollAnchor(state, newProps, oldProps) {
   if (newProps.scrollToRow !== undefined &&
-      newProps.scrollToRow !== null &&
-      (!oldProps || newProps.scrollToRow !== oldProps.scrollToRow)) {
+    newProps.scrollToRow !== null &&
+    (!oldProps || newProps.scrollToRow !== oldProps.scrollToRow)) {
     return scrollToRow(state, newProps.scrollToRow);
   }
 
   if (newProps.scrollTop !== undefined &&
-      newProps.scrollTop !== null &&
-      (!oldProps || newProps.scrollTop !== oldProps.scrollTop)) {
+    newProps.scrollTop !== null &&
+    (!oldProps || newProps.scrollTop !== oldProps.scrollTop)) {
     return scrollTo(state, newProps.scrollTop);
   }
 

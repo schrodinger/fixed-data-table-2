@@ -10,13 +10,15 @@
  * @typechecks
  */
 
-import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
-import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
 import React from 'react';
 import PropTypes from 'prop-types';
-import cx from 'cx';
-import joinClasses from 'joinClasses';
-import shallowEqual from 'shallowEqual';
+
+import cx from './vendor_upstream/stubs/cx';
+import joinClasses from './vendor_upstream/core/joinClasses';
+import shallowEqual from './vendor_upstream/core/shallowEqual';
+
+import FixedDataTableCellDefault from './FixedDataTableCellDefault';
+import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
 
 class FixedDataTableCell extends React.Component {
   /**

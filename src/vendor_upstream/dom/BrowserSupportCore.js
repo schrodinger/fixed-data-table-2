@@ -10,7 +10,7 @@
  */
 
 
-import getVendorPrefixedName from 'getVendorPrefixedName';
+import getVendorPrefixedName from '../core/getVendorPrefixedName';
 
 var BrowserSupportCore = {
   /**

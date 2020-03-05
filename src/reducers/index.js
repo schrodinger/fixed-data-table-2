@@ -11,16 +11,18 @@
 
 'use strict';
 
-import { getScrollAnchor, scrollTo } from 'scrollAnchor';
-import * as ActionTypes from 'ActionTypes';
-import IntegerBufferSet from 'IntegerBufferSet';
-import PrefixIntervalTree from 'PrefixIntervalTree';
-import columnStateHelper from 'columnStateHelper'
-import computeRenderedRows from 'computeRenderedRows';
-import convertColumnElementsToData from 'convertColumnElementsToData';
 import pick from 'lodash/pick';
-import shallowEqual from 'shallowEqual';
-import Scrollbar from 'Scrollbar';
+
+import IntegerBufferSet from '../vendor_upstream/struct/IntegerBufferSet';
+import PrefixIntervalTree from '../vendor_upstream/struct/PrefixIntervalTree';
+import shallowEqual from '../vendor_upstream/core/shallowEqual';
+
+import convertColumnElementsToData from '../helper/convertColumnElementsToData';
+import * as ActionTypes from '../actions/ActionTypes';
+import { getScrollAnchor, scrollTo } from './scrollAnchor';
+import columnStateHelper from './columnStateHelper'
+import computeRenderedRows from './computeRenderedRows';
+import Scrollbar from '../plugins/Scrollbar';
 
 /**
  * Returns the default initial state for the redux store.
@@ -119,8 +121,8 @@ function reducers(state = getInitialState(), action) {
       let newState = setStateFromProps(state, newProps);
 
       if (oldProps.rowsCount !== newProps.rowsCount ||
-          oldProps.rowHeight !== newProps.rowHeight ||
-          oldProps.subRowHeight !== newProps.subRowHeight) {
+        oldProps.rowHeight !== newProps.rowHeight ||
+        oldProps.subRowHeight !== newProps.subRowHeight) {
         newState = initializeRowHeightsAndOffsets(newState);
       }
 

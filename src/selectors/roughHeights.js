@@ -8,10 +8,11 @@
  *
  * @providesModule roughHeights
  */
-import { getTotalWidth } from 'widthHelper';
-import Scrollbar from 'Scrollbar';
-import clamp from 'clamp';
-import shallowEqualSelector from 'shallowEqualSelector';
+
+import clamp from '../vendor_upstream/core/clamp';
+
+import shallowEqualSelector from '../helper/shallowEqualSelector';
+import { getTotalWidth } from '../helper/widthHelper';
 
 const BORDER_HEIGHT = 1;
 const MIN_BUFFER_ROWS = 3;
@@ -76,7 +77,7 @@ export const ScrollbarState = {
  * }}
  */
 function roughHeights(columnProps, elementHeights, rowSettings,
-    scrollFlags, tableSize, scrollbarXHeight, scrollbarYWidth) {
+  scrollFlags, tableSize, scrollbarXHeight, scrollbarYWidth) {
   const { cellGroupWrapperHeight, footerHeight, headerHeight, groupHeaderHeight } = elementHeights;
   // we don't need border height to be added to the table if we are using cellGroupWrapperHeight
   const borderHeight = cellGroupWrapperHeight ? 0 : 2 * BORDER_HEIGHT;

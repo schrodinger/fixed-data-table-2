@@ -2,8 +2,9 @@
  * Copyright Schrodinger, LLC
  */
 import { assert } from 'chai';
-import convertColumnElementsToData from 'convertColumnElementsToData';
 import forEach from 'lodash/forEach';
+
+import convertColumnElementsToData from '../../src/helper/convertColumnElementsToData';
 
 describe('convertColumnElementsToData', function() {
   before(function() {
@@ -118,7 +119,7 @@ describe('convertColumnElementsToData', function() {
       columnKey: 'bob',
       fixed: true,
       width: 100,
-    },{
+    }, {
       columnKey: 'sue',
       fixed: false,
       width: 50,

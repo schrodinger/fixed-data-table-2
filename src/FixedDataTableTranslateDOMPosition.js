@@ -10,8 +10,8 @@
  * @typechecks
  */
 
-import BrowserSupportCore from 'BrowserSupportCore';
-import translateDOMPositionXY from 'translateDOMPositionXY';
+import BrowserSupportCore from './vendor_upstream/dom/BrowserSupportCore';
+import translateDOMPositionXY from './vendor_upstream/dom/translateDOMPositionXY';
 
 function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*number*/ y, /*boolean*/ initialRender = false, /*boolean*/ isRTL = false) {
   if (style.display === 'none') {

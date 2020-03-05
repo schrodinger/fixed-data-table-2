@@ -19,11 +19,11 @@
 
 'use strict';
 
-import EventListener from 'EventListener';
+import EventListener from '../stubs/EventListener';
+import cancelAnimationFramePolyfill from '../core/cancelAnimationFramePolyfill';
+import requestAnimationFramePolyfill from '../core/requestAnimationFramePolyfill';
 
-import cancelAnimationFramePolyfill from 'cancelAnimationFramePolyfill';
-import requestAnimationFramePolyfill from 'requestAnimationFramePolyfill';
-import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
+import FixedDataTableEventHelper from '../../FixedDataTableEventHelper';
 
 class DOMMouseMoveTracker {
   /**
@@ -142,7 +142,7 @@ class DOMMouseMoveTracker {
   /**
    * Returns whether or not if the mouse movement is being tracked.
    */
-  isDragging() /*boolean*/{
+  isDragging() /*boolean*/ {
     return this._isDragging;
   }
 

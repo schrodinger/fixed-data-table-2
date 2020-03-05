@@ -8,14 +8,15 @@
  *
  * @providesModule columnTemplates
  */
-import columnWidths from 'columnWidths';
 import forEach from 'lodash/forEach';
-import shallowEqualSelector from 'shallowEqualSelector';
+
+import shallowEqualSelector from '../helper/shallowEqualSelector';
+import columnWidths from './columnWidths';
 
 /**
  * @typedef {{
  *   props: !Object,
- *   template: ReactElement,
+ *   template: React.ReactElement,
  * }}
  */
 let cellDetails;
@@ -38,10 +39,10 @@ let columnDetails;
  *   columnProps: !Array.<!Object>,
  * }} columnWidths
  * @param {{
- *   cell: !Array.<ReactElement>,
- *   footer: !Array.<ReactElement>,
- *   groupHeader !Array.<ReactElement>,
- *   header !Array.<ReactElement>,
+ *   cell: !Array.<React.ReactElement>,
+ *   footer: !Array.<React.ReactElement>,
+ *   groupHeader: !Array.<React.ReactElement>,
+ *   header: !Array.<React.ReactElement>,
  * }} elementTemplates
  * @return {{
  *   fixedColumnGroups: !Array.<cellDetails>,

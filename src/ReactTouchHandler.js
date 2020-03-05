@@ -16,8 +16,8 @@
 
 'use strict';
 
-import emptyFunction from 'emptyFunction';
-import requestAnimationFramePolyfill from 'requestAnimationFramePolyfill';
+import emptyFunction from './vendor_upstream/core/emptyFunction';
+import requestAnimationFramePolyfill from './vendor_upstream/core/requestAnimationFramePolyfill';
 
 var MOVE_AMPLITUDE = 1.6;
 var DECELERATION_AMPLITUDE = 1.6;

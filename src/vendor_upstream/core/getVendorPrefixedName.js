@@ -10,10 +10,10 @@
  * @typechecks
  */
 
-import ExecutionEnvironment from 'ExecutionEnvironment';
-
-import camelize from 'camelize';
 import invariant from 'invariant';
+
+import ExecutionEnvironment from './ExecutionEnvironment';
+import camelize from './camelize';
 
 var memoized = {};
 var prefixes = ['Webkit', 'ms', 'Moz', 'O'];

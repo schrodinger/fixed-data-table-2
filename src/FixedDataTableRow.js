@@ -12,14 +12,15 @@
 
 'use strict';
 
-import FixedDataTableCellGroup from 'FixedDataTableCellGroup';
-import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Scrollbar from 'Scrollbar';
-import cx from 'cx';
-import joinClasses from 'joinClasses';
-import { sumPropWidths } from 'widthHelper';
+
+import cx from './vendor_upstream/stubs/cx';
+import joinClasses from './vendor_upstream/core/joinClasses';
+
+import { sumPropWidths } from './helper/widthHelper';
+import FixedDataTableCellGroup from './FixedDataTableCellGroup';
+import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 
 // .fixedDataTableLayout/header border-bottom-width
 var HEADER_BORDER_BOTTOM_WIDTH = 1;
@@ -216,7 +217,7 @@ class FixedDataTableRowImpl extends React.Component {
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
     var fixedRightColumnsWidth = sumPropWidths(this.props.fixedRightColumns);
     var scrollbarOffset = this.props.showScrollbarY ? this.props.scrollbarYWidth : 0;
-    var fixedRightColumns = 
+    var fixedRightColumns =
       <FixedDataTableCellGroup
         key="fixed_right_cells"
         isScrolling={this.props.isScrolling}
@@ -283,8 +284,8 @@ class FixedDataTableRowImpl extends React.Component {
         left: this.props.isRTL ? 2 : this.props.width - scrollbarOffset - 2,
       };
       scrollbarSpacer =
-        <div 
-          style={spacerStyles} 
+        <div
+          style={spacerStyles}
           className={cx('public/fixedDataTable/scrollbarSpacer')}
         />;
     }
@@ -349,18 +350,18 @@ class FixedDataTableRowImpl extends React.Component {
       'fixedDataTableRowLayout/columnsShadow': this.props.scrollLeft > 0,
       'public/fixedDataTableRow/fixedColumnsDivider': left > 0,
       'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0,
-     });
-     var dividerHeight = this.props.cellGroupWrapperHeight ?
-       this.props.cellGroupWrapperHeight - HEADER_BORDER_BOTTOM_WIDTH : this.props.height;
-     var style = {
-       left: left,
-       height: dividerHeight
-     };
-     if (this.props.isRTL) {
-       style.right = left;
-       style.left = 'auto';
-     }
-     return <div className={className} style={style} />;
+    });
+    var dividerHeight = this.props.cellGroupWrapperHeight ?
+      this.props.cellGroupWrapperHeight - HEADER_BORDER_BOTTOM_WIDTH : this.props.height;
+    var style = {
+      left: left,
+      height: dividerHeight
+    };
+    if (this.props.isRTL) {
+      style.right = left;
+      style.left = 'auto';
+    }
+    return <div className={className} style={style} />;
   };
 
   _renderFixedRightColumnsShadow = (/*number*/ left) => /*?object*/ {
@@ -431,7 +432,7 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   _onMouseLeave = (/*object*/ event) => {
-    if(this.mouseLeaveIndex === null) {
+    if (this.mouseLeaveIndex === null) {
       this.mouseLeaveIndex = this.props.index;
     }
     this.props.onMouseLeave(event, this.mouseLeaveIndex);
