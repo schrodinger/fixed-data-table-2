@@ -145,6 +145,22 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     rowIdx += step;
   }
 
+  /* Handle the case where rows have shrunk and there's not enough content
+     between the start scroll anchor and the end of the table to fill the available space.
+     In this case process earlier rows as needed and act as if we've scrolled to the last row.
+   */
+  let forceScrollToLastRow = false;
+  if (totalHeight < maxAvailableHeight && rowIdx === rowsCount && lastIndex === undefined) {
+    forceScrollToLastRow = true;
+    rowIdx = firstIndex - 1;
+
+    while (rowIdx >= 0 && totalHeight < maxAvailableHeight) {
+      totalHeight += updateRowHeight(state, rowIdx);
+      startIdx = rowIdx;
+      --rowIdx;
+    }
+  }
+
   // Loop to walk the leading buffer
   let firstViewportIdx = Math.min(startIdx, endIdx);
   const firstBufferIdx = Math.max(firstViewportIdx - bufferRowCount, 0);
@@ -159,11 +175,14 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     updateRowHeight(state, rowIdx);
   }
 
+
   const { availableHeight } = scrollbarsVisibleSelector(state);
-  if (lastIndex !== undefined) {
+  if (lastIndex !== undefined || forceScrollToLastRow) {
     // Calculate offset needed to position last row at bottom of viewport
     // This should be negative and represent how far the first row needs to be offscreen
-    firstOffset = Math.min(availableHeight - totalHeight, 0);
+    // NOTE (jordan): The first offset should always be 0 when lastIndex is defined
+    // since we don't currently support scrolling the last row into view with an offset.
+    firstOffset = firstOffset + Math.min(availableHeight - totalHeight, 0);
 
     // Handle a case where the offset puts the first row fully offscreen
     // This can happen if availableHeight & maxAvailableHeight are different
