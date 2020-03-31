@@ -663,9 +663,7 @@ class FixedDataTable extends React.Component {
   }
 
   componentDidUpdate(/*object*/ prevProps) {
-    if (prevProps !== this.props) {
-      this._didScroll(prevProps);
-    }
+    this._didScroll(prevProps);
     this._reportContentHeight();
     this._reportScrollBarsUpdates();
   }

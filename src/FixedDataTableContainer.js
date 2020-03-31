@@ -78,8 +78,8 @@ class FixedDataTableContainer extends React.Component {
   render() {
     const fdt = (
         <FixedDataTable
-            {...this.state}
             {...this.props}
+            {...this.state}
             scrollActions={this.scrollActions}
             columnActions={this.columnActions}
         />
