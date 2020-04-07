@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
 import shallowEqual from 'shallowEqual';
+import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -125,79 +126,76 @@ class FixedDataTableCell extends React.Component {
     return false;
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps === this.props) {
-      return;
-    }
-
-    const props = this.props;
-    var left = props.left + this.state.displacement;
+  static getDerivedStateFromProps(nextProps, prevState) {
+    var left = nextProps.left + prevState.displacement;
 
     var newState = {
-      isReorderingThisColumn: false
+      isReorderingThisColumn: false,
     };
 
-    if (props.isColumnReordering) {
-      var originalLeft = props.columnReorderingData.originalLeft;
-      var reorderCellLeft = originalLeft + props.columnReorderingData.dragDistance;
-      var farthestPossiblePoint = props.columnGroupWidth - props.columnReorderingData.columnWidth;
-
-      // ensure the cell isn't being dragged out of the column group
-      reorderCellLeft = Math.max(reorderCellLeft, 0);
-      reorderCellLeft = Math.min(reorderCellLeft, farthestPossiblePoint);
-
-      if (props.columnKey === props.columnReorderingData.columnKey) {
-        newState.displacement = reorderCellLeft - props.left;
-        newState.isReorderingThisColumn = true;
-      } else {
-        var reorderCellRight = reorderCellLeft + props.columnReorderingData.columnWidth;
-        var reorderCellCenter = reorderCellLeft + (props.columnReorderingData.columnWidth / 2);
-        var centerOfThisColumn = left + (props.width / 2);
-
-        var cellIsBeforeOneBeingDragged = reorderCellCenter > centerOfThisColumn;
-        var cellWasOriginallyBeforeOneBeingDragged = originalLeft > props.left;
-        var changedPosition = false;
-
-        if (cellIsBeforeOneBeingDragged) {
-          if (reorderCellLeft < centerOfThisColumn) {
-            changedPosition = true;
-            if (cellWasOriginallyBeforeOneBeingDragged) {
-              newState.displacement = props.columnReorderingData.columnWidth;
-            } else {
-              newState.displacement = 0;
-            }
-          }
-        } else {
-          if (reorderCellRight > centerOfThisColumn) {
-            changedPosition = true;
-            if (cellWasOriginallyBeforeOneBeingDragged) {
-              newState.displacement = 0;
-            } else {
-              newState.displacement = props.columnReorderingData.columnWidth * -1;
-            }
-          }
-        }
-
-        if (changedPosition) {
-          if (cellIsBeforeOneBeingDragged) {
-            if (!props.columnReorderingData.columnAfter) {
-              props.columnReorderingData.columnAfter = props.columnKey;
-            }
-          } else {
-            props.columnReorderingData.columnBefore = props.columnKey;
-          }
-        } else if (cellIsBeforeOneBeingDragged) {
-          props.columnReorderingData.columnBefore = props.columnKey;
-        } else if (!props.columnReorderingData.columnAfter) {
-          props.columnReorderingData.columnAfter = props.columnKey;
-        }
-
-      }
-    } else {
+    if (!nextProps.isColumnReordering) {
       newState.displacement = 0;
+      return newState;
+    }
+    
+    var originalLeft = nextProps.columnReorderingData.originalLeft;
+    var reorderCellLeft = originalLeft + nextProps.columnReorderingData.dragDistance;
+    var farthestPossiblePoint = nextProps.columnGroupWidth - nextProps.columnReorderingData.columnWidth;
+
+    // ensure the cell isn't being dragged out of the column group
+    reorderCellLeft = Math.max(reorderCellLeft, 0);
+    reorderCellLeft = Math.min(reorderCellLeft, farthestPossiblePoint);
+
+    // check if current cell belongs to the column that's being reordered
+    if (nextProps.columnKey === nextProps.columnReorderingData.columnKey) {
+      newState.displacement = reorderCellLeft - nextProps.left;
+      newState.isReorderingThisColumn = true;
+      return newState;
     }
 
-    this.setState(newState);
+    var reorderCellRight = reorderCellLeft + nextProps.columnReorderingData.columnWidth;
+    var reorderCellCenter = reorderCellLeft + (nextProps.columnReorderingData.columnWidth / 2);
+    var centerOfThisColumn = left + (nextProps.width / 2);
+
+    var cellIsBeforeOneBeingDragged = reorderCellCenter > centerOfThisColumn;
+    var cellWasOriginallyBeforeOneBeingDragged = originalLeft > nextProps.left;
+    var changedPosition = false;
+
+    if (cellIsBeforeOneBeingDragged) {
+      if (reorderCellLeft < centerOfThisColumn) {
+        changedPosition = true;
+        if (cellWasOriginallyBeforeOneBeingDragged) {
+          newState.displacement = nextProps.columnReorderingData.columnWidth;
+        } else {
+          newState.displacement = 0;
+        }
+      }
+    } else {
+      if (reorderCellRight > centerOfThisColumn) {
+        changedPosition = true;
+        if (cellWasOriginallyBeforeOneBeingDragged) {
+          newState.displacement = 0;
+        } else {
+          newState.displacement = nextProps.columnReorderingData.columnWidth * -1;
+        }
+      }
+    }
+
+    if (changedPosition) {
+      if (cellIsBeforeOneBeingDragged) {
+        if (!nextProps.columnReorderingData.columnAfter) {
+          nextProps.columnReorderingData.columnAfter = nextProps.columnKey;
+        }
+      } else {
+        nextProps.columnReorderingData.columnBefore = nextProps.columnKey;
+      }
+    } else if (cellIsBeforeOneBeingDragged) {
+      nextProps.columnReorderingData.columnBefore = nextProps.columnKey;
+    } else if (!nextProps.columnReorderingData.columnAfter) {
+      nextProps.columnReorderingData.columnAfter = nextProps.columnKey;
+    }
+
+    return newState;
   }
 
   static defaultProps = /*object*/ {
@@ -347,4 +345,5 @@ class FixedDataTableCell extends React.Component {
     event.stopPropagation();
   }
 }
-export default FixedDataTableCell;
+
+export default lifecycleCompatibilityPolyfill(FixedDataTableCell);

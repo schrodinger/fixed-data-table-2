@@ -49,21 +49,16 @@ class FixedDataTableContainer extends React.Component {
     this.state = this.getBoundState();
   }
 
-  componentDidUpdate(prevProps) {
-    // Only react to prop changes - ignore updates due to internal state
-    if (this.props === prevProps) {
-      return;
-    }
-
+  componentWillReceiveProps(nextProps) {
     invariant(
-      this.props.height !== undefined || this.props.maxHeight !== undefined,
+      nextProps.height !== undefined || nextProps.maxHeight !== undefined,
       'You must set either a height or a maxHeight'
     );
 
     this.reduxStore.dispatch({
       type: ActionTypes.PROP_CHANGE,
-      newProps: this.props,
-      oldProps: prevProps,
+      newProps: nextProps,
+      oldProps: this.props,
     });
   }
 
@@ -78,8 +73,8 @@ class FixedDataTableContainer extends React.Component {
   render() {
     const fdt = (
         <FixedDataTable
-            {...this.state}
             {...this.props}
+            {...this.state}
             scrollActions={this.scrollActions}
             columnActions={this.columnActions}
         />
