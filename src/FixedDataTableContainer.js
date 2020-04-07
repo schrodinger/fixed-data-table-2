@@ -49,7 +49,7 @@ class FixedDataTableContainer extends React.Component {
     this.state = this.getBoundState();
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     invariant(
       nextProps.height !== undefined || nextProps.maxHeight !== undefined,
       'You must set either a height or a maxHeight'
