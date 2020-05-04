@@ -238,6 +238,25 @@ class FixedDataTableCell extends React.Component {
       }),
       props.className,
     );
+    var resizerComponent;
+    if(this.props.isHeader && this.props.resizerComponent){
+      var _columnResizerStyle = {
+        height
+      };
+      resizerComponent = (
+        <this.props.resizerComponent
+          columnResizerStyle={_columnResizerStyle}
+          resizerLineHeight={this.props.resizerLineHeight}
+          onColumnResizeEnd={this.props.onColumnResizeEnd}
+          left={this.props.left}
+          width={this.props.width}
+          minWidth={this.props.minWidth}
+          maxWidth={this.props.maxWidth}
+          columnKey={this.props.columnKey}
+          cellGroupLeft={this.props.cellGroupLeft} 
+          touchEnabled={this.props.touchEnabled}
+          isRTL={this.props.isRTL} />);
+    }
 
     var columnResizerComponent;
     if (props.onColumnResize) {
@@ -305,7 +324,8 @@ class FixedDataTableCell extends React.Component {
 
     return (
       <div className={className} style={style} role={role}>
-        {columnResizerComponent}
+        {/* {columnResizerComponent} */}
+        {resizerComponent}
         {columnReorderComponent}
         {content}
       </div>

@@ -29,6 +29,7 @@ var ExamplePages = Constants.ExamplePages;
 var EXAMPLE_COMPONENTS = {
   [ExamplePages.OBJECT_DATA_EXAMPLE.location]: require('../../examples/ObjectDataExample'),
   [ExamplePages.RESIZE_EXAMPLE.location]: require('../../examples/ResizeExample'),
+  [ExamplePages.CUSTOM_RESIZE_EXAMPLE.location]: require('../../examples/CustomResizeExample'),
   [ExamplePages.REORDER_EXAMPLE.location]: require('../../examples/ReorderExample'),
   [ExamplePages.HIDE_COLUMN_EXAMPLE.location]: require('../../examples/HideColumnExample'),
   [ExamplePages.SCROLL_TO_ROW_EXAMPLE.location]: require('../../examples/ScrollToRowExample'),

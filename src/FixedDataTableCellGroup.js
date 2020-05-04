@@ -147,6 +147,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
       <FixedDataTableCell
         isScrolling={this.props.isScrolling}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
+        isHeader={this.props.isHeader}
+        resizerLineHeight={this.props.resizerLineHeight}
         align={columnProps.align}
         className={className}
         height={height}
@@ -155,6 +157,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         minWidth={columnProps.minWidth}
         touchEnabled={this.props.touchEnabled}
         onColumnResize={onColumnResize}
+        onColumnResizeEnd={this.props.onColumnResizeEnd}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
@@ -164,10 +167,12 @@ class FixedDataTableCellGroupImpl extends React.Component {
         columnKey={columnProps.columnKey}
         width={columnProps.width}
         left={left}
+        cellGroupLeft={this.props.left}
         cell={cellTemplate}
         columnGroupWidth={columnGroupWidth}
         pureRendering={pureRendering}
         isRTL={this.props.isRTL}
+        resizerComponent={columnProps.resizerComponent}
       />
     );
   }

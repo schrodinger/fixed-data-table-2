@@ -31,6 +31,7 @@ function _extractProps(column) {
     'isReorderable',
     'isResizable',
     'pureRendering',
+    'resizerComponent',
     'width',
   ]);
 };

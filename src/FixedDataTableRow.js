@@ -201,8 +201,10 @@ class FixedDataTableRowImpl extends React.Component {
         width={fixedColumnsWidth}
         zIndex={2}
         columns={this.props.fixedColumns}
+        resizerLineHeight={this.props.resizerLineHeight}
         touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
+        onColumnResizeEnd={this.props.onColumnResizeEnd}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
@@ -211,6 +213,7 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
+        isHeader={this.props.isHeader}
         isRTL={this.props.isRTL}
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
@@ -221,6 +224,7 @@ class FixedDataTableRowImpl extends React.Component {
         key="fixed_right_cells"
         isScrolling={this.props.isScrolling}
         height={this.props.height}
+        resizerLineHeight={this.props.resizerLineHeight}
         cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
         offsetLeft={this.props.width - fixedRightColumnsWidth - scrollbarOffset}
         width={fixedRightColumnsWidth}
@@ -228,6 +232,7 @@ class FixedDataTableRowImpl extends React.Component {
         columns={this.props.fixedRightColumns}
         touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
+        onColumnResizeEnd={this.props.onColumnResizeEnd}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
@@ -236,6 +241,7 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
+        isHeader={this.props.isHeader}
         isRTL={this.props.isRTL}
       />;
     var fixedRightColumnsShadow = fixedRightColumnsWidth ?
@@ -245,6 +251,7 @@ class FixedDataTableRowImpl extends React.Component {
         key="scrollable_cells"
         isScrolling={this.props.isScrolling}
         height={this.props.height}
+        resizerLineHeight={this.props.resizerLineHeight}
         cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
         align="right"
         left={this.props.scrollLeft}
@@ -254,6 +261,7 @@ class FixedDataTableRowImpl extends React.Component {
         columns={this.props.scrollableColumns}
         touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
+        onColumnResizeEnd={this.props.onColumnResizeEnd}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
@@ -262,6 +270,7 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
+        isHeader={this.props.isHeader}
         isRTL={this.props.isRTL}
       />;
     var scrollableColumnsWidth = sumPropWidths(this.props.scrollableColumns);

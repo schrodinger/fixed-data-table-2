@@ -47,6 +47,12 @@ exports.ExamplePages = {
     title: 'Resizable columns',
     description: 'Table with drag and drop column resizing and a dummy "store" for persistence. The Last Name column demonstrates the ability to constrain to both a min- and max-width.',
   },
+  CUSTOM_RESIZE_EXAMPLE: {
+    location: 'example-customresize.html',
+    fileName: 'CustomResizeExample.js',
+    title: 'Custom Resizable columns',
+    description: 'Table with drag and drop column resizing and a dummy "store" for persistence. The Last Name column demonstrates the ability to constrain to both a min- and max-width.',
+  },
   REORDER_EXAMPLE: {
     location: 'example-reorder.html',
     fileName: 'ReorderExample.js',

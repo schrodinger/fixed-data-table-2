@@ -767,6 +767,7 @@ class FixedDataTable extends React.Component {
           width={width}
           height={groupHeaderHeight}
           cellGroupWrapperHeight={cellGroupWrapperHeight}
+          resizerLineHeight={componentHeight}
           index={0}
           zIndex={1}
           offsetTop={0}
@@ -776,11 +777,13 @@ class FixedDataTable extends React.Component {
           scrollableColumns={scrollableColumnGroups}
           visible={true}
           onColumnResize={this._onColumnResize}
+          onColumnResizeEnd={onColumnResizeEndCallback}
           onColumnReorder={onColumnReorder}
           onColumnReorderMove={this._onColumnReorderMove}
           showScrollbarY={scrollEnabledY}
           scrollbarYWidth={scrollbarYWidth}
           isRTL={this.props.isRTL}
+          isHeader={true}
         />
       );
     }
@@ -854,6 +857,7 @@ class FixedDataTable extends React.Component {
         )}
         width={width}
         height={headerHeight}
+        resizerLineHeight={componentHeight}
         cellGroupWrapperHeight={cellGroupWrapperHeight}
         index={-1}
         zIndex={1}
@@ -865,6 +869,7 @@ class FixedDataTable extends React.Component {
         scrollableColumns={scrollableColumns.header}
         touchEnabled={touchScrollEnabled}
         onColumnResize={this._onColumnResize}
+        onColumnResizeEnd={onColumnResizeEndCallback}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
         onColumnReorderEnd={this._onColumnReorderEnd}
@@ -873,6 +878,7 @@ class FixedDataTable extends React.Component {
         showScrollbarY={scrollEnabledY}
         scrollbarYWidth={scrollbarYWidth}
         isRTL={this.props.isRTL}
+        isHeader={true}
       />;
 
     let topShadow;
