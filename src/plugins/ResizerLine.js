@@ -117,6 +117,14 @@ class ResizerLine extends React.PureComponent {
     );
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.instance){
+      this.state.top = nextProps.instance.getBoundingClientRect().top;
+      this.state.left = nextProps.instance.getBoundingClientRect().left;
+      this.state.knobWidth = nextProps.instance.getBoundingClientRect().width;
+    }
+  }
+
   componentWillUnmount() {
     this._mouseMoveTracker.releaseMouseMoves();
     this._mouseMoveTracker = null;
@@ -126,7 +134,8 @@ class ResizerLine extends React.PureComponent {
     var style = {
       width: 1,
       height: this.props.height,
-      top: this.state.top
+      top: this.state.top,
+      position: 'fixed',
     };
     if (this.props.isRTL) {
       style.left = this.state.left - this.state.width + this.props.initialWidth;
