@@ -114,18 +114,6 @@ class FixedDataTableRowImpl extends React.Component {
      */
     onDoubleClick: PropTypes.func,
 
-    /**
-     * Callback for when resizer knob (in FixedDataTableCell) is clicked
-     * to initialize resizing. Please note this is only on the cells
-     * in the header.
-     * @param number combinedWidth
-     * @param number leftOffset
-     * @param number cellWidth
-     * @param number|string columnKey
-     * @param object event
-     */
-    onColumnResize: PropTypes.func,
-
     isColumnReordering: PropTypes.bool,
     /**
      * Callback for when reorder handle (in FixedDataTableCell) is clicked
@@ -203,7 +191,6 @@ class FixedDataTableRowImpl extends React.Component {
         columns={this.props.fixedColumns}
         resizerLineHeight={this.props.resizerLineHeight}
         touchEnabled={this.props.touchEnabled}
-        onColumnResize={this.props.onColumnResize}
         onColumnResizeEnd={this.props.onColumnResizeEnd}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
@@ -231,7 +218,6 @@ class FixedDataTableRowImpl extends React.Component {
         zIndex={2}
         columns={this.props.fixedRightColumns}
         touchEnabled={this.props.touchEnabled}
-        onColumnResize={this.props.onColumnResize}
         onColumnResizeEnd={this.props.onColumnResizeEnd}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
@@ -260,7 +246,6 @@ class FixedDataTableRowImpl extends React.Component {
         zIndex={0}
         columns={this.props.scrollableColumns}
         touchEnabled={this.props.touchEnabled}
-        onColumnResize={this.props.onColumnResize}
         onColumnResizeEnd={this.props.onColumnResizeEnd}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}

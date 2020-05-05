@@ -51,19 +51,6 @@ class FixedDataTableCell extends React.Component {
      */
     rowIndex: PropTypes.number.isRequired,
 
-    /**
-     * Callback for when resizer knob (in FixedDataTableCell) is clicked
-     * to initialize resizing. Please note this is only on the cells
-     * in the header.
-     * @param number combinedWidth
-     * @param number left
-     * @param number width
-     * @param number minWidth
-     * @param number maxWidth
-     * @param number|string columnKey
-     * @param object event
-     */
-    onColumnResize: PropTypes.func,
     onColumnReorder: PropTypes.func,
 
     /**
@@ -258,30 +245,6 @@ class FixedDataTableCell extends React.Component {
           isRTL={this.props.isRTL} />);
     }
 
-    var columnResizerComponent;
-    if (props.onColumnResize) {
-      var columnResizerStyle = {
-        height
-      };
-      columnResizerComponent = (
-        <div
-          className={cx('fixedDataTableCellLayout/columnResizerContainer')}
-          style={columnResizerStyle}
-          onMouseDown={this._onColumnResizerMouseDown}
-          onTouchStart={this.props.touchEnabled ? this._onColumnResizerMouseDown : null}
-          onTouchEnd={this.props.touchEnabled ? this._suppressEvent : null}
-          onTouchMove={this.props.touchEnabled ? this._suppressEvent : null}>
-          <div
-            className={joinClasses(
-              cx('fixedDataTableCellLayout/columnResizerKnob'),
-              cx('public/fixedDataTableCell/columnResizerKnob'),
-            )}
-            style={columnResizerStyle}
-          />
-        </div>
-      );
-    }
-
     var columnReorderComponent;
     if (props.onColumnReorder) { //header row
       columnReorderComponent = (
@@ -324,31 +287,11 @@ class FixedDataTableCell extends React.Component {
 
     return (
       <div className={className} style={style} role={role}>
-        {/* {columnResizerComponent} */}
         {resizerComponent}
         {columnReorderComponent}
         {content}
       </div>
     );
-  }
-
-  _onColumnResizerMouseDown = (/*object*/ event) => {
-    this.props.onColumnResize(
-      this.props.left,
-      this.props.width,
-      this.props.minWidth,
-      this.props.maxWidth,
-      this.props.columnKey,
-      event
-    );
-    /**
-     * This prevents the rows from moving around when we resize the
-     * headers on touch devices.
-     */
-    if (this.props.touchEnabled) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
   }
 
   _onColumnReorderMouseDown = (/*object*/ event) => {
@@ -359,11 +302,7 @@ class FixedDataTableCell extends React.Component {
       event
     );
   }
-
-  _suppressEvent = (/*object*/ event) => {
-    event.preventDefault();
-    event.stopPropagation();
-  }
+  
 }
 
 export default lifecycleCompatibilityPolyfill(FixedDataTableCell);

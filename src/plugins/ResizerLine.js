@@ -6,12 +6,10 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * This is to be used with the FixedDataTable. It is a read line
+ * This is to be used with the ResizerKnob. It is a read line
  * that when you click on a column that is resizable appears and allows
  * you to resize the corresponding column.
  *
- * @providesModule ColumnResizerLine
- * @typechecks
  */
 
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
@@ -22,7 +20,7 @@ import PropTypes from 'prop-types';
 import clamp from 'clamp';
 import cx from 'cx';
 
-class CustomResizerLine extends React.PureComponent {
+class ResizerLine extends React.PureComponent {
   static propTypes = {
     visible: PropTypes.bool.isRequired,
 
@@ -93,7 +91,8 @@ class CustomResizerLine extends React.PureComponent {
     width: 0,
     cursorDelta: 0,
     left: 0,
-    top: 0
+    top: 0,
+    knobWidth: 0
   }
 
   componentDidUpdate() {
@@ -104,6 +103,9 @@ class CustomResizerLine extends React.PureComponent {
         cursorDelta: this.props.initialWidth,
       });
     }
+    this.state.top = this.props.instance.getBoundingClientRect().top;
+    this.state.left = this.props.instance.getBoundingClientRect().left;
+    this.state.knobWidth = this.props.instance.getBoundingClientRect().width;
   }
 
   componentDidMount() {
@@ -127,14 +129,13 @@ class CustomResizerLine extends React.PureComponent {
       top: this.state.top
     };
     if (this.props.isRTL) {
-      style.right = this.props.leftOffset;
+      style.left = this.state.left - this.state.width + this.props.initialWidth;
     } else {
-       style.left = this.state.left + this.state.width - this.props.initialWidth;
+       style.left = this.state.knobWidth + this.state.left + this.state.width - this.props.initialWidth;
     }
     return (
       <Portal>
         <div
-          id="rishi"
           className={cx({
             'fixedDataTableColumnResizerLineLayout/main': true,
             'fixedDataTableColumnResizerLineLayout/hiddenElem': !this.props.visible,
@@ -151,10 +152,8 @@ class CustomResizerLine extends React.PureComponent {
   }
 
   _onMove = (/*number*/ deltaX) => {
-    // console.log(this.props.instance.getBoundingClientRect());
     this.state.top = this.props.instance.getBoundingClientRect().top;
     this.state.left = this.props.instance.getBoundingClientRect().left;
-    console.log(this.state.left);
     if (this.props.isRTL) {
       deltaX = -deltaX;
     }
@@ -179,4 +178,4 @@ class CustomResizerLine extends React.PureComponent {
     this.props.clearState();
   }
 }
-export default CustomResizerLine;
+export default ResizerLine;

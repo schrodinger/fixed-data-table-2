@@ -14,6 +14,7 @@
 
 import FixedDataTableCell from 'FixedDataTableCell';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
+import ResizerKnob from './plugins/ResizerKnob';
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'cx';
@@ -35,8 +36,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
     isScrolling: PropTypes.bool,
 
     left: PropTypes.number,
-
-    onColumnResize: PropTypes.func,
 
     onColumnReorder: PropTypes.func,
     onColumnReorderMove: PropTypes.func,
@@ -133,9 +132,10 @@ class FixedDataTableCellGroupImpl extends React.Component {
     /*boolean*/ isColumnReordering,
   ) /*object*/ => {
 
-    var cellIsResizable = columnProps.isResizable &&
-      this.props.onColumnResize;
-    var onColumnResize = cellIsResizable ? this.props.onColumnResize : null;
+    var resizerComponent = columnProps.resizerComponent;
+    if(this.props.isHeader && columnProps.isResizable && !resizerComponent){
+      resizerComponent = ResizerKnob;
+    }
 
     var cellIsReorderable = columnProps.isReorderable && this.props.onColumnReorder && rowIndex === -1 && columnGroupWidth !== columnProps.width;
     var onColumnReorder = cellIsReorderable ? this.props.onColumnReorder : null;
@@ -156,7 +156,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
         maxWidth={columnProps.maxWidth}
         minWidth={columnProps.minWidth}
         touchEnabled={this.props.touchEnabled}
-        onColumnResize={onColumnResize}
         onColumnResizeEnd={this.props.onColumnResizeEnd}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
@@ -172,7 +171,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         columnGroupWidth={columnGroupWidth}
         pureRendering={pureRendering}
         isRTL={this.props.isRTL}
-        resizerComponent={columnProps.resizerComponent}
+        resizerComponent={resizerComponent}
       />
     );
   }
@@ -228,36 +227,14 @@ class FixedDataTableCellGroup extends React.Component {
       style.left = offsetLeft;
     }
 
-    var onColumnResize = props.onColumnResize ? this._onColumnResize : null;
-
     return (
       <div
         style={style}
         className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
         <FixedDataTableCellGroupImpl
           {...props}
-          onColumnResize={onColumnResize}
         />
       </div>
-    );
-  }
-
-  _onColumnResize = (
-    /*number*/ left,
-    /*number*/ width,
-    /*?number*/ minWidth,
-    /*?number*/ maxWidth,
-    /*string|number*/ columnKey,
-    /*object*/ event
-  ) => {
-    this.props.onColumnResize && this.props.onColumnResize(
-      this.props.offsetLeft,
-      left - this.props.left + width,
-      width,
-      minWidth,
-      maxWidth,
-      columnKey,
-      event
     );
   }
 }

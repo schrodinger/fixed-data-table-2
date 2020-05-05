@@ -169,10 +169,6 @@ function reducers(state = getInitialState(), action) {
       const scrollAnchor = scrollTo(newState, scrollY);
       return computeRenderedRows(newState, scrollAnchor);
     }
-    case ActionTypes.COLUMN_RESIZE: {
-      const { resizeData } = action;
-      return columnStateHelper.resizeColumn(state, resizeData);
-    }
     case ActionTypes.COLUMN_REORDER_START: {
       const { reorderData } = action;
       return columnStateHelper.reorderColumn(state, reorderData);

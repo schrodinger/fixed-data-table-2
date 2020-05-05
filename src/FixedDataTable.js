@@ -14,7 +14,6 @@
 /*eslint no-bitwise:1*/
 
 import FixedDataTableBufferedRows from 'FixedDataTableBufferedRows';
-import ColumnResizerLine from 'ColumnResizerLine';
 import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
 import FixedDataTableRow from 'FixedDataTableRow';
 import React from 'react';
@@ -776,7 +775,6 @@ class FixedDataTable extends React.Component {
           fixedRightColumns={fixedRightColumnGroups}
           scrollableColumns={scrollableColumnGroups}
           visible={true}
-          onColumnResize={this._onColumnResize}
           onColumnResizeEnd={onColumnResizeEndCallback}
           onColumnReorder={onColumnReorder}
           onColumnReorderMove={this._onColumnReorderMove}
@@ -797,22 +795,6 @@ class FixedDataTable extends React.Component {
     if (scrollEnabledX) {
       scrollbarX = this.props.scrollbarX;
     }
-
-    const dragKnob =
-      <ColumnResizerLine
-        height={componentHeight}
-        initialWidth={columnResizingData.width || 0}
-        minWidth={columnResizingData.minWidth || 0}
-        maxWidth={columnResizingData.maxWidth || Number.MAX_VALUE}
-        visible={!!isColumnResizing}
-        leftOffset={columnResizingData.left || 0}
-        knobHeight={headerHeight}
-        initialEvent={columnResizingData.initialEvent}
-        onColumnResizeEnd={onColumnResizeEndCallback}
-        columnKey={columnResizingData.key}
-        touchEnabled={touchScrollEnabled}
-        isRTL={this.props.isRTL}
-      />;
 
     let footer = null;
     if (footerHeight) {
@@ -868,7 +850,6 @@ class FixedDataTable extends React.Component {
         fixedRightColumns={fixedRightColumns.header}
         scrollableColumns={scrollableColumns.header}
         touchEnabled={touchScrollEnabled}
-        onColumnResize={this._onColumnResize}
         onColumnResizeEnd={onColumnResizeEndCallback}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
@@ -944,7 +925,6 @@ class FixedDataTable extends React.Component {
             height: scrollbarXOffsetTop,
             width
           }}>
-          {dragKnob}
           {groupHeader}
           {header}
           {rows}
@@ -1005,35 +985,6 @@ class FixedDataTable extends React.Component {
     if (this.props.stopReactWheelPropagation) {
       this._wheelHandler.setRoot(div);
     }
-  }
-
-  /**
-   * This is called when a cell that is in the header of a column has its
-   * resizer knob clicked on. It displays the resizer and puts in the correct
-   * location on the table.
-   */
-  _onColumnResize = (
-    /*number*/ combinedWidth,
-    /*number*/ leftOffset,
-    /*number*/ cellWidth,
-    /*?number*/ cellMinWidth,
-    /*?number*/ cellMaxWidth,
-    /*number|string*/ columnKey,
-    /*object*/ event
-  ) => {
-    const coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
-    const clientX = coordinates.x;
-    const clientY = coordinates.y;
-    this.props.columnActions.resizeColumn({
-      cellMinWidth,
-      cellMaxWidth,
-      cellWidth,
-      columnKey,
-      combinedWidth,
-      clientX,
-      clientY,
-      leftOffset,
-    });
   }
 
   _onColumnReorder = (

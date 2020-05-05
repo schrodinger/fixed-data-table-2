@@ -11,7 +11,6 @@ import {
   COLUMN_REORDER_START,
   COLUMN_REORDER_END,
   COLUMN_REORDER_MOVE,
-  COLUMN_RESIZE,
 } from './ActionTypes';
 
 /**
@@ -39,14 +38,4 @@ export const stopColumnReorder = () => ({
 export const moveColumnReorder = (deltaX) => ({
   type: COLUMN_REORDER_MOVE,
   deltaX
-});
-
-/**
- * Fires a resize on column
- *
- * @param {!Object} reorderData
- */
-export const resizeColumn = (resizeData) => ({
-  type: COLUMN_RESIZE,
-  resizeData,
 });

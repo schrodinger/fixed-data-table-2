@@ -122,39 +122,6 @@ function scrollTo(state, props, oldScrollToColumn, scrollX) {
   return scrollX;
 }
 
-/**
- * This is called when a cell that is in the header of a column has its
- * resizer knob clicked on. It displays the resizer and puts in the correct
- * location on the table.
- */
-function resizeColumn(state, resizeData) {
-  let {
-    cellMinWidth,
-    cellMaxWidth,
-    cellWidth,
-    columnKey,
-    combinedWidth,
-    clientX,
-    clientY,
-    leftOffset
-  } = resizeData;
-  return Object.assign({}, state, {
-    isColumnResizing: true,
-    columnResizingData: {
-      left: leftOffset + combinedWidth - cellWidth,
-      width: cellWidth,
-      minWidth: cellMinWidth,
-      maxWidth: cellMaxWidth,
-      initialEvent: {
-        clientX: clientX,
-        clientY: clientY,
-        preventDefault: emptyFunction
-      },
-      key: columnKey
-    }
-  });
-}
-
 function reorderColumn(state, reorderData) {
   let { columnKey, left, scrollStart, width } = reorderData;
   const { fixedColumns } = columnWidths(state);
@@ -212,5 +179,4 @@ export default {
   initialize,
   reorderColumn,
   reorderColumnMove,
-  resizeColumn,
 };
