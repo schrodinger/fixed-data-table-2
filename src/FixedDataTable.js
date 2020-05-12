@@ -440,11 +440,6 @@ class FixedDataTable extends React.Component {
     onColumnReorderEndCallback: PropTypes.func,
 
     /**
-     * Whether a column is currently being resized.
-     */
-    isColumnResizing: PropTypes.bool,
-
-    /**
      * Whether columns are currently being reordered.
      */
     isColumnReordering: PropTypes.bool,
@@ -727,10 +722,8 @@ class FixedDataTable extends React.Component {
     const {
       className,
       columnReorderingData,
-      columnResizingData,
       elementHeights,
       isColumnReordering,
-      isColumnResizing,
       gridAttributesGetter,
       maxScrollX,
       maxScrollY,
@@ -766,7 +759,7 @@ class FixedDataTable extends React.Component {
           width={width}
           height={groupHeaderHeight}
           cellGroupWrapperHeight={cellGroupWrapperHeight}
-          resizerLineHeight={componentHeight}
+          tableHeight={componentHeight}
           index={0}
           zIndex={1}
           offsetTop={0}
@@ -839,7 +832,7 @@ class FixedDataTable extends React.Component {
         )}
         width={width}
         height={headerHeight}
-        resizerLineHeight={componentHeight}
+        tableHeight={componentHeight}
         cellGroupWrapperHeight={cellGroupWrapperHeight}
         index={-1}
         zIndex={1}

@@ -7,8 +7,8 @@
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
 import { Table, Column, Cell } from 'fixed-data-table-2';
-import ResizerKnob  from '../src/plugins/CustomResizeComponent';
 import React from 'react';
+import ResizeReorderCell  from '../src/plugins/ResizeReorder/ResizeReorderCell.js';
 
 
 class ResizeExample extends React.Component {
@@ -43,7 +43,6 @@ class ResizeExample extends React.Component {
         rowHeight={30}
         headerHeight={50}
         rowsCount={dataList.getSize()}
-        onColumnResizeEndCallback={this._onColumnResizeEndCallback}
         isColumnResizing={false}
         touchScrollEnabled={true}
         width={1000}
@@ -51,41 +50,36 @@ class ResizeExample extends React.Component {
         {...this.props}>
         <Column
           columnKey="firstName"
-          header={<Cell>First Name</Cell>}
+          header={<ResizeReorderCell onColumnResizeEndCallback={this._onColumnResizeEndCallback}>First Name</ResizeReorderCell>}
           cell={<TextCell data={dataList} />}
-          resizerComponent={ResizerKnob}
           fixed={true}
           width={columnWidths.firstName}
-          // isResizable={true}
           isResizable={false}
         />
         <Column
           columnKey="lastName"
-          header={<Cell>Last Name (min/max constrained)</Cell>}
+          header={<ResizeReorderCell 
+            minWidth={70}
+            maxWidth={170} 
+            onColumnResizeEndCallback={this._onColumnResizeEndCallback}>
+              Last Name (min/max constrained)
+              </ResizeReorderCell>}
           cell={<TextCell data={dataList} />}
-          resizerComponent={ResizerKnob}
           width={columnWidths.lastName}
-          // isResizable={true}
           isResizable={false}
-          minWidth={70}
-          maxWidth={170}
         />
         <Column
           columnKey="companyName"
           header={<Cell>Company</Cell>}
           cell={<TextCell data={dataList} />}
-          resizerComponent={ResizerKnob}
           width={columnWidths.companyName}
-          // isResizable={true}
           isResizable={false}
         />
         <Column
           columnKey="sentence"
           header={<Cell>Sentence</Cell>}
           cell={<TextCell data={dataList} />}
-          resizerComponent={ResizerKnob}
           width={columnWidths.sentence}
-          // isResizable={true}
           isResizable={false}
         />
       </Table>

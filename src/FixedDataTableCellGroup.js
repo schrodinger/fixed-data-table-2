@@ -14,7 +14,6 @@
 
 import FixedDataTableCell from 'FixedDataTableCell';
 import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
-import ResizerKnob from './plugins/ResizerKnob';
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'cx';
@@ -132,11 +131,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
     /*boolean*/ isColumnReordering,
   ) /*object*/ => {
 
-    var resizerComponent = columnProps.resizerComponent;
-    if(this.props.isHeader && columnProps.isResizable && !resizerComponent){
-      resizerComponent = ResizerKnob;
-    }
-
     var cellIsReorderable = columnProps.isReorderable && this.props.onColumnReorder && rowIndex === -1 && columnGroupWidth !== columnProps.width;
     var onColumnReorder = cellIsReorderable ? this.props.onColumnReorder : null;
 
@@ -148,7 +142,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         isScrolling={this.props.isScrolling}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
         isHeader={this.props.isHeader}
-        resizerLineHeight={this.props.resizerLineHeight}
+        tableHeight={this.props.tableHeight}
         align={columnProps.align}
         className={className}
         height={height}
@@ -171,7 +165,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         columnGroupWidth={columnGroupWidth}
         pureRendering={pureRendering}
         isRTL={this.props.isRTL}
-        resizerComponent={resizerComponent}
+        deprecatedIsResizable={columnProps.isResizable}
       />
     );
   }

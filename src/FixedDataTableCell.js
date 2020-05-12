@@ -18,6 +18,7 @@ import cx from 'cx';
 import joinClasses from 'joinClasses';
 import shallowEqual from 'shallowEqual';
 import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
+import ResizerKnob from './plugins/ResizeReorder/ResizerKnob.js'
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -225,15 +226,15 @@ class FixedDataTableCell extends React.Component {
       }),
       props.className,
     );
-    var resizerComponent;
-    if(this.props.isHeader && this.props.resizerComponent){
+    var resizerComponent; // For backward compatibility
+    if(this.props.isHeader && this.props.deprecatedIsResizable){
       var _columnResizerStyle = {
         height
       };
       resizerComponent = (
-        <this.props.resizerComponent
+        <ResizerKnob
           columnResizerStyle={_columnResizerStyle}
-          resizerLineHeight={this.props.resizerLineHeight}
+          resizerLineHeight={this.props.tableHeight}
           onColumnResizeEnd={this.props.onColumnResizeEnd}
           left={this.props.left}
           width={this.props.width}
@@ -259,11 +260,26 @@ class FixedDataTableCell extends React.Component {
       );
     }
 
-    var cellProps = {
-      columnKey,
-      height,
-      width
-    };
+    var cellProps;
+    if(!this.props.isHeader) {
+      cellProps = {
+        columnKey,
+        height,
+        width,
+      }
+    }
+    else {
+      cellProps = {
+        columnKey,
+        height,
+        width,
+        tableHeight: this.props.tableHeight,
+        left: this.props.left,
+        cellGroupLeft: this.props.cellGroupLeft,
+        touchEnabled: this.props.touchEnabled,
+        isRTL: this.props.isRTL,
+      };
+    }
 
     if (props.rowIndex >= 0) {
       cellProps.rowIndex = props.rowIndex;
@@ -287,7 +303,7 @@ class FixedDataTableCell extends React.Component {
 
     return (
       <div className={className} style={style} role={role}>
-        {resizerComponent}
+        {resizerComponent} {/*For backward compatibility*/}
         {columnReorderComponent}
         {content}
       </div>

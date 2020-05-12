@@ -189,7 +189,7 @@ class FixedDataTableRowImpl extends React.Component {
         width={fixedColumnsWidth}
         zIndex={2}
         columns={this.props.fixedColumns}
-        resizerLineHeight={this.props.resizerLineHeight}
+        tableHeight={this.props.tableHeight}
         touchEnabled={this.props.touchEnabled}
         onColumnResizeEnd={this.props.onColumnResizeEnd}
         onColumnReorder={this.props.onColumnReorder}
@@ -211,7 +211,7 @@ class FixedDataTableRowImpl extends React.Component {
         key="fixed_right_cells"
         isScrolling={this.props.isScrolling}
         height={this.props.height}
-        resizerLineHeight={this.props.resizerLineHeight}
+        tableHeight={this.props.tableHeight}
         cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
         offsetLeft={this.props.width - fixedRightColumnsWidth - scrollbarOffset}
         width={fixedRightColumnsWidth}
@@ -237,7 +237,7 @@ class FixedDataTableRowImpl extends React.Component {
         key="scrollable_cells"
         isScrolling={this.props.isScrolling}
         height={this.props.height}
-        resizerLineHeight={this.props.resizerLineHeight}
+        tableHeight={this.props.tableHeight}
         cellGroupWrapperHeight={this.props.cellGroupWrapperHeight}
         align="right"
         left={this.props.scrollLeft}
