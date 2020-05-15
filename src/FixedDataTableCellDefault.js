@@ -87,6 +87,13 @@ class FixedDataTableCellDefault extends React.Component {
           touchEnabled,
           isRTL,
           tableHeight,
+          scrollX,
+          isFixed,
+          availableScrollWidth,
+          maxScrollX,
+          groupColumnWidths,
+          _scrollToX,
+          onHorizontalScroll,
           ...props} = this.props;
 
     var innerStyle = {

@@ -73,14 +73,16 @@ class ResizerKnob extends React.Component {
   }
 
   _onColumnResizerMouseDown = (/*object*/ event) => {;
-    this._onColumnResize(
-      this.props.cellGroupLeft,
+    this.onColumnResize(
+      this.props.offsetLeft,
+      this.props.cellGroupLeft - this.props.left + this.props.width,
       this.props.width,
       this.props.minWidth,
       this.props.maxWidth,
       this.props.columnKey,
       event
     );
+
     /**
      * This prevents the rows from moving around when we resize the
      * headers on touch devices.
@@ -90,25 +92,6 @@ class ResizerKnob extends React.Component {
       event.stopPropagation();
     }
   }
-
-  _onColumnResize = (
-    /*number*/ left,
-    /*number*/ width,
-    /*?number*/ minWidth,
-    /*?number*/ maxWidth,
-    /*string|number*/ columnKey,
-    /*object*/ event
-    ) => {
-      this.onColumnResize(
-        this.props.offsetLeft,
-        left - this.props.left + width,
-        width,
-        minWidth,
-        maxWidth,
-        columnKey,
-        event
-      );
-    }
 
   onColumnResize = (
     /*number*/ combinedWidth,
@@ -122,43 +105,20 @@ class ResizerKnob extends React.Component {
       const coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
       const clientX = coordinates.x;
       const clientY = coordinates.y;
-      this.resizeColumn({
-        cellMinWidth,
-        cellMaxWidth,
-        cellWidth,
-        columnKey,
-        combinedWidth,
-        clientX,
-        clientY,
-        leftOffset,
+      this.setState ({
+        isColumnResizing: true,
+        left: leftOffset + combinedWidth - cellWidth,
+        width: cellWidth,
+        minWidth: cellMinWidth,
+        maxWidth: cellMaxWidth,
+        initialEvent: {
+          clientX: clientX,
+          clientY: clientY,
+          preventDefault: emptyFunction
+        },
+        key: columnKey
       });
     }
-
-  resizeColumn(resizeData) {
-    let {
-      cellMinWidth,
-      cellMaxWidth,
-      cellWidth,
-      columnKey,
-      combinedWidth,
-      clientX,
-      clientY,
-      leftOffset
-    } = resizeData;
-    this.setState ({
-      isColumnResizing: true,
-      left: leftOffset + combinedWidth - cellWidth,
-      width: cellWidth,
-      minWidth: cellMinWidth,
-      maxWidth: cellMaxWidth,
-      initialEvent: {
-        clientX: clientX,
-        clientY: clientY,
-        preventDefault: emptyFunction
-      },
-      key: columnKey
-    });
-  }
 
   _suppressEvent = (/*object*/ event) => {
     event.preventDefault();

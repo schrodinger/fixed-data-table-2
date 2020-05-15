@@ -29,6 +29,7 @@ import joinClasses from 'joinClasses';
 import scrollbarsVisible from 'scrollbarsVisible';
 import tableHeightsSelector from 'tableHeights';
 import shallowEqual from 'shallowEqual';
+import columnWidths from 'columnWidths';
 
 var ARROW_SCROLL_SPEED = 25;
 
@@ -440,6 +441,11 @@ class FixedDataTable extends React.Component {
     onColumnReorderEndCallback: PropTypes.func,
 
     /**
+     * (Deprecated) Whether a column is currently being resized.
+     */
+    isColumnResizing: PropTypes.bool,
+
+    /**
      * Whether columns are currently being reordered.
      */
     isColumnReordering: PropTypes.bool,
@@ -744,6 +750,8 @@ class FixedDataTable extends React.Component {
     const onColumnReorder = onColumnReorderEndCallback ? this._onColumnReorder : null;
     const attributes = gridAttributesGetter && gridAttributesGetter();
 
+    const { availableScrollWidth } = columnWidths(this.props);
+
     let groupHeader;
     if (groupHeaderHeight > 0) {
       groupHeader = (
@@ -775,6 +783,10 @@ class FixedDataTable extends React.Component {
           scrollbarYWidth={scrollbarYWidth}
           isRTL={this.props.isRTL}
           isHeader={true}
+          availableScrollWidth={availableScrollWidth}
+          maxScrollX={maxScrollX}
+          _scrollToX={this._scrollToX}
+          onHorizontalScroll={this.props.onHorizontalScroll}
         />
       );
     }
@@ -853,6 +865,10 @@ class FixedDataTable extends React.Component {
         scrollbarYWidth={scrollbarYWidth}
         isRTL={this.props.isRTL}
         isHeader={true}
+        availableScrollWidth={availableScrollWidth}
+        maxScrollX={maxScrollX}
+        _scrollToX={this._scrollToX}
+        onHorizontalScroll={this.props.onHorizontalScroll}
       />;
 
     let topShadow;

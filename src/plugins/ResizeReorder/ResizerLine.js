@@ -85,14 +85,32 @@ class ResizerLine extends React.PureComponent {
      * Whether the line should render in RTL mode
      */
     isRTL: PropTypes.bool,
+
+    /**
+     * The ResizerKnob DOM object instance.
+     */
+    instance: PropTypes.object,
+
+    /**
+     * The minimum width of the column.
+     */
+    minWidth: PropTypes.number,
+
+    /**
+     * The maximum width of the column.
+     */
+    maxWidth: PropTypes.number,
   }
 
   state = /*object*/ {
     width: 0,
     cursorDelta: 0,
+  }
+
+  instanceDetails = {
     left: 0,
     top: 0,
-    knobWidth: 0
+    knobWidth: 0,
   }
 
   componentDidUpdate() {
@@ -103,9 +121,6 @@ class ResizerLine extends React.PureComponent {
         cursorDelta: this.props.initialWidth,
       });
     }
-    this.state.top = this.props.instance.getBoundingClientRect().top;
-    this.state.left = this.props.instance.getBoundingClientRect().left;
-    this.state.knobWidth = this.props.instance.getBoundingClientRect().width;
   }
 
   componentDidMount() {
@@ -118,10 +133,10 @@ class ResizerLine extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.instance){
-      this.state.top = nextProps.instance.getBoundingClientRect().top;
-      this.state.left = nextProps.instance.getBoundingClientRect().left;
-      this.state.knobWidth = nextProps.instance.getBoundingClientRect().width;
+    if (nextProps.instance){
+      this.instanceDetails.top = nextProps.instance.getBoundingClientRect().top;
+      this.instanceDetails.left = nextProps.instance.getBoundingClientRect().left;
+      this.instanceDetails.knobWidth = nextProps.instance.getBoundingClientRect().width;
     }
   }
 
@@ -134,13 +149,13 @@ class ResizerLine extends React.PureComponent {
     var style = {
       width: 1,
       height: this.props.height,
-      top: this.state.top,
+      top: this.instanceDetails.top,
       position: 'fixed',
     };
     if (this.props.isRTL) {
-      style.left = this.state.left - this.state.width + this.props.initialWidth;
+      style.left = this.instanceDetails.left - this.state.width + this.props.initialWidth;
     } else {
-       style.left = this.state.knobWidth + this.state.left + this.state.width - this.props.initialWidth;
+       style.left = this.instanceDetails.knobWidth + this.instanceDetails.left + this.state.width - this.props.initialWidth;
     }
     return (
       <Portal>
@@ -161,8 +176,8 @@ class ResizerLine extends React.PureComponent {
   }
 
   _onMove = (/*number*/ deltaX) => {
-    this.state.top = this.props.instance.getBoundingClientRect().top;
-    this.state.left = this.props.instance.getBoundingClientRect().left;
+    this.instanceDetails.top = this.props.instance.getBoundingClientRect().top;
+    this.instanceDetails.left = this.props.instance.getBoundingClientRect().left;
     if (this.props.isRTL) {
       deltaX = -deltaX;
     }

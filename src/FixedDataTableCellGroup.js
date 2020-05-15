@@ -60,6 +60,61 @@ class FixedDataTableCellGroupImpl extends React.Component {
     isHeaderOrFooter: PropTypes.bool,
 
     isRTL: PropTypes.bool,
+
+    /**
+     * The height of the table.
+     */
+    tableHeight: PropTypes.number,
+
+    /**
+     * Callback that is called when resizer has been released
+     * and column needs to be updated.
+     *
+     * Only for backward compatibility.
+     * 
+     * Required if the isResizable property is true on any column.
+     *
+     * ```
+     * function(
+     *   newColumnWidth: number,
+     *   columnKey: string,
+     * )
+     * ```
+     */
+    onColumnResizeEndCallback: PropTypes.func,
+
+    /**
+     * Whether these cells belong to the header/group-header
+     */
+    isHeader: PropTypes.bool,
+
+    /**
+     * availableScrollWidth returned from ColumnWidths.
+     */
+    availableScrollWidth: PropTypes.number,
+
+    /**
+     * Maximum horizontal scroll possible.
+     */
+    maxScrollX: PropTypes.number,
+
+    /**
+     * Function to change the scroll position by interacting
+     * with the store.
+     */
+    _scrollToX: PropTypes.func,
+
+    /**
+     * Callback when horizontally scrolling the grid.
+     *
+     * Return false to stop propagation.
+     */
+    onHorizontalScroll: PropTypes.func,
+
+    /**
+     * Whether the cells belongs to the fixed group
+     */
+    isFixed: PropTypes.bool,
   }
 
   constructor(props) {
@@ -81,6 +136,18 @@ class FixedDataTableCellGroupImpl extends React.Component {
       return acc || props.columnReorderingData.columnKey === column.props.columnKey;
     }, false);
 
+    var groupColumnWidths = {
+      keys: [],
+      widths: []
+    };
+    if (this.props.isHeader) {
+      for (var i = 0, j = columns.length; i < j; i++) {
+        var key = columns[i].props.columnKey || 'cell_' + i;
+        groupColumnWidths.keys.push(key);
+        groupColumnWidths.widths.push(columns[i].props.width);
+      }
+    }
+
     var currentPosition = 0;
     for (var i = 0, j = columns.length; i < j; i++) {
       var columnProps = columns[i].props;
@@ -98,7 +165,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
           currentPosition,
           key,
           contentWidth,
-          isColumnReordering
+          isColumnReordering,
+          groupColumnWidths,
         );
       }
       currentPosition += columnProps.width;
@@ -129,6 +197,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     /*string*/ key,
     /*number*/ columnGroupWidth,
     /*boolean*/ isColumnReordering,
+    /*array*/ groupColumnWidths
   ) /*object*/ => {
 
     var cellIsReorderable = columnProps.isReorderable && this.props.onColumnReorder && rowIndex === -1 && columnGroupWidth !== columnProps.width;
@@ -136,7 +205,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     var className = columnProps.cellClassName;
     var pureRendering = columnProps.pureRendering || false;
-
     return (
       <FixedDataTableCell
         isScrolling={this.props.isScrolling}
@@ -166,6 +234,13 @@ class FixedDataTableCellGroupImpl extends React.Component {
         pureRendering={pureRendering}
         isRTL={this.props.isRTL}
         deprecatedIsResizable={columnProps.isResizable}
+        scrollX={this.props.scrollX}
+        isFixed={this.props.isFixed}
+        availableScrollWidth={this.props.availableScrollWidth}
+        maxScrollX={this.props.maxScrollX}
+        groupColumnWidths={groupColumnWidths}
+        _scrollToX={this.props._scrollToX}
+        onHorizontalScroll={this.props.onHorizontalScroll}
       />
     );
   }

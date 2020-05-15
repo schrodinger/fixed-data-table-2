@@ -78,6 +78,72 @@ class FixedDataTableCell extends React.Component {
      * If the component should render for RTL direction
      */
     isRTL: PropTypes.bool,
+
+    /**
+     * The height of the table.
+     */
+    tableHeight: PropTypes.number,
+
+    /**
+     * Callback that is called when resizer has been released
+     * and column needs to be updated.
+     *
+     * Only for backward compatibility.
+     * 
+     * Required if the isResizable property is true on any column.
+     *
+     * ```
+     * function(
+     *   newColumnWidth: number,
+     *   columnKey: string,
+     * )
+     * ```
+     */
+    onColumnResizeEndCallback: PropTypes.func,
+
+    /**
+     * Whether these cells belong to the header/group-header
+     */
+    isHeader: PropTypes.bool,
+
+    /**
+     * availableScrollWidth returned from ColumnWidths.
+     */
+    availableScrollWidth: PropTypes.number,
+
+    /**
+     * Maximum horizontal scroll possible.
+     */
+    maxScrollX: PropTypes.number,
+
+    /**
+     * Function to change the scroll position by interacting
+     * with the store.
+     */
+    _scrollToX: PropTypes.func,
+
+    /**
+     * Callback when horizontally scrolling the grid.
+     *
+     * Return false to stop propagation.
+     */
+    onHorizontalScroll: PropTypes.func,
+
+    /**
+     * Whether the cells belongs to the fixed group
+     */
+    isFixed: PropTypes.bool,
+
+    /**
+     * Object consisting of keys and widths of the columns
+     * in the current cell group.
+     */
+    groupColumnWidths: PropTypes.object,
+
+    /**
+     * (Deprecated) Whether the column is resizable
+     */
+    deprecatedIsResizable: PropTypes.bool,
   }
 
   state = {
@@ -198,6 +264,7 @@ class FixedDataTableCell extends React.Component {
     var style = {
       height,
       width,
+      overflow: 'visible',
     };
 
     if (this.props.isRTL) {
@@ -221,13 +288,13 @@ class FixedDataTableCell extends React.Component {
         'public/fixedDataTableCell/alignRight': props.align === 'right',
         'public/fixedDataTableCell/highlighted': props.highlighted,
         'public/fixedDataTableCell/main': true,
-        'public/fixedDataTableCell/hasReorderHandle': !!props.onColumnReorder,
-        'public/fixedDataTableCell/reordering': this.state.isReorderingThisColumn,
+        // 'public/fixedDataTableCell/hasReorderHandle': !!props.onColumnReorder,
+        // 'public/fixedDataTableCell/reordering': this.state.isReorderingThisColumn,
       }),
       props.className,
     );
     var resizerComponent; // For backward compatibility
-    if(this.props.isHeader && this.props.deprecatedIsResizable){
+    if (this.props.isHeader && this.props.deprecatedIsResizable){
       var _columnResizerStyle = {
         height
       };
@@ -260,24 +327,26 @@ class FixedDataTableCell extends React.Component {
       );
     }
 
-    var cellProps;
-    if(!this.props.isHeader) {
+    var cellProps = {
+      columnKey,
+      height,
+      width,
+    };
+    if (this.props.isHeader) {
       cellProps = {
-        columnKey,
-        height,
-        width,
-      }
-    }
-    else {
-      cellProps = {
-        columnKey,
-        height,
-        width,
+        ...cellProps,
         tableHeight: this.props.tableHeight,
         left: this.props.left,
         cellGroupLeft: this.props.cellGroupLeft,
         touchEnabled: this.props.touchEnabled,
         isRTL: this.props.isRTL,
+        scrollX: this.props.scrollX,
+        isFixed: this.props.isFixed,
+        availableScrollWidth: this.props.availableScrollWidth,
+        maxScrollX: this.props.maxScrollX,
+        groupColumnWidths: this.props.groupColumnWidths,
+        _scrollToX: this.props._scrollToX,
+        onHorizontalScroll: this.props.onHorizontalScroll,
       };
     }
 
@@ -304,7 +373,7 @@ class FixedDataTableCell extends React.Component {
     return (
       <div className={className} style={style} role={role}>
         {resizerComponent} {/*For backward compatibility*/}
-        {columnReorderComponent}
+        {/* {columnReorderComponent} */}
         {content}
       </div>
     );
