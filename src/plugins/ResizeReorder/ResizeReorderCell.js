@@ -81,7 +81,7 @@ class ResizeReorderCell extends React.PureComponent {
      * Function to change the scroll position by interacting
      * with the store.
      */
-    _scrollToX: PropTypes.func,
+    scrollToX: PropTypes.func,
 
     /**
      * Callback when horizontally scrolling the grid.
@@ -161,6 +161,7 @@ class ResizeReorderCell extends React.PureComponent {
       } else if (dragX <= DRAG_SCROLL_BUFFER) {
         scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
       }
+      this.props.scrollToX(scrollX);
     }
   
     // NOTE (jordan) Need to clone this object when use pureRendering
@@ -172,7 +173,7 @@ class ResizeReorderCell extends React.PureComponent {
       columnReorderingData: reorderingData,
       isColumnReordering: true
     });
-    this.props._scrollToX(scrollX);
+    
   }
 
   stopColumnReorder = () => {
@@ -349,13 +350,25 @@ class ResizeReorderCell extends React.PureComponent {
           touchEnabled={touchEnabled}
           isRTL={isRTL} />);
     }
+
+    var content;
+    if (React.isValidElement(children)) {
+      content = React.cloneElement(children, props);
+    } else if (typeof children === 'function') {
+      content = children(props);
+    } else {
+      content = (
+        <Cell {...props}>
+          {children}
+        </Cell>
+      );
+    }
+
     return (
       <div className={className} style={style}>
         {columnReorderComponent}
         {resizerComponent}
-        <Cell {...props}>
-          {children}
-        </Cell>
+        {content}
       </div>
     );
   }

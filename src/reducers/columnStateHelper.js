@@ -122,61 +122,6 @@ function scrollTo(state, props, oldScrollToColumn, scrollX) {
   return scrollX;
 }
 
-function reorderColumn(state, reorderData) {
-  let { columnKey, left, scrollStart, width } = reorderData;
-  const { fixedColumns } = columnWidths(state);
-  const isFixed = fixedColumns.some(function(column) {
-    return column.columnKey === columnKey;
-  });
-
-  return Object.assign({}, state, {
-    isColumnReordering: true,
-    columnReorderingData: {
-      cancelReorder: false,
-      dragDistance: 0,
-      isFixed: isFixed,
-      scrollStart: scrollStart,
-      columnKey: columnKey,
-      columnWidth: width,
-      originalLeft: left,
-      columnBefore: undefined,
-      columnAfter: undefined
-    }
-  });
-}
-
-function reorderColumnMove(state, deltaX) {
-  const { isFixed, originalLeft, scrollStart } = state.columnReorderingData;
-  let { maxScrollX, scrollX } = state;
-  if (!isFixed) {
-    // Relative dragX position on scroll
-    const dragX = originalLeft - scrollStart + deltaX;
-    const { availableScrollWidth } = columnWidths(state);
-    deltaX += scrollX - scrollStart;
-
-    // Scroll the table left or right if we drag near the edges of the table
-    if (dragX > availableScrollWidth - DRAG_SCROLL_BUFFER) {
-      scrollX = Math.min(scrollX + DRAG_SCROLL_SPEED, maxScrollX);
-    } else if (dragX <= DRAG_SCROLL_BUFFER) {
-      scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
-    }
-  }
-
-  // NOTE (jordan) Need to clone this object when use pureRendering
-  const reorderingData = Object.assign({}, state.columnReorderingData, {
-    dragDistance: deltaX,
-    columnBefore: undefined,
-    columnAfter: undefined,
-  });
-
-  return Object.assign({}, state, {
-    scrollX: scrollX,
-    columnReorderingData: reorderingData
-  });
-}
-
 export default {
   initialize,
-  reorderColumn,
-  reorderColumnMove,
 };

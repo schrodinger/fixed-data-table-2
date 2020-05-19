@@ -10,10 +10,10 @@ import emptyFunction from 'emptyFunction';
 class ResizerKnob extends React.Component {
   initialState = {
     isColumnResizing: undefined,
-    left: undefined,
-    width: undefined,
-    minWidth: undefined,
-    maxWidth: undefined,
+    left: 0,
+    width: 0,
+    minWidth: 0,
+    maxWidth: Number.MAX_VALUE,
     initialEvent: undefined,
     key: undefined
   };
@@ -36,11 +36,11 @@ class ResizerKnob extends React.Component {
     const dragKnob =
     <ResizerLine
       height={this.props.resizerLineHeight}
-      initialWidth={this.state.width || 0}
-      minWidth={this.state.minWidth || 0}
-      maxWidth={this.state.maxWidth || Number.MAX_VALUE}
+      initialWidth={this.state.width}
+      minWidth={this.state.minWidth}
+      maxWidth={this.state.maxWidth}
       visible={!!this.state.isColumnResizing}
-      leftOffset={this.state.left || 0}
+      leftOffset={this.state.left}
       knobHeight={this.props.columnResizerStyle.height}
       initialEvent={this.state.initialEvent}
       onColumnResizeEnd={this.props.onColumnResizeEnd}

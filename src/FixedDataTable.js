@@ -441,16 +441,6 @@ class FixedDataTable extends React.Component {
     onColumnReorderEndCallback: PropTypes.func,
 
     /**
-     * (Deprecated) Whether a column is currently being resized.
-     */
-    isColumnResizing: PropTypes.bool,
-
-    /**
-     * Whether columns are currently being reordered.
-     */
-    isColumnReordering: PropTypes.bool,
-
-    /**
      * Whether the grid should be in RTL mode
      */
     isRTL: PropTypes.bool,
@@ -727,9 +717,7 @@ class FixedDataTable extends React.Component {
 
     const {
       className,
-      columnReorderingData,
       elementHeights,
-      isColumnReordering,
       gridAttributesGetter,
       maxScrollX,
       maxScrollY,
@@ -747,7 +735,6 @@ class FixedDataTable extends React.Component {
     const { ownerHeight, width } = tableSize;
     const { cellGroupWrapperHeight, footerHeight, groupHeaderHeight, headerHeight } = elementHeights;
     const { scrollEnabledX, scrollEnabledY } = scrollbarsVisible(this.props);
-    const onColumnReorder = onColumnReorderEndCallback ? this._onColumnReorder : null;
     const attributes = gridAttributesGetter && gridAttributesGetter();
 
     const { availableScrollWidth } = columnWidths(this.props);
@@ -776,16 +763,15 @@ class FixedDataTable extends React.Component {
           fixedRightColumns={fixedRightColumnGroups}
           scrollableColumns={scrollableColumnGroups}
           visible={true}
-          onColumnResizeEnd={onColumnResizeEndCallback}
-          onColumnReorder={onColumnReorder}
-          onColumnReorderMove={this._onColumnReorderMove}
+          onColumnResizeEndCallback={onColumnResizeEndCallback}
+          onColumnReorderEndCallback={onColumnReorderEndCallback}
           showScrollbarY={scrollEnabledY}
           scrollbarYWidth={scrollbarYWidth}
           isRTL={this.props.isRTL}
           isHeader={true}
           availableScrollWidth={availableScrollWidth}
           maxScrollX={maxScrollX}
-          _scrollToX={this._scrollToX}
+          scrollToX={this._scrollToX}
           onHorizontalScroll={this.props.onHorizontalScroll}
         />
       );
@@ -855,19 +841,15 @@ class FixedDataTable extends React.Component {
         fixedRightColumns={fixedRightColumns.header}
         scrollableColumns={scrollableColumns.header}
         touchEnabled={touchScrollEnabled}
-        onColumnResizeEnd={onColumnResizeEndCallback}
-        onColumnReorder={onColumnReorder}
-        onColumnReorderMove={this._onColumnReorderMove}
-        onColumnReorderEnd={this._onColumnReorderEnd}
-        isColumnReordering={!!isColumnReordering}
-        columnReorderingData={columnReorderingData}
+        onColumnResizeEndCallback={onColumnResizeEndCallback}
+        onColumnReorderEndCallback={onColumnReorderEndCallback}
         showScrollbarY={scrollEnabledY}
         scrollbarYWidth={scrollbarYWidth}
         isRTL={this.props.isRTL}
         isHeader={true}
         availableScrollWidth={availableScrollWidth}
         maxScrollX={maxScrollX}
-        _scrollToX={this._scrollToX}
+        scrollToX={this._scrollToX}
         onHorizontalScroll={this.props.onHorizontalScroll}
       />;
 
@@ -994,55 +976,6 @@ class FixedDataTable extends React.Component {
     if (this.props.stopReactWheelPropagation) {
       this._wheelHandler.setRoot(div);
     }
-  }
-
-  _onColumnReorder = (
-    /*string*/ columnKey,
-    /*number*/ width,
-    /*number*/ left,
-    /*object*/ event,
-  ) => {
-    this.props.columnActions.startColumnReorder({
-      scrollStart: this.props.scrollX,
-      columnKey,
-      width,
-      left
-    });
-  }
-
-  _onColumnReorderMove = (/*number*/ deltaX) => {
-    this.props.columnActions.moveColumnReorder(deltaX);
-  }
-
-  _onColumnReorderEnd = (/*object*/ props, /*object*/ event) => {
-    const {
-      columnActions,
-      columnReorderingData: {
-        cancelReorder,
-        columnAfter,
-        columnBefore,
-        columnKey,
-        scrollStart,
-      },
-      onColumnReorderEndCallback,
-      onHorizontalScroll,
-      scrollX,
-    } = this.props;
-
-    columnActions.stopColumnReorder();
-    if (cancelReorder) {
-      return;
-    }
-
-    onColumnReorderEndCallback({
-      columnAfter,
-      columnBefore,
-      reorderColumn: columnKey,
-    });
-
-    if (scrollStart !== scrollX && onHorizontalScroll) {
-      onHorizontalScroll(scrollX)
-    };
   }
 
   _onScroll = (/*number*/ deltaX, /*number*/ deltaY) => {

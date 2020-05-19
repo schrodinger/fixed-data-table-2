@@ -16,7 +16,6 @@ import FixedDataTable from 'FixedDataTable';
 import FixedDataTableStore from 'FixedDataTableStore';
 import React from 'react';
 import { bindActionCreators } from 'redux';
-import * as columnActions from 'columnActions';
 import invariant from 'invariant';
 import pick from 'lodash/pick';
 import * as scrollActions from 'scrollActions';
@@ -38,7 +37,6 @@ class FixedDataTableContainer extends React.Component {
     this.reduxStore = FixedDataTableStore.get();
 
     this.scrollActions = bindActionCreators(scrollActions, this.reduxStore.dispatch);
-    this.columnActions = bindActionCreators(columnActions, this.reduxStore.dispatch);
 
     this.reduxStore.dispatch({
       type: ActionTypes.INITIALIZE,
@@ -76,7 +74,6 @@ class FixedDataTableContainer extends React.Component {
             {...this.props}
             {...this.state}
             scrollActions={this.scrollActions}
-            columnActions={this.columnActions}
         />
     );
     // For backward compatibility, by default we render FDT-2 scrollbars

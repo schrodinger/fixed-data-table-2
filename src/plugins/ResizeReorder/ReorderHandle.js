@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 import cx from 'cx';
 import joinClasses from 'joinClasses';
 import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
-import columnWidths from 'columnWidths';
-
 
 
 class ReorderHandle extends React.Component {

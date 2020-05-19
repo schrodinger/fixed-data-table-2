@@ -50,11 +50,12 @@ class ResizeExample extends React.Component {
         {...this.props}>
         <Column
           columnKey="firstName"
-          header={<ResizeReorderCell onColumnResizeEndCallback={this._onColumnResizeEndCallback}>First Name</ResizeReorderCell>}
+          header={<ResizeReorderCell 
+            onColumnResizeEndCallback={this._onColumnResizeEndCallback}>
+            First Name </ResizeReorderCell>}
           cell={<TextCell data={dataList} />}
           fixed={true}
           width={columnWidths.firstName}
-          isResizable={false}
         />
         <Column
           columnKey="lastName"
@@ -66,21 +67,22 @@ class ResizeExample extends React.Component {
               </ResizeReorderCell>}
           cell={<TextCell data={dataList} />}
           width={columnWidths.lastName}
-          isResizable={false}
         />
         <Column
           columnKey="companyName"
-          header={<Cell>Company</Cell>}
+          header={<ResizeReorderCell 
+            onColumnResizeEndCallback={this._onColumnResizeEndCallback}>
+            Company </ResizeReorderCell>}
           cell={<TextCell data={dataList} />}
           width={columnWidths.companyName}
-          isResizable={false}
         />
         <Column
           columnKey="sentence"
-          header={<Cell>Sentence</Cell>}
+          header={<ResizeReorderCell 
+            onColumnResizeEndCallback={this._onColumnResizeEndCallback}>
+            Sentence </ResizeReorderCell>}
           cell={<TextCell data={dataList} />}
           width={columnWidths.sentence}
-          isResizable={false}
         />
       </Table>
     );

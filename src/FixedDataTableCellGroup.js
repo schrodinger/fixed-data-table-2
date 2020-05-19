@@ -36,10 +36,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     left: PropTypes.number,
 
-    onColumnReorder: PropTypes.func,
-    onColumnReorderMove: PropTypes.func,
-    onColumnReorderEnd: PropTypes.func,
-
     height: PropTypes.number.isRequired,
 
     /**
@@ -84,6 +80,22 @@ class FixedDataTableCellGroupImpl extends React.Component {
     onColumnResizeEndCallback: PropTypes.func,
 
     /**
+     * Callback that is called when reordering has been completed
+     * and columns need to be updated.
+     *
+     * ```
+     * function(
+     *   event {
+     *     columnBefore: string|undefined, // the column before the new location of this one
+     *     columnAfter: string|undefined,  // the column after the new location of this one
+     *     reorderColumn: string,          // the column key that was just reordered
+     *   }
+     * )
+     * ```
+     */
+    onColumnReorderEndCallback: PropTypes.func,
+
+    /**
      * Whether these cells belong to the header/group-header
      */
     isHeader: PropTypes.bool,
@@ -102,7 +114,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
      * Function to change the scroll position by interacting
      * with the store.
      */
-    _scrollToX: PropTypes.func,
+    scrollToX: PropTypes.func,
 
     /**
      * Callback when horizontally scrolling the grid.
@@ -132,10 +144,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
     var cells = new Array(columns.length);
     var contentWidth = sumPropWidths(columns);
 
-    var isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
-      return acc || props.columnReorderingData.columnKey === column.props.columnKey;
-    }, false);
-
     var groupColumnWidths = {
       keys: [],
       widths: []
@@ -152,7 +160,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     for (var i = 0, j = columns.length; i < j; i++) {
       var columnProps = columns[i].props;
       var cellTemplate = columns[i].template;
-      var recyclable = columnProps.allowCellsRecycling && !isColumnReordering;
+      var recyclable = columnProps.allowCellsRecycling;
       if (!recyclable || (
         currentPosition - props.left <= props.width &&
         currentPosition - props.left + columnProps.width >= 0)) {
@@ -165,7 +173,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
           currentPosition,
           key,
           contentWidth,
-          isColumnReordering,
           groupColumnWidths,
         );
       }
@@ -196,12 +203,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
     /*number*/ left,
     /*string*/ key,
     /*number*/ columnGroupWidth,
-    /*boolean*/ isColumnReordering,
     /*array*/ groupColumnWidths
   ) /*object*/ => {
-
-    var cellIsReorderable = columnProps.isReorderable && this.props.onColumnReorder && rowIndex === -1 && columnGroupWidth !== columnProps.width;
-    var onColumnReorder = cellIsReorderable ? this.props.onColumnReorder : null;
 
     var className = columnProps.cellClassName;
     var pureRendering = columnProps.pureRendering || false;
@@ -218,12 +221,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
         maxWidth={columnProps.maxWidth}
         minWidth={columnProps.minWidth}
         touchEnabled={this.props.touchEnabled}
-        onColumnResizeEnd={this.props.onColumnResizeEnd}
-        onColumnReorder={onColumnReorder}
-        onColumnReorderMove={this.props.onColumnReorderMove}
-        onColumnReorderEnd={this.props.onColumnReorderEnd}
-        isColumnReordering={isColumnReordering}
-        columnReorderingData={this.props.columnReorderingData}
+        onColumnResizeEndCallback={this.props.onColumnResizeEndCallback}
+        onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}
         rowIndex={rowIndex}
         columnKey={columnProps.columnKey}
         width={columnProps.width}
@@ -233,13 +232,12 @@ class FixedDataTableCellGroupImpl extends React.Component {
         columnGroupWidth={columnGroupWidth}
         pureRendering={pureRendering}
         isRTL={this.props.isRTL}
-        deprecatedIsResizable={columnProps.isResizable}
         scrollX={this.props.scrollX}
         isFixed={this.props.isFixed}
         availableScrollWidth={this.props.availableScrollWidth}
         maxScrollX={this.props.maxScrollX}
         groupColumnWidths={groupColumnWidths}
-        _scrollToX={this.props._scrollToX}
+        scrollToX={this.props.scrollToX}
         onHorizontalScroll={this.props.onHorizontalScroll}
       />
     );

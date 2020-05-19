@@ -114,29 +114,21 @@ class FixedDataTableRowImpl extends React.Component {
      */
     onDoubleClick: PropTypes.func,
 
-    isColumnReordering: PropTypes.bool,
     /**
-     * Callback for when reorder handle (in FixedDataTableCell) is clicked
-     * to initialize reordering. Please note this is only on the cells
-     * in the header.
-     * @param number|string columnKey
-     * @param number cellWidth
-     * @param number leftOffset
-     * @param object event
+     * Callback that is called when reordering has been completed
+     * and columns need to be updated.
+     *
+     * ```
+     * function(
+     *   event {
+     *     columnBefore: string|undefined, // the column before the new location of this one
+     *     columnAfter: string|undefined,  // the column after the new location of this one
+     *     reorderColumn: string,          // the column key that was just reordered
+     *   }
+     * )
+     * ```
      */
-    onColumnReorder: PropTypes.func,
-
-    /**
-     * Callback for when a cell is moved while reordering.
-     * @param number distance
-     */
-    onColumnReorderMove: PropTypes.func,
-
-    /**
-     * Callback for when the mouse is released to complete reordering.
-     * @param number distance
-     */
-    onColumnReorderEnd: PropTypes.func,
+    onColumnReorderEndCallback: PropTypes.func,
 
     touchEnabled: PropTypes.bool,
 
@@ -200,7 +192,7 @@ class FixedDataTableRowImpl extends React.Component {
     /**
      * Function to change the scroll position by interacting with the store.
      */
-    _scrollToX: PropTypes.func,
+    scrollToX: PropTypes.func,
 
     /**
      * Callback when horizontally scrolling the grid.
@@ -240,12 +232,8 @@ class FixedDataTableRowImpl extends React.Component {
         columns={this.props.fixedColumns}
         tableHeight={this.props.tableHeight}
         touchEnabled={this.props.touchEnabled}
-        onColumnResizeEnd={this.props.onColumnResizeEnd}
-        onColumnReorder={this.props.onColumnReorder}
-        onColumnReorderMove={this.props.onColumnReorderMove}
-        onColumnReorderEnd={this.props.onColumnReorderEnd}
-        isColumnReordering={this.props.isColumnReordering}
-        columnReorderingData={this.props.columnReorderingData}
+        onColumnResizeEndCallback={this.props.onColumnResizeEndCallback}
+        onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
@@ -271,12 +259,8 @@ class FixedDataTableRowImpl extends React.Component {
         zIndex={2}
         columns={this.props.fixedRightColumns}
         touchEnabled={this.props.touchEnabled}
-        onColumnResizeEnd={this.props.onColumnResizeEnd}
-        onColumnReorder={this.props.onColumnReorder}
-        onColumnReorderMove={this.props.onColumnReorderMove}
-        onColumnReorderEnd={this.props.onColumnReorderEnd}
-        isColumnReordering={this.props.isColumnReordering}
-        columnReorderingData={this.props.columnReorderingData}
+        onColumnResizeEndCallback={this.props.onColumnResizeEndCallback}
+        onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
@@ -302,12 +286,8 @@ class FixedDataTableRowImpl extends React.Component {
         zIndex={0}
         columns={this.props.scrollableColumns}
         touchEnabled={this.props.touchEnabled}
-        onColumnResizeEnd={this.props.onColumnResizeEnd}
-        onColumnReorder={this.props.onColumnReorder}
-        onColumnReorderMove={this.props.onColumnReorderMove}
-        onColumnReorderEnd={this.props.onColumnReorderEnd}
-        isColumnReordering={this.props.isColumnReordering}
-        columnReorderingData={this.props.columnReorderingData}
+        onColumnResizeEndCallback={this.props.onColumnResizeEndCallback}
+        onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
@@ -316,7 +296,7 @@ class FixedDataTableRowImpl extends React.Component {
         isRTL={this.props.isRTL}
         availableScrollWidth={this.props.availableScrollWidth}
         maxScrollX={this.props.maxScrollX}
-        _scrollToX={this.props._scrollToX}
+        scrollToX={this.props.scrollToX}
         onHorizontalScroll={this.props.onHorizontalScroll}
       />;
     var scrollableColumnsWidth = sumPropWidths(this.props.scrollableColumns);
