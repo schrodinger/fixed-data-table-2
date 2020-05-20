@@ -107,6 +107,13 @@ class ResizerLine extends React.PureComponent {
     cursorDelta: 0,
   }
 
+  /**
+   * TODO (sharma-rishi): Migrate instanceDetails to state.
+   * Currently, a mutable object is used.
+   * MouseTracker keeps changing state.cursorDelta even after mouse release.
+   * This could be causing the unwanted repositioning of the resizerLine when
+   * using this.setState with instanceDetails inside the state.
+   */
   instanceDetails = {
     left: 0,
     top: 0,
