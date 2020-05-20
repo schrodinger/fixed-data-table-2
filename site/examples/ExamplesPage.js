@@ -39,6 +39,7 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.EXPANDED_EXAMPLE.location]: require('../../examples/ExpandedExample'),
   [ExamplePages.FLEXGROW_EXAMPLE.location]: require('../../examples/FlexGrowExample'),
   [ExamplePages.COLUMN_GROUPS_EXAMPLE.location]: require('../../examples/ColumnGroupsExample'),
+  [ExamplePages.COLUMN_GROUPS_RESIZE_REORDER_EXAMPLE.location]: require('../../examples/ColumnGroupsResizeReorderExample'),
   [ExamplePages.INFINITE_SCROLL_EXAMPLE.location]: require('../../examples/InfiniteScrollExample'),
   [ExamplePages.FILTER_EXAMPLE.location]: require('../../examples/FilterExample'),
   [ExamplePages.SORT_EXAMPLE.location]: require('../../examples/SortExample'),

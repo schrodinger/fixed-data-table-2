@@ -101,6 +101,12 @@ exports.ExamplePages = {
     title: 'Column Groups',
     description: 'Table with column groupings.',
   },
+  COLUMN_GROUPS_RESIZE_REORDER_EXAMPLE: {
+    location: 'example-column-groups-resize-reorder.html',
+    fileName: 'ColumnGroupsResizeReorderExample.js',
+    title: 'Resizable and Reorderable Column Groups',
+    description: 'Table with column groupings with the ability to reorder groups.',
+  },
   INFINITE_SCROLL_EXAMPLE: {
     location: 'example-infinite-scroll.html',
     fileName: 'InfiniteScrollExample.js',
