@@ -273,13 +273,15 @@ class ResizeReorderCell extends React.PureComponent {
       onColumnResizeEndCallback,
       onColumnReorderEndCallback,
       rowIndex,
-      columnKey,
       left,
       cellGroupLeft,
       touchEnabled,
       isRTL,
       tableHeight,
       scrollX,
+      isFixed,
+      scrollToX,
+      groupColumnWidths,
       ...props} = this.props;
     var _columnResizerStyle = {
       height: props.height
@@ -321,7 +323,7 @@ class ResizeReorderCell extends React.PureComponent {
     if (onColumnReorderEndCallback) { //header row
       columnReorderComponent = (
         <ReorderHandle
-          columnKey={this.columnKey}
+          columnKey={props.columnKey}
           touchEnabled={touchEnabled}
           height={props.height}
           width={props.width}
@@ -349,7 +351,7 @@ class ResizeReorderCell extends React.PureComponent {
           width={props.width}
           minWidth={minWidth}
           maxWidth={maxWidth}
-          columnKey={columnKey}
+          columnKey={props.columnKey}
           cellGroupLeft={cellGroupLeft} 
           touchEnabled={touchEnabled}
           isRTL={isRTL} />);
