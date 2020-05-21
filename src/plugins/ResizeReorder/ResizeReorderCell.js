@@ -1,4 +1,4 @@
-import { Cell } from 'fixed-data-table-2';
+import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ResizerKnob  from './ResizerKnob.js';
@@ -358,9 +358,9 @@ class ResizeReorderCell extends React.PureComponent {
       content = children(props);
     } else {
       content = (
-        <Cell {...props}>
+        <FixedDataTableCellDefault {...props}>
           {children}
-        </Cell>
+        </FixedDataTableCellDefault>
       );
     }
 

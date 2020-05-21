@@ -92,7 +92,11 @@ class ReorderExample extends React.Component {
             allowCellsRecycling={true}
             columnKey={columnKey}
             key={i}
-            header={<ResizeReorderCell onColumnReorderEndCallback={onColumnReorderEndCallback}>{columnTitles[columnKey]}</ResizeReorderCell>}
+            header={
+              <ResizeReorderCell
+                onColumnReorderEndCallback={onColumnReorderEndCallback}>
+                  {columnTitles[columnKey]}
+              </ResizeReorderCell>}
             cell={<TextCell data={dataList} />}
             fixed={fixedColumns.indexOf(columnKey) !== -1}
             width={columnWidths[columnKey]}

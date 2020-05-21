@@ -115,6 +115,28 @@ class ColumnGroupsExample extends React.Component {
     });
   }
 
+  _onColumnGroupResizeEndCallback = (newColumnGroupWidth, columnGroupKey) => {
+    var columnWidths = {...this.state.columnWidths};
+    var currentColumns = this.state.columnOrder[columnGroupKey];
+    var totalWidth = 0;
+    for (var key of currentColumns) {
+      totalWidth += columnWidths[key]  
+    }
+
+    const widthChange = newColumnGroupWidth - totalWidth;
+    const perColumnChange = Math.floor(widthChange / currentColumns.length)
+    const remainderWidth = Math.abs(widthChange) % currentColumns.length;
+
+    for (var key of currentColumns) {
+      columnWidths[key] += perColumnChange;
+    }
+    columnWidths[Object.keys(currentColumns)[0]] += remainderWidth;
+    
+    this.setState({
+      columnWidths,
+    });
+  }
+
   _onColumnResizeEndCallback = (newColumnWidth, columnKey) => {
     this.setState(({columnWidths}) => ({
       columnWidths: {
@@ -128,6 +150,7 @@ class ColumnGroupsExample extends React.Component {
     var { dataList, columnWidths, columnOrder } = this.state;
     var onColumnGroupReorderEndCallback= this._onColumnGroupReorderEndCallback;
     var onColumnReorderEndCallback= this._onColumnReorderEndCallback;
+    var onColumnGroupResizeEndCallback= this._onColumnGroupResizeEndCallback;
     var onColumnResizeEndCallback= this._onColumnResizeEndCallback;
     
     return (
@@ -142,54 +165,30 @@ class ColumnGroupsExample extends React.Component {
         {this.state.columnGroupOrder.map(function (columnGroupKey, i) {
           return <ColumnGroup
             key={i}
-            header={<ResizeReorderCell onColumnReorderEndCallback={onColumnGroupReorderEndCallback}>{columnGroupTitles[columnGroupKey]}</ResizeReorderCell>}
+            header={
+              <ResizeReorderCell 
+                onColumnReorderEndCallback={onColumnGroupReorderEndCallback}
+                onColumnResizeEndCallback={onColumnGroupResizeEndCallback}>
+                  {columnGroupTitles[columnGroupKey]}
+              </ResizeReorderCell>}
             columnKey={columnGroupKey}>
             {columnOrder[columnGroupKey].map(function (columnKey, j) {
               return <Column
                 allowCellsRecycling={true}
                 columnKey={columnKey}
                 key={i + '.' + j}
-                header={<ResizeReorderCell onColumnReorderEndCallback={onColumnReorderEndCallback} onColumnResizeEndCallback={onColumnResizeEndCallback}>{columnTitles[columnKey]}</ResizeReorderCell>}
+                header={
+                  <ResizeReorderCell
+                    onColumnReorderEndCallback={onColumnReorderEndCallback}
+                    onColumnResizeEndCallback={onColumnResizeEndCallback}>
+                      {columnTitles[columnKey]}
+                  </ResizeReorderCell>}
                 cell={<TextCell data={dataList}/>}
                 width={columnWidths[columnKey]}
               />;
             })}
             </ColumnGroup>;
         })}
-        {/* <ColumnGroup
-          header={<Cell>Name</Cell>}>
-          <Column
-            columnKey="firstName"
-            fixed={true}
-            header={<Cell>First Name</Cell>}
-            cell={<TextCell data={dataList} />}
-            width={150}
-          />
-          <Column
-            columnKey="lastName"
-            fixed={true}
-            header={<Cell>Last Name</Cell>}
-            cell={<TextCell data={dataList} />}
-            width={150}
-          />
-        </ColumnGroup>
-        <ColumnGroup
-          header={<Cell>About</Cell>}>
-          <Column
-            columnKey="companyName"
-            header={<Cell>Company</Cell>}
-            cell={<TextCell data={dataList} />}
-            flexGrow={1}
-            width={150}
-          />
-          <Column
-            columnKey="sentence"
-            header={<Cell>Sentence</Cell>}
-            cell={<TextCell data={dataList} />}
-            flexGrow={1}
-            width={150}
-          />
-        </ColumnGroup> */}
       </Table>
     );
   }
