@@ -8,7 +8,7 @@ import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
 import { Table, Column, ColumnGroup, Cell } from 'fixed-data-table-2';
 import React from 'react';
-import ResizeReorderCell from '../src/plugins/ResizeReorder/ResizeReorderCell';
+import ResizeReorderCell from 'ResizeReorderCell';
 
 
 var columnGroupTitles = {

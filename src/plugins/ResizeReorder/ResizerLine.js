@@ -9,7 +9,8 @@
  * This is to be used with the ResizerKnob. It is a read line
  * that when you click on a column that is resizable appears and allows
  * you to resize the corresponding column.
- *
+ * @providesModule ResizerLine
+ * @typechecks
  */
 
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';

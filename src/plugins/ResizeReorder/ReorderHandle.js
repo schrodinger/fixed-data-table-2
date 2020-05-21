@@ -1,8 +1,19 @@
+/**
+ * Copyright Schrodinger, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule ReorderHandle
+ * @typechecks
+ */
+
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'cx';
-import joinClasses from 'joinClasses';
 import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
 
 

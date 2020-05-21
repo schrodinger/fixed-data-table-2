@@ -17,7 +17,7 @@ import cx from 'cx';
 import joinClasses from 'joinClasses';
 import shallowEqual from 'shallowEqual';
 import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
-import ResizeReorderCell from './plugins/ResizeReorder/ResizeReorderCell.js'
+import ResizeReorderCell from 'ResizeReorderCell'
 
 class FixedDataTableCell extends React.Component {
   /**

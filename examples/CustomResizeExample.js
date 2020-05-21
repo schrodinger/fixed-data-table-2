@@ -8,7 +8,7 @@ import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
 import { Table, Column, Cell } from 'fixed-data-table-2';
 import React from 'react';
-import ResizeReorderCell  from '../src/plugins/ResizeReorder/ResizeReorderCell.js';
+import ResizeReorderCell  from 'ResizeReorderCell';
 
 
 class ResizeExample extends React.Component {
