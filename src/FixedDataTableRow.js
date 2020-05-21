@@ -194,13 +194,6 @@ class FixedDataTableRowImpl extends React.Component {
      */
     scrollToX: PropTypes.func,
 
-    /**
-     * Callback when horizontally scrolling the grid.
-     *
-     * Return false to stop propagation.
-     */
-    onHorizontalScroll: PropTypes.func,
-
   };
 
   render() /*object*/ {
@@ -297,7 +290,6 @@ class FixedDataTableRowImpl extends React.Component {
         availableScrollWidth={this.props.availableScrollWidth}
         maxScrollX={this.props.maxScrollX}
         scrollToX={this.props.scrollToX}
-        onHorizontalScroll={this.props.onHorizontalScroll}
       />;
     var scrollableColumnsWidth = sumPropWidths(this.props.scrollableColumns);
     var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);

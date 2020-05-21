@@ -143,11 +143,8 @@ class ReorderHandle extends React.Component {
         columnAfter,
         columnBefore,
         columnKey,
-        scrollStart,
       },
       onColumnReorderEndCallback,
-      onHorizontalScroll,
-      scrollX,
     } = this.props;
 
     this.props.stopColumnReorder();
@@ -160,9 +157,6 @@ class ReorderHandle extends React.Component {
       columnBefore,
       reorderColumn: columnKey,
     });
-    if (scrollStart !== scrollX && onHorizontalScroll) {
-      onHorizontalScroll(scrollX)
-    };
   }
 };
 export default ReorderHandle;

@@ -117,13 +117,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
     scrollToX: PropTypes.func,
 
     /**
-     * Callback when horizontally scrolling the grid.
-     *
-     * Return false to stop propagation.
-     */
-    onHorizontalScroll: PropTypes.func,
-
-    /**
      * Whether the cells belongs to the fixed group
      */
     isFixed: PropTypes.bool,
@@ -238,7 +231,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
         maxScrollX={this.props.maxScrollX}
         groupColumnWidths={groupColumnWidths}
         scrollToX={this.props.scrollToX}
-        onHorizontalScroll={this.props.onHorizontalScroll}
       />
     );
   }

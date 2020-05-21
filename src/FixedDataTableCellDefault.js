@@ -93,7 +93,6 @@ class FixedDataTableCellDefault extends React.Component {
           maxScrollX,
           groupColumnWidths,
           scrollToX,
-          onHorizontalScroll,
           ...props} = this.props;
 
     var innerStyle = {

@@ -84,13 +84,6 @@ class ResizeReorderCell extends React.PureComponent {
     scrollToX: PropTypes.func,
 
     /**
-     * Callback when horizontally scrolling the grid.
-     *
-     * Return false to stop propagation.
-     */
-    onHorizontalScroll: PropTypes.func,
-
-    /**
      * Whether the cells belongs to the fixed group
      */
     isFixed: PropTypes.bool,
@@ -328,7 +321,6 @@ class ResizeReorderCell extends React.PureComponent {
           stopColumnReorder={this.stopColumnReorder}
           onColumnReorderEndCallback={onColumnReorderEndCallback}
           moveColumnReorder={this.moveColumnReorder}
-          onHorizontalScroll={this.props.onHorizontalScroll}
           {...this.props}
         />
       );

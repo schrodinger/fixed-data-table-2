@@ -772,7 +772,6 @@ class FixedDataTable extends React.Component {
           availableScrollWidth={availableScrollWidth}
           maxScrollX={maxScrollX}
           scrollToX={this._scrollToX}
-          onHorizontalScroll={this.props.onHorizontalScroll}
         />
       );
     }
@@ -850,7 +849,6 @@ class FixedDataTable extends React.Component {
         availableScrollWidth={availableScrollWidth}
         maxScrollX={maxScrollX}
         scrollToX={this._scrollToX}
-        onHorizontalScroll={this.props.onHorizontalScroll}
       />;
 
     let topShadow;
