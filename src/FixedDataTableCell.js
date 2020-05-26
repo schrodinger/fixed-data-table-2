@@ -144,7 +144,7 @@ class FixedDataTableCell extends React.Component {
      * Object consisting of keys and widths of the columns
      * in the current cell group.
      */
-    groupColumnWidths: PropTypes.object,
+    cellGroupColumnWidths: PropTypes.object,
   }
 
   shouldComponentUpdate(nextProps) {
@@ -226,7 +226,7 @@ class FixedDataTableCell extends React.Component {
         isFixed: this.props.isFixed,
         availableScrollWidth: this.props.availableScrollWidth,
         maxScrollX: this.props.maxScrollX,
-        groupColumnWidths: this.props.groupColumnWidths,
+        cellGroupColumnWidths: this.props.cellGroupColumnWidths,
         scrollToX: this.props.scrollToX,
       };
     }

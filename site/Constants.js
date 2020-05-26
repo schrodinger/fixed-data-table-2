@@ -51,7 +51,7 @@ exports.ExamplePages = {
     location: 'example-customresize.html',
     fileName: 'CustomResizeExample.js',
     title: 'Custom Resize columns',
-    description: 'Table with drag and drop column resizing with custom resize plugin. The Last Name column demonstrates the ability to constrain to both a min- and max-width.',
+    description: 'Table with drag and drop column resizing with custom resize plugin. The Last Name column demonstrates the ability to constrain to both a min-width and max-width.',
   },
   REORDER_EXAMPLE: {
     location: 'example-reorder.html',
@@ -64,6 +64,12 @@ exports.ExamplePages = {
     fileName: 'CustomReorderExample.js',
     title: 'Custom Reorder columns',
     description: 'Table with drag and drop column reordering using custom reorder plugin.',
+  },
+  COLUMN_GROUPS_RESIZE_REORDER_EXAMPLE: {
+    location: 'example-column-groups-resize-reorder.html',
+    fileName: 'ColumnGroupsResizeReorderExample.js',
+    title: 'Resizable and Reorderable Column Groups',
+    description: 'Table with column groupings with the ability to reorder groups.',
   },
   SCROLL_TO_ROW_EXAMPLE: {
     location: 'example-scroll-to-row.html',
@@ -100,12 +106,6 @@ exports.ExamplePages = {
     fileName: 'ColumnGroupsExample.js',
     title: 'Column Groups',
     description: 'Table with column groupings.',
-  },
-  COLUMN_GROUPS_RESIZE_REORDER_EXAMPLE: {
-    location: 'example-column-groups-resize-reorder.html',
-    fileName: 'ColumnGroupsResizeReorderExample.js',
-    title: 'Resizable and Reorderable Column Groups',
-    description: 'Table with column groupings with the ability to reorder groups.',
   },
   INFINITE_SCROLL_EXAMPLE: {
     location: 'example-infinite-scroll.html',

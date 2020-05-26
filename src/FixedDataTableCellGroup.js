@@ -137,15 +137,15 @@ class FixedDataTableCellGroupImpl extends React.Component {
     var cells = new Array(columns.length);
     var contentWidth = sumPropWidths(columns);
 
-    var groupColumnWidths = {
+    var cellGroupColumnWidths = {
       keys: [],
       widths: []
     };
     if (this.props.isHeader) {
       for (var i = 0, j = columns.length; i < j; i++) {
         var key = columns[i].props.columnKey || 'cell_' + i;
-        groupColumnWidths.keys.push(key);
-        groupColumnWidths.widths.push(columns[i].props.width);
+        cellGroupColumnWidths.keys.push(key);
+        cellGroupColumnWidths.widths.push(columns[i].props.width);
       }
     }
 
@@ -166,7 +166,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
           currentPosition,
           key,
           contentWidth,
-          groupColumnWidths,
+          cellGroupColumnWidths,
         );
       }
       currentPosition += columnProps.width;
@@ -196,7 +196,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     /*number*/ left,
     /*string*/ key,
     /*number*/ columnGroupWidth,
-    /*array*/ groupColumnWidths
+    /*array*/ cellGroupColumnWidths
   ) /*object*/ => {
 
     var className = columnProps.cellClassName;
@@ -239,7 +239,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         isFixed={this.props.isFixed}
         availableScrollWidth={this.props.availableScrollWidth}
         maxScrollX={this.props.maxScrollX}
-        groupColumnWidths={groupColumnWidths}
+        cellGroupColumnWidths={cellGroupColumnWidths}
         scrollToX={this.props.scrollToX}
       />
     );

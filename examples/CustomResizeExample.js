@@ -43,7 +43,6 @@ class ResizeExample extends React.Component {
         rowHeight={30}
         headerHeight={50}
         rowsCount={dataList.getSize()}
-        isColumnResizing={false}
         touchScrollEnabled={true}
         width={1000}
         height={500}

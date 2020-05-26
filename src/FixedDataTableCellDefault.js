@@ -91,7 +91,7 @@ class FixedDataTableCellDefault extends React.Component {
           isFixed,
           availableScrollWidth,
           maxScrollX,
-          groupColumnWidths,
+          cellGroupColumnWidths,
           scrollToX,
           ...props} = this.props;
 

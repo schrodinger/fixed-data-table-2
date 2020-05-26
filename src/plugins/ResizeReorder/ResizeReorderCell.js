@@ -104,7 +104,7 @@ class ResizeReorderCell extends React.PureComponent {
      * Object consisting of keys and widths of the columns
      * in the current cell group.
      */
-    groupColumnWidths: PropTypes.object,
+    cellGroupColumnWidths: PropTypes.object,
 
     /**
      * The minimum width of the column.
@@ -151,6 +151,16 @@ class ResizeReorderCell extends React.PureComponent {
     });
   }
 
+  /**
+   * TODO (sharma)
+   *
+   * scrollX gets updated while scrolling and reordering together.
+   * This causes all the components to re-render from the FixedDataTable
+   * to the ResizeReorder Cell and makes scrolling and reordering very slow.
+   *
+   * scrollX, maxScrollX, availableScrollWidth should be handled differently
+   * to speed it up.
+   *   */
   moveColumnReorder = (deltaX) => {
     const { isFixed, originalLeft, scrollStart } = this.state.columnReorderingData;
     let { maxScrollX, scrollX } = this.props;
@@ -197,13 +207,13 @@ class ResizeReorderCell extends React.PureComponent {
     }
 
     // get the full width of the column group
-    const columnGroupWidth = this.props.groupColumnWidths.widths.reduce((acc, elem) => acc+elem, 0);
+    const cellGroupWidth = this.props.cellGroupColumnWidths.widths.reduce((acc, elem) => acc+elem, 0);
 
     var left = this.props.left + this.state.displacement;
     
     var originalLeft = stateChanges.columnReorderingData.originalLeft;
     var reorderCellLeft = originalLeft + stateChanges.columnReorderingData.dragDistance;
-    var farthestPossiblePoint = columnGroupWidth - stateChanges.columnReorderingData.columnWidth;
+    var farthestPossiblePoint = cellGroupWidth - stateChanges.columnReorderingData.columnWidth;
 
     // ensure the cell isn't being dragged out of the column group
     reorderCellLeft = Math.max(reorderCellLeft, 0);
@@ -212,27 +222,27 @@ class ResizeReorderCell extends React.PureComponent {
     newState.displacement = reorderCellLeft - this.props.left;
     newState.isReorderingThisColumn = true;
 
-    var index = this.props.groupColumnWidths.keys.indexOf(this.props.columnKey);
+    var index = this.props.cellGroupColumnWidths.keys.indexOf(this.props.columnKey);
     
     
-    newState.columnReorderingData.columnBefore = this.props.groupColumnWidths.keys[index-1];
-    newState.columnReorderingData.columnAfter = this.props.groupColumnWidths.keys[index+1];
+    newState.columnReorderingData.columnBefore = this.props.cellGroupColumnWidths.keys[index-1];
+    newState.columnReorderingData.columnAfter = this.props.cellGroupColumnWidths.keys[index+1];
 
     var localDisplacement = newState.displacement;
     if (localDisplacement>0) {
-      for (var i=index+1,j=this.props.groupColumnWidths.widths.length; i<j; i++) {
-        var curWidth = this.props.groupColumnWidths.widths[i]
+      for (var i=index+1,j=this.props.cellGroupColumnWidths.widths.length; i<j; i++) {
+        var curWidth = this.props.cellGroupColumnWidths.widths[i]
         if (localDisplacement > curWidth) {
           localDisplacement -= curWidth;
         }
         else {
           if (localDisplacement > curWidth/2) {
-            newState.columnReorderingData.columnAfter = this.props.groupColumnWidths.keys[i+1];
-            newState.columnReorderingData.columnBefore = this.props.groupColumnWidths.keys[i];
+            newState.columnReorderingData.columnAfter = this.props.cellGroupColumnWidths.keys[i+1];
+            newState.columnReorderingData.columnBefore = this.props.cellGroupColumnWidths.keys[i];
           }
           else {
-            newState.columnReorderingData.columnAfter = this.props.groupColumnWidths.keys[i];
-            newState.columnReorderingData.columnBefore = (i-1 != index) ? this.props.groupColumnWidths.keys[i-1] : this.props.groupColumnWidths.keys[i-2];
+            newState.columnReorderingData.columnAfter = this.props.cellGroupColumnWidths.keys[i];
+            newState.columnReorderingData.columnBefore = (i-1 != index) ? this.props.cellGroupColumnWidths.keys[i-1] : this.props.cellGroupColumnWidths.keys[i-2];
           }
           break;
         }
@@ -241,18 +251,18 @@ class ResizeReorderCell extends React.PureComponent {
     else if (localDisplacement<0) {
       localDisplacement=-localDisplacement
       for (var i=index-1; i>=0; i--) {
-        var curWidth = this.props.groupColumnWidths.widths[i]
+        var curWidth = this.props.cellGroupColumnWidths.widths[i]
         if (localDisplacement > curWidth) {
           localDisplacement -= curWidth;
         }
         else {
           if (localDisplacement > curWidth/2) {
-            newState.columnReorderingData.columnAfter = this.props.groupColumnWidths.keys[i];
-            newState.columnReorderingData.columnBefore = this.props.groupColumnWidths.keys[i-1];
+            newState.columnReorderingData.columnAfter = this.props.cellGroupColumnWidths.keys[i];
+            newState.columnReorderingData.columnBefore = this.props.cellGroupColumnWidths.keys[i-1];
           }
           else {
-            newState.columnReorderingData.columnBefore = this.props.groupColumnWidths.keys[i];
-            newState.columnReorderingData.columnAfter = (i+1 != index) ? this.props.groupColumnWidths.keys[i+1] : this.props.groupColumnWidths.keys[i+2];
+            newState.columnReorderingData.columnBefore = this.props.cellGroupColumnWidths.keys[i];
+            newState.columnReorderingData.columnAfter = (i+1 != index) ? this.props.cellGroupColumnWidths.keys[i+1] : this.props.cellGroupColumnWidths.keys[i+2];
           }
           break;
         }
@@ -281,7 +291,7 @@ class ResizeReorderCell extends React.PureComponent {
       scrollX,
       isFixed,
       scrollToX,
-      groupColumnWidths,
+      cellGroupColumnWidths,
       ...props} = this.props;
     var _columnResizerStyle = {
       height: props.height

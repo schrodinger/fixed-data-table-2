@@ -441,6 +441,20 @@ class FixedDataTable extends React.Component {
     onColumnReorderEndCallback: PropTypes.func,
 
     /**
+     * Whether a column is currently being resized.
+     *
+     * This prop has been deprecated in favour of the new plugin for resizing (plugins/ResizeReorder)
+     */
+    isColumnResizing: PropTypes.bool,
+
+    /**
+     * Whether columns are currently being reordered.
+     *
+     * This prop has been deprecated in favour of the new plugin for reorder (plugins/ResizeReorder)
+     */
+    isColumnReordering: PropTypes.bool,
+
+    /**
      * Whether the grid should be in RTL mode
      */
     isRTL: PropTypes.bool,
