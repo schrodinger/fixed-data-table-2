@@ -201,6 +201,16 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     var className = columnProps.cellClassName;
     var pureRendering = columnProps.pureRendering || false;
+
+    const onColumnReorderEndCallback = 
+      (columnProps.isReorderable) 
+        ? this.props.onColumnReorderEndCallback 
+        : null;
+    const onColumnResizeEndCallback = 
+    (columnProps.isResizable) 
+      ? this.props.onColumnResizeEndCallback 
+      : null;
+
     return (
       <FixedDataTableCell
         isScrolling={this.props.isScrolling}
@@ -214,8 +224,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
         maxWidth={columnProps.maxWidth}
         minWidth={columnProps.minWidth}
         touchEnabled={this.props.touchEnabled}
-        onColumnResizeEndCallback={this.props.onColumnResizeEndCallback}
-        onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}
+        onColumnResizeEndCallback={onColumnResizeEndCallback}
+        onColumnReorderEndCallback={onColumnReorderEndCallback}
         rowIndex={rowIndex}
         columnKey={columnProps.columnKey}
         width={columnProps.width}
