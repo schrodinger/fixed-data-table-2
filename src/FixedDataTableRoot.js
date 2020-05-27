@@ -19,11 +19,15 @@ import ResizeReorderCell from 'ResizeReorderCell';
 
 const version = '1.1.0';
 
+const Plugins = {
+  ResizeReorderCell,
+};
+
 export {
   Cell,
   Column,
   ColumnGroup,
   Table,
-  ResizeReorderCell,
+  Plugins,
   version,
 };
