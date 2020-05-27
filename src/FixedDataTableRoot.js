@@ -15,6 +15,7 @@ import Table from 'FixedDataTableContainer';
 import Cell from 'FixedDataTableCellDefault';
 import Column from 'FixedDataTableColumn';
 import ColumnGroup from 'FixedDataTableColumnGroup';
+import ResizeReorderCell from 'ResizeReorderCell';
 
 const version = '1.1.0';
 
@@ -23,5 +24,6 @@ export {
   Column,
   ColumnGroup,
   Table,
+  ResizeReorderCell,
   version,
 };
