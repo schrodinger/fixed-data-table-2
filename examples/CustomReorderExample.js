@@ -6,9 +6,8 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, Plugins } from 'fixed-data-table-2';
 import React from 'react';
-import ResizeReorderCell  from 'ResizeReorderCell';
 
 var columnTitles = {
   'firstName': 'First Name',
@@ -93,10 +92,10 @@ class ReorderExample extends React.Component {
             columnKey={columnKey}
             key={i}
             header={
-              <ResizeReorderCell
+              <Plugins.ResizeReorderCell
                 onColumnReorderEndCallback={onColumnReorderEndCallback}>
                   {columnTitles[columnKey]}
-              </ResizeReorderCell>}
+              </Plugins.ResizeReorderCell>}
             cell={<TextCell data={dataList} />}
             fixed={fixedColumns.indexOf(columnKey) !== -1}
             width={columnWidths[columnKey]}

@@ -6,9 +6,8 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, ColumnGroup, Cell } from 'fixed-data-table-2';
+import { Table, Column, ColumnGroup, Plugins } from 'fixed-data-table-2';
 import React from 'react';
-import ResizeReorderCell from 'ResizeReorderCell';
 
 
 var columnGroupTitles = {
@@ -166,11 +165,11 @@ class ColumnGroupsExample extends React.Component {
           return <ColumnGroup
             key={i}
             header={
-              <ResizeReorderCell 
+              <Plugins.ResizeReorderCell
                 onColumnReorderEndCallback={onColumnGroupReorderEndCallback}
                 onColumnResizeEndCallback={onColumnGroupResizeEndCallback}>
                   {columnGroupTitles[columnGroupKey]}
-              </ResizeReorderCell>}
+              </Plugins.ResizeReorderCell>}
             columnKey={columnGroupKey}>
             {columnOrder[columnGroupKey].map(function (columnKey, j) {
               return <Column
@@ -178,11 +177,11 @@ class ColumnGroupsExample extends React.Component {
                 columnKey={columnKey}
                 key={i + '.' + j}
                 header={
-                  <ResizeReorderCell
+                  <Plugins.ResizeReorderCell
                     onColumnReorderEndCallback={onColumnReorderEndCallback}
                     onColumnResizeEndCallback={onColumnResizeEndCallback}>
                       {columnTitles[columnKey]}
-                  </ResizeReorderCell>}
+                  </Plugins.ResizeReorderCell>}
                 cell={<TextCell data={dataList}/>}
                 width={columnWidths[columnKey]}
               />;

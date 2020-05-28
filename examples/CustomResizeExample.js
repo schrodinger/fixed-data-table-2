@@ -6,9 +6,8 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, Plugins } from 'fixed-data-table-2';
 import React from 'react';
-import ResizeReorderCell  from 'ResizeReorderCell';
 
 
 class ResizeExample extends React.Component {
@@ -49,37 +48,37 @@ class ResizeExample extends React.Component {
         {...this.props}>
         <Column
           columnKey="firstName"
-          header={<ResizeReorderCell 
+          header={<Plugins.ResizeReorderCell
             onColumnResizeEndCallback={this._onColumnResizeEndCallback}>
-            First Name </ResizeReorderCell>}
+            First Name </Plugins.ResizeReorderCell>}
           cell={<TextCell data={dataList} />}
           fixed={true}
           width={columnWidths.firstName}
         />
         <Column
           columnKey="lastName"
-          header={<ResizeReorderCell 
+          header={<Plugins.ResizeReorderCell
             minWidth={70}
             maxWidth={170} 
             onColumnResizeEndCallback={this._onColumnResizeEndCallback}>
               Last Name (min/max constrained)
-              </ResizeReorderCell>}
+              </Plugins.ResizeReorderCell>}
           cell={<TextCell data={dataList} />}
           width={columnWidths.lastName}
         />
         <Column
           columnKey="companyName"
-          header={<ResizeReorderCell 
+          header={<Plugins.ResizeReorderCell
             onColumnResizeEndCallback={this._onColumnResizeEndCallback}>
-            Company </ResizeReorderCell>}
+            Company </Plugins.ResizeReorderCell>}
           cell={<TextCell data={dataList} />}
           width={columnWidths.companyName}
         />
         <Column
           columnKey="sentence"
-          header={<ResizeReorderCell 
+          header={<Plugins.ResizeReorderCell
             onColumnResizeEndCallback={this._onColumnResizeEndCallback}>
-            Sentence </ResizeReorderCell>}
+            Sentence </Plugins.ResizeReorderCell>}
           cell={<TextCell data={dataList} />}
           width={columnWidths.sentence}
         />
