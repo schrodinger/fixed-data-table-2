@@ -21,6 +21,15 @@ import cx from 'cx';
 const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
 
+/**
+ * A plugin that can make use of ResizerKnob and ReorderHandle to provide the 
+ * resize and reorder functionality to the columns.
+ * 
+ * Pass this to the `header` prop of the `Column` to invoke resizer/reorder handle.
+ * `onColumnResizeEndCallback` and `onColumnReorderEndCallback` activate the respective
+ * functionality. Either one or both can be used together.
+ * 
+ */
 class ResizeReorderCell extends React.PureComponent {
 
   static propTypes = {

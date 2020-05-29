@@ -19,6 +19,7 @@ exports.DocsPages = {
     COLUMN_API: {location: 'api-column.html', title: 'Column'},
     COLUMNGROUP_API: {location: 'api-columngroup.html', title: 'Column Group'},
     CELL_API: {location: 'api-cell.html', title: 'Cell'},
+    RESIZEREORDERCELL_API: {location: 'api-resizereordercell.html', title: 'ResizeReorderCell'},
   },
 };
 
