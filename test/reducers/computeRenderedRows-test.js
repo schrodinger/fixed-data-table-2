@@ -28,11 +28,8 @@ describe('computeRenderedRows', function() {
   });
 
   describe('computeRenderedRows', function() {
-    let sandbox;
     let oldState;
     beforeEach(function() {
-      sandbox = sinon.sandbox.create();
-
       const initialStoredHeights = {};
       for (let rowIdx = 0; rowIdx < 80; rowIdx++) {
         initialStoredHeights[rowIdx] = 125;
@@ -52,7 +49,7 @@ describe('computeRenderedRows', function() {
     });
 
     afterEach(function() {
-      sandbox.restore();
+      sinon.restore();
     });
 
     it('should update rowBufferSet & row heights for buffered rows', function() {
@@ -195,14 +192,14 @@ describe('computeRenderedRows', function() {
       };
       oldState.rowSettings.rowHeightGetter = () => 200;
 
-      const rowOffsetIntervalTreeMock = sandbox.mock(PrefixIntervalTree.prototype);
+      const rowOffsetIntervalTreeMock = sinon.mock(PrefixIntervalTree.prototype);
       oldState.rowOffsetIntervalTree = PrefixIntervalTree.uniform(80, 125);
       for (let rowIdx = 13; rowIdx < 21; rowIdx++) {
         rowOffsetIntervalTreeMock.expects('set').once().withArgs(rowIdx, 200);
       }
 
       const newState = computeRenderedRows(oldState, scrollAnchor);
-      sandbox.verify();
+      rowOffsetIntervalTreeMock.verify();
 
       let priorHeight = 1625;
       const expectedRowOffsets = {};
