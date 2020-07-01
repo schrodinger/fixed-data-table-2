@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import { assert } from 'chai';
 
 describe('ReactTouchHandler', function() {
-  var clock, requestAnimationFramePolyfillSpy;
+  var requestAnimationFramePolyfillSpy;
 
   beforeEach(function() {
     requestAnimationFramePolyfillSpy = sinon.spy();
