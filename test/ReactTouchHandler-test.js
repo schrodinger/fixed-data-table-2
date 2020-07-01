@@ -1,46 +1,34 @@
 /**
  * Copyright Schrodinger, LLC
  */
-
-import React from 'react';
 import ReactTouchHandler from '../src/ReactTouchHandler';
 import sinon from 'sinon';
 import { assert } from 'chai';
-import { createRenderer, isElement } from 'react-addons-test-utils';
 
 describe('ReactTouchHandler', function() {
-  var clock, sandbox, requestAnimationFramePolyfillSpy;
-
-  before(function () {
-    clock = sinon.useFakeTimers();
-    sandbox = sinon.sandbox.create();
-  })
-
-  after(function () {
-    clock.restore();
-  })
+  var requestAnimationFramePolyfillSpy;
 
   beforeEach(function() {
-    requestAnimationFramePolyfillSpy = sandbox.spy();
+    requestAnimationFramePolyfillSpy = sinon.spy();
     ReactTouchHandler.__Rewire__('requestAnimationFramePolyfill', requestAnimationFramePolyfillSpy);
   });
 
   afterEach(function() {
-    sandbox.restore();
+    sinon.restore();
     ReactTouchHandler.__ResetDependency__('requestAnimationFramePolyfill');
   });
 
   describe('onTouchStart', function() {
     var fakeEvent;
     beforeEach(function() {
-      ReactTouchHandler.prototype._track = sandbox.spy();
+      ReactTouchHandler.prototype._track = sinon.spy();
       fakeEvent = {
         touches: [{
           pageX: 121,
           pageY: 312
         }],
-        preventDefault: sandbox.spy(),
-        stopPropagation: sandbox.spy()
+        preventDefault: sinon.spy(),
+        stopPropagation: sinon.spy()
       };
     });
 
@@ -72,6 +60,8 @@ describe('ReactTouchHandler', function() {
     });
 
     it('should start new interval', function() {
+      const clock = sinon.useFakeTimers();
+
       // --- Run Test ---
       var reactTouchHandler = new ReactTouchHandler(() => {}, () => {}, () => {}, false, false);
       reactTouchHandler.onTouchStart(fakeEvent);
@@ -86,19 +76,15 @@ describe('ReactTouchHandler', function() {
     var fakeEvent, clearIntervalSpy;
 
     beforeEach(function() {
-      clearIntervalSpy = sandbox.spy(global || window, 'clearInterval')
+      clearIntervalSpy = sinon.spy(global || window, 'clearInterval')
       fakeEvent = {
         touches: [{
           pageX: 121,
           pageY: 312
         }],
-        preventDefault: sandbox.spy(),
-        stopPropagation: sandbox.spy()
+        preventDefault: sinon.spy(),
+        stopPropagation: sinon.spy()
       };
-    });
-
-    afterEach(function() {
-
     });
 
     it('should stop event propagation if flag is true', function() {
