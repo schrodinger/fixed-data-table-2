@@ -38,17 +38,10 @@
   text-align: center;
 }
 
-.fixedDataTableCellLayout/wrap1 {
-  display: table;
-}
-
-.fixedDataTableCellLayout/wrap2 {
-  display: table-row;
-}
-
-.fixedDataTableCellLayout/wrap3 {
+.fixedDataTableCellLayout/wrap {
   display: table-cell;
   vertical-align: middle;
+  box-sizing: border-box;
 }
 
 .fixedDataTableCellLayout/columnResizerContainer {

@@ -87,26 +87,14 @@ class FixedDataTableCellDefault extends React.Component {
       <div
         {...props}
         className={joinClasses(
-          cx('fixedDataTableCellLayout/wrap1'),
-          cx('public/fixedDataTableCell/wrap1'),
+          cx('fixedDataTableCellLayout/wrap'),
+          cx('public/fixedDataTableCell/wrap'),
+          cx('public/fixedDataTableCell/cellContent'),
           className,
         )}
-        style={innerStyle}>
-        <div
-          className={joinClasses(
-            cx('fixedDataTableCellLayout/wrap2'),
-            cx('public/fixedDataTableCell/wrap2'),
-          )}>
-          <div
-            className={joinClasses(
-              cx('fixedDataTableCellLayout/wrap3'),
-              cx('public/fixedDataTableCell/wrap3'),
-            )}>
-            <div className={cx('public/fixedDataTableCell/cellContent')}>
-              {children}
-            </div>
-          </div>
-        </div>
+        style={innerStyle}
+      >
+        {children}
       </div>
     );
   }
