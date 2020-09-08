@@ -130,7 +130,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     /*number*/ left,
     /*string*/ key,
     /*number*/ columnGroupWidth,
-    /*boolean*/ isColumnReordering,
+    /*boolean*/ isColumnReordering
   ) /*object*/ => {
 
     var cellIsResizable = columnProps.isResizable &&
@@ -197,10 +197,12 @@ class FixedDataTableCellGroup extends React.Component {
   }
 
   shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
-    return (
-      !nextProps.isScrolling ||
-      this.props.rowIndex !== nextProps.rowIndex ||
-      this.props.left !== nextProps.left
+    /// if offsets haven't changed for the same cell group while scrolling, then skip update
+    return !(
+      nextProps.isScrolling &&
+      this.props.rowIndex === nextProps.rowIndex &&
+      this.props.left === nextProps.left &&
+      this.props.offsetLeft === nextProps.offsetLeft
     );
   }
 
