@@ -29,10 +29,9 @@
   background-color: #0284ff;
 }
 .public/fixedDataTableCell/hasReorderHandle .public/fixedDataTableCell/cellContent {
-  margin-left: 12px;
+  padding-left: 20px;
 }
 
 .fixedDataTable_isRTL .public/fixedDataTableCell/hasReorderHandle .public/fixedDataTableCell/cellContent {
-  margin-left: auto;
-  margin-right: 12px;
+  padding-right: 20px;
 }
