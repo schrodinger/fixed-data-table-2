@@ -8,7 +8,7 @@
  *
  * @providesModule ariaAttributes
  */
-import shallowEqualSelector from 'shallowEqualSelector';
+import shallowEqualSelector from '../helper/shallowEqualSelector';
 
 /**
  * Calculate the aria attributes for the rows and the grid.

@@ -24,7 +24,7 @@ function shallowEqual(objA: mixed, objB: mixed): boolean {
   }
 
   if (typeof objA !== 'object' || objA === null ||
-      typeof objB !== 'object' || objB === null) {
+    typeof objB !== 'object' || objB === null) {
     return false;
   }
 

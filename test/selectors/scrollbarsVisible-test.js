@@ -1,9 +1,10 @@
 /**
  * Copyright Schrodinger, LLC
  */
-import { ScrollbarState } from 'roughHeights';
 import { assert } from 'chai';
-import scrollbarsVisible from 'scrollbarsVisible';
+
+import { ScrollbarState } from '../../src/selectors/roughHeights';
+import scrollbarsVisible from '../../src/selectors/scrollbarsVisible';
 
 describe('scrollbarsVisible', function() {
   let roughHeights;

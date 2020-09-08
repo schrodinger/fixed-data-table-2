@@ -12,6 +12,7 @@
 'use strict'
 
 import { createSelectorCreator, defaultMemoize } from 'reselect';
-import shallowEqual from 'shallowEqual';
+
+import shallowEqual from '../vendor_upstream/core/shallowEqual';
 
 export default createSelectorCreator(defaultMemoize, shallowEqual);

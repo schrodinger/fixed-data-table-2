@@ -2,9 +2,10 @@
  * Copyright Schrodinger, LLC
  */
 
-import columnStateHelper from 'columnStateHelper'
-import emptyFunction from 'emptyFunction';
+import emptyFunction from '../../src/vendor_upstream/core/emptyFunction';
 import { assert } from 'chai';
+
+import columnStateHelper from '../../src/reducers/columnStateHelper'
 
 describe('columnStateHelper', function() {
   describe('resizeColumn', function() {

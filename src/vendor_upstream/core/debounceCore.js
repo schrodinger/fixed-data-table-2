@@ -31,9 +31,9 @@
  * @param {function} func - the function to debounce
  * @param {number} wait - how long to wait in milliseconds
  * @param {*} context - optional context to invoke the function in
- * @param {?function} setTimeoutFunc - an implementation of setTimeout
+ * @param {function} [setTimeoutFunc] - an implementation of setTimeout
  *  if nothing is passed in the default setTimeout function is used
-  * @param {?function} clearTimeoutFunc - an implementation of clearTimeout
+  * @param {function} [clearTimeoutFunc] - an implementation of clearTimeout
  *  if nothing is passed in the default clearTimeout function is used
  */
 function debounce(func, wait, context, setTimeoutFunc, clearTimeoutFunc) {

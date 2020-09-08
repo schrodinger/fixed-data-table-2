@@ -12,12 +12,13 @@
 
 'use strict';
 
-import FixedDataTableCell from 'FixedDataTableCell';
-import FixedDataTableTranslateDOMPosition from 'FixedDataTableTranslateDOMPosition';
-import PropTypes from 'prop-types';
 import React from 'react';
-import cx from 'cx';
-import { sumPropWidths } from 'widthHelper';
+import PropTypes from 'prop-types';
+
+import cx from './vendor_upstream/stubs/cx';
+import { sumPropWidths } from './helper/widthHelper';
+import FixedDataTableCell from './FixedDataTableCell';
+import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 
 class FixedDataTableCellGroupImpl extends React.Component {
   /**
@@ -79,7 +80,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     var cells = new Array(columns.length);
     var contentWidth = sumPropWidths(columns);
 
-    var isColumnReordering = props.isColumnReordering && columns.reduce(function (acc, column) {
+    var isColumnReordering = props.isColumnReordering && columns.reduce(function(acc, column) {
       return acc || props.columnReorderingData.columnKey === column.props.columnKey;
     }, false);
 

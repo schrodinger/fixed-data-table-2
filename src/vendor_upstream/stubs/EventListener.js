@@ -10,7 +10,7 @@
  * @typechecks
  */
 
-import emptyFunction from 'emptyFunction';
+import emptyFunction from '../core/emptyFunction';
 
 /**
  * Upstream version of event listener. Does not take into account specific
@@ -55,7 +55,7 @@ var EventListener = {
     if (target.addEventListener) {
       target.addEventListener(eventType, callback, true);
       return {
-        remove: function () {
+        remove: function() {
           target.removeEventListener(eventType, callback, true);
         }
       };
@@ -73,7 +73,7 @@ var EventListener = {
     }
   },
 
-  registerDefault: function() {}
+  registerDefault: function() { }
 };
 
 export default EventListener;

@@ -11,8 +11,9 @@
 
 'use strict';
 
-import reducers from 'reducers'
 import { createStore } from 'redux'
+
+import reducers from './reducers'
 
 export default {
   get: () => createStore(reducers)

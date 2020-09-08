@@ -6,8 +6,6 @@ import sinon from 'sinon';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Scrollbar from 'Scrollbar';
-import { Table, Column } from '../src/FixedDataTableRoot';
-import * as requestAnimation from '../src/vendor_upstream/core/requestAnimationFramePolyfill';
 import {
   createRenderer,
 } from 'react-test-renderer/shallow';
@@ -16,6 +14,9 @@ import {
   findRenderedDOMComponentWithClass,
   isElement,
 } from 'react-dom/test-utils';
+
+import { Table, Column } from '../src/FixedDataTableRoot';
+import Scrollbar from '../src/plugins/Scrollbar';
 
 describe('FixedDataTableRoot', function() {
   describe('render ', function() {
@@ -91,22 +92,22 @@ describe('FixedDataTableRoot', function() {
 
   describe('initial render', function() {
     it('should set scrollLeft correctly', function() {
-      let table = renderTable({scrollLeft: 300});
+      let table = renderTable({ scrollLeft: 300 });
       assert.equal(table.getTableState().scrollX, 300, 'should set scrollX to 300');
     });
 
     it('should set scrollTop correctly', function() {
-      let table = renderTable({scrollTop: 600});
+      let table = renderTable({ scrollTop: 600 });
       assert.equal(table.getTableState().scrollY, 600, 'should set scrollY to 600');
     });
 
     it('should set scrollToColumn correctly', function() {
-      let table = renderTable({scrollToColumn: 3});
+      let table = renderTable({ scrollToColumn: 3 });
       assert.equal(table.getTableState().scrollX, 300 * 2 + Scrollbar.SIZE, 'should be third visible column');
     });
 
     it('should set scrollToRow correctly', function() {
-      let table = renderTable({scrollToRow: 30, height: 300});
+      let table = renderTable({ scrollToRow: 30, height: 300 });
       //scrollToRow is considered valid if row is visible. Test to make sure that row is somewhere in between
       assert.isBelow(table.getTableState().scrollY, 30 * 100, 'should be below first row');
       assert.isAbove(table.getTableState().scrollY, 30 * 100 - 300, 'should be above last row');
@@ -115,33 +116,33 @@ describe('FixedDataTableRoot', function() {
 
   describe('update render', function() {
     it('should update scrollLeft correctly', function() {
-      let table = renderTable({scrollLeft: 300});
+      let table = renderTable({ scrollLeft: 300 });
       assert.equal(table.getTableState().scrollX, 300, 'should set scrollX to 300');
-      table = renderTable({scrollLeft: 600});
+      table = renderTable({ scrollLeft: 600 });
       assert.equal(table.getTableState().scrollX, 600, 'should set scrollX to 600');
     });
 
     it('should update scrollTop correctly', function() {
-      let table = renderTable({scrollTop: 600});
+      let table = renderTable({ scrollTop: 600 });
       assert.equal(table.getTableState().scrollY, 600, 'should set scrollY to 600');
 
-      table = renderTable({scrollTop: 300});
+      table = renderTable({ scrollTop: 300 });
       assert.equal(table.getTableState().scrollY, 300, 'should set scrollY to 300');
     });
 
     it('should update scrollToColumn correctly', function() {
-      let table = renderTable({scrollToColumn: 3});
+      let table = renderTable({ scrollToColumn: 3 });
       assert.equal(table.getTableState().scrollX, 300 * 2 + Scrollbar.SIZE, 'should be third visible column');
-      table = renderTable({scrollToColumn: 1});
+      table = renderTable({ scrollToColumn: 1 });
       assert.equal(table.getTableState().scrollX, 300, 'should be first visible column');
     });
 
     it('should update scrollToRow correctly', function() {
-      let table = renderTable({scrollToRow: 30, height: 300});
+      let table = renderTable({ scrollToRow: 30, height: 300 });
       //scrollToRow is considered valid if row is visible. Test to make sure that row is somewhere in between
       assert.isAtMost(table.getTableState().scrollY, 30 * 100, 'should be below first row');
       assert.isAtLeast(table.getTableState().scrollY, 30 * 100 - 300, 'should be above last row');
-      table = renderTable({scrollToRow: 20, height: 100});
+      table = renderTable({ scrollToRow: 20, height: 100 });
       assert.isAtMost(table.getTableState().scrollY, 20 * 100, 'should be below first row');
       assert.isAtLeast(table.getTableState().scrollY, 20 * 100 - 100, 'should be above last row');
     });
@@ -149,30 +150,30 @@ describe('FixedDataTableRoot', function() {
 
   describe('unset props', function() {
     it('should not blow up when unsetting the scrollLeft property', function() {
-      let table = renderTable({scrollLeft: 300});
+      let table = renderTable({ scrollLeft: 300 });
       assert.doesNotThrow(function() {
-        renderTable({scrollLeft: undefined});
+        renderTable({ scrollLeft: undefined });
       });
     });
 
     it('should not blow up when unsetting the scrollTop property', function() {
-      let table = renderTable({scrollTop: 600});
+      let table = renderTable({ scrollTop: 600 });
       assert.doesNotThrow(function() {
-        renderTable({scrollTop: undefined});
+        renderTable({ scrollTop: undefined });
       });
     });
 
     it('should not blow up when unsetting the scrollToColumn property', function() {
-      let table = renderTable({scrollToColumn: 3});
+      let table = renderTable({ scrollToColumn: 3 });
       assert.doesNotThrow(function() {
-        renderTable({scrollToColumn: undefined});
+        renderTable({ scrollToColumn: undefined });
       });
     });
 
     it('should not blow up when unsetting the scrollToRow property', function() {
-      let table = renderTable({scrollToRow: 30});
+      let table = renderTable({ scrollToRow: 30 });
       assert.doesNotThrow(function() {
-        renderTable({scrollToRow: undefined});
+        renderTable({ scrollToRow: undefined });
       });
     });
 
@@ -183,11 +184,11 @@ describe('FixedDataTableRoot', function() {
     });
   });
 
-  describe('RTL scroll', function () {
+  describe('RTL scroll', function() {
     describe('RTL', function() {
       it('should flip wheel sign', function(done) {
         const scroll = -50;
-        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={true}/>, node);
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={true} />, node);
         let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
         let tableComponent = findRenderedComponentWithType(renderedTree, TestTable);
         let scrollToXSpy = sinon.spy(tableComponent._tableRef.scrollActions, "scrollToX");
@@ -208,7 +209,7 @@ describe('FixedDataTableRoot', function() {
 
       it('should not scroll past 0 bounds', function(done) {
         const scroll = 50;
-        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={true}/>, node);
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={true} />, node);
         let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
         let tableComponent = findRenderedComponentWithType(renderedTree, TestTable);
         let scrollToXSpy = sinon.spy(tableComponent._tableRef.scrollActions, "scrollToX");
@@ -228,7 +229,7 @@ describe('FixedDataTableRoot', function() {
 
       it('should apply correct left/right transform', function(done) {
         const scroll = -50;
-        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={true}/>, node);
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={true} />, node);
         let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
 
         let wheelEvent = document.createEvent("mouseevent");
@@ -253,7 +254,7 @@ describe('FixedDataTableRoot', function() {
     describe('LTR', function() {
       it('should flip wheel sign', function(done) {
         const scroll = 50;
-        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={false}/>, node);
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={false} />, node);
         let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
         let tableComponent = findRenderedComponentWithType(renderedTree, TestTable);
         let scrollToXSpy = sinon.spy(tableComponent._tableRef.scrollActions, "scrollToX");
@@ -274,7 +275,7 @@ describe('FixedDataTableRoot', function() {
 
       it('should not scroll past 0 bounds', function(done) {
         const scroll = -50;
-        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={false}/>, node);
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={false} />, node);
         let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
         let tableComponent = findRenderedComponentWithType(renderedTree, TestTable);
         let scrollToXSpy = sinon.spy(tableComponent._tableRef.scrollActions, "scrollToX");
@@ -294,7 +295,7 @@ describe('FixedDataTableRoot', function() {
 
       it('should apply correct left/right transform', function(done) {
         const scroll = 50;
-        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={false}/>, node);
+        let renderedTree = ReactDOM.render(<TestTable className="my-test-table" isRTL={false} />, node);
         let tableDiv = findRenderedDOMComponentWithClass(renderedTree, "my-test-table");
 
         let wheelEvent = document.createEvent("mouseevent");

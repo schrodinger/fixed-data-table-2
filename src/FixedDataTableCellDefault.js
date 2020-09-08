@@ -11,11 +11,10 @@
  */
 
 import React from 'react';
-
 import PropTypes from 'prop-types';
 
-import cx from 'cx';
-import joinClasses from 'joinClasses';
+import cx from './vendor_upstream/stubs/cx';
+import joinClasses from './vendor_upstream/core/joinClasses';
 
 /**
  * Component that handles default cell layout and styling.
@@ -75,7 +74,7 @@ class FixedDataTableCellDefault extends React.Component {
 
   render() {
     //Remove some props like columnKey and rowIndex so we don't pass it into the div
-    var {height, width, style, className, children, columnKey, rowIndex, ...props} = this.props;
+    var { height, width, style, className, children, columnKey, rowIndex, ...props } = this.props;
 
     var innerStyle = {
       height,

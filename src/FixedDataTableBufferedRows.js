@@ -10,13 +10,15 @@
  * @typechecks
  */
 
-import FixedDataTableRow from 'FixedDataTableRow';
 import PropTypes from 'prop-types';
 import React from 'react';
-import cx from 'cx';
-import emptyFunction from 'emptyFunction';
-import joinClasses from 'joinClasses';
 import inRange from 'lodash/inRange';
+
+import cx from './vendor_upstream/stubs/cx';
+import emptyFunction from './vendor_upstream/core/emptyFunction';
+import joinClasses from './vendor_upstream/core/joinClasses';
+
+import FixedDataTableRow from './FixedDataTableRow';
 
 class FixedDataTableBufferedRows extends React.Component {
   static propTypes = {
@@ -112,9 +114,12 @@ class FixedDataTableBufferedRows extends React.Component {
   }
 
   /**
-   * @param {number} rowIndex
-   * @param {number} key
-   * @param {number} baseOffsetTop
+   * @typedef RowProps
+   * @prop {number} rowIndex
+   * @prop {number} key
+   * @prop {number} baseOffsetTop
+   * 
+   * @param {RowProps} rowProps
    * @return {!Object}
    */
   renderRow({ rowIndex, key, baseOffsetTop }) /*object*/ {

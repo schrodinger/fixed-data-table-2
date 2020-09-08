@@ -22,6 +22,8 @@
     "@babel/plugin-transform-object-assign": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
+    "@types/chai": "^4.2.10",
+    "@types/mocha": "^7.0.2",
     "aphrodite": "2.4.0",
     "autoprefixer": "9.6.1",
     "babel-loader": "^8.0.0",

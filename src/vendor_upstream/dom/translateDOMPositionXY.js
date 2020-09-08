@@ -12,9 +12,8 @@
 
 'use strict';
 
-import BrowserSupportCore from 'BrowserSupportCore';
-
-import getVendorPrefixedName from 'getVendorPrefixedName';
+import BrowserSupportCore from './BrowserSupportCore';
+import getVendorPrefixedName from '../core/getVendorPrefixedName';
 
 var TRANSFORM = getVendorPrefixedName('transform');
 var BACKFACE_VISIBILITY = getVendorPrefixedName('backfaceVisibility');

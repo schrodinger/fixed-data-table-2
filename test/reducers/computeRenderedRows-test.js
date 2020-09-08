@@ -1,11 +1,12 @@
 /**
  * Copyright Schrodinger, LLC
  */
-import IntegerBufferSet from 'IntegerBufferSet';
-import PrefixIntervalTree from 'PrefixIntervalTree';
+import IntegerBufferSet from '../../src/vendor_upstream/struct/IntegerBufferSet';
+import PrefixIntervalTree from '../../src/vendor_upstream/struct/PrefixIntervalTree';
 import { assert } from 'chai';
-import computeRenderedRows from 'computeRenderedRows';
 import sinon from 'sinon';
+
+import computeRenderedRows from '../../src/reducers/computeRenderedRows';
 
 describe('computeRenderedRows', function() {
   beforeEach(function() {

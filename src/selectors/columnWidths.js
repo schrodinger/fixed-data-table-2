@@ -8,12 +8,12 @@
  *
  * @providesModule columnWidths
  */
-import { getTotalFlexGrow, getTotalWidth } from 'widthHelper';
-import Scrollbar from 'Scrollbar';
 import forEach from 'lodash/forEach';
 import map from 'lodash/map';
-import scrollbarsVisible from 'scrollbarsVisible';
-import shallowEqualSelector from 'shallowEqualSelector';
+
+import shallowEqualSelector from '../helper/shallowEqualSelector';
+import { getTotalFlexGrow, getTotalWidth } from '../helper/widthHelper';
+import scrollbarsVisible from './scrollbarsVisible';
 
 /**
  * @typedef {{
@@ -21,9 +21,9 @@ import shallowEqualSelector from 'shallowEqualSelector';
  *   fixedRight: boolean,
  *   flexGrow: number,
  *   width: number,
- * }}
+ *   groupIdx?: number
+ * }} columnDefinition
  */
-let columnDefinition;
 
 /**
  * @param {!Array.<columnDefinition>} columnGroupProps

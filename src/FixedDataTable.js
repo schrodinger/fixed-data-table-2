@@ -13,23 +13,25 @@
 
 /*eslint no-bitwise:1*/
 
-import FixedDataTableBufferedRows from 'FixedDataTableBufferedRows';
-import ColumnResizerLine from 'ColumnResizerLine';
-import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
-import FixedDataTableRow from 'FixedDataTableRow';
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactTouchHandler from 'ReactTouchHandler';
-import ReactWheelHandler from 'ReactWheelHandler';
-import ariaAttributesSelector from 'ariaAttributes';
-import columnTemplatesSelector from 'columnTemplates';
-import cx from 'cx';
-import debounceCore from 'debounceCore';
 import isNaN from 'lodash/isNaN';
-import joinClasses from 'joinClasses';
-import scrollbarsVisible from 'scrollbarsVisible';
-import tableHeightsSelector from 'tableHeights';
-import shallowEqual from 'shallowEqual';
+
+import cx from './vendor_upstream/stubs/cx';
+import debounceCore from './vendor_upstream/core/debounceCore';
+import joinClasses from './vendor_upstream/core/joinClasses';
+import shallowEqual from './vendor_upstream/core/shallowEqual';
+import ReactWheelHandler from './vendor_upstream/dom/ReactWheelHandler';
+
+import ariaAttributesSelector from './selectors/ariaAttributes';
+import columnTemplatesSelector from './selectors/columnTemplates';
+import scrollbarsVisible from './selectors/scrollbarsVisible';
+import tableHeightsSelector from './selectors/tableHeights';
+import ColumnResizerLine from './ColumnResizerLine';
+import FixedDataTableBufferedRows from './FixedDataTableBufferedRows';
+import FixedDataTableEventHelper from './FixedDataTableEventHelper';
+import FixedDataTableRow from './FixedDataTableRow';
+import ReactTouchHandler from './ReactTouchHandler';
 
 var ARROW_SCROLL_SPEED = 25;
 
@@ -673,29 +675,29 @@ class FixedDataTable extends React.Component {
    * @private
    */
   _reportScrollBarsUpdates() {
-      const {
-          bodyOffsetTop,
-          scrollbarXOffsetTop,
-          visibleRowsHeight,
-      } = tableHeightsSelector(this.props);
-      const { tableSize: {width}, scrollContentHeight, scrollY, scrollX} = this.props;
-      const newScrollState = {
-          viewportHeight: visibleRowsHeight,
-          contentHeight: scrollContentHeight,
-          scrollbarYOffsetTop: bodyOffsetTop,
-          scrollY,
-          viewportWidth: width,
-          contentWidth: width + this.props.maxScrollX,
-          scrollbarXOffsetTop,
-          scrollX,
-          scrollTo: this._scrollTo,
-          scrollToX: this._scrollToX,
-          scrollToY: this._scrollToY
-      };
-      if (!shallowEqual(this.previousScrollState, newScrollState)) {
-          this.props.onScrollBarsUpdate(newScrollState);
-          this.previousScrollState = newScrollState;
-      }
+    const {
+      bodyOffsetTop,
+      scrollbarXOffsetTop,
+      visibleRowsHeight,
+    } = tableHeightsSelector(this.props);
+    const { tableSize: { width }, scrollContentHeight, scrollY, scrollX } = this.props;
+    const newScrollState = {
+      viewportHeight: visibleRowsHeight,
+      contentHeight: scrollContentHeight,
+      scrollbarYOffsetTop: bodyOffsetTop,
+      scrollY,
+      viewportWidth: width,
+      contentWidth: width + this.props.maxScrollX,
+      scrollbarXOffsetTop,
+      scrollX,
+      scrollTo: this._scrollTo,
+      scrollToX: this._scrollToX,
+      scrollToY: this._scrollToY
+    };
+    if (!shallowEqual(this.previousScrollState, newScrollState)) {
+      this.props.onScrollBarsUpdate(newScrollState);
+      this.previousScrollState = newScrollState;
+    }
   }
 
   render() /*object*/ {

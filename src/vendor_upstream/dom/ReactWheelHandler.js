@@ -15,9 +15,9 @@
 
 'use strict';
 
-import emptyFunction from 'emptyFunction';
-import normalizeWheel from 'normalizeWheel';
-import requestAnimationFramePolyfill from 'requestAnimationFramePolyfill';
+import emptyFunction from '../core/emptyFunction';
+import normalizeWheel from './normalizeWheel';
+import requestAnimationFramePolyfill from '../core/requestAnimationFramePolyfill';
 
 class ReactWheelHandler {
   /**
@@ -131,7 +131,7 @@ class ReactWheelHandler {
     return false;
   }
 
-  static _swapNormalizedWheelAxis(/*object*/normalizedEvent) /*object*/{
+  static _swapNormalizedWheelAxis(/*object*/normalizedEvent) /*object*/ {
     return {
       spinX: normalizedEvent.spinY,
       spinY: normalizedEvent.spinX,
@@ -140,7 +140,7 @@ class ReactWheelHandler {
     };
   }
 
-  static _allowInternalAxesSwap() /*boolean*/{
+  static _allowInternalAxesSwap() /*boolean*/ {
     return navigator.platform !== "MacIntel";
   }
 }

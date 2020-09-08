@@ -14,12 +14,12 @@
  * @typechecks
  */
 
-import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import clamp from 'clamp';
-import cx from 'cx';
+import clamp from './vendor_upstream/core/clamp';
+import cx from './vendor_upstream/stubs/cx';
+import DOMMouseMoveTracker from './vendor_upstream/dom/DOMMouseMoveTracker';
 
 class ColumnResizerLine extends React.PureComponent {
   static propTypes = {

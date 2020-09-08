@@ -2,8 +2,8 @@
  * Copyright Schrodinger, LLC
  */
 import { assert } from 'chai';
-import roughHeights, { ScrollbarState } from 'roughHeights';
-import Scrollbar from 'Scrollbar';
+import roughHeights, { ScrollbarState } from '../../src/selectors/roughHeights';
+import Scrollbar from '../../src/plugins/Scrollbar';
 
 describe('roughHeights', function() {
   let columnProps;
@@ -16,7 +16,7 @@ describe('roughHeights', function() {
     columnProps = [{
       fixed: true,
       width: 250,
-    },{
+    }, {
       fixed: false,
       width: 350,
     }];
@@ -137,7 +137,7 @@ describe('roughHeights', function() {
       columnProps = [{
         fixed: true,
         width: 250,
-      },{
+      }, {
         fixed: false,
         width: 750,
       }];

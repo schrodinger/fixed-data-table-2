@@ -8,8 +8,9 @@
  *
  * @providesModule scrollbarsVisible
  */
-import roughHeights, { ScrollbarState } from 'roughHeights';
-import shallowEqualSelector from 'shallowEqualSelector';
+
+import shallowEqualSelector from '../helper/shallowEqualSelector';
+import roughHeights, { ScrollbarState } from './roughHeights';
 
 /**
  * State regarding which scrollbars will be shown.
