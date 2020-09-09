@@ -5,7 +5,6 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Scrollbar from 'Scrollbar';
 import {
   createRenderer,
 } from 'react-test-renderer/shallow';

@@ -10,7 +10,7 @@
  * @typechecks
  */
 
-import invariant from 'invariant';
+import invariant from '../../stubs/invariant';
 
 import ExecutionEnvironment from './ExecutionEnvironment';
 import camelize from './camelize';

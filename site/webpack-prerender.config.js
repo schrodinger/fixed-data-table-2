@@ -1,6 +1,5 @@
 var path = require('path');
 var webpack = require('webpack');
-var resolvers = require('../build_helpers/resolvers');
 var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 var isDev = process.env.NODE_ENV !== 'production';
@@ -53,7 +52,6 @@ module.exports = {
       'fixed-data-table-2/css': path.join(__dirname, '../src/css'),
       'fixed-data-table-2': path.join(__dirname, '../src/FixedDataTableRoot')
     },
-    plugins: [resolvers.resolveHasteDefines]
   },
 
   plugins: [

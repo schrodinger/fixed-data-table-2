@@ -13,7 +13,7 @@
 
 import React from 'react';
 import forEach from 'lodash/forEach';
-import invariant from 'invariant';
+import invariant from '../stubs/invariant';
 import map from 'lodash/map';
 import pick from 'lodash/pick';
 

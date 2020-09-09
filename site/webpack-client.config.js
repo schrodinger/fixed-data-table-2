@@ -1,6 +1,5 @@
 var path = require('path');
 var webpack = require('webpack');
-var resolvers = require('../build_helpers/resolvers');
 var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
@@ -75,7 +74,6 @@ module.exports = {
       'fixed-data-table-2/css': path.join(__dirname, '../src/css'),
       'fixed-data-table-2': path.join(__dirname, '../src/FixedDataTableRoot')
     },
-    plugins: [resolvers.resolveHasteDefines]
   },
 
   devServer: {

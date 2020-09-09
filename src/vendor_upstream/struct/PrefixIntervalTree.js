@@ -13,7 +13,7 @@
 
 'use strict';
 
-import invariant from 'invariant';
+import invariant from '../../stubs/invariant';
 
 var parent = node => Math.floor(node / 2);
 

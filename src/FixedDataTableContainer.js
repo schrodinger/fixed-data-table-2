@@ -13,7 +13,7 @@
 
 import React from 'react';
 import { bindActionCreators } from 'redux';
-import invariant from 'invariant';
+import invariant from './stubs/invariant';
 import pick from 'lodash/pick';
 
 import * as ActionTypes from './actions/ActionTypes';
