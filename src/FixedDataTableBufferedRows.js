@@ -19,6 +19,7 @@ import emptyFunction from './vendor_upstream/core/emptyFunction';
 import joinClasses from './vendor_upstream/core/joinClasses';
 
 import FixedDataTableRow from './FixedDataTableRow';
+import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 
 class FixedDataTableBufferedRows extends React.Component {
   static propTypes = {
@@ -83,8 +84,7 @@ class FixedDataTableBufferedRows extends React.Component {
   }
 
   render() /*object*/ {
-    let { offsetTop, scrollTop, isScrolling, rowsToRender } = this.props;
-    const baseOffsetTop = offsetTop - scrollTop;
+    let { offsetTop, rowOffsets, scrollTop, isScrolling, rowsToRender } = this.props;
     rowsToRender = rowsToRender || [];
 
     if (isScrolling) {
@@ -95,6 +95,27 @@ class FixedDataTableBufferedRows extends React.Component {
       this._staticRowArray.length = rowsToRender.length;
     }
 
+    /**
+     * NOTE (pradeep): To increase vertical scrolling performance, we only translate the parent container.
+     * This means, rows at a particular index won't need to be rerendered.
+     *
+     * But browsers have limits and are unable to translate the container past a limit (known here as bufferHeight).
+     * To work around this, we wrap the translated amount over bufferHeight.
+     *
+     * For the container, the wrapped offset will be:
+     *    const containerOffsetTop = offsetTop - (scrollTop % bufferHeight);
+     *
+     * Similarly, the row offset will also need to be wrapped:
+     *    const rowOffsetTop = rowOffset - (Math.floor(scrollTop / bufferHeight) * bufferHeight);
+     *
+     * Therefore,
+     *    (rowOffsetTop + containerOffsetTop)
+     *      = offsetTop - (scrollTop % bufferHeight) + rowOffset - (Math.floor(scrollTop / bufferHeight) * bufferHeight)
+     *      = offsetTop + rowOffset - scrollTop
+     */
+    const bufferHeight = 1000000;
+    const containerOffsetTop = offsetTop - (scrollTop % bufferHeight);
+
     // render each row from the buffer into the static row array
     for (let i = 0; i < this._staticRowArray.length; i++) {
       let rowIndex = rowsToRender[i];
@@ -102,27 +123,31 @@ class FixedDataTableBufferedRows extends React.Component {
       if (rowIndex === undefined) {
         rowIndex = this._staticRowArray[i] && this._staticRowArray[i].props.index;
       }
+      const rowOffsetTop = rowOffsets[rowIndex] - (Math.floor(scrollTop / bufferHeight) * bufferHeight);
 
       this._staticRowArray[i] = this.renderRow({
         rowIndex,
         key: i,
-        baseOffsetTop,
+        rowOffsetTop,
       });
     }
 
-    return <div>{this._staticRowArray}</div>;
+    // We translate all the rows together with a parent div. This saves a lot of renders.
+    const style = {};
+    FixedDataTableTranslateDOMPosition(style, 0, containerOffsetTop, false);
+    return <div style={style}>{this._staticRowArray}</div>;
   }
 
   /**
    * @typedef RowProps
    * @prop {number} rowIndex
    * @prop {number} key
-   * @prop {number} baseOffsetTop
+   * @prop {number} rowOffsetTop
    * 
    * @param {RowProps} rowProps
    * @return {!Object}
    */
-  renderRow({ rowIndex, key, baseOffsetTop }) /*object*/ {
+  renderRow({ rowIndex, key, rowOffsetTop }) /*object*/ {
     const props = this.props;
     const rowClassNameGetter = props.rowClassNameGetter || emptyFunction;
     const fake = rowIndex === undefined;
@@ -132,7 +157,7 @@ class FixedDataTableBufferedRows extends React.Component {
     if (!fake) {
       rowProps.height = this.props.rowSettings.rowHeightGetter(rowIndex);
       rowProps.subRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
-      rowProps.offsetTop = Math.round(baseOffsetTop + props.rowOffsets[rowIndex]);
+      rowProps.offsetTop = rowOffsetTop;
       rowProps.key = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : key;
       rowProps.attributes = props.rowSettings.rowAttributesGetter && props.rowSettings.rowAttributesGetter(rowIndex);
 
