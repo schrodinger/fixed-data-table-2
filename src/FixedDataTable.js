@@ -1173,6 +1173,7 @@ class FixedDataTable extends React.Component {
       onHorizontalScroll,
       onVerticalScroll,
       tableSize: { ownerHeight },
+      scrolling,
     } = this.props;
 
     const {
@@ -1181,6 +1182,7 @@ class FixedDataTable extends React.Component {
       scrollX: oldScrollX,
       scrollY: oldScrollY,
       tableSize: { ownerHeight: oldOwnerHeight },
+      scrolling: oldScrolling,
     } = prevProps;
 
     // check if scroll values have changed - we have an extra check on NaN because (NaN !== NaN)
@@ -1194,8 +1196,8 @@ class FixedDataTable extends React.Component {
     }
 
     // only call onScrollStart if scrolling wasn't on previously
-    if (!this.props.scrolling && onScrollStart) {
-      onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex, oldEndRowIndex)
+    if (!oldScrolling && scrolling && onScrollStart) {
+      onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex, oldEndRowIndex);
     }
 
     if (scrollXChanged && onHorizontalScroll) {
