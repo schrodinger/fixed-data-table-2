@@ -7,43 +7,30 @@
 
 'use strict';
 
-import {
-  SCROLL_END,
-  SCROLL_START,
-  SCROLL_TO_X,
-  SCROLL_TO_Y,
-} from './ActionTypes';
+import { scrollActions } from "../reducers";
 
 /**
  * Scrolls the table horizontally to position
  *
  * @param {number} scrollX
  */
-export const scrollToX = (scrollX) => ({
-  type: SCROLL_TO_X,
-  scrollX,
-});
+export const scrollToX = scrollActions.scrollToX;
 
 /**
  * Scrolls the table vertically to position
  *
  * @param {number} scrollY
  */
-export const scrollToY = (scrollY) => ({
-  type: SCROLL_TO_Y,
-  scrollY,
-});
+export const scrollToY = scrollActions.scrollToY;
 
 /**
  * Fire when user starts scrolling
  */
-export const startScroll = () => ({
-  type: SCROLL_START,
-});
+// Todo: Not used anywhere
+// export const startScroll = scrollActions.startScroll.
 
 /**
  * Fire when user starts scrolling
  */
-export const stopScroll = () => ({
-  type: SCROLL_END,
-});
+export const stopScroll = scrollActions.stopScroll;
+

@@ -11,9 +11,9 @@
 import forEach from 'lodash/forEach';
 import map from 'lodash/map';
 
-import shallowEqualSelector from '../helper/shallowEqualSelector';
 import { getTotalFlexGrow, getTotalWidth } from '../helper/widthHelper';
 import scrollbarsVisible from './scrollbarsVisible';
+import { createSelector } from 'reselect';
 
 /**
  * @typedef {{
@@ -155,7 +155,7 @@ function groupColumns(columnProps) {
   };
 }
 
-export default shallowEqualSelector([
+export default createSelector([
   state => state.columnGroupProps,
   state => state.columnProps,
   state => scrollbarsVisible(state).scrollEnabledY,

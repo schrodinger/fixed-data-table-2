@@ -11,7 +11,7 @@
 
 import clamp from '../vendor_upstream/core/clamp';
 
-import shallowEqualSelector from '../helper/shallowEqualSelector';
+import { createSelector } from 'reselect';
 import { getTotalWidth } from '../helper/widthHelper';
 
 const BORDER_HEIGHT = 1;
@@ -77,7 +77,7 @@ export const ScrollbarState = {
  * }}
  */
 function roughHeights(columnProps, elementHeights, rowSettings,
-  scrollFlags, tableSize, scrollbarXHeight, scrollbarYWidth) {
+                      scrollFlags, tableSize, scrollbarXHeight, scrollbarYWidth) {
   const { cellGroupWrapperHeight, footerHeight, headerHeight, groupHeaderHeight } = elementHeights;
   // we don't need border height to be added to the table if we are using cellGroupWrapperHeight
   const borderHeight = cellGroupWrapperHeight ? 0 : 2 * BORDER_HEIGHT;
@@ -171,7 +171,7 @@ function getBufferRowCount(maxAvailableHeight, rowSettings) {
   );
 }
 
-export default shallowEqualSelector([
+export default createSelector([
   state => state.columnProps,
   state => state.elementHeights,
   state => state.rowSettings,

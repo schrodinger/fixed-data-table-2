@@ -9,9 +9,9 @@
  * @providesModule tableHeights
  */
 
-import shallowEqualSelector from '../helper/shallowEqualSelector';
 import roughHeights from './roughHeights';
 import scrollbarsVisible from './scrollbarsVisible';
+import { createSelector } from 'reselect';
 
 /**
  * Compute the necessary heights for rendering parts of the table
@@ -41,7 +41,7 @@ import scrollbarsVisible from './scrollbarsVisible';
  * }}
  */
 function tableHeights(elementHeights, ownerHeight, reservedHeight,
-  scrollContentHeight, scrollbarsVisible, useMaxHeight, scrollbarXHeight) {
+                      scrollContentHeight, scrollbarsVisible, useMaxHeight, scrollbarXHeight) {
   const { availableHeight, scrollEnabledX } = scrollbarsVisible;
   let reservedWithScrollbar = reservedHeight;
   if (scrollEnabledX) {
@@ -95,7 +95,7 @@ function tableHeights(elementHeights, ownerHeight, reservedHeight,
   };
 }
 
-export default shallowEqualSelector([
+export default createSelector([
   state => state.elementHeights,
   state => state.tableSize.ownerHeight,
   state => roughHeights(state).reservedHeight,

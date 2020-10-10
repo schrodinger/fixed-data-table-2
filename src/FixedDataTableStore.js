@@ -11,10 +11,15 @@
 
 'use strict';
 
-import { createStore } from 'redux'
-
 import reducers from './reducers'
+import { configureStore } from "@reduxjs/toolkit";
 
 export default {
-  get: () => createStore(reducers)
+  get: () => configureStore({
+    reducer: reducers,
+    middleware: getDefaultMiddleware => getDefaultMiddleware({
+      immutableCheck: false,
+      serializableCheck: false
+    })
+  })
 };

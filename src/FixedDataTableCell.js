@@ -146,6 +146,7 @@ class FixedDataTableCell extends React.Component {
     reorderCellLeft = Math.max(reorderCellLeft, 0);
     reorderCellLeft = Math.min(reorderCellLeft, farthestPossiblePoint);
 
+    // Todo: nextProps are supposed to be readonly
     // check if current cell belongs to the column that's being reordered
     if (nextProps.columnKey === nextProps.columnReorderingData.columnKey) {
       newState.displacement = reorderCellLeft - nextProps.left;

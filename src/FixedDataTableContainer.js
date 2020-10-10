@@ -16,13 +16,11 @@ import { bindActionCreators } from 'redux';
 import invariant from './stubs/invariant';
 import pick from 'lodash/pick';
 
-import * as ActionTypes from './actions/ActionTypes';
-import * as columnActions from './actions/columnActions';
-import * as scrollActions from './actions/scrollActions';
 import FixedDataTable from './FixedDataTable';
 import FixedDataTableStore from './FixedDataTableStore';
 import Scrollbar from './plugins/Scrollbar';
 import ScrollContainer from './plugins/ScrollContainer';
+import { initialize, propChange, scrollActions, columnActions } from "./actions";
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
@@ -41,10 +39,7 @@ class FixedDataTableContainer extends React.Component {
     this.scrollActions = bindActionCreators(scrollActions, this.reduxStore.dispatch);
     this.columnActions = bindActionCreators(columnActions, this.reduxStore.dispatch);
 
-    this.reduxStore.dispatch({
-      type: ActionTypes.INITIALIZE,
-      props,
-    });
+    this.reduxStore.dispatch(initialize(props));
 
     this.unsubscribe = this.reduxStore.subscribe(this.update);
     this.state = this.getBoundState();
@@ -56,11 +51,7 @@ class FixedDataTableContainer extends React.Component {
       'You must set either a height or a maxHeight'
     );
 
-    this.reduxStore.dispatch({
-      type: ActionTypes.PROP_CHANGE,
-      newProps: nextProps,
-      oldProps: this.props,
-    });
+    this.reduxStore.dispatch(propChange(nextProps, this.props));
   }
 
   componentWillUnmount() {
@@ -73,19 +64,19 @@ class FixedDataTableContainer extends React.Component {
 
   render() {
     const fdt = (
-        <FixedDataTable
-            {...this.props}
-            {...this.state}
-            scrollActions={this.scrollActions}
-            columnActions={this.columnActions}
-        />
+      <FixedDataTable
+        {...this.props}
+        {...this.state}
+        scrollActions={this.scrollActions}
+        columnActions={this.columnActions}
+      />
     );
     // For backward compatibility, by default we render FDT-2 scrollbars
     if (this.props.defaultScrollbars) {
       return (
-          <ScrollContainer {...this.props}>
-            {fdt}
-          </ScrollContainer>
+        <ScrollContainer {...this.props}>
+          {fdt}
+        </ScrollContainer>
       );
     }
     return fdt;

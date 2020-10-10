@@ -9,8 +9,8 @@
  * @providesModule scrollbarsVisible
  */
 
-import shallowEqualSelector from '../helper/shallowEqualSelector';
 import roughHeights, { ScrollbarState } from './roughHeights';
+import { createSelector } from 'reselect';
 
 /**
  * State regarding which scrollbars will be shown.
@@ -61,10 +61,10 @@ function scrollbarsVisible(roughHeights, scrollContentHeight, scrollFlags) {
     availableHeight,
     scrollEnabledX,
     scrollEnabledY,
-  }
+  };
 }
 
-export default shallowEqualSelector([
+export default createSelector([
   roughHeights,
   state => state.scrollContentHeight,
   state => state.scrollFlags,

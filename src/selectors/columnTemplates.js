@@ -9,8 +9,8 @@
  * @providesModule columnTemplates
  */
 import forEach from 'lodash/forEach';
+import { createSelector } from 'reselect';
 
-import shallowEqualSelector from '../helper/shallowEqualSelector';
 import columnWidths from './columnWidths';
 
 /**
@@ -123,7 +123,7 @@ function columnTemplates(columnWidths, elementTemplates) {
   };
 }
 
-export default shallowEqualSelector([
+export default createSelector([
   state => columnWidths(state),
   state => state.elementTemplates,
 ], columnTemplates);

@@ -8,7 +8,7 @@
  *
  * @providesModule ariaAttributes
  */
-import shallowEqualSelector from '../helper/shallowEqualSelector';
+import { createSelector } from 'reselect';
 
 /**
  * Calculate the aria attributes for the rows and the grid.
@@ -57,7 +57,7 @@ function calculateAriaAttributes(rowsCount, useGroupHeader, useFooter) {
   };
 }
 
-export default shallowEqualSelector([
+export default createSelector([
   state => state.rowsCount,
   state => state.groupHeaderHeight > 0,
   state => state.footerHeight > 0,
