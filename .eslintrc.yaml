@@ -1,0 +1,11 @@
+globals:
+  '__DEV__': false
+
+parser: 'babel-eslint'
+
+parserOptions:
+  ecmaVersion: 2020
+  sourceType: module
+
+extends:
+  - prettier
