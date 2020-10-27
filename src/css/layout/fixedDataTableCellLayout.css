@@ -44,6 +44,19 @@
   box-sizing: border-box;
 }
 
+.fixedDataTableCellLayout/wrap1 {
+  display: table;
+}
+
+.fixedDataTableCellLayout/wrap2 {
+  display: table-row;
+}
+
+.fixedDataTableCellLayout/wrap3 {
+  display: table-cell;
+  vertical-align: middle;
+}
+
 .fixedDataTableCellLayout/columnResizerContainer {
   position: absolute;
   right: 0px;

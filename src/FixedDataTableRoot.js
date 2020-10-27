@@ -13,6 +13,7 @@
 
 import Table from 'FixedDataTableContainer';
 import Cell from 'FixedDataTableCellDefault';
+import CellDeprecated from 'FixedDataTableCellDefaultDeprecated';
 import Column from 'FixedDataTableColumn';
 import ColumnGroup from 'FixedDataTableColumnGroup';
 
@@ -20,6 +21,7 @@ const version = '1.1.0';
 
 export {
   Cell,
+  CellDeprecated,
   Column,
   ColumnGroup,
   Table,
