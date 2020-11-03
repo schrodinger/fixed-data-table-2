@@ -15,30 +15,19 @@ import cx from 'cx';
 import joinClasses from 'joinClasses';
 import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
 import ResizerLine from 'ResizerLine';
-import emptyFunction from 'emptyFunction';
-
+import clamp from 'clamp';
 
 
 class ResizerKnob extends React.Component {
   initialState = {
     isColumnResizing: undefined,
-    left: 0,
-    width: 0,
-    minWidth: 0,
-    maxWidth: Number.MAX_VALUE,
-    initialEvent: undefined,
-    key: undefined
+    instance: undefined,
+    mouseXCoordinate: 0
   };
 
-  state = {...this.initialState};
+  state = { ...this.initialState };
 
-  clearState = () => {
-    this.setState(
-      this.initialState
-    );
-  }
-
-  componentDidMount(){
+  componentDidMount() {
     this.setState({
       instance: this.curRef
     });
@@ -46,32 +35,22 @@ class ResizerKnob extends React.Component {
 
   render() {
     const dragKnob =
-    <ResizerLine
-      height={this.props.resizerLineHeight}
-      initialWidth={this.state.width}
-      minWidth={this.state.minWidth}
-      maxWidth={this.state.maxWidth}
-      visible={!!this.state.isColumnResizing}
-      leftOffset={this.state.left}
-      knobHeight={this.props.columnResizerStyle.height}
-      initialEvent={this.state.initialEvent}
-      onColumnResizeEnd={this.props.onColumnResizeEnd}
-      columnKey={this.state.key}
-      touchEnabled={this.props.touchScrollEnabled}
-      clearState={this.clearState}
-      isRTL={this.props.isRTL}
-      instance={this.state.instance}
-    />;
+      <ResizerLine
+        height={this.props.resizerLineHeight}
+        visible={!!this.state.isColumnResizing}
+        instance={this.state.instance}
+        xCoordinate={this.state.mouseXCoordinate}
+      />;
 
-    return(
+    return (
       <div
         className={cx('fixedDataTableCellLayout/columnResizerContainer')}
-        ref={(element) => this.curRef=element}
+        ref={(element) => this.curRef = element}
         style={this.props.columnResizerStyle}
-        onMouseDown={this._onColumnResizerMouseDown}
-        onTouchStart={this.props.touchEnabled ? this._onColumnResizerMouseDown : null}
-        onTouchEnd={this.props.touchEnabled ? this._suppressEvent : null}
-        onTouchMove={this.props.touchEnabled ? this._suppressEvent : null}> 
+        onMouseDown={this.onMouseDown}
+        onTouchStart={this.props.touchEnabled ? this.onMouseDown : null}
+        onTouchEnd={this.props.touchEnabled ? this.suppressEvent : null}
+        onTouchMove={this.props.touchEnabled ? this.suppressEvent : null}>
         {dragKnob}
         <div
           className={joinClasses(
@@ -84,59 +63,128 @@ class ResizerKnob extends React.Component {
     );
   }
 
-  _onColumnResizerMouseDown = (/*object*/ event) => {;
-    this.onColumnResize(
-      this.props.offsetLeft,
-      this.props.cellGroupLeft - this.props.left + this.props.width,
-      this.props.width,
-      this.props.minWidth,
-      this.props.maxWidth,
-      this.props.columnKey,
-      event
-    );
+  /**
+   *
+   * @param {MouseEvent} ev                    Mouse down event
+   */
+  onMouseDown = (ev) => {
+    const initialMouseCoordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(ev);
+    document.body.onmousemove = (ev) => this.onMouseMove(ev, initialMouseCoordinates);
+    document.body.onmouseup = (ev) => this.onMouseUp(ev, initialMouseCoordinates);
+    this.disableTextSelection();
+  };
 
-    /**
-     * This prevents the rows from moving around when we resize the
-     * headers on touch devices.
-     */
-    if (this.props.touchEnabled) {
-      event.preventDefault();
-      event.stopPropagation();
+  /**
+   *
+   * @param {MouseEvent} ev                     Mouse up event
+   * @param {Object} initialMouseCoordinates    Initial mouse coordinates
+   * @param {number} initialMouseCoordinates.x  Initial mouse X coordinate
+   * @param {number} initialMouseCoordinates.y  Initial mouse Y coordinate
+   */
+  onMouseUp = (ev, initialMouseCoordinates) => {
+    this.removeMouseEventListeners();
+    this.enableTextSelection();
+
+    const currentMouseCoordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(ev);
+    const displacement = currentMouseCoordinates.x - initialMouseCoordinates.x;
+
+    // let minWidth = 0, maxWidth = Number.MAX_SAFE_INTEGER;
+    // if (this.props.minWidth)
+    //   minWidth = Math.max(minWidth, this.props.minWidth)
+    // if (this.props.maxWidth)
+    //   maxWidth = Math.min(maxWidth, this.props.maxWidth)
+    const { minWidth, maxWidth } = this.getMinMaxWidth(this.props.minWidth, this.props.maxWidth);
+
+    const newWidth = clamp(this.props.width + displacement, minWidth, maxWidth);
+    this.props.onColumnResizeEnd(newWidth, this.props.columnKey);
+    this.resetColumnResizing();
+  };
+
+  /**
+   *
+   * @param {MouseEvent} ev                     Mouse move event
+   * @param {Object} initialMouseCoordinates    Initial mouse coordinates when mouseDown event happened
+   * @param {number} initialMouseCoordinates.x  Initial mouse X coordinate
+   * @param {number} initialMouseCoordinates.y  Initial mouse Y coordinate
+   */
+  onMouseMove = (ev, initialMouseCoordinates) => {
+    const mouseXCoordinate = ev.clientX;
+    // If negative, means displacement is in left direction
+    const displacement = mouseXCoordinate - initialMouseCoordinates.x;
+    let resizerLineXCoordinate = mouseXCoordinate;
+    const { minWidth, maxWidth } = this.getMinMaxWidth(this.props.minWidth, this.props.maxWidth);
+    // Limit the resizer line to not move ahead or back of maxWidth and minWidth respectively
+    if (this.props.width + displacement < minWidth || this.props.width + displacement > maxWidth) {
+      // If new position is going out of bounds, instead of updating,  use the previous value
+      resizerLineXCoordinate = this.state.mouseXCoordinate;
     }
-  }
+    this.setState({
+      mouseXCoordinate: resizerLineXCoordinate,
+      isColumnResizing: true,
+    });
+  };
 
-  onColumnResize = (
-    /*number*/ combinedWidth,
-    /*number*/ leftOffset,
-    /*number*/ cellWidth,
-    /*?number*/ cellMinWidth,
-    /*?number*/ cellMaxWidth,
-    /*number|string*/ columnKey,
-    /*object*/ event
-    ) => {
-      const coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
-      const clientX = coordinates.x;
-      const clientY = coordinates.y;
-      this.setState ({
-        isColumnResizing: true,
-        left: leftOffset + combinedWidth - cellWidth,
-        width: cellWidth,
-        minWidth: cellMinWidth,
-        maxWidth: cellMaxWidth,
-        initialEvent: {
-          clientX: clientX,
-          clientY: clientY,
-          preventDefault: emptyFunction
-        },
-        key: columnKey
-      });
-    }
+  /**
+   * While resizing disable text selection
+   */
+  disableTextSelection = () => {
+    document.body.addEventListener('selectstart', this.suppressEvent);
+  };
 
-  _suppressEvent = (/*object*/ event) => {
+  /**
+   * When resizing done, enable text selection
+   */
+  enableTextSelection = () => {
+    document.body.removeEventListener('selectstart', this.suppressEvent);
+  };
+
+  /**
+   * Set isColumnResizing to false to hide the ResizerLine and set displacement to 0
+   */
+  resetColumnResizing = () => {
+    this.setState({
+      isColumnResizing: false,
+      displacement: 0
+    });
+  };
+
+  /**
+   * If minWidth and Width not given, mapping them to a valid range i.e. 0 to Number.MAX_SAFE_INTEGER
+   * @param {number | undefined} minWidth   min width of column
+   * @param {number | undefined} maxWidth   max width of column
+   * @returns {{minWidth: number, maxWidth: number}}
+   */
+  getMinMaxWidth = (minWidth, maxWidth) => {
+    let newMinWidth = 0, newMaxWidth = Number.MAX_SAFE_INTEGER;
+    if (minWidth)
+      newMinWidth = Math.max(minWidth, newMinWidth);
+    if (maxWidth)
+      newMaxWidth = Math.min(maxWidth, newMaxWidth);
+    return {
+      minWidth: newMinWidth,
+      maxWidth: newMaxWidth
+    };
+  };
+
+  /**
+   * Remove event listeners after mouseup event
+   */
+  removeMouseEventListeners = () => {
+    document.body.onmousemove = () => {
+    };
+    document.body.onmouseup = () => {
+    };
+  };
+
+  /**
+   * @param {Object} event
+   * @private
+   */
+  suppressEvent = (event) => {
     event.preventDefault();
     event.stopPropagation();
-  }
+  };
 
-};
+}
 
 export default ResizerKnob;

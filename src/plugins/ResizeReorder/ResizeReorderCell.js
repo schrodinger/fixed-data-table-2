@@ -70,6 +70,7 @@ class ResizeReorderCell extends React.PureComponent {
 
     /**
      * The left offset in pixels of the cell.
+     * Space between cell's left edge and left edge of table
      */
     left: PropTypes.number,
 
