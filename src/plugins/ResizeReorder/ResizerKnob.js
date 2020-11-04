@@ -17,7 +17,6 @@ import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
 import ResizerLine from 'ResizerLine';
 import clamp from 'clamp';
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
-import PropTypes from 'prop-types';
 
 
 class ResizerKnob extends React.Component {
