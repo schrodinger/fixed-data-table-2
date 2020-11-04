@@ -37,9 +37,9 @@ class ResizerLine extends React.PureComponent {
     instance: PropTypes.object,
 
     /**
-     * Mouse x coordinate when mouse down event happened at ResizerKnob
+     * X coordinate that will be left position of ResizerLine
      */
-    xCoordinate: PropTypes.number.isRequired
+    xCoordinate: PropTypes.number
   };
 
   instanceDetails = {

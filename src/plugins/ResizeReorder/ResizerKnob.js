@@ -16,16 +16,26 @@ import joinClasses from 'joinClasses';
 import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
 import ResizerLine from 'ResizerLine';
 import clamp from 'clamp';
+import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
+import PropTypes from 'prop-types';
 
 
 class ResizerKnob extends React.Component {
+
   initialState = {
     isColumnResizing: undefined,
     instance: undefined,
-    mouseXCoordinate: 0
+    mouseXCoordinate: 0,
+    totalDisplacement: 0
   };
 
   state = { ...this.initialState };
+
+  constructor(props) {
+    super(props);
+    this.trackMouse();
+  }
+
 
   componentDidMount() {
     this.setState({
@@ -39,7 +49,7 @@ class ResizerKnob extends React.Component {
         height={this.props.resizerLineHeight}
         visible={!!this.state.isColumnResizing}
         instance={this.state.instance}
-        xCoordinate={this.state.mouseXCoordinate}
+        xCoordinate={this.state.resizerLineXCoordinate}
       />;
 
     return (
@@ -64,78 +74,60 @@ class ResizerKnob extends React.Component {
   }
 
   /**
-   *
-   * @param {MouseEvent} ev                    Mouse down event
+   * Registers event listeners for mouse tracking
    */
-  onMouseDown = (ev) => {
-    const initialMouseCoordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(ev);
-    document.body.onmousemove = (ev) => this.onMouseMove(ev, initialMouseCoordinates);
-    document.body.onmouseup = (ev) => this.onMouseUp(ev, initialMouseCoordinates);
-    this.disableTextSelection();
+  trackMouse = () => {
+    this._mouseMoveTracker = new DOMMouseMoveTracker(
+      this.onMouseMove,
+      this.onMouseUp,
+      document.body,
+      this.props.touchEnabled
+    );
   };
 
   /**
-   *
-   * @param {MouseEvent} ev                     Mouse up event
-   * @param {Object} initialMouseCoordinates    Initial mouse coordinates
-   * @param {number} initialMouseCoordinates.x  Initial mouse X coordinate
-   * @param {number} initialMouseCoordinates.y  Initial mouse Y coordinate
+   * @param {MouseEvent} ev Mouse down event
    */
-  onMouseUp = (ev, initialMouseCoordinates) => {
-    this.removeMouseEventListeners();
-    this.enableTextSelection();
+  onMouseDown = (ev) => {
+    const initialMouseCoordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(ev);
+    this._mouseMoveTracker.captureMouseMoves(ev);
+    this.setState({
+      initialMouseCoordinates,
+      isColumnResizing: true,
+      totalDisplacement: 0,
+      resizerLineXCoordinate: initialMouseCoordinates.x
+    });
+  };
 
-    const currentMouseCoordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(ev);
-    const displacement = currentMouseCoordinates.x - initialMouseCoordinates.x;
-
-    // let minWidth = 0, maxWidth = Number.MAX_SAFE_INTEGER;
-    // if (this.props.minWidth)
-    //   minWidth = Math.max(minWidth, this.props.minWidth)
-    // if (this.props.maxWidth)
-    //   maxWidth = Math.min(maxWidth, this.props.maxWidth)
+  onMouseUp = () => {
     const { minWidth, maxWidth } = this.getMinMaxWidth(this.props.minWidth, this.props.maxWidth);
-
-    const newWidth = clamp(this.props.width + displacement, minWidth, maxWidth);
+    const newWidth = clamp(this.props.width + this.state.totalDisplacement, minWidth, maxWidth);
     this.props.onColumnResizeEnd(newWidth, this.props.columnKey);
+    this._mouseMoveTracker.releaseMouseMoves();
     this.resetColumnResizing();
   };
 
   /**
    *
-   * @param {MouseEvent} ev                     Mouse move event
-   * @param {Object} initialMouseCoordinates    Initial mouse coordinates when mouseDown event happened
-   * @param {number} initialMouseCoordinates.x  Initial mouse X coordinate
-   * @param {number} initialMouseCoordinates.y  Initial mouse Y coordinate
+   * @param {number} displacementX Displacement of mouse along x-direction
    */
-  onMouseMove = (ev, initialMouseCoordinates) => {
-    const mouseXCoordinate = ev.clientX;
-    // If negative, means displacement is in left direction
-    const displacement = mouseXCoordinate - initialMouseCoordinates.x;
-    let resizerLineXCoordinate = mouseXCoordinate;
+  onMouseMove = (displacementX) => {
+    const { initialMouseCoordinates, totalDisplacement: previousTotalDisplacement } = this.state;
+    // displacementX is negative if movement is in left direction
+    const newTotalDisplacement = previousTotalDisplacement + displacementX;
+    let resizerLineXCoordinate = initialMouseCoordinates.x + newTotalDisplacement;
     const { minWidth, maxWidth } = this.getMinMaxWidth(this.props.minWidth, this.props.maxWidth);
     // Limit the resizer line to not move ahead or back of maxWidth and minWidth respectively
-    if (this.props.width + displacement < minWidth || this.props.width + displacement > maxWidth) {
+    if (this.props.width + newTotalDisplacement < minWidth || this.props.width + newTotalDisplacement > maxWidth) {
       // If new position is going out of bounds, instead of updating,  use the previous value
-      resizerLineXCoordinate = this.state.mouseXCoordinate;
+      resizerLineXCoordinate = this.state.resizerLineXCoordinate;
     }
     this.setState({
       mouseXCoordinate: resizerLineXCoordinate,
       isColumnResizing: true,
+      totalDisplacement: newTotalDisplacement,
+      resizerLineXCoordinate
     });
-  };
-
-  /**
-   * While resizing disable text selection
-   */
-  disableTextSelection = () => {
-    document.body.addEventListener('selectstart', this.suppressEvent);
-  };
-
-  /**
-   * When resizing done, enable text selection
-   */
-  enableTextSelection = () => {
-    document.body.removeEventListener('selectstart', this.suppressEvent);
   };
 
   /**
@@ -144,7 +136,7 @@ class ResizerKnob extends React.Component {
   resetColumnResizing = () => {
     this.setState({
       isColumnResizing: false,
-      displacement: 0
+      totalDisplacement: 0
     });
   };
 
@@ -167,18 +159,7 @@ class ResizerKnob extends React.Component {
   };
 
   /**
-   * Remove event listeners after mouseup event
-   */
-  removeMouseEventListeners = () => {
-    document.body.onmousemove = () => {
-    };
-    document.body.onmouseup = () => {
-    };
-  };
-
-  /**
    * @param {Object} event
-   * @private
    */
   suppressEvent = (event) => {
     event.preventDefault();
