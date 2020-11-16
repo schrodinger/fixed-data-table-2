@@ -282,6 +282,49 @@ class ResizeReorderCell extends React.PureComponent {
     this.setState(newState);
   }
 
+  renderReorderHandle = () => {
+    if (!this.props.onColumnReorderEndCallback)
+      return null
+
+    return (
+      <ReorderHandle
+        columnKey={this.props.columnKey}
+        touchEnabled={this.props.touchEnabled}
+        height={this.props.height}
+        width={this.props.width}
+        isRTL={this.props.height}
+        left={this.props.left}
+        scrollX={this.props.scrollX}
+        startColumnReorder={this.startColumnReorder}
+        columnReorderingData={this.state.columnReorderingData}
+        stopColumnReorder={this.stopColumnReorder}
+        onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}
+        moveColumnReorder={this.moveColumnReorder}
+        {...this.props}
+      />
+    )
+  }
+
+  renderResizerKnob = () => {
+    if (!this.props.onColumnResizeEndCallback)
+      return null
+
+    return (
+      <ResizerKnob
+        height={this.props.height}
+        resizerLineHeight={this.props.tableHeight}
+        onColumnResizeEnd={this.props.onColumnResizeEndCallback}
+        left={this.props.left}
+        width={this.props.width}
+        minWidth={this.props.minWidth}
+        maxWidth={this.props.maxWidth}
+        columnKey={this.props.columnKey}
+        cellGroupLeft={this.props.cellGroupLeft}
+        touchEnabled={this.props.touchEnabled}
+        isRTL={this.props.isRTL} />
+        );
+  }
+
 
   render() {
     const {
@@ -303,9 +346,6 @@ class ResizeReorderCell extends React.PureComponent {
       scrollToX,
       cellGroupColumnWidths,
       ...props} = this.props;
-    var _columnResizerStyle = {
-      height: props.height
-    };
 
     var style = {
       height: props.height,
@@ -339,44 +379,6 @@ class ResizeReorderCell extends React.PureComponent {
       style.zIndex = 2;
     }
 
-    var columnReorderComponent;
-    if (onColumnReorderEndCallback) { //header row
-      columnReorderComponent = (
-        <ReorderHandle
-          columnKey={props.columnKey}
-          touchEnabled={touchEnabled}
-          height={props.height}
-          width={props.width}
-          isRTL={props.height}
-          left={left}
-          scrollX={scrollX}
-          startColumnReorder={this.startColumnReorder}
-          columnReorderingData={this.state.columnReorderingData}
-          stopColumnReorder={this.stopColumnReorder}
-          onColumnReorderEndCallback={onColumnReorderEndCallback}
-          moveColumnReorder={this.moveColumnReorder}
-          {...this.props}
-        />
-      );
-    }
-
-    var resizerComponent;
-    if (onColumnResizeEndCallback) {
-      resizerComponent = (
-        <ResizerKnob
-          columnResizerStyle={_columnResizerStyle}
-          resizerLineHeight={tableHeight}
-          onColumnResizeEnd={onColumnResizeEndCallback}
-          left={left}
-          width={props.width}
-          minWidth={minWidth}
-          maxWidth={maxWidth}
-          columnKey={props.columnKey}
-          cellGroupLeft={cellGroupLeft} 
-          touchEnabled={touchEnabled}
-          isRTL={isRTL} />);
-    }
-
     var content;
     if (React.isValidElement(children)) {
       content = React.cloneElement(children, props);
@@ -392,8 +394,8 @@ class ResizeReorderCell extends React.PureComponent {
 
     return (
       <div className={className} style={style}>
-        {columnReorderComponent}
-        {resizerComponent}
+        {this.renderReorderHandle()}
+        {this.renderResizerKnob()}
         {content}
       </div>
     );

@@ -22,40 +22,61 @@ import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 class ResizerKnob extends React.Component {
 
   initialState = {
+    /**
+     * @type {string} Set true when column resizing starts. It is used to make ResizerLine visible.
+     */
     isColumnResizing: undefined,
-    instance: undefined,
-    mouseXCoordinate: 0,
-    totalDisplacement: 0
+
+    /**
+     * @type {number} X coordinate of ResizerLine during resizing. It is passed do to ResizerLine to render at appropriate position.
+     */
+    resizerLineXCoordinate: 0,
+
+    /**
+     * @type {number} Total displacement of mouse calculated from initial position when resizing started
+     */
+    totalDisplacement: 0,
+
+    /**
+     * @type {number} Top position of ResizerKnow. It is passed to ResizerLine to render at appropriate position.
+     */
+    top: 0,
   };
 
   state = { ...this.initialState };
 
+  // Ref to ResizerKnob
+  curRef = null;
+
   constructor(props) {
     super(props);
-    this.trackMouse();
   }
 
 
   componentDidMount() {
     this.setState({
-      instance: this.curRef
+      top: this.curRef.getBoundingClientRect().top
     });
   }
 
   render() {
+    const resizerKnobStyle = {
+      height: this.props.height
+    };
     const dragKnob =
       <ResizerLine
         height={this.props.resizerLineHeight}
         visible={!!this.state.isColumnResizing}
         instance={this.state.instance}
         xCoordinate={this.state.resizerLineXCoordinate}
+        top={this.state.top}
       />;
 
     return (
       <div
         className={cx('fixedDataTableCellLayout/columnResizerContainer')}
         ref={(element) => this.curRef = element}
-        style={this.props.columnResizerStyle}
+        style={resizerKnobStyle}
         onMouseDown={this.onMouseDown}
         onTouchStart={this.props.touchEnabled ? this.onMouseDown : null}
         onTouchEnd={this.props.touchEnabled ? this.suppressEvent : null}
@@ -66,7 +87,7 @@ class ResizerKnob extends React.Component {
             cx('fixedDataTableCellLayout/columnResizerKnob'),
             cx('public/fixedDataTableCell/columnResizerKnob'),
           )}
-          style={this.props.columnResizerStyle}
+          style={resizerKnobStyle}
         />
       </div>
     );
@@ -88,22 +109,22 @@ class ResizerKnob extends React.Component {
    * @param {MouseEvent} ev Mouse down event
    */
   onMouseDown = (ev) => {
-    const initialMouseCoordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(ev);
+    this.trackMouse();
+    const initialMouseXCoordinate = FixedDataTableEventHelper.getCoordinatesFromEvent(ev).x;
     this._mouseMoveTracker.captureMouseMoves(ev);
     this.setState({
-      initialMouseCoordinates,
+      initialMouseXCoordinate,
       isColumnResizing: true,
       totalDisplacement: 0,
-      resizerLineXCoordinate: initialMouseCoordinates.x
+      resizerLineXCoordinate: initialMouseXCoordinate
     });
   };
 
   onMouseUp = () => {
-    const { minWidth, maxWidth } = this.getMinMaxWidth(this.props.minWidth, this.props.maxWidth);
+    const { minWidth, maxWidth } = this.getMinMaxWidth();
     const newWidth = clamp(this.props.width + this.state.totalDisplacement, minWidth, maxWidth);
-    this.props.onColumnResizeEnd(newWidth, this.props.columnKey);
     this._mouseMoveTracker.releaseMouseMoves();
-    this.resetColumnResizing();
+    this.resetColumnResizing(() => this.props.onColumnResizeEnd(newWidth, this.props.columnKey));
   };
 
   /**
@@ -111,49 +132,44 @@ class ResizerKnob extends React.Component {
    * @param {number} displacementX Displacement of mouse along x-direction
    */
   onMouseMove = (displacementX) => {
-    const { initialMouseCoordinates, totalDisplacement: previousTotalDisplacement } = this.state;
+    const { initialMouseXCoordinate, totalDisplacement: previousTotalDisplacement } = this.state;
     // displacementX is negative if movement is in left direction
     const newTotalDisplacement = previousTotalDisplacement + displacementX;
-    let resizerLineXCoordinate = initialMouseCoordinates.x + newTotalDisplacement;
-    const { minWidth, maxWidth } = this.getMinMaxWidth(this.props.minWidth, this.props.maxWidth);
+    let newResizerLineXCoordinate = initialMouseXCoordinate + newTotalDisplacement;
+    const { minWidth, maxWidth } = this.getMinMaxWidth();
     // Limit the resizer line to not move ahead or back of maxWidth and minWidth respectively
     if (this.props.width + newTotalDisplacement < minWidth || this.props.width + newTotalDisplacement > maxWidth) {
       // If new position is going out of bounds, instead of updating,  use the previous value
-      resizerLineXCoordinate = this.state.resizerLineXCoordinate;
+      newResizerLineXCoordinate = this.state.resizerLineXCoordinate;
     }
     this.setState({
-      mouseXCoordinate: resizerLineXCoordinate,
-      isColumnResizing: true,
       totalDisplacement: newTotalDisplacement,
-      resizerLineXCoordinate
+      resizerLineXCoordinate: newResizerLineXCoordinate
     });
   };
 
   /**
    * Set isColumnResizing to false to hide the ResizerLine and set displacement to 0
+   * @param {Function} callback Called after resetting state
    */
-  resetColumnResizing = () => {
+  resetColumnResizing = (callback) => {
     this.setState({
       isColumnResizing: false,
       totalDisplacement: 0
+    }, () => {
+      if (callback)
+        callback();
     });
   };
 
   /**
    * If minWidth and Width not given, mapping them to a valid range i.e. 0 to Number.MAX_SAFE_INTEGER
-   * @param {number | undefined} minWidth   min width of column
-   * @param {number | undefined} maxWidth   max width of column
    * @returns {{minWidth: number, maxWidth: number}}
    */
-  getMinMaxWidth = (minWidth, maxWidth) => {
-    let newMinWidth = 0, newMaxWidth = Number.MAX_SAFE_INTEGER;
-    if (minWidth)
-      newMinWidth = Math.max(minWidth, newMinWidth);
-    if (maxWidth)
-      newMaxWidth = Math.min(maxWidth, newMaxWidth);
+  getMinMaxWidth = () => {
     return {
-      minWidth: newMinWidth,
-      maxWidth: newMaxWidth
+      minWidth: this.props.minWidth || 0,
+      maxWidth: this.props.maxWidth || Number.MAX_SAFE_INTEGER
     };
   };
 
