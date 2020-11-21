@@ -11,9 +11,13 @@
 
 'use strict';
 
-import reducers from 'reducers'
-import { createStore } from 'redux'
+import reducers from 'reducers';
+import { createStore } from 'redux';
+
+const store = createStore(reducers);
+
+export const getState = () => store.getState();
 
 export default {
-  get: () => createStore(reducers)
+  get: () => store
 };

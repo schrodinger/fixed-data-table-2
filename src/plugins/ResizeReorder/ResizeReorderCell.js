@@ -13,22 +13,23 @@
 import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import React from 'react';
 import PropTypes from 'prop-types';
-import ResizerKnob  from 'ResizerKnob';
+import ResizerKnob from 'ResizerKnob';
 import ReorderHandle from 'ReorderHandle';
 import joinClasses from 'joinClasses';
 import cx from 'cx';
+import NewReorderCell from './NewReorderCell';
 
-const DRAG_SCROLL_SPEED = 15;
-const DRAG_SCROLL_BUFFER = 100;
+// const DRAG_SCROLL_SPEED = 15;
+// const DRAG_SCROLL_BUFFER = 100;
 
 /**
- * A plugin that can make use of ResizerKnob and ReorderHandle to provide the 
+ * A plugin that can make use of ResizerKnob and ReorderHandle to provide the
  * resize and reorder functionality to the columns.
- * 
+ *
  * Pass this to the `header` prop of the `Column` to invoke resizer/reorder handle.
  * `onColumnResizeEndCallback` and `onColumnReorderEndCallback` activate the respective
  * functionality. Either one or both can be used together.
- * 
+ *
  */
 class ResizeReorderCell extends React.PureComponent {
 
@@ -131,35 +132,41 @@ class ResizeReorderCell extends React.PureComponent {
     isColumnReordering: false,
     displacement: 0,
     reorderingDisplacement: 0
+  };
+
+  state = { ...this.initialState };
+
+  componentDidMount() {
+    this.setState({
+      curRef: this.curRef
+    });
   }
 
-  state = {...this.initialState}
-  
   clearState = () => {
     this.setState(
       this.initialState
     );
-  }
+  };
 
-  startColumnReorder = (reorderData) => {
-    let { columnKey, left, scrollStart, width } = reorderData;
-    const isFixed = this.props.isFixed;
-  
-    this.updateState({
-      isColumnReordering: true,
-      columnReorderingData: {
-        cancelReorder: false,
-        dragDistance: 0,
-        isFixed: isFixed,
-        scrollStart: scrollStart,
-        columnKey: columnKey,
-        columnWidth: width,
-        originalLeft: left,
-        columnBefore: undefined,
-        columnAfter: undefined
-      }
-    });
-  }
+  // startColumnReorder = (reorderData) => {
+  //   let { columnKey, left, scrollStart, width } = reorderData;
+  //   const isFixed = this.props.isFixed;
+  //
+  //   this.updateState({
+  //     isColumnReordering: true,
+  //     columnReorderingData: {
+  //       cancelReorder: false,
+  //       dragDistance: 0,
+  //       isFixed: isFixed,
+  //       scrollStart: scrollStart,
+  //       columnKey: columnKey,
+  //       columnWidth: width,
+  //       originalLeft: left,
+  //       columnBefore: undefined,
+  //       columnAfter: undefined
+  //     }
+  //   });
+  // };
 
   /**
    * TODO (sharma)
@@ -171,143 +178,155 @@ class ResizeReorderCell extends React.PureComponent {
    * scrollX, maxScrollX, availableScrollWidth should be handled differently
    * to speed it up.
    *   */
-  moveColumnReorder = (deltaX) => {
-    const { isFixed, originalLeft, scrollStart } = this.state.columnReorderingData;
-    let { maxScrollX, scrollX } = this.props;
-    if (!isFixed) {
-      // Relative dragX position on scroll
-      const dragX = originalLeft - scrollStart + deltaX;
-      const availableScrollWidth = this.props.availableScrollWidth;
-      deltaX += scrollX - scrollStart;
-  
-      // Scroll the table left or right if we drag near the edges of the table
-      if (dragX > availableScrollWidth - DRAG_SCROLL_BUFFER) {
-        scrollX = Math.min(scrollX + DRAG_SCROLL_SPEED, maxScrollX);
-      } else if (dragX <= DRAG_SCROLL_BUFFER) {
-        scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
-      }
-      this.props.scrollToX(scrollX);
-    }
-  
-    // NOTE (jordan) Need to clone this object when use pureRendering
-    var reorderingData = {...this.state.columnReorderingData}
-    reorderingData.dragDistance = deltaX;
-    reorderingData.columnBefore = undefined;
-    reorderingData.columnAfter = undefined;
-    this.updateState({
-      columnReorderingData: reorderingData,
-      isColumnReordering: true
-    });
-    
-  }
+    // moveColumnReorder = (deltaX) => {
+    //   const { isFixed, originalLeft, scrollStart } = this.state.columnReorderingData;
+    //   let { maxScrollX, scrollX } = this.props;
+    //   if (!isFixed) {
+    //     // Relative dragX position on scroll
+    //     const dragX = originalLeft - scrollStart + deltaX;
+    //     const availableScrollWidth = this.props.availableScrollWidth;
+    //     deltaX += scrollX - scrollStart;
+    //
+    //     // Scroll the table left or right if we drag near the edges of the table
+    //     if (dragX > availableScrollWidth - DRAG_SCROLL_BUFFER) {
+    //       scrollX = Math.min(scrollX + DRAG_SCROLL_SPEED, maxScrollX);
+    //     } else if (dragX <= DRAG_SCROLL_BUFFER) {
+    //       scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
+    //     }
+    //     this.props.scrollToX(scrollX);
+    //   }
+    //
+    //   // NOTE (jordan) Need to clone this object when use pureRendering
+    //   let reorderingData = { ...this.state.columnReorderingData };
+    //   reorderingData.dragDistance = deltaX;
+    //   reorderingData.columnBefore = undefined;
+    //   reorderingData.columnAfter = undefined;
+    //   this.updateState({
+    //     columnReorderingData: reorderingData,
+    //     isColumnReordering: true
+    //   });
+    //
+    // };
 
-  stopColumnReorder = () => {
-    this.updateState({
-      isColumnReordering: false,
-      columnReorderingData: {}
-    });
-  }
+    // stopColumnReorder = () => {
+    //   this.updateState({
+    //     isColumnReordering: false,
+    //     columnReorderingData: {}
+    //   });
+    // };
 
-  updateState = (stateChanges) => {
-    var newState = {...stateChanges};
-    if (!stateChanges.isColumnReordering) {
-      newState.displacement = 0;
-      this.setState(newState);
-      return;
-    }
+    // calculateColumnOrder = (newState) => {
+    //   let index = this.props.cellGroupColumnWidths.keys.indexOf(this.props.columnKey);
+    //
+    //   newState.columnReorderingData.columnBefore = this.props.cellGroupColumnWidths.keys[index - 1];
+    //   newState.columnReorderingData.columnAfter = this.props.cellGroupColumnWidths.keys[index + 1];
+    //
+    //   let localDisplacement = newState.displacement;
+    //   if (localDisplacement > 0) {
+    //     for (let i = index + 1, j = this.props.cellGroupColumnWidths.widths.length; i < j; i++) {
+    //       let curWidth = this.props.cellGroupColumnWidths.widths[i];
+    //       if (localDisplacement > curWidth) {
+    //         localDisplacement -= curWidth;
+    //       } else {
+    //         if (localDisplacement > curWidth / 2) {
+    //           newState.columnReorderingData.columnAfter = this.props.cellGroupColumnWidths.keys[i + 1];
+    //           newState.columnReorderingData.columnBefore = this.props.cellGroupColumnWidths.keys[i];
+    //         } else {
+    //           newState.columnReorderingData.columnAfter = this.props.cellGroupColumnWidths.keys[i];
+    //           newState.columnReorderingData.columnBefore = (i - 1 !== index) ? this.props.cellGroupColumnWidths.keys[i - 1] : this.props.cellGroupColumnWidths.keys[i - 2];
+    //         }
+    //         break;
+    //       }
+    //     }
+    //   } else if (localDisplacement < 0) {
+    //     localDisplacement = -localDisplacement;
+    //     for (let i = index - 1; i >= 0; i--) {
+    //       let curWidth = this.props.cellGroupColumnWidths.widths[i];
+    //       if (localDisplacement > curWidth) {
+    //         localDisplacement -= curWidth;
+    //       } else {
+    //         if (localDisplacement > curWidth / 2) {
+    //           newState.columnReorderingData.columnAfter = this.props.cellGroupColumnWidths.keys[i];
+    //           newState.columnReorderingData.columnBefore = this.props.cellGroupColumnWidths.keys[i - 1];
+    //         } else {
+    //           newState.columnReorderingData.columnBefore = this.props.cellGroupColumnWidths.keys[i];
+    //           newState.columnReorderingData.columnAfter = (i + 1 !== index) ? this.props.cellGroupColumnWidths.keys[i + 1] : this.props.cellGroupColumnWidths.keys[i + 2];
+    //         }
+    //         break;
+    //       }
+    //     }
+    //   }
+    // };
 
-    // get the full width of the column group
-    const cellGroupWidth = this.props.cellGroupColumnWidths.widths.reduce((acc, elem) => acc+elem, 0);
-
-    var left = this.props.left + this.state.displacement;
-    
-    var originalLeft = stateChanges.columnReorderingData.originalLeft;
-    var reorderCellLeft = originalLeft + stateChanges.columnReorderingData.dragDistance;
-    var farthestPossiblePoint = cellGroupWidth - stateChanges.columnReorderingData.columnWidth;
-
-    // ensure the cell isn't being dragged out of the column group
-    reorderCellLeft = Math.max(reorderCellLeft, 0);
-    reorderCellLeft = Math.min(reorderCellLeft, farthestPossiblePoint);
-
-    newState.displacement = reorderCellLeft - this.props.left;
-    newState.isReorderingThisColumn = true;
-
-    var index = this.props.cellGroupColumnWidths.keys.indexOf(this.props.columnKey);
-    
-    
-    newState.columnReorderingData.columnBefore = this.props.cellGroupColumnWidths.keys[index-1];
-    newState.columnReorderingData.columnAfter = this.props.cellGroupColumnWidths.keys[index+1];
-
-    var localDisplacement = newState.displacement;
-    if (localDisplacement>0) {
-      for (var i=index+1,j=this.props.cellGroupColumnWidths.widths.length; i<j; i++) {
-        var curWidth = this.props.cellGroupColumnWidths.widths[i]
-        if (localDisplacement > curWidth) {
-          localDisplacement -= curWidth;
-        }
-        else {
-          if (localDisplacement > curWidth/2) {
-            newState.columnReorderingData.columnAfter = this.props.cellGroupColumnWidths.keys[i+1];
-            newState.columnReorderingData.columnBefore = this.props.cellGroupColumnWidths.keys[i];
-          }
-          else {
-            newState.columnReorderingData.columnAfter = this.props.cellGroupColumnWidths.keys[i];
-            newState.columnReorderingData.columnBefore = (i-1 != index) ? this.props.cellGroupColumnWidths.keys[i-1] : this.props.cellGroupColumnWidths.keys[i-2];
-          }
-          break;
-        }
-      }
-    }
-    else if (localDisplacement<0) {
-      localDisplacement=-localDisplacement
-      for (var i=index-1; i>=0; i--) {
-        var curWidth = this.props.cellGroupColumnWidths.widths[i]
-        if (localDisplacement > curWidth) {
-          localDisplacement -= curWidth;
-        }
-        else {
-          if (localDisplacement > curWidth/2) {
-            newState.columnReorderingData.columnAfter = this.props.cellGroupColumnWidths.keys[i];
-            newState.columnReorderingData.columnBefore = this.props.cellGroupColumnWidths.keys[i-1];
-          }
-          else {
-            newState.columnReorderingData.columnBefore = this.props.cellGroupColumnWidths.keys[i];
-            newState.columnReorderingData.columnAfter = (i+1 != index) ? this.props.cellGroupColumnWidths.keys[i+1] : this.props.cellGroupColumnWidths.keys[i+2];
-          }
-          break;
-        }
-      }
-    }
-
-    this.setState(newState);
-  }
+    // updateState = (stateChanges) => {
+    //   let newState = { ...stateChanges };
+    //   if (!stateChanges.isColumnReordering) {
+    //     newState.displacement = 0;
+    //     this.setState(newState);
+    //     return;
+    //   }
+    //
+    //   // get the full width of the column group
+    //   const cellGroupWidth = this.props.cellGroupColumnWidths.widths.reduce((acc, elem) => acc + elem, 0);
+    //
+    //   let left = this.props.left + this.state.displacement;
+    //
+    //   let originalLeft = stateChanges.columnReorderingData.originalLeft;
+    //   let reorderCellLeft = originalLeft + stateChanges.columnReorderingData.dragDistance;
+    //   let farthestPossiblePoint = cellGroupWidth - stateChanges.columnReorderingData.columnWidth;
+    //
+    //   // ensure the cell isn't being dragged out of the column group
+    //   reorderCellLeft = Math.max(reorderCellLeft, 0);
+    //   reorderCellLeft = Math.min(reorderCellLeft, farthestPossiblePoint);
+    //
+    //   newState.displacement = reorderCellLeft - this.props.left;
+    //   newState.isReorderingThisColumn = true;
+    //
+    //   // this.calculateColumnOrder(newState);
+    //
+    //   this.setState(newState);
+    // };
 
   renderReorderHandle = () => {
     if (!this.props.onColumnReorderEndCallback)
-      return null
+      return null;
 
     return (
-      <ReorderHandle
-        columnKey={this.props.columnKey}
+      <NewReorderCell
         touchEnabled={this.props.touchEnabled}
         height={this.props.height}
-        width={this.props.width}
-        isRTL={this.props.height}
-        left={this.props.left}
+        isRTL={this.props.isRTL}
+        parentRef={this.state.curRef}
+        columnKey={this.props.columnKey}
         scrollX={this.props.scrollX}
-        startColumnReorder={this.startColumnReorder}
-        columnReorderingData={this.state.columnReorderingData}
-        stopColumnReorder={this.stopColumnReorder}
+        left={this.props.left}
         onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}
-        moveColumnReorder={this.moveColumnReorder}
         {...this.props}
       />
-    )
-  }
+    );
+
+    // return (
+    //   <ReorderHandle
+    //     columnKey={this.props.columnKey}
+    //     touchEnabled={this.props.touchEnabled}
+    //     height={this.props.height}
+    //     width={this.props.width}
+    //     isRTL={this.props.isRTL}
+    //     left={this.props.left}
+    //     scrollX={this.props.scrollX}
+    //     startColumnReorder={this.startColumnReorder}
+    //     columnReorderingData={this.state.columnReorderingData}
+    //     stopColumnReorder={this.stopColumnReorder}
+    //     onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}
+    //     moveColumnReorder={this.moveColumnReorder}
+    //     {...this.props}
+    //   />
+    // );
+  };
 
   renderResizerKnob = () => {
     if (!this.props.onColumnResizeEndCallback)
-      return null
+      return null;
 
     return (
       <ResizerKnob
@@ -322,8 +341,8 @@ class ResizeReorderCell extends React.PureComponent {
         cellGroupLeft={this.props.cellGroupLeft}
         touchEnabled={this.props.touchEnabled}
         isRTL={this.props.isRTL} />
-        );
-  }
+    );
+  };
 
 
   render() {
@@ -345,17 +364,12 @@ class ResizeReorderCell extends React.PureComponent {
       isFixed,
       scrollToX,
       cellGroupColumnWidths,
-      ...props} = this.props;
+      ...props
+    } = this.props;
 
-    var style = {
+    let style = {
       height: props.height,
-      width: props.width-1, // subtracting border width
-      position: 'fixed',
-      backgroundColor: '#f6f7f8',
-      backgroundImage: 'linear-gradient(#fff, #efefef)',
-      borderColor: '#d3d3d3',
-      borderRightStyle: 'solid',
-      borderRightWidth: '1px',
+      width: props.width - 1, // subtracting border width
     };
 
     if (this.props.isRTL) {
@@ -364,11 +378,12 @@ class ResizeReorderCell extends React.PureComponent {
       style.left = left;
     }
 
-    var className = joinClasses(
+    let className = joinClasses(
       cx({
         // '.public/fixedDataTableCell/main': true,
         'public/fixedDataTableCell/hasReorderHandle': !!onColumnReorderEndCallback,
         'public/fixedDataTableCell/reordering': this.state.isColumnReordering,
+        'resize-reorder-cell-container': true
       }),
       props.className,
     );
@@ -379,7 +394,7 @@ class ResizeReorderCell extends React.PureComponent {
       style.zIndex = 2;
     }
 
-    var content;
+    let content;
     if (React.isValidElement(children)) {
       content = React.cloneElement(children, props);
     } else if (typeof children === 'function') {
@@ -393,7 +408,7 @@ class ResizeReorderCell extends React.PureComponent {
     }
 
     return (
-      <div className={className} style={style}>
+      <div ref={inst => this.curRef = inst} className={className} style={style}>
         {this.renderReorderHandle()}
         {this.renderResizerKnob()}
         {content}

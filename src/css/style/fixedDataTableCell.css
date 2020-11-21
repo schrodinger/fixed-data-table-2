@@ -36,3 +36,12 @@
   margin-left: auto;
   margin-right: 12px;
 }
+
+.resize-reorder-cell-container {
+  position: fixed;
+  background-color: #f6f7f8;
+  background-image: linear-gradient(#fff, #efefef);
+  border-color: #d3d3d3;
+  border-right-style: solid;
+  border-right-width: 1px;
+}

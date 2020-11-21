@@ -42,11 +42,9 @@ class ReorderHandle extends React.Component {
      * If the component should render for RTL direction
      */
     isRTL: PropTypes.bool,
-  }
+  };
 
-  state = /*object*/ {
-    dragDistance: 0
-  }
+  _distance = 0;
 
   componentWillUnmount() {
     if (this._mouseMoveTracker) {
@@ -58,7 +56,7 @@ class ReorderHandle extends React.Component {
   }
 
   render() {
-    var style = {
+    let style = {
       height: this.props.height,
     };
     return (
@@ -76,23 +74,25 @@ class ReorderHandle extends React.Component {
     );
   }
 
-  onMouseDown = (event) => {
-    var targetRect = event.target.getBoundingClientRect();
-    var coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
-
-    var mouseLocationInElement = coordinates.x - targetRect.left;
-    var mouseLocationInRelationToColumnGroup = mouseLocationInElement + event.target.parentElement.offsetLeft;
-
+  registerMouseEventListener = () => {
     this._mouseMoveTracker = new DOMMouseMoveTracker(
       this._onMove,
       this._onColumnReorderEnd,
       document.body,
       this.props.touchEnabled
     );
+  };
+
+  onMouseDown = (event) => {
+    const targetRect = event.target.getBoundingClientRect();
+    const coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
+
+    const mouseLocationInElement = coordinates.x - targetRect.left;
+    let mouseLocationInRelationToColumnGroup = mouseLocationInElement + event.target.parentElement.offsetLeft;
+
+    this.registerMouseEventListener();
     this._mouseMoveTracker.captureMouseMoves(event);
-    this.setState({
-      dragDistance: 0
-    });
+
     this._onColumnReorderMouseDown({
       columnKey: this.props.columnKey,
       mouseLocation: {
@@ -113,11 +113,11 @@ class ReorderHandle extends React.Component {
     if (this.props.touchEnabled) {
       event.stopPropagation();
     }
-  }
+  };
 
   _onMove = (/*number*/ deltaX) => {
-    this._distance = this.state.dragDistance + deltaX * (this.props.isRTL ? -1 : 1);
-  }
+    this._distance += deltaX * (this.props.isRTL ? -1 : 1);
+  };
 
   _onColumnReorderEnd = (/*boolean*/ cancelReorder) => {
     this._animating = false;
@@ -126,17 +126,14 @@ class ReorderHandle extends React.Component {
     this._mouseMoveTracker.releaseMouseMoves();
     this.props.columnReorderingData.cancelReorder = cancelReorder;
     this.onColumnReorderEnd();
-  }
+  };
 
   _updateState = () => {
     if (this._animating) {
-      this.frameId = requestAnimationFrame(this._updateState)
+      this.frameId = requestAnimationFrame(this._updateState);
     }
-    this.setState({
-      dragDistance: this._distance
-    });
     this.props.moveColumnReorder(this._distance);
-  }
+  };
 
   _onColumnReorderMouseDown = (/*object*/ event) => {
     this.props.startColumnReorder({
@@ -145,7 +142,7 @@ class ReorderHandle extends React.Component {
       width: this.props.width,
       left: this.props.left
     });
-  }
+  };
 
   onColumnReorderEnd = () => {
     const {
@@ -168,6 +165,6 @@ class ReorderHandle extends React.Component {
       columnBefore,
       reorderColumn: columnKey,
     });
-  }
+  };
 };
 export default ReorderHandle;
