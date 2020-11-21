@@ -1,3 +1,15 @@
+/**
+ * Copyright Schrodinger, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule NewReorderCell
+ * @typechecks
+ */
+
 import React from 'react';
 import cx from 'cx';
 import PropTypes from 'prop-types';
@@ -13,7 +25,6 @@ export default class NewReorderCell extends React.Component {
     height: PropTypes.number,
     touchEnabled: PropTypes.bool,
     isRTL: PropTypes.bool,
-    parentRef: PropTypes.any,
     scrollX: PropTypes.number,
     maxScrollX: PropTypes.number,
     left: PropTypes.number,
@@ -100,7 +111,10 @@ export default class NewReorderCell extends React.Component {
     this.originalLeft = this.props.left;
     this.initializeDOMMouseMoveTracker();
     this.mouseMoveTracker.captureMouseMoves(event);
-    this.setZIndexOfParent(2);
+    this.updateParentReorderingData({
+      isColumnReordering: true,
+      displacement: 0
+    });
     this.frameId = requestAnimationFrame(this.updateState);
   };
 
@@ -118,8 +132,10 @@ export default class NewReorderCell extends React.Component {
     this.frameId = null;
     this.distance = 0;
     this.mouseMoveTracker.releaseMouseMoves();
-    this.translateParent(0);
-    this.setZIndexOfParent(0);
+    this.updateParentReorderingData({
+      isColumnReordering: false,
+      displacement: 0
+    });
   };
 
   initializeDOMMouseMoveTracker = () => {
@@ -129,6 +145,10 @@ export default class NewReorderCell extends React.Component {
       document.body,
       this.props.touchEnabled
     );
+  };
+
+  updateParentReorderingData = (state) => {
+    this.props.updateParentReorderingData(state);
   };
 
   updateState = () => {
@@ -157,7 +177,7 @@ export default class NewReorderCell extends React.Component {
       }
       this.props.scrollToX(scrollX);
     }
-    this.translateParent(deltaX);
+    this.updateParentReorderingData({ displacement: deltaX });
   };
 
   /**
@@ -227,19 +247,4 @@ export default class NewReorderCell extends React.Component {
       reorderColumn: this.props.columnKey
     });
   };
-
-  /**
-   * @param {number} translateX
-   */
-  translateParent = (translateX) => {
-    this.props.parentRef.style.transform = `translateX(${translateX}px) translateZ(0)`;
-  };
-
-  /**
-   * @param {number} zIndex
-   */
-  setZIndexOfParent = (zIndex) => {
-    this.props.parentRef.style.zIndex = zIndex;
-  };
-
 }
