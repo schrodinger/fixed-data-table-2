@@ -14,10 +14,9 @@ import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ResizerKnob from 'ResizerKnob';
-import ReorderHandle from 'ReorderHandle';
+import ReorderHandle from './ReorderHandle';
 import joinClasses from 'joinClasses';
 import cx from 'cx';
-import NewReorderCell from './NewReorderCell';
 
 /**
  * A plugin that can make use of ResizerKnob and ReorderHandle to provide the
@@ -148,7 +147,7 @@ class ResizeReorderCell extends React.PureComponent {
       return null;
 
     return (
-      <NewReorderCell
+      <ReorderHandle
         touchEnabled={this.props.touchEnabled}
         height={this.props.height}
         isRTL={this.props.isRTL}
