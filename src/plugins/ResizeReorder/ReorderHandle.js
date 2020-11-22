@@ -46,6 +46,7 @@ class ReorderHandle extends React.Component {
   };
 
   /**
+   * Instance of DOMMouseMoveTracker to capture mouse events
    * @type {DOMMouseMoveTracker}
    */
   mouseMoveTracker = null;
@@ -161,7 +162,7 @@ class ReorderHandle extends React.Component {
   calculateDisplacementWithScroll = () => {
     const scrollStart = this.scrollStart;
     let { isFixed, maxScrollX } = this.props;
-    let scrollX = getState().scrollX;
+    let { scrollX } = getState();
     let deltaX = this.distance;
     if (!isFixed) {
       // Relative dragX position on scroll
@@ -195,18 +196,12 @@ class ReorderHandle extends React.Component {
   isColumnMovedToLeft = (deltaX) => deltaX < 0;
 
   calculateColumnOrder = () => {
-    let columnReorderingData = {
-      dragDistance: this.distance,
-      columnBefore: undefined,
-      columnAfter: undefined
-    };
-    let index = this.props.cellGroupColumnWidths.keys.indexOf(this.props.columnKey);
     const { cellGroupColumnWidths } = this.props;
+    const index = this.props.cellGroupColumnWidths.keys.indexOf(this.props.columnKey);
+    let columnBefore = cellGroupColumnWidths.keys[index - 1];
+    let columnAfter = cellGroupColumnWidths.keys[index + 1];
 
-    columnReorderingData.columnBefore = cellGroupColumnWidths.keys[index - 1];
-    columnReorderingData.columnAfter = cellGroupColumnWidths.keys[index + 1];
-
-    let localDisplacement = this.distance;
+    let localDisplacement = this.distance + this.props.scrollX - this.scrollStart;
     if (this.isColumnMovedToRight(localDisplacement)) {
       for (let i = index + 1, j = cellGroupColumnWidths.widths.length; i < j; i++) {
         let curWidth = cellGroupColumnWidths.widths[i];
@@ -214,11 +209,11 @@ class ReorderHandle extends React.Component {
           localDisplacement -= curWidth;
         } else {
           if (localDisplacement > curWidth / 2) {
-            columnReorderingData.columnAfter = cellGroupColumnWidths.keys[i + 1];
-            columnReorderingData.columnBefore = cellGroupColumnWidths.keys[i];
+            columnAfter = cellGroupColumnWidths.keys[i + 1];
+            columnBefore = cellGroupColumnWidths.keys[i];
           } else {
-            columnReorderingData.columnAfter = cellGroupColumnWidths.keys[i];
-            columnReorderingData.columnBefore = (i - 1 !== index) ? cellGroupColumnWidths.keys[i - 1] : cellGroupColumnWidths.keys[i - 2];
+            columnAfter = cellGroupColumnWidths.keys[i];
+            columnBefore = (i - 1 !== index) ? cellGroupColumnWidths.keys[i - 1] : cellGroupColumnWidths.keys[i - 2];
           }
           break;
         }
@@ -231,19 +226,19 @@ class ReorderHandle extends React.Component {
           localDisplacement -= curWidth;
         } else {
           if (localDisplacement > curWidth / 2) {
-            columnReorderingData.columnAfter = cellGroupColumnWidths.keys[i];
-            columnReorderingData.columnBefore = cellGroupColumnWidths.keys[i - 1];
+            columnAfter = cellGroupColumnWidths.keys[i];
+            columnBefore = cellGroupColumnWidths.keys[i - 1];
           } else {
-            columnReorderingData.columnBefore = cellGroupColumnWidths.keys[i];
-            columnReorderingData.columnAfter = (i + 1 !== index) ? cellGroupColumnWidths.keys[i + 1] : cellGroupColumnWidths.keys[i + 2];
+            columnBefore = cellGroupColumnWidths.keys[i];
+            columnAfter = (i + 1 !== index) ? cellGroupColumnWidths.keys[i + 1] : cellGroupColumnWidths.keys[i + 2];
           }
           break;
         }
       }
     }
     this.props.onColumnReorderEndCallback({
-      columnBefore: columnReorderingData.columnBefore,
-      columnAfter: columnReorderingData.columnAfter,
+      columnBefore,
+      columnAfter,
       reorderColumn: this.props.columnKey
     });
   };
