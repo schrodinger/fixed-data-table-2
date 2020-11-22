@@ -14,7 +14,7 @@ import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ResizerKnob from 'ResizerKnob';
-import ReorderHandle from './ReorderHandle';
+import ReorderHandle from 'ReorderHandle';
 import joinClasses from 'joinClasses';
 import cx from 'cx';
 
