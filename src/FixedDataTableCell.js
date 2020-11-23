@@ -214,6 +214,7 @@ class FixedDataTableCell extends React.Component {
       height,
       width,
     };
+    // Todo: Clean the unused props
     if (this.props.isHeader) {
       cellProps = {
         ...cellProps,
@@ -228,6 +229,7 @@ class FixedDataTableCell extends React.Component {
         maxScrollX: this.props.maxScrollX,
         cellGroupColumnWidths: this.props.cellGroupColumnWidths,
         scrollToX: this.props.scrollToX,
+        getColumnGroupWidth: this.props.getColumnGroupWidth
       };
     }
 
@@ -239,7 +241,7 @@ class FixedDataTableCell extends React.Component {
     if (this.props.isHeader && (this.props.onColumnResizeEndCallback || this.props.onColumnReorderEndCallback)) {
       content = (
         <ResizeReorderCell 
-          {...cellProps} 
+          {...cellProps}
           onColumnResizeEndCallback={this.props.onColumnResizeEndCallback}
           onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}>
           {props.cell}

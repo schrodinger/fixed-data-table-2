@@ -32,13 +32,7 @@ class ReorderHandle extends React.Component {
     isFixed: PropTypes.bool,
     scrollToX: PropTypes.func,
     onColumnReorderEndCallback: PropTypes.func,
-    cellGroupColumnWidths: PropTypes.shape({
-      keys: PropTypes.arrayOf(PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number
-      ])),
-      widths: PropTypes.arrayOf(PropTypes.number)
-    }),
+    getColumnGroupWidth: PropTypes.func,
     columnKey: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
@@ -108,7 +102,7 @@ class ReorderHandle extends React.Component {
   onMouseDown = (event) => {
     this.distance = 0;
     this.animating = true;
-    this.scrollStart = this.props.scrollX;
+    this.scrollStart = getState().scrollX;
     this.originalLeft = this.props.left;
     this.initializeDOMMouseMoveTracker();
     this.mouseMoveTracker.captureMouseMoves(event);
@@ -196,8 +190,8 @@ class ReorderHandle extends React.Component {
   isColumnMovedToLeft = (deltaX) => deltaX < 0;
 
   calculateColumnOrder = () => {
-    const { cellGroupColumnWidths } = this.props;
-    const index = this.props.cellGroupColumnWidths.keys.indexOf(this.props.columnKey);
+    const cellGroupColumnWidths = this.props.getColumnGroupWidth();
+    const index = cellGroupColumnWidths.keys.indexOf(this.props.columnKey);
     let columnBefore = cellGroupColumnWidths.keys[index - 1];
     let columnAfter = cellGroupColumnWidths.keys[index + 1];
 

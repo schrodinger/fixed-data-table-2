@@ -131,23 +131,28 @@ class FixedDataTableCellGroupImpl extends React.Component {
     this._initialRender = false;
   }
 
+  getColumnGroupWidth = () => {
+    const { columns } = this.props;
+    const cellGroupColumnWidths = {
+      keys: [],
+      widths: []
+    };
+    if (this.props.isHeader) {
+      for (let i = 0, j = columns.length; i < j; i++) {
+        const key = columns[i].props.columnKey || 'cell_' + i;
+        cellGroupColumnWidths.keys.push(key);
+        cellGroupColumnWidths.widths.push(columns[i].props.width);
+      }
+    }
+    return cellGroupColumnWidths;
+  }
+
+
   render() /*object*/ {
     var props = this.props;
     var columns = props.columns;
     var cells = new Array(columns.length);
     var contentWidth = sumPropWidths(columns);
-
-    var cellGroupColumnWidths = {
-      keys: [],
-      widths: []
-    };
-    if (this.props.isHeader) {
-      for (var i = 0, j = columns.length; i < j; i++) {
-        var key = columns[i].props.columnKey || 'cell_' + i;
-        cellGroupColumnWidths.keys.push(key);
-        cellGroupColumnWidths.widths.push(columns[i].props.width);
-      }
-    }
 
     var currentPosition = 0;
     for (var i = 0, j = columns.length; i < j; i++) {
@@ -166,7 +171,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
           currentPosition,
           key,
           contentWidth,
-          cellGroupColumnWidths,
         );
       }
       currentPosition += columnProps.width;
@@ -195,8 +199,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     /*object*/ cellTemplate,
     /*number*/ left,
     /*string*/ key,
-    /*number*/ columnGroupWidth,
-    /*array*/ cellGroupColumnWidths
+    /*number*/ columnGroupWidth
   ) /*object*/ => {
 
     var className = columnProps.cellClassName;
@@ -239,8 +242,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
         isFixed={this.props.isFixed}
         availableScrollWidth={this.props.availableScrollWidth}
         maxScrollX={this.props.maxScrollX}
-        cellGroupColumnWidths={cellGroupColumnWidths}
         scrollToX={this.props.scrollToX}
+        getColumnGroupWidth={this.getColumnGroupWidth}
       />
     );
   }

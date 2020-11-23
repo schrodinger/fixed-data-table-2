@@ -201,6 +201,7 @@ class ResizeReorderCell extends React.PureComponent {
       isFixed,
       scrollToX,
       cellGroupColumnWidths,
+      getColumnGroupWidth,
       ...props
     } = this.props;
 
