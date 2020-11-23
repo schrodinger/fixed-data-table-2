@@ -1,6 +1,6 @@
 ---
-name: Issue Template
-about: Template for issues
+name: Bug Reports
+about: File a bug report or ask doubts
 title: ''
 labels: ''
 assignees: ''
@@ -23,7 +23,9 @@ assignees: ''
 
 ## Steps to Reproduce (for bugs)
 <!--- Provide a link to a live example, or - -->
-<!--- Fork the CodePen to reproduce https://codesandbox.io/s/fixed-data-table-example-3gd9x ->
+<!--- Fork any of these code sandbox templates: ->
+<!---   *  Basic template: https://codesandbox.io/s/fixed-data-table-basic-example-cwds0 ->
+<!---   *  Advanced template: https://codesandbox.io/s/fixed-data-table-advanced-example-3gd9x ->
 
 ## Context
 <!--- How has this issue affected you? What are you trying to accomplish? -->
