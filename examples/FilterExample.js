@@ -7,7 +7,7 @@
 import ExampleImage from './helpers/ExampleImage';
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, TextCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class DataListWrapper {
@@ -85,33 +85,33 @@ class FilterExample extends React.Component {
           />
           <Column
             columnKey="firstName"
-            header={<Cell>First Name</Cell>}
+            header={<DataCell>First Name</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="lastName"
-            header={<Cell>Last Name</Cell>}
+            header={<DataCell>Last Name</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="city"
-            header={<Cell>City</Cell>}
+            header={<DataCell>City</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             width={100}
           />
           <Column
             columnKey="street"
-            header={<Cell>Street</Cell>}
+            header={<DataCell>Street</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="zipCode"
-            header={<Cell>Zip Code</Cell>}
+            header={<DataCell>Zip Code</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />

@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 var SortTypes = {
@@ -28,11 +28,11 @@ class SortHeaderCell extends React.Component {
   render() {
     var {onSortChange, sortDir, children, ...props} = this.props;
     return (
-      <Cell {...props}>
+      <DataCell {...props}>
         <a onClick={this._onSortChange}>
           {children} {sortDir ? (sortDir === SortTypes.DESC ? '↓' : '↑') : ''}
         </a>
-      </Cell>
+      </DataCell>
     );
   }
 

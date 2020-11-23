@@ -6,7 +6,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import { DataCtxt, AddFilter } from './helpers/HOC';
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import examplePropTypes from './helpers/examplePropTypes';
@@ -116,9 +116,9 @@ class PendingCell extends React.PureComponent {
     const { data, rowIndex, columnKey, dataVersion, ...props } = this.props;
     const rowObject = data.getObjectAt(rowIndex);
     return (
-      <Cell {...props}>
+      <DataCell {...props}>
         {rowObject ? rowObject[columnKey] : 'pending'}
-      </Cell>
+      </DataCell>
     );
   }
 }
@@ -194,33 +194,33 @@ class ContextExample extends React.Component {
         >
           <Column
             columnKey="firstName"
-            header={<Cell>First</Cell>}
+            header={<DataCell>First</DataCell>}
             cell={<PagedCell />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="lastName"
-            header={<Cell>Last Name</Cell>}
+            header={<DataCell>Last Name</DataCell>}
             cell={<PagedCell />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="city"
-            header={<Cell>City</Cell>}
+            header={<DataCell>City</DataCell>}
             cell={<PagedCell />}
             width={100}
           />
           <Column
             columnKey="street"
-            header={<Cell>Street</Cell>}
+            header={<DataCell>Street</DataCell>}
             cell={<PagedCell />}
             width={200}
           />
           <Column
             columnKey="zipCode"
-            header={<Cell>Zip Code</Cell>}
+            header={<DataCell>Zip Code</DataCell>}
             cell={<PagedCell />}
             width={200}
           />

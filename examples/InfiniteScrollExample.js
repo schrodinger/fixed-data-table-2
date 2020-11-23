@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { PagedCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class PagedData {
@@ -81,40 +81,40 @@ class InfiniteScrollExample extends React.Component {
           height={500}
           {...this.props}>
           <Column
-            header={<Cell></Cell>}
-            cell={({rowIndex}) => (<Cell>{rowIndex}</Cell>)}
+            header={<DataCell></DataCell>}
+            cell={({rowIndex}) => (<DataCell>{rowIndex}</DataCell>)}
             fixed={true}
             width={50}
           />
           <Column
             columnKey="firstName"
-            header={<Cell>First Name</Cell>}
+            header={<DataCell>First Name</DataCell>}
             cell={<PagedCell data={pagedData} />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="lastName"
-            header={<Cell>Last Name</Cell>}
+            header={<DataCell>Last Name</DataCell>}
             cell={<PagedCell data={pagedData} />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="city"
-            header={<Cell>City</Cell>}
+            header={<DataCell>City</DataCell>}
             cell={<PagedCell data={pagedData} />}
             width={100}
           />
           <Column
             columnKey="street"
-            header={<Cell>Street</Cell>}
+            header={<DataCell>Street</DataCell>}
             cell={<PagedCell data={pagedData} />}
             width={200}
           />
           <Column
             columnKey="zipCode"
-            header={<Cell>Zip Code</Cell>}
+            header={<DataCell>Zip Code</DataCell>}
             cell={<PagedCell data={pagedData} />}
             width={200}
           />

@@ -12,8 +12,8 @@
 'use strict';
 
 import Table from 'FixedDataTableContainer';
-import Cell from 'FixedDataTableCellDefault';
-import CellDeprecated from 'FixedDataTableCellDefaultDeprecated';
+import Cell from 'FixedDataTableCellDefaultDeprecated';
+import DataCell from 'FixedDataTableCellDefault';
 import Column from 'FixedDataTableColumn';
 import ColumnGroup from 'FixedDataTableColumnGroup';
 
@@ -21,7 +21,7 @@ const version = '1.1.0';
 
 export {
   Cell,
-  CellDeprecated,
+  DataCell,
   Column,
   ColumnGroup,
   Table,

@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { DateCell, ImageCell, LinkCell, TextCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class FixedRightColumnsExample extends React.Component {
@@ -36,45 +36,45 @@ class FixedRightColumnsExample extends React.Component {
         />
         <Column
           columnKey="firstName"
-          header={<Cell>First Name</Cell>}
+          header={<DataCell>First Name</DataCell>}
           cell={<LinkCell data={dataList} />}
           fixedRight={true}
           width={100}
         />
         <Column
           columnKey="lastName"
-          header={<Cell>Last Name</Cell>}
+          header={<DataCell>Last Name</DataCell>}
           cell={<TextCell data={dataList} />}
           fixedRight={true}
           width={100}
         />
         <Column
           columnKey="city"
-          header={<Cell>City</Cell>}
+          header={<DataCell>City</DataCell>}
           cell={<TextCell data={dataList} />}
           width={100}
         />
         <Column
           columnKey="street"
-          header={<Cell>Street</Cell>}
+          header={<DataCell>Street</DataCell>}
           cell={<TextCell data={dataList} />}
           width={200}
         />
         <Column
           columnKey="zipCode"
-          header={<Cell>Zip Code</Cell>}
+          header={<DataCell>Zip Code</DataCell>}
           cell={<TextCell data={dataList} />}
           width={200}
         />
         <Column
           columnKey="email"
-          header={<Cell>Email</Cell>}
+          header={<DataCell>Email</DataCell>}
           cell={<LinkCell data={dataList} />}
           width={200}
         />
         <Column
           columnKey="date"
-          header={<Cell>DOB</Cell>}
+          header={<DataCell>DOB</DataCell>}
           cell={<DateCell data={dataList} />}
           width={200}
         />

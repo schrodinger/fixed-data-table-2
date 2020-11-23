@@ -10,7 +10,7 @@
  * @typechecks
  */
 
-import FixedDataTableCellDefault from 'FixedDataTableCellDefault';
+import FixedDataTableCellDefaultDeprecated from 'FixedDataTableCellDefaultDeprecated';
 import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -294,10 +294,9 @@ class FixedDataTableCell extends React.Component {
       content = props.cell(cellProps);
     } else {
       content = (
-        <FixedDataTableCellDefault
-          {...cellProps}>
+        <FixedDataTableCellDefaultDeprecated {...cellProps}>
           {props.cell}
-        </FixedDataTableCellDefault>
+        </FixedDataTableCellDefaultDeprecated>
       );
     }
 

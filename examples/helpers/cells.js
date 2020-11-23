@@ -5,7 +5,7 @@
 "use strict";
 
 import ExampleImage from './ExampleImage';
-import { Cell } from 'fixed-data-table-2';
+import { DataCell } from 'fixed-data-table-2';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 
@@ -13,11 +13,11 @@ class CollapseCell extends React.PureComponent {
   render() {
     const {data, rowIndex, columnKey, collapsedRows, callback, ...props} = this.props;
     return (
-      <Cell {...props}>
+      <DataCell {...props}>
         <a onClick={() => callback(rowIndex)}>
           {collapsedRows.has(rowIndex) ? '\u25BC' : '\u25BA'}
         </a>
-      </Cell>
+      </DataCell>
     );
   }
 }
@@ -26,9 +26,9 @@ class ColoredTextCell extends React.PureComponent {
   render() {
     const {data, rowIndex, columnKey, ...props} = this.props;
     return (
-      <Cell {...props}>
+      <DataCell {...props}>
         {this.colorizeText(data.getObjectAt(rowIndex)[columnKey], rowIndex)}
-      </Cell>
+      </DataCell>
     );
   }
 
@@ -46,9 +46,9 @@ class DateCell extends React.PureComponent {
   render() {
     const {data, rowIndex, columnKey, ...props} = this.props;
     return (
-      <Cell {...props}>
+      <DataCell {...props}>
         {data.getObjectAt(rowIndex)[columnKey].toLocaleString()}
-      </Cell>
+      </DataCell>
     );
   }
 }
@@ -68,9 +68,9 @@ class LinkCell extends React.PureComponent {
   render() {
     const {data, rowIndex, columnKey, ...props} = this.props;
     return (
-      <Cell {...props}>
+      <DataCell {...props}>
         <a href="#">{data.getObjectAt(rowIndex)[columnKey]}</a>
-      </Cell>
+      </DataCell>
     );
   }
 }
@@ -80,9 +80,9 @@ class PendingCell extends React.PureComponent {
     const {data, rowIndex, columnKey, dataVersion, ...props} = this.props;
     const rowObject = data.getObjectAt(rowIndex);
     return (
-      <Cell {...props}>
+      <DataCell {...props}>
         {rowObject ? rowObject[columnKey] : 'pending'}
-      </Cell>
+      </DataCell>
     );
   }
 }
@@ -101,12 +101,12 @@ class RemovableHeaderCell extends React.PureComponent {
   render() {
     const {data, rowIndex, columnKey, callback, children, ...props} = this.props;
     return (
-      <Cell {...props}>
+      <DataCell {...props}>
         {children}
         <a style={{float: 'right'}} onClick={() => callback(columnKey)}>
           {'\u274C'}
         </a>
-      </Cell>
+      </DataCell>
     );
   }
 }
@@ -115,9 +115,9 @@ class TextCell extends React.PureComponent {
   render() {
     const {data, rowIndex, columnKey, ...props} = this.props;
     return (
-      <Cell {...props}>
+      <DataCell {...props}>
         {data.getObjectAt(rowIndex)[columnKey]}
-      </Cell>
+      </DataCell>
     );
   }
 }
@@ -127,14 +127,14 @@ class TooltipCell extends React.PureComponent {
     const {data, rowIndex, columnKey, ...props} = this.props;
     const value = data.getObjectAt(rowIndex)[columnKey];
     return (
-      <Cell
+      <DataCell
         {...props}
         onMouseEnter={() => { ReactTooltip.show(); }}
         onMouseLeave={() => { ReactTooltip.hide(); }}>
         <div data-tip={value}>
           {value}
         </div>
-      </Cell>
+      </DataCell>
     );
   }
 }

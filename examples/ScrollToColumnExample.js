@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, TextCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class ScrollToColumnExample extends React.Component {
@@ -50,63 +50,63 @@ class ScrollToColumnExample extends React.Component {
           {...this.props}>
           <Column
             columnKey="firstName"
-            header={<Cell>First Name [0]</Cell>}
+            header={<DataCell>First Name [0]</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="lastName"
-            header={<Cell>Last Name [1]</Cell>}
+            header={<DataCell>Last Name [1]</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             fixed={true}
             width={100}
           />
           <Column
             columnKey="city"
-            header={<Cell>City [2]</Cell>}
+            header={<DataCell>City [2]</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             width={100}
           />
           <Column
             columnKey="street"
-            header={<Cell>Street [3]</Cell>}
+            header={<DataCell>Street [3]</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="zipCode"
-            header={<Cell>Zip Code [4]</Cell>}
+            header={<DataCell>Zip Code [4]</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="bs"
-            header={<Cell>BS [5]</Cell>}
+            header={<DataCell>BS [5]</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="catchPhrase"
-            header={<Cell>Catch Phrase [6]</Cell>}
+            header={<DataCell>Catch Phrase [6]</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="companyName"
-            header={<Cell>Company Name [7]</Cell>}
+            header={<DataCell>Company Name [7]</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="words"
-            header={<Cell>Words [8]</Cell>}
+            header={<DataCell>Words [8]</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
           <Column
             columnKey="sentence"
-            header={<Cell>Sentence [9]</Cell>}
+            header={<DataCell>Sentence [9]</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />

@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class ResizeExample extends React.Component {
@@ -50,7 +50,7 @@ class ResizeExample extends React.Component {
         {...this.props}>
         <Column
           columnKey="firstName"
-          header={<Cell>First Name</Cell>}
+          header={<DataCell>First Name</DataCell>}
           cell={<TextCell data={dataList} />}
           fixed={true}
           width={columnWidths.firstName}
@@ -58,7 +58,7 @@ class ResizeExample extends React.Component {
         />
         <Column
           columnKey="lastName"
-          header={<Cell>Last Name (min/max constrained)</Cell>}
+          header={<DataCell>Last Name (min/max constrained)</DataCell>}
           cell={<TextCell data={dataList} />}
           width={columnWidths.lastName}
           isResizable={true}
@@ -67,14 +67,14 @@ class ResizeExample extends React.Component {
         />
         <Column
           columnKey="companyName"
-          header={<Cell>Company</Cell>}
+          header={<DataCell>Company</DataCell>}
           cell={<TextCell data={dataList} />}
           width={columnWidths.companyName}
           isResizable={true}
         />
         <Column
           columnKey="sentence"
-          header={<Cell>Sentence</Cell>}
+          header={<DataCell>Sentence</DataCell>}
           cell={<TextCell data={dataList} />}
           width={columnWidths.sentence}
           isResizable={true}
