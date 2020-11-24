@@ -9,9 +9,8 @@
  * @providesModule shallowEqualSelector
  */
 
-'use strict'
+'use strict';
 
-import { createSelectorCreator, defaultMemoize } from 'reselect';
-import shallowEqual from 'shallowEqual';
+import { createSelector } from '@reduxjs/toolkit';
 
-export default createSelectorCreator(defaultMemoize, shallowEqual);
+export default createSelector;

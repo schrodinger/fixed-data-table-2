@@ -11,7 +11,6 @@
  * @noflow
  */
 
-import * as ActionTypes from 'ActionTypes';
 import FixedDataTable from 'FixedDataTable';
 import FixedDataTableStore from 'FixedDataTableStore';
 import React from 'react';
@@ -21,6 +20,7 @@ import pick from 'lodash/pick';
 import * as scrollActions from 'scrollActions';
 import ScrollContainer from 'ScrollContainer';
 import Scrollbar from 'Scrollbar';
+import { initialize, propChange } from './reducers'
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
@@ -38,10 +38,7 @@ class FixedDataTableContainer extends React.Component {
 
     this.scrollActions = bindActionCreators(scrollActions, this.reduxStore.dispatch);
 
-    this.reduxStore.dispatch({
-      type: ActionTypes.INITIALIZE,
-      props,
-    });
+    this.reduxStore.dispatch(initialize(props))
 
     this.unsubscribe = this.reduxStore.subscribe(this.update);
     this.state = this.getBoundState();
@@ -53,11 +50,7 @@ class FixedDataTableContainer extends React.Component {
       'You must set either a height or a maxHeight'
     );
 
-    this.reduxStore.dispatch({
-      type: ActionTypes.PROP_CHANGE,
-      newProps: nextProps,
-      oldProps: this.props,
-    });
+    this.reduxStore.dispatch(propChange(nextProps, this.props))
   }
 
   componentWillUnmount() {

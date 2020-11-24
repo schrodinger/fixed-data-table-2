@@ -12,15 +12,15 @@
 'use strict';
 
 import { getScrollAnchor, scrollTo } from 'scrollAnchor';
-import * as ActionTypes from 'ActionTypes';
 import IntegerBufferSet from 'IntegerBufferSet';
 import PrefixIntervalTree from 'PrefixIntervalTree';
-import columnStateHelper from 'columnStateHelper'
+import columnStateHelper from 'columnStateHelper';
 import computeRenderedRows from 'computeRenderedRows';
 import convertColumnElementsToData from 'convertColumnElementsToData';
 import pick from 'lodash/pick';
 import shallowEqual from 'shallowEqual';
 import Scrollbar from 'Scrollbar';
+import { createSlice } from '@reduxjs/toolkit';
 
 /**
  * Returns the default initial state for the redux store.
@@ -99,84 +99,108 @@ function getInitialState() {
   };
 }
 
-function reducers(state = getInitialState(), action) {
-  switch (action.type) {
-    case ActionTypes.INITIALIZE: {
-      const { props } = action;
+const reducerSlice = createSlice({
+  name: 'FDT',
+  initialState: getInitialState(),
+  reducers: {
+    initialize: {
+      reducer: (state, action) => {
+        const { props } = action.payload;
+        let newState = setStateFromProps(state, props);
+        newState = initializeRowHeightsAndOffsets(newState);
+        const scrollAnchor = getScrollAnchor(newState, props);
+        newState = computeRenderedRows(newState, scrollAnchor);
+        return columnStateHelper.initialize(newState, props, {});
+      },
+      prepare: (props) => {
+        return { payload: { props } };
+      }
+    },
+    propChange: {
+      reducer: (state, action) => {
+        const { newProps, oldProps } = action.payload;
+        let newState = setStateFromProps(state, newProps);
 
-      let newState = setStateFromProps(state, props);
-      newState = initializeRowHeightsAndOffsets(newState);
-      const scrollAnchor = getScrollAnchor(newState, props);
-      newState = computeRenderedRows(newState, scrollAnchor);
-      return columnStateHelper.initialize(newState, props, {});
-    }
-    case ActionTypes.PROP_CHANGE: {
-      const { newProps, oldProps } = action;
-      let newState = setStateFromProps(state, newProps);
-
-      if (oldProps.rowsCount !== newProps.rowsCount ||
+        if (oldProps.rowsCount !== newProps.rowsCount ||
           oldProps.rowHeight !== newProps.rowHeight ||
           oldProps.subRowHeight !== newProps.subRowHeight) {
-        newState = initializeRowHeightsAndOffsets(newState);
+          newState = initializeRowHeightsAndOffsets(newState);
+        }
+
+        if (oldProps.rowsCount !== newProps.rowsCount) {
+          // NOTE (jordan) bad practice to modify state directly, but okay since
+          // we know setStateFromProps clones state internally
+          newState.rowBufferSet = new IntegerBufferSet();
+        }
+
+        const scrollAnchor = getScrollAnchor(newState, newProps, oldProps);
+
+        // If anything has changed in state, update our rendered rows
+        if (!shallowEqual(state, newState) || scrollAnchor.changed) {
+          newState = computeRenderedRows(newState, scrollAnchor);
+        }
+
+        newState = columnStateHelper.initialize(newState, newProps, oldProps);
+
+        // if scroll values have changed, then we're scrolling!
+        if (newState.scrollX !== state.scrollX || newState.scrollY !== state.scrollY) {
+          newState.scrolling = newState.scrolling || true;
+        }
+
+        // TODO REDUX_MIGRATION solve w/ evil-diff
+        // TODO (jordan) check if relevant props unchanged and
+        // children column widths and flex widths are unchanged
+        // alternatively shallow diff and reconcile props
+        return newState;
+      },
+      prepare(newProps, oldProps) {
+        return { payload: { newProps, oldProps } };
       }
-
-      if (oldProps.rowsCount !== newProps.rowsCount) {
-        // NOTE (jordan) bad practice to modify state directly, but okay since
-        // we know setStateFromProps clones state internally
-        newState.rowBufferSet = new IntegerBufferSet();
+    },
+    stopScroll: {
+      reducer: (state, action) => {
+        const newState = Object.assign({}, state, {
+          scrolling: false,
+        });
+        const previousScrollAnchor = {
+          firstIndex: state.firstRowIndex,
+          firstOffset: state.firstRowOffset,
+          lastIndex: state.lastIndex,
+        };
+        return computeRenderedRows(newState, previousScrollAnchor);
+      },
+    },
+    scrollToY: {
+      reducer: (state, action) => {
+        let { scrollY } = action.payload;
+        const newState = Object.assign({}, state, {
+          scrolling: true,
+        });
+        const scrollAnchor = scrollTo(newState, scrollY);
+        return computeRenderedRows(newState, scrollAnchor);
+      },
+      prepare: (scrollY) => {
+        return { payload: { scrollY } };
       }
-
-      const scrollAnchor = getScrollAnchor(newState, newProps, oldProps);
-
-      // If anything has changed in state, update our rendered rows
-      if (!shallowEqual(state, newState) || scrollAnchor.changed) {
-        newState = computeRenderedRows(newState, scrollAnchor);
+    },
+    scrollToX: {
+      reducer: (state, action) => {
+        const { scrollX } = action.payload;
+        return Object.assign({}, state, {
+          scrolling: true,
+          scrollX,
+        });
+      },
+      prepare: (scrollX) => {
+        return { payload: { scrollX } };
       }
-
-      newState = columnStateHelper.initialize(newState, newProps, oldProps);
-
-      // if scroll values have changed, then we're scrolling!
-      if (newState.scrollX !== state.scrollX || newState.scrollY !== state.scrollY) {
-        newState.scrolling = newState.scrolling || true;
-      }
-
-      // TODO REDUX_MIGRATION solve w/ evil-diff
-      // TODO (jordan) check if relevant props unchanged and
-      // children column widths and flex widths are unchanged
-      // alternatively shallow diff and reconcile props
-      return newState;
-    }
-    case ActionTypes.SCROLL_END: {
-      const newState = Object.assign({}, state, {
-        scrolling: false,
-      });
-      const previousScrollAnchor = {
-        firstIndex: state.firstRowIndex,
-        firstOffset: state.firstRowOffset,
-        lastIndex: state.lastIndex,
-      };
-      return computeRenderedRows(newState, previousScrollAnchor);
-    }
-    case ActionTypes.SCROLL_TO_Y: {
-      let { scrollY } = action;
-      const newState = Object.assign({}, state, {
-        scrolling: true,
-      });
-      const scrollAnchor = scrollTo(newState, scrollY);
-      return computeRenderedRows(newState, scrollAnchor);
-    }
-    case ActionTypes.SCROLL_TO_X: {
-      const { scrollX } = action;
-      return Object.assign({}, state, {
-        scrolling: true,
-        scrollX,
-      });
-    }
-    default: {
-      return state;
     }
   }
-}
+});
+
+const { actions, reducer } = reducerSlice;
+
+export const { initialize, propChange, stopScroll, scrollToY, scrollToX } = actions;
 
 /**
  * Initialize row heights (storedHeights) & offsets based on the default rowHeight
@@ -245,4 +269,4 @@ function setStateFromProps(state, props) {
   return newState;
 }
 
-export default reducers;
+export default reducer;

@@ -12,9 +12,15 @@
 'use strict';
 
 import reducers from 'reducers';
-import { createStore } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
 
-const store = createStore(reducers);
+const store = configureStore({
+  reducer: reducers,
+  middleware: getDefaultMiddleware => getDefaultMiddleware({
+    serializableCheck: false,
+    immutableCheck: false
+  })
+});
 
 // Todo: Change name of getState to something relevant
 export const getState = () => ({

@@ -8,6 +8,7 @@
     "react-dom": ">=15.3.0"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.4.0",
     "lodash": "^4.17.4",
     "prop-types": "^15.7.2",
     "react-lifecycles-compat": "^3.0.4",
