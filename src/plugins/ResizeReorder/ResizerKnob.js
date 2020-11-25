@@ -31,7 +31,7 @@ class ResizerKnob extends React.Component {
     /**
      * @type {number} X coordinate of ResizerLine during resizing. It is passed do to ResizerLine to render at appropriate position.
      */
-    resizerLineXCoordinate: 0,
+    currentMouseXCoordinate: 0,
 
     /**
      * @type {number} Total displacement of mouse calculated from initial position when resizing started
@@ -74,7 +74,7 @@ class ResizerKnob extends React.Component {
       <ResizerLine
         height={this.props.resizerLineHeight}
         visible={!!this.state.isColumnResizing}
-        xCoordinate={this.state.resizerLineXCoordinate}
+        xCoordinate={this.state.currentMouseXCoordinate}
         top={this.state.top}
       />;
 
@@ -116,7 +116,7 @@ class ResizerKnob extends React.Component {
       initialMouseXCoordinate,
       isColumnResizing: true,
       totalDisplacement: 0,
-      resizerLineXCoordinate: initialMouseXCoordinate
+      currentMouseXCoordinate: initialMouseXCoordinate
     });
   };
 
@@ -140,11 +140,11 @@ class ResizerKnob extends React.Component {
     // Limit the resizer line to not move ahead or back of maxWidth and minWidth respectively
     if (this.props.width + newTotalDisplacement < minWidth || this.props.width + newTotalDisplacement > maxWidth) {
       // If new position is going out of bounds, instead of updating,  use the previous value
-      newResizerLineXCoordinate = this.state.resizerLineXCoordinate;
+      newResizerLineXCoordinate = this.state.currentMouseXCoordinate;
     }
     this.setState({
       totalDisplacement: newTotalDisplacement,
-      resizerLineXCoordinate: newResizerLineXCoordinate
+      currentMouseXCoordinate: newResizerLineXCoordinate
     });
   };
 
