@@ -49,7 +49,7 @@ class ReorderHandle extends React.Component {
    * Displacement of reorder cell while reordering
    * @type {number}
    */
-  distance = 0;
+  cursorDeltaX = 0;
 
   /**
    * Set true while reordering
@@ -117,7 +117,7 @@ class ReorderHandle extends React.Component {
    * @param {MouseEvent} event
    */
   onMouseDown = (event) => {
-    this.distance = 0;
+    this.cursorDeltaX = 0;
     this.isReordering = true;
     this.scrollStart = getState().scrollX;
     this.originalLeft = this.props.left;
@@ -133,7 +133,7 @@ class ReorderHandle extends React.Component {
    * @param {number} deltaX
    */
   onMouseMove = (deltaX) => {
-    this.distance += deltaX * (this.props.isRTL ? -1 : 1);
+    this.cursorDeltaX += deltaX * (this.props.isRTL ? -1 : 1);
   };
 
   onMouseUp = () => {
@@ -141,7 +141,7 @@ class ReorderHandle extends React.Component {
     this.calculateColumnOrder();
     this.isReordering = false;
     this.frameId = null;
-    this.distance = 0;
+    this.cursorDeltaX = 0;
     this.mouseMoveTracker.releaseMouseMoves();
     this.updateParentReorderingData({
       isColumnReordering: false,
@@ -178,7 +178,7 @@ class ReorderHandle extends React.Component {
     const scrollStart = this.scrollStart;
     let { isFixed, maxScrollX } = this.props;
     let { scrollX } = getState();
-    let deltaX = this.distance;
+    let deltaX = this.cursorDeltaX;
     if (!isFixed) {
       // Relative dragX position on scroll
       const dragX = this.originalLeft - scrollStart + deltaX;
@@ -216,7 +216,7 @@ class ReorderHandle extends React.Component {
     let columnBefore = cellGroupColumnWidths.keys[columnIndex - 1];
     let columnAfter = cellGroupColumnWidths.keys[columnIndex + 1];
 
-    let localDisplacement = this.distance + this.props.scrollX - this.scrollStart;
+    let localDisplacement = this.cursorDeltaX + this.props.scrollX - this.scrollStart;
     if (this.isColumnMovedToRight(localDisplacement)) {
       for (let i = columnIndex + 1, j = cellGroupColumnWidths.widths.length; i < j; i++) {
         let curWidth = cellGroupColumnWidths.widths[i];
