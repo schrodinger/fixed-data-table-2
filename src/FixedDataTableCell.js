@@ -187,7 +187,6 @@ class FixedDataTableCell extends React.Component {
     var style = {
       height,
       width,
-      overflow: 'visible',
     };
 
     if (this.props.isRTL) {
