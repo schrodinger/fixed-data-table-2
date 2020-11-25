@@ -121,13 +121,12 @@ class ReorderHandle extends React.Component {
     this.isReordering = true;
     this.scrollStart = getState().scrollX;
     this.originalLeft = this.props.left;
-    this.initializeDOMMouseMoveTracker();
-    this.mouseMoveTracker.captureMouseMoves(event);
+    this.initializeDOMMouseMoveTracker(event);
     this.updateParentReorderingData({
       isColumnReordering: true,
       displacement: 0
     });
-    this.frameId = requestAnimationFrame(this.updateState);
+    this.frameId = requestAnimationFrame(this.updateDisplacementPeriodically);
   };
 
   /**
@@ -150,22 +149,29 @@ class ReorderHandle extends React.Component {
     });
   };
 
-  initializeDOMMouseMoveTracker = () => {
+  /**
+   *
+   * @param {MouseEvent} event
+   */
+  initializeDOMMouseMoveTracker = (event) => {
     this.mouseMoveTracker = new DOMMouseMoveTracker(
       this.onMouseMove,
       this.onMouseUp,
       document.body,
       this.props.touchEnabled
     );
+    this.mouseMoveTracker.captureMouseMoves(event);
   };
 
   updateParentReorderingData = (state) => {
     this.props.updateParentReorderingData(state);
   };
 
-  updateState = () => {
+  updateDisplacementPeriodically = () => {
     if (this.isReordering) {
-      this.frameId = requestAnimationFrame(this.updateState);
+      /* NOTE: We need to use requestAnimationFrame because whenever column reaches the end of table (scroll width is left),
+       we want to update the scrollX which can't be updated if we uer onMouseMove*/
+      this.frameId = requestAnimationFrame(this.updateDisplacementPeriodically);
     }
     this.calculateDisplacementWithScroll();
   };

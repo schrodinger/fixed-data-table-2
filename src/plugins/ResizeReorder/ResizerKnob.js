@@ -50,7 +50,7 @@ class ResizerKnob extends React.Component {
   curRef = null;
 
   /**
-   * 
+   *
    * @type {DOMMouseMoveTracker}
    */
   mouseMoveTracker = null;
@@ -94,23 +94,24 @@ class ResizerKnob extends React.Component {
 
   /**
    * Registers event listeners for mouse tracking
+   * @param {MouseEvent} event
    */
-  initializeDOMMouseMoveTracker = () => {
+  initializeDOMMouseMoveTracker = (event) => {
     this.mouseMoveTracker = new DOMMouseMoveTracker(
       this.onMouseMove,
       this.onMouseUp,
       document.body,
       this.props.touchEnabled
     );
+    this.mouseMoveTracker.captureMouseMoves(event);
   };
 
   /**
    * @param {MouseEvent} ev Mouse down event
    */
   onMouseDown = (ev) => {
-    this.initializeDOMMouseMoveTracker();
+    this.initializeDOMMouseMoveTracker(ev);
     const initialMouseXCoordinate = FixedDataTableEventHelper.getCoordinatesFromEvent(ev).x;
-    this.mouseMoveTracker.captureMouseMoves(ev);
     this.setState({
       initialMouseXCoordinate,
       isColumnResizing: true,
