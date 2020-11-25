@@ -55,7 +55,7 @@ class ReorderHandle extends React.Component {
    * Set true while reordering
    * @type {boolean}
    */
-  animating = false;
+  isReordering = false;
 
   /**
    * Frame Id of requested animation frame
@@ -118,7 +118,7 @@ class ReorderHandle extends React.Component {
    */
   onMouseDown = (event) => {
     this.distance = 0;
-    this.animating = true;
+    this.isReordering = true;
     this.scrollStart = getState().scrollX;
     this.originalLeft = this.props.left;
     this.initializeDOMMouseMoveTracker();
@@ -140,7 +140,7 @@ class ReorderHandle extends React.Component {
   onMouseUp = () => {
     cancelAnimationFrame(this.frameId);
     this.calculateColumnOrder();
-    this.animating = false;
+    this.isReordering = false;
     this.frameId = null;
     this.distance = 0;
     this.mouseMoveTracker.releaseMouseMoves();
@@ -164,7 +164,7 @@ class ReorderHandle extends React.Component {
   };
 
   updateState = () => {
-    if (this.animating) {
+    if (this.isReordering) {
       this.frameId = requestAnimationFrame(this.updateState);
     }
     this.calculateDisplacementWithScroll();
