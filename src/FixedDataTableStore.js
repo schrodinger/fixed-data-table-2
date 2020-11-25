@@ -18,6 +18,7 @@ const store = configureStore({
   reducer: reducers,
   middleware: getDefaultMiddleware => getDefaultMiddleware({
     serializableCheck: false,
+    // Todo: Have to disable immutableCheck because state has circular JSON somewhere in it. Need to investigate it.
     immutableCheck: false
   })
 });
