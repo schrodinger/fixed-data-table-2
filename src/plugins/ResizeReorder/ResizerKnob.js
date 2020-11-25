@@ -17,13 +17,14 @@ import FixedDataTableEventHelper from 'FixedDataTableEventHelper';
 import ResizerLine from 'ResizerLine';
 import clamp from 'clamp';
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
+import _ from 'lodash';
 
 
 class ResizerKnob extends React.Component {
 
   initialState = {
     /**
-     * @type {string} Set true when column resizing starts. It is used to make ResizerLine visible.
+     * @type {boolean} Set true when column resizing starts. It is used to make ResizerLine visible.
      */
     isColumnResizing: undefined,
 
@@ -48,6 +49,12 @@ class ResizerKnob extends React.Component {
   // Ref to ResizerKnob
   curRef = null;
 
+  /**
+   * 
+   * @type {DOMMouseMoveTracker}
+   */
+  mouseMoveTracker = null;
+
   constructor(props) {
     super(props);
   }
@@ -67,7 +74,6 @@ class ResizerKnob extends React.Component {
       <ResizerLine
         height={this.props.resizerLineHeight}
         visible={!!this.state.isColumnResizing}
-        instance={this.state.instance}
         xCoordinate={this.state.resizerLineXCoordinate}
         top={this.state.top}
       />;
@@ -96,8 +102,8 @@ class ResizerKnob extends React.Component {
   /**
    * Registers event listeners for mouse tracking
    */
-  trackMouse = () => {
-    this._mouseMoveTracker = new DOMMouseMoveTracker(
+  initializeDOMMouseMoveTracker = () => {
+    this.mouseMoveTracker = new DOMMouseMoveTracker(
       this.onMouseMove,
       this.onMouseUp,
       document.body,
@@ -109,9 +115,9 @@ class ResizerKnob extends React.Component {
    * @param {MouseEvent} ev Mouse down event
    */
   onMouseDown = (ev) => {
-    this.trackMouse();
+    this.initializeDOMMouseMoveTracker();
     const initialMouseXCoordinate = FixedDataTableEventHelper.getCoordinatesFromEvent(ev).x;
-    this._mouseMoveTracker.captureMouseMoves(ev);
+    this.mouseMoveTracker.captureMouseMoves(ev);
     this.setState({
       initialMouseXCoordinate,
       isColumnResizing: true,
@@ -123,7 +129,7 @@ class ResizerKnob extends React.Component {
   onMouseUp = () => {
     const { minWidth, maxWidth } = this.getMinMaxWidth();
     const newWidth = clamp(this.props.width + this.state.totalDisplacement, minWidth, maxWidth);
-    this._mouseMoveTracker.releaseMouseMoves();
+    this.mouseMoveTracker.releaseMouseMoves();
     this.resetColumnResizing(() => this.props.onColumnResizeEnd(newWidth, this.props.columnKey));
   };
 
@@ -157,8 +163,9 @@ class ResizerKnob extends React.Component {
       isColumnResizing: false,
       totalDisplacement: 0
     }, () => {
-      if (callback)
+      if (_.isFunction(callback)) {
         callback();
+      }
     });
   };
 

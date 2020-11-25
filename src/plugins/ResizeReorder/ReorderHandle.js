@@ -87,13 +87,30 @@ class ReorderHandle extends React.Component {
           'fixedDataTableCellLayout/columnReorderContainer/active': false,
         })}
         onMouseDown={this.onMouseDown}
-        onTouchStart={this.props.touchEnabled ? this.onMouseDown : null}
-        onTouchEnd={this.props.touchEnabled ? e => e.stopPropagation() : null}
-        onTouchMove={this.props.touchEnabled ? e => e.stopPropagation() : null}
+        onTouchStart={this.onTouchStart}
+        onTouchEnd={this.onTouchEnd}
+        onTouchMove={this.onTouchMove}
         style={style}>
       </div>
     );
   }
+
+  onTouchStart = (ev) => {
+    if (!this.props.touchEnabled) {
+      return;
+    }
+    this.onMouseDown(ev);
+  };
+
+  onTouchEnd = (ev) => {
+    if (this.props.touchEnabled)
+      ev.stopPropagation();
+  };
+
+  onTouchMove = (ev) => {
+    if (this.props.touchEnabled)
+      ev.stopPropagation();
+  };
 
   /**
    *
@@ -191,13 +208,13 @@ class ReorderHandle extends React.Component {
 
   calculateColumnOrder = () => {
     const cellGroupColumnWidths = this.props.getColumnGroupWidth();
-    const index = cellGroupColumnWidths.keys.indexOf(this.props.columnKey);
-    let columnBefore = cellGroupColumnWidths.keys[index - 1];
-    let columnAfter = cellGroupColumnWidths.keys[index + 1];
+    const columnIndex = cellGroupColumnWidths.keys.indexOf(this.props.columnKey);
+    let columnBefore = cellGroupColumnWidths.keys[columnIndex - 1];
+    let columnAfter = cellGroupColumnWidths.keys[columnIndex + 1];
 
     let localDisplacement = this.distance + this.props.scrollX - this.scrollStart;
     if (this.isColumnMovedToRight(localDisplacement)) {
-      for (let i = index + 1, j = cellGroupColumnWidths.widths.length; i < j; i++) {
+      for (let i = columnIndex + 1, j = cellGroupColumnWidths.widths.length; i < j; i++) {
         let curWidth = cellGroupColumnWidths.widths[i];
         if (localDisplacement > curWidth) {
           localDisplacement -= curWidth;
@@ -207,14 +224,14 @@ class ReorderHandle extends React.Component {
             columnBefore = cellGroupColumnWidths.keys[i];
           } else {
             columnAfter = cellGroupColumnWidths.keys[i];
-            columnBefore = (i - 1 !== index) ? cellGroupColumnWidths.keys[i - 1] : cellGroupColumnWidths.keys[i - 2];
+            columnBefore = (i - 1 !== columnIndex) ? cellGroupColumnWidths.keys[i - 1] : cellGroupColumnWidths.keys[i - 2];
           }
           break;
         }
       }
     } else if (this.isColumnMovedToLeft(localDisplacement)) {
       localDisplacement = -localDisplacement;
-      for (let i = index - 1; i >= 0; i--) {
+      for (let i = columnIndex - 1; i >= 0; i--) {
         let curWidth = cellGroupColumnWidths.widths[i];
         if (localDisplacement > curWidth) {
           localDisplacement -= curWidth;
@@ -224,7 +241,7 @@ class ReorderHandle extends React.Component {
             columnBefore = cellGroupColumnWidths.keys[i - 1];
           } else {
             columnBefore = cellGroupColumnWidths.keys[i];
-            columnAfter = (i + 1 !== index) ? cellGroupColumnWidths.keys[i + 1] : cellGroupColumnWidths.keys[i + 2];
+            columnAfter = (i + 1 !== columnIndex) ? cellGroupColumnWidths.keys[i + 1] : cellGroupColumnWidths.keys[i + 2];
           }
           break;
         }

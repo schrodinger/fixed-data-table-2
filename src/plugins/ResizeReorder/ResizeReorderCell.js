@@ -131,20 +131,25 @@ class ResizeReorderCell extends React.PureComponent {
 
   state = { ...this.initialState };
 
-  updateReorderingData = (obj) => {
-    this.setState(obj);
-  };
+  /**
+   *
+   * @param {Object} data
+   * @param {boolean} data.isColumnReordering
+   * @param {number} data.displacement
+   */
+  updateReorderingData = (data) => {
+    const columnNotMoved = data.displacement === this.state.displacement
+    if (this.state.isColumnReordering && columnNotMoved) {
+      return;
+    }
 
-  clearState = () => {
-    this.setState(
-      this.initialState
-    );
+    this.setState(data);
   };
-
 
   renderReorderHandle = () => {
-    if (!this.props.onColumnReorderEndCallback)
+    if (!this.props.onColumnReorderEndCallback) {
       return null;
+    }
 
     return (
       <ReorderHandle
@@ -162,8 +167,9 @@ class ResizeReorderCell extends React.PureComponent {
   };
 
   renderResizerKnob = () => {
-    if (!this.props.onColumnResizeEndCallback)
+    if (!this.props.onColumnResizeEndCallback) {
       return null;
+    }
 
     return (
       <ResizerKnob
@@ -229,7 +235,6 @@ class ResizeReorderCell extends React.PureComponent {
     if (this.state.isColumnReordering) {
       const DIR_SIGN = this.props.isRTL ? -1 : 1;
       style.transform = `translateX(${this.state.displacement * DIR_SIGN}px) translateZ(0)`;
-      style.zIndex = 2;
     }
 
     let content;

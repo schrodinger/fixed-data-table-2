@@ -44,8 +44,9 @@ class ResizerLine extends React.PureComponent {
   };
 
   render() {
-    if (!this.props.visible)
+    if (!this.props.visible) {
       return null;
+    }
 
     const style = {
       height: this.props.height,
