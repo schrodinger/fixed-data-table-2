@@ -70,7 +70,7 @@ class ResizerKnob extends React.Component {
     const resizerKnobStyle = {
       height: this.props.height
     };
-    const dragKnob =
+    const resizerLine =
       <ResizerLine
         height={this.props.resizerLineHeight}
         visible={!!this.state.isColumnResizing}
@@ -87,14 +87,7 @@ class ResizerKnob extends React.Component {
         onTouchStart={this.props.touchEnabled ? this.onMouseDown : null}
         onTouchEnd={this.props.touchEnabled ? this.suppressEvent : null}
         onTouchMove={this.props.touchEnabled ? this.suppressEvent : null}>
-        {dragKnob}
-        <div
-          className={joinClasses(
-            cx('fixedDataTableCellLayout/columnResizerKnob'),
-            cx('public/fixedDataTableCell/columnResizerKnob'),
-          )}
-          style={resizerKnobStyle}
-        />
+        {resizerLine}
       </div>
     );
   }
@@ -128,7 +121,7 @@ class ResizerKnob extends React.Component {
 
   onMouseUp = () => {
     const { minWidth, maxWidth } = this.getMinMaxWidth();
-    const newWidth = clamp(this.props.width + this.state.totalDisplacement, minWidth, maxWidth);
+    const newWidth = clamp(this.props.width + (this.state.totalDisplacement * (this.props.isRTL ? -1 : 1)), minWidth, maxWidth);
     this.mouseMoveTracker.releaseMouseMoves();
     this.resetColumnResizing(() => this.props.onColumnResizeEnd(newWidth, this.props.columnKey));
   };
