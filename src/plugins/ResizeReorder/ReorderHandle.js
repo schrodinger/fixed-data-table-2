@@ -30,7 +30,7 @@ class ReorderHandle extends React.Component {
     isFixed: PropTypes.bool,
     scrollToX: PropTypes.func,
     onColumnReorderEndCallback: PropTypes.func,
-    getColumnGroupWidth: PropTypes.func,
+    getCellGroupWidth: PropTypes.func,
     columnKey: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
@@ -209,7 +209,7 @@ class ReorderHandle extends React.Component {
   isColumnMovedToLeft = (deltaX) => deltaX < 0;
 
   calculateColumnOrder = () => {
-    const cellGroupColumnWidths = this.props.getColumnGroupWidth();
+    const cellGroupColumnWidths = this.props.getCellGroupWidth();
     const columnIndex = cellGroupColumnWidths.keys.indexOf(this.props.columnKey);
     let columnBefore = cellGroupColumnWidths.keys[columnIndex - 1];
     let columnAfter = cellGroupColumnWidths.keys[columnIndex + 1];

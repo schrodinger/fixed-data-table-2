@@ -135,7 +135,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
    * Returns Object consisting of keys and widths of the columns in the current cell group.
    * @returns {{keys: [], widths: []}}
    */
-  getColumnGroupWidth = () => {
+  getCellGroupWidth = () => {
     const { columns } = this.props;
     const cellGroupColumnWidths = {
       keys: [],
@@ -249,7 +249,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         availableScrollWidth={this.props.availableScrollWidth}
         maxScrollX={this.props.maxScrollX}
         scrollToX={this.props.scrollToX}
-        getColumnGroupWidth={this.getColumnGroupWidth}
+        getCellGroupWidth={this.getCellGroupWidth}
       />
     );
   }

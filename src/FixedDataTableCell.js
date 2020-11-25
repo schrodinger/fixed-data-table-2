@@ -141,10 +141,10 @@ class FixedDataTableCell extends React.Component {
     isFixed: PropTypes.bool,
 
     /**
-     * Object consisting of keys and widths of the columns
+     * Function which returns object consisting of keys and widths of the columns
      * in the current cell group.
      */
-    cellGroupColumnWidths: PropTypes.object,
+    getCellGroupWidth: PropTypes.Func,
   }
 
   shouldComponentUpdate(nextProps) {
@@ -228,7 +228,7 @@ class FixedDataTableCell extends React.Component {
         maxScrollX: this.props.maxScrollX,
         cellGroupColumnWidths: this.props.cellGroupColumnWidths,
         scrollToX: this.props.scrollToX,
-        getColumnGroupWidth: this.props.getColumnGroupWidth
+        getCellGroupWidth: this.props.getCellGroupWidth
       };
     }
 
