@@ -173,10 +173,10 @@ class ReorderHandle extends React.Component {
        we want to update the scrollX which can't be updated if we uer onMouseMove*/
       this.frameId = requestAnimationFrame(this.updateDisplacementPeriodically);
     }
-    this.calculateDisplacementWithScroll();
+    this.updateDisplacementWithScroll();
   };
 
-  calculateDisplacementWithScroll = () => {
+  updateDisplacementWithScroll = () => {
     const scrollStart = this.scrollStart;
     let { isFixed, maxScrollX } = this.props;
     let { scrollX } = getState();
