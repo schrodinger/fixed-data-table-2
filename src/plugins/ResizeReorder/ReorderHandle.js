@@ -136,7 +136,7 @@ class ReorderHandle extends React.Component {
 
   onMouseUp = () => {
     cancelAnimationFrame(this.frameId);
-    this.calculateColumnOrder();
+    this.updateColumnOrder();
     this.isReordering = false;
     this.frameId = null;
     this.cursorDeltaX = 0;
@@ -208,7 +208,8 @@ class ReorderHandle extends React.Component {
    */
   isColumnMovedToLeft = (deltaX) => deltaX < 0;
 
-  calculateColumnOrder = () => {
+  updateColumnOrder = () => {
+    // Todo: Investigate if same code can be reused instead of duplicating the logic for right and left movement
     const cellGroupColumnWidths = this.props.getCellGroupWidth();
     const columnIndex = cellGroupColumnWidths.keys.indexOf(this.props.columnKey);
     let columnBefore = cellGroupColumnWidths.keys[columnIndex - 1];
