@@ -176,8 +176,8 @@ class ReorderHandle extends React.Component {
 
   updateDisplacementWithScroll = () => {
     const scrollStart = this.scrollStart;
-    let { isFixed, maxScrollX } = this.props;
-    let { scrollX } = getState();
+    let { isFixed } = this.props;
+    let { scrollX, maxScrollX } = getState();
     let deltaX = this.cursorDeltaX;
     if (!isFixed) {
       // Relative dragX position on scroll

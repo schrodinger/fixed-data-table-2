@@ -17,9 +17,13 @@ import { createStore } from 'redux';
 const store = createStore(reducers);
 
 // Todo: Change name of getState to something relevant
-export const getState = () => ({
-  scrollX: store.getState().scrollX
-});
+export const getState = () => {
+  const state = store.getState();
+  return {
+    maxScrollX: state.maxScrollX,
+    scrollX: state.scrollX
+  };
+};
 
 export default {
   get: () => store
