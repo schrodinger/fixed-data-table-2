@@ -9,6 +9,7 @@ import { TextCell } from './helpers/cells';
 import { Table, Column, Cell } from 'fixed-data-table-2';
 import React from 'react';
 
+// Todo: Instead of adding a new example, modify the existing one
 class ResizeExample extends React.Component {
   constructor(props) {
     super(props);
