@@ -168,11 +168,9 @@ class ReorderHandle extends React.Component {
   };
 
   updateDisplacementPeriodically = () => {
-    if (this.isReordering) {
-      /* NOTE: We need to use requestAnimationFrame because whenever column reaches the end of table (scroll width is left),
-       we want to update the scrollX which can't be updated if we uer onMouseMove*/
-      this.frameId = requestAnimationFrame(this.updateDisplacementPeriodically);
-    }
+    /* NOTE: We need to use requestAnimationFrame because whenever column reaches the end of table (scroll width is left),
+     we want to update the scrollX which can't be updated if we uer onMouseMove*/
+    this.frameId = requestAnimationFrame(this.updateDisplacementPeriodically);
     this.updateDisplacementWithScroll();
   };
 
