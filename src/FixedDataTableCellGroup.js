@@ -67,7 +67,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
      * and column needs to be updated.
      *
      * Only for backward compatibility.
-     * 
+     *
      * Required if the isResizable property is true on any column.
      *
      * ```
@@ -131,6 +131,10 @@ class FixedDataTableCellGroupImpl extends React.Component {
     this._initialRender = false;
   }
 
+  /**
+   * Returns Object consisting of keys and widths of the columns in the current cell group.
+   * @returns {{keys: [], widths: []}}
+   */
   getColumnGroupWidth = () => {
     const { columns } = this.props;
     const cellGroupColumnWidths = {
@@ -207,13 +211,13 @@ class FixedDataTableCellGroupImpl extends React.Component {
     var className = columnProps.cellClassName;
     var pureRendering = columnProps.pureRendering || false;
 
-    const onColumnReorderEndCallback = 
-      (columnProps.isReorderable) 
-        ? this.props.onColumnReorderEndCallback 
+    const onColumnReorderEndCallback =
+      (columnProps.isReorderable)
+        ? this.props.onColumnReorderEndCallback
         : null;
-    const onColumnResizeEndCallback = 
-    (columnProps.isResizable) 
-      ? this.props.onColumnResizeEndCallback 
+    const onColumnResizeEndCallback =
+    (columnProps.isResizable)
+      ? this.props.onColumnResizeEndCallback
       : null;
 
     return (

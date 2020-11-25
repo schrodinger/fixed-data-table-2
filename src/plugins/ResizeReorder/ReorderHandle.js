@@ -25,8 +25,6 @@ class ReorderHandle extends React.Component {
     height: PropTypes.number,
     touchEnabled: PropTypes.bool,
     isRTL: PropTypes.bool,
-    scrollX: PropTypes.number,
-    maxScrollX: PropTypes.number,
     left: PropTypes.number,
     availableScrollWidth: PropTypes.number,
     isFixed: PropTypes.bool,

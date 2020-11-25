@@ -92,11 +92,6 @@ class ResizeReorderCell extends React.PureComponent {
     availableScrollWidth: PropTypes.number,
 
     /**
-     * Maximum horizontal scroll possible.
-     */
-    maxScrollX: PropTypes.number,
-
-    /**
      * Function to change the scroll position by interacting
      * with the store.
      */
@@ -106,12 +101,6 @@ class ResizeReorderCell extends React.PureComponent {
      * Whether the cells belongs to the fixed group
      */
     isFixed: PropTypes.bool,
-
-    /**
-     * Object consisting of keys and widths of the columns
-     * in the current cell group.
-     */
-    cellGroupColumnWidths: PropTypes.object,
 
     /**
      * The minimum width of the column.
@@ -157,7 +146,6 @@ class ResizeReorderCell extends React.PureComponent {
         height={this.props.height}
         isRTL={this.props.isRTL}
         columnKey={this.props.columnKey}
-        scrollX={this.props.scrollX}
         left={this.props.left}
         onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}
         updateParentReorderingData={this.updateReorderingData}
@@ -192,7 +180,6 @@ class ResizeReorderCell extends React.PureComponent {
     const {
       children,
       availableScrollWidth,
-      maxScrollX,
       minWidth,
       maxWidth,
       onColumnResizeEndCallback,
@@ -203,10 +190,8 @@ class ResizeReorderCell extends React.PureComponent {
       touchEnabled,
       isRTL,
       tableHeight,
-      scrollX,
       isFixed,
       scrollToX,
-      cellGroupColumnWidths,
       getColumnGroupWidth,
       ...props
     } = this.props;
