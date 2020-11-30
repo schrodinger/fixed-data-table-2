@@ -172,6 +172,25 @@ class ReorderHandle extends React.Component {
     this.updateDisplacementWithScroll();
   };
 
+  /**
+   * @param {number} deltaX
+   * @return {number} deltaX bounded between cell group
+   */
+  getBoundedDeltaX = (deltaX) => {
+    // Column should not be moved beyond left of cell group
+    if (this.originalLeft + deltaX < 0) {
+      deltaX = -this.originalLeft;
+    }
+    // Column should not be moved beyond right of cell group
+    const cellGroupColumnWidths = this.props.getCellGroupWidth();
+    const cellGroupWidth = cellGroupColumnWidths.widths.reduce((a, b) => a + b);
+    const maxReachableDisplacement = cellGroupWidth - this.props.width;
+    if (this.originalLeft + deltaX > maxReachableDisplacement) {
+      deltaX = maxReachableDisplacement - this.originalLeft;
+    }
+    return deltaX;
+  };
+
   updateDisplacementWithScroll = () => {
     const scrollStart = this.scrollStart;
     let { isFixed } = this.props;
@@ -191,6 +210,7 @@ class ReorderHandle extends React.Component {
       }
       this.props.scrollToX(scrollX);
     }
+    deltaX = this.getBoundedDeltaX(deltaX);
     this.updateParentReorderingData({ displacement: deltaX });
   };
 
