@@ -229,7 +229,7 @@ class ReorderHandle extends React.Component {
   isColumnMovedToLeft = (deltaX) => deltaX < 0;
 
   updateColumnOrder = () => {
-    // Todo: Investigate if same code can be reused instead of duplicating the logic for right and left movement
+    // Todo(deshpsuy): Investigate if same code can be reused instead of duplicating the logic for right and left movement
     const cellGroupColumnWidths = this.props.getCellGroupWidth();
     const columnIndex = cellGroupColumnWidths.keys.indexOf(this.props.columnKey);
     let columnBefore = cellGroupColumnWidths.keys[columnIndex - 1];

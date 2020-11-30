@@ -16,7 +16,7 @@ import { createStore } from 'redux';
 
 const store = createStore(reducers);
 
-// Todo: Change name of getState to something relevant
+// Todo(deshpsuy): Change name of getState to something relevant
 export const getState = () => {
   const state = store.getState();
   return {

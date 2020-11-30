@@ -219,7 +219,7 @@ class ResizeReorderCell extends React.PureComponent {
 
     if (this.state.isColumnReordering) {
       const DIR_SIGN = this.props.isRTL ? -1 : 1;
-      // Todo: Investigate if translation logic can be moved ReorderHandle be modifying the component Hierarchy
+      // Todo(deshpsuy): Investigate if translation logic can be moved ReorderHandle be modifying the component Hierarchy
       style.transform = `translateX(${this.state.displacement * DIR_SIGN}px) translateZ(0)`;
     }
 

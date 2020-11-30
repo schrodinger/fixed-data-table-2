@@ -162,7 +162,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     for (var i = 0, j = columns.length; i < j; i++) {
       var columnProps = columns[i].props;
       var cellTemplate = columns[i].template;
-     /* Todo: recyclable should always be false while reordering. But since now reordering is decoupled out of FDT.
+     /* Todo(deshpsuy): recyclable should always be false while reordering. But since now reordering is decoupled out of FDT.
          We have to investigate here.*/
       var recyclable = columnProps.allowCellsRecycling;
       if (!recyclable || (
