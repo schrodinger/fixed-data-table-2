@@ -12,7 +12,8 @@
 'use strict';
 
 import Table from './FixedDataTableContainer';
-import Cell from './FixedDataTableCellDefault';
+import Cell from './FixedDataTableCellDefaultDeprecated';
+import DataCell from './FixedDataTableCellDefault';
 import Column from './FixedDataTableColumn';
 import ColumnGroup from './FixedDataTableColumnGroup';
 
@@ -22,6 +23,7 @@ export {
   Cell,
   Column,
   ColumnGroup,
+  DataCell,
   Table,
   version,
 };

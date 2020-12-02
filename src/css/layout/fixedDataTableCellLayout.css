@@ -38,6 +38,12 @@
   text-align: center;
 }
 
+.fixedDataTableCellLayout/wrap {
+  display: table-cell;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
 .fixedDataTableCellLayout/wrap1 {
   display: table;
 }

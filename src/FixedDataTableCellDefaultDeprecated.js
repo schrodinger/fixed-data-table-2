@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule FixedDataTableCellDefault
+ * @providesModule FixedDataTableCellDefaultDeprecated
  * @typechecks
  */
 
@@ -17,6 +17,9 @@ import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
 
 /**
+ * NOTE (pradeep): This component is deprecated since it uses a lot of wrapper DIV nodes for styling/layout.
+ * The replacement is src/FixedDataTableCell.js which uses a single wrapper to achieve the same table cell layout.
+ *
  * Component that handles default cell layout and styling.
  *
  * All props unless specified below will be set onto the top level `div`
@@ -74,7 +77,7 @@ class FixedDataTableCellDefault extends React.Component {
 
   render() {
     //Remove some props like columnKey and rowIndex so we don't pass it into the div
-    var { height, width, style, className, children, columnKey, rowIndex, ...props } = this.props;
+    var {height, width, style, className, children, columnKey, rowIndex, ...props} = this.props;
 
     var innerStyle = {
       height,
@@ -86,14 +89,26 @@ class FixedDataTableCellDefault extends React.Component {
       <div
         {...props}
         className={joinClasses(
-          cx('fixedDataTableCellLayout/wrap'),
-          cx('public/fixedDataTableCell/wrap'),
-          cx('public/fixedDataTableCell/cellContent'),
+          cx('fixedDataTableCellLayout/wrap1'),
+          cx('public/fixedDataTableCell/wrap1'),
           className,
         )}
-        style={innerStyle}
-      >
-        {children}
+        style={innerStyle}>
+        <div
+          className={joinClasses(
+            cx('fixedDataTableCellLayout/wrap2'),
+            cx('public/fixedDataTableCell/wrap2'),
+          )}>
+          <div
+            className={joinClasses(
+              cx('fixedDataTableCellLayout/wrap3'),
+              cx('public/fixedDataTableCell/wrap3'),
+            )}>
+            <div className={cx('public/fixedDataTableCell/cellContent')}>
+              {children}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

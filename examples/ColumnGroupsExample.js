@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, ColumnGroup, Cell } from 'fixed-data-table-2';
+import { Table, Column, ColumnGroup, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class ColumnGroupsExample extends React.Component {
@@ -32,34 +32,34 @@ class ColumnGroupsExample extends React.Component {
         {...this.props}>
         <ColumnGroup
           fixed={true}
-          header={<Cell>Name</Cell>}>
+          header={<DataCell>Name</DataCell>}>
           <Column
             columnKey="firstName"
             fixed={true}
-            header={<Cell>First Name</Cell>}
+            header={<DataCell>First Name</DataCell>}
             cell={<TextCell data={dataList} />}
             width={150}
           />
           <Column
             columnKey="lastName"
             fixed={true}
-            header={<Cell>Last Name</Cell>}
+            header={<DataCell>Last Name</DataCell>}
             cell={<TextCell data={dataList} />}
             width={150}
           />
         </ColumnGroup>
         <ColumnGroup
-          header={<Cell>About</Cell>}>
+          header={<DataCell>About</DataCell>}>
           <Column
             columnKey="companyName"
-            header={<Cell>Company</Cell>}
+            header={<DataCell>Company</DataCell>}
             cell={<TextCell data={dataList} />}
             flexGrow={1}
             width={150}
           />
           <Column
             columnKey="sentence"
-            header={<Cell>Sentence</Cell>}
+            header={<DataCell>Sentence</DataCell>}
             cell={<TextCell data={dataList} />}
             flexGrow={1}
             width={150}

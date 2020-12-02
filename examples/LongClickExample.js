@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class LongClickExample extends React.Component {
@@ -61,7 +61,7 @@ class LongClickExample extends React.Component {
           key={columnKey}
           columnKey={columnKey}
           flexGrow={2}
-          header={<Cell>{columns[columnKey]}</Cell>}
+          header={<DataCell>{columns[columnKey]}</DataCell>}
           cell={cell => this.getCell(cell.rowIndex, cell.columnKey)}
           width={100}
         />);

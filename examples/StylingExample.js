@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, TextCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
@@ -33,27 +33,27 @@ class StylingExample extends React.Component {
         {...props}>
         <Column
           columnKey='avatar'
-          header={<Cell className={css(styles.newTableHeader)}></Cell>}
+          header={<DataCell className={css(styles.newTableHeader)}></DataCell>}
           cell={<ImageCell className={css(styles.newCellBorder)} data={dataList} />}
           fixed={true}
           width={50}
         />
         <Column
           columnKey='firstName'
-          header={<Cell className={css(styles.newTableHeader)}>First Name</Cell>}
+          header={<DataCell className={css(styles.newTableHeader)}>First Name</DataCell>}
           cell={<TextCell className={css(styles.newCellBorder)} data={dataList} />}
           fixed={true}
           width={150}
         />
         <Column
           columnKey='lastName'
-          header={<Cell className={css(styles.newTableHeader)}>Last Name</Cell>}
+          header={<DataCell className={css(styles.newTableHeader)}>Last Name</DataCell>}
           cell={<TextCell className={css(styles.newCellBorder)} data={dataList} />}
           width={150}
         />
         <Column
           columnKey='companyName'
-          header={<Cell className={css(styles.newTableHeader)}>Company</Cell>}
+          header={<DataCell className={css(styles.newTableHeader)}>Company</DataCell>}
           cell={<TextCell className={css(styles.newCellBorder)} data={dataList} />}
           width={200}
         />

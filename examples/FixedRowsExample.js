@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { DateCell, ImageCell, LinkCell, TextCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 // wrapper over a DataList that allows you to specify custom index mapping
@@ -115,80 +115,80 @@ class FixedRowsExample extends React.Component {
       >
         <Column
           columnKey="id"
-          header={<Cell>Id</Cell>}
+          header={<DataCell>Id</DataCell>}
           cell={<TextCell data={dataList} />}
           fixed={true}
           width={100}
         />
         <Column
           columnKey="avatar"
-          header={<Cell>Avatar</Cell>}
+          header={<DataCell>Avatar</DataCell>}
           cell={<ImageCell data={dataList} />}
           width={50}
         />
         <Column
           columnKey="firstName"
-          header={<Cell>First Name</Cell>}
+          header={<DataCell>First Name</DataCell>}
           cell={<LinkCell data={dataList} />}
           width={100}
         />
         <Column
           columnKey="lastName"
-          header={<Cell>Last Name</Cell>}
+          header={<DataCell>Last Name</DataCell>}
           cell={<TextCell data={dataList} />}
           width={100}
         />
         <Column
           columnKey="city"
-          header={<Cell>City</Cell>}
+          header={<DataCell>City</DataCell>}
           cell={<TextCell data={dataList} />}
           width={250}
         />
         <Column
           columnKey="street"
-          header={<Cell>Street</Cell>}
+          header={<DataCell>Street</DataCell>}
           cell={<TextCell data={dataList} />}
           width={250}
         />
         <Column
           columnKey="zipCode"
-          header={<Cell>Zip Code</Cell>}
+          header={<DataCell>Zip Code</DataCell>}
           cell={<TextCell data={dataList} />}
           width={100}
         />
         <Column
           columnKey="email"
-          header={<Cell>Email</Cell>}
+          header={<DataCell>Email</DataCell>}
           cell={<LinkCell data={dataList} />}
           width={400}
         />
         <Column
           columnKey="date"
-          header={<Cell>DOB</Cell>}
+          header={<DataCell>DOB</DataCell>}
           cell={<DateCell data={dataList} />}
           width={200}
         />
         <Column
           columnKey="catchPhrase"
-          header={<Cell>Catch Phrase</Cell>}
+          header={<DataCell>Catch Phrase</DataCell>}
           cell={<TextCell data={dataList} />}
           width={200}
         />
         <Column
           columnKey="companyName"
-          header={<Cell>Company Name</Cell>}
+          header={<DataCell>Company Name</DataCell>}
           cell={<TextCell data={dataList} />}
           width={200}
         />
         <Column
           columnKey="words"
-          header={<Cell>Words</Cell>}
+          header={<DataCell>Words</DataCell>}
           cell={<TextCell data={dataList} />}
           width={200}
         />
         <Column
           columnKey="sentence"
-          header={<Cell>Sentence</Cell>}
+          header={<DataCell>Sentence</DataCell>}
           cell={<TextCell data={dataList} />}
           width={200}
         />

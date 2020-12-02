@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell, ColoredTextCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class FlexGrowExample extends React.Component {
@@ -30,21 +30,21 @@ class FlexGrowExample extends React.Component {
         {...this.props}>
         <Column
           columnKey="firstName"
-          header={<Cell>First Name</Cell>}
+          header={<DataCell>First Name</DataCell>}
           cell={<TextCell data={dataList} />}
           fixed={true}
           width={100}
         />
         <Column
           columnKey="sentence"
-          header={<Cell>Sentence! (flexGrow greediness=2)</Cell>}
+          header={<DataCell>Sentence! (flexGrow greediness=2)</DataCell>}
           cell={<ColoredTextCell data={dataList} />}
           flexGrow={2}
           width={200}
         />
         <Column
           columnKey="companyName"
-          header={<Cell>Company (flexGrow greediness=1)</Cell>}
+          header={<DataCell>Company (flexGrow greediness=1)</DataCell>}
           cell={<TextCell data={dataList} />}
           flexGrow={1}
           width={200}
@@ -52,7 +52,7 @@ class FlexGrowExample extends React.Component {
         <Column
           columnKey="lastName"
           width={100}
-          header={<Cell>Last Name</Cell>}
+          header={<DataCell>Last Name</DataCell>}
           cell={<TextCell data={dataList} />}
         />
       </Table>

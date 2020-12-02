@@ -28,11 +28,19 @@
 .public/fixedDataTableCell/columnResizerKnob {
   background-color: #0284ff;
 }
-.public/fixedDataTableCell/hasReorderHandle .public/fixedDataTableCell/cellContent {
+
+.public/fixedDataTableCell/hasReorderHandle .public/fixedDataTableCell/wrap1 .public/fixedDataTableCell/cellContent {
   margin-left: 12px;
 }
+.public/fixedDataTableCell/hasReorderHandle .public/fixedDataTableCell/wrap.public/fixedDataTableCell/cellContent {
+  padding-left: 20px;
+}
 
-.fixedDataTable_isRTL .public/fixedDataTableCell/hasReorderHandle .public/fixedDataTableCell/cellContent {
+.fixedDataTable_isRTL .public/fixedDataTableCell/hasReorderHandle .public/fixedDataTableCell/wrap1 .public/fixedDataTableCell/cellContent {
   margin-left: auto;
   margin-right: 12px;
+}
+
+.fixedDataTable_isRTL .public/fixedDataTableCell/hasReorderHandle .public/fixedDataTableCell/wrap.public/fixedDataTableCell/cellContent {
+  padding-right: 20px;
 }

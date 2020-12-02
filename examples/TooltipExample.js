@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, TooltipCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import { findDOMNode } from 'react-dom';
@@ -39,20 +39,20 @@ class TooltipExample extends React.Component {
           />
           <Column
             columnKey="firstName"
-            header={<Cell>First Name</Cell>}
+            header={<DataCell>First Name</DataCell>}
             cell={<TooltipCell data={dataList} />}
             fixed={true}
             width={150}
           />
           <Column
             columnKey="lastName"
-            header={<Cell>Last Name</Cell>}
+            header={<DataCell>Last Name</DataCell>}
             cell={<TooltipCell data={dataList} />}
             width={150}
           />
           <Column
             columnKey="companyName"
-            header={<Cell>Company</Cell>}
+            header={<DataCell>Company</DataCell>}
             cell={<TooltipCell data={dataList} />}
             width={200}
           />

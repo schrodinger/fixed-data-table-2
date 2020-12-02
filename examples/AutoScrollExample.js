@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, LinkCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class AutoScrollExample extends React.Component {
@@ -109,7 +109,7 @@ class AutoScrollExample extends React.Component {
         />
         <Column
           columnKey="firstName"
-          header={<Cell>First Name</Cell>}
+          header={<DataCell>First Name</DataCell>}
           cell={<LinkCell data={dataList} />}
           fixed={true}
           width={100}

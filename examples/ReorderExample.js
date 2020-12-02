@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 var columnTitles = {
@@ -94,7 +94,7 @@ class ReorderExample extends React.Component {
             columnKey={columnKey}
             key={i}
             isReorderable={true}
-            header={<Cell>{columnTitles[columnKey]}</Cell>}
+            header={<DataCell>{columnTitles[columnKey]}</DataCell>}
             cell={<TextCell data={dataList} />}
             fixed={fixedColumns.indexOf(columnKey) !== -1}
             width={columnWidths[columnKey]}

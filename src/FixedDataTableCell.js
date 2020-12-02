@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import shallowEqual from './vendor_upstream/core/shallowEqual';
-import FixedDataTableCellDefault from './FixedDataTableCellDefault';
+import FixedDataTableCellDefaultDeprecated from './FixedDataTableCellDefaultDeprecated';
 import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
 import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
 
@@ -294,10 +294,9 @@ class FixedDataTableCell extends React.Component {
       content = props.cell(cellProps);
     } else {
       content = (
-        <FixedDataTableCellDefault
-          {...cellProps}>
+        <FixedDataTableCellDefaultDeprecated {...cellProps}>
           {props.cell}
-        </FixedDataTableCellDefault>
+        </FixedDataTableCellDefaultDeprecated>
       );
     }
 
