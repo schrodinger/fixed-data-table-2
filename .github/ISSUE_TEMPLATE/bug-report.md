@@ -1,3 +1,12 @@
+---
+name: Bug Reports
+about: File a bug report or ask doubts
+title: ''
+labels: ''
+assignees: ''
+
+---
+
 <!--- Provide a general summary of the issue in the Title above -->
 
 ## Expected Behavior
@@ -14,7 +23,9 @@
 
 ## Steps to Reproduce (for bugs)
 <!--- Provide a link to a live example, or - -->
-<!--- Fork the CodePen to reproduce https://codepen.io/alphalpha/pen/oqKJgG ->
+<!--- Fork any of these code sandbox templates: ->
+<!---   *  Basic template: https://codesandbox.io/s/fixed-data-table-basic-example-cwds0 ->
+<!---   *  Advanced template: https://codesandbox.io/s/fixed-data-table-advanced-example-3gd9x ->
 
 ## Context
 <!--- How has this issue affected you? What are you trying to accomplish? -->
