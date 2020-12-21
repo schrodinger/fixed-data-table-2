@@ -16,7 +16,7 @@ import Cell from 'FixedDataTableCellDefault';
 import Column from 'FixedDataTableColumn';
 import ColumnGroup from 'FixedDataTableColumnGroup';
 
-const version = '1.1.1';
+const version = '1.1.2';
 
 export {
   Cell,
