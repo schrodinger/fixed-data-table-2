@@ -1,16 +1,40 @@
 #!/bin/bash
+# example usages:
+# ./publishPackage.sh --branch=v1.0.x
+# ./publishPackage.sh --branch=v1.1.x --latest
+# ./publishPackage.sh --branch=v1.0-beta --beta
+
 set -e
 
 # Defaults that can be overridden in the CLI (except the cookie file)
-export BETA=0
+export BETA=false
+export LATEST=false
+export BRANCH=""
 
+# Parse flags
 while (( "$#" )); do
   opt=$1
   VALUE=$2
   # Make sure to shift here and any option that uses the $VALUE
   shift
   case $opt in
-    --beta) BETA=$VALUE; shift ;;
+    --beta)
+      BETA=true
+      ;;
+
+    --latest)
+      LATEST=true
+      ;;
+
+    --branch)
+      if [ -z $VALUE ] ; then
+        echo "Please specify branch name"
+        exit 192
+      fi
+      BRANCH=$VALUE;
+      shift
+      ;;
+
     * ) # Invalid flag
       echo "Invalid flag: $opt"
       exit 192
@@ -18,18 +42,29 @@ while (( "$#" )); do
   esac
 done
 
+# branch name is required
+if [ -z "$BRANCH" ] ; then
+  echo "Please specify branch name using the --branch flag"
+  exit 192
+fi
+
 current_version=$(node -p "require('./package').version")
 
-printf "Next version (current is $current_version)? "
-read next_version
-
-if ! [[ $next_version =~ ^[0-9]\.[0-9]+\.[0-9](-.+)? ]]; then
-  echo "Version must be a valid semver string, e.g. 1.0.2 or 2.3.0-beta.1"
-  exit 1
-fi
+# prompt next version
+while [ true ]; do
+  printf "Next version (current is $current_version)? "
+  read next_version
+  if ! [[ $next_version =~ ^[0-9]\.[0-9]+\.[0-9](-.+)? ]]; then
+    echo "Version must be a valid semver string, e.g. 1.0.2 or 2.3.0-beta.1"
+    continue
+  else
+    break
+  fi
+done
 
 # npm test -- --single-run
 
+# update references of current version to next version
 echo "$(node -p "p=require('./package.json');p.version='${next_version}';JSON.stringify(p,null,2)")" > 'package.json'
 sed -i.DELETEME -e "s/version = '$current_version';/version = '$next_version';/g" src/*.js
 rm src/*.js.DELETEME
@@ -60,14 +95,21 @@ git commit -m "Version $next_version"
 
 next_ref="v$next_version"
 
+echo "Tagging $next_version"
 git tag "$next_ref"
 git push origin "$next_ref"
 
-if [ $BETA = 1 ]; then
+echo "Pushing release cut"
+git push origin $BRANCH
+
+if [ $BETA = true ]; then
+  echo "Publishing beta tag"
   npm publish --tag beta
-else
+elif [ $LATEST = true ]; then
+  echo "Tagging" $next_ref "as 'latest'"
   git tag latest -f
   git push origin latest -f
-  git push origin master
-  npm publish
+
+  echo "Publishing latest tag"
+  npm publish --tag latest
 fi
