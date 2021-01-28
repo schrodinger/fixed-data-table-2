@@ -5,12 +5,12 @@
 var glob = require('glob');
 var path = require('path');
 var fs = require('fs');
+var rimraf = require('rimraf');
 var babel = require('@babel/core');
 
 var internalPath = path.join(__dirname, '../internal');
-if (!fs.existsSync(internalPath)) {
-  fs.mkdirSync(internalPath);
-}
+rimraf.sync(internalPath); // remove older entries
+fs.mkdirSync(internalPath);
 
 var providesModuleRegex = /@providesModule ([^\s*]+)/;
 var moduleRequireRegex = /require\((?:'|")([\w\.\/]+)(?:'|")\)/gm;

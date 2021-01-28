@@ -1,16 +1,30 @@
 #!/bin/bash
+# example usages:
+# ./publishPackage.sh
+# ./publishPackage.sh --latest
+# ./publishPackage.sh --beta
+
 set -e
 
 # Defaults that can be overridden in the CLI (except the cookie file)
-export BETA=0
+export BETA=false
+export LATEST=false
 
+# Parse flags
 while (( "$#" )); do
   opt=$1
   VALUE=$2
   # Make sure to shift here and any option that uses the $VALUE
   shift
   case $opt in
-    --beta) BETA=$VALUE; shift ;;
+    --beta)
+      BETA=true
+      ;;
+
+    --latest)
+      LATEST=true
+      ;;
+
     * ) # Invalid flag
       echo "Invalid flag: $opt"
       exit 192
@@ -18,8 +32,8 @@ while (( "$#" )); do
   esac
 done
 
+# prompt next version
 current_version=$(node -p "require('./package').version")
-
 printf "Next version (current is $current_version)? "
 read next_version
 
@@ -30,6 +44,7 @@ fi
 
 # npm test -- --single-run
 
+# update references of current version to next version
 echo "$(node -p "p=require('./package.json');p.version='${next_version}';JSON.stringify(p,null,2)")" > 'package.json'
 sed -i.DELETEME -e "s/version = '$current_version';/version = '$next_version';/g" src/*.js
 rm src/*.js.DELETEME
@@ -60,14 +75,26 @@ git commit -m "Version $next_version"
 
 next_ref="v$next_version"
 
+echo "Tagging $next_version"
 git tag "$next_ref"
 git push origin "$next_ref"
 
-if [ $BETA = 1 ]; then
+echo "Pushing release cut"
+git push
+
+if [ $BETA = true ]; then
+  echo "Publishing beta tag"
   npm publish --tag beta
 else
+  echo "Publishing $next_version to npm"
+  npm publish --tag $next_version
+fi
+
+if [ $LATEST = true ]; then
+  echo "Tagging" $next_ref "as 'latest'"
   git tag latest -f
   git push origin latest -f
-  git push origin master
-  npm publish
+
+  echo "Publishing latest tag to npm"
+  npm publish --tag latest
 fi
