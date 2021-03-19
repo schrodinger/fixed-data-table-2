@@ -18,6 +18,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'cx';
 import { sumPropWidths } from 'widthHelper';
+import _ from 'lodash';
 
 class FixedDataTableCellGroupImpl extends React.Component {
   /**
@@ -122,6 +123,10 @@ class FixedDataTableCellGroupImpl extends React.Component {
     isFixed: PropTypes.bool,
   }
 
+  state = {
+    recycling: {}
+  }
+
   constructor(props) {
     super(props);
     this._initialRender = true;
@@ -164,7 +169,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       var cellTemplate = columns[i].template;
      /* Todo(deshpsuy): recyclable should always be false while reordering. But since now reordering is decoupled out of FDT.
          We have to investigate here.*/
-      var recyclable = columnProps.allowCellsRecycling;
+      var recyclable = _.get(this.state.recycling, [columnProps.columnKey], columnProps.allowCellsRecycling);
       if (!recyclable || (
         currentPosition - props.left <= props.width &&
         currentPosition - props.left + columnProps.width >= 0)) {
@@ -249,9 +254,26 @@ class FixedDataTableCellGroupImpl extends React.Component {
         availableScrollWidth={this.props.availableScrollWidth}
         maxScrollX={this.props.maxScrollX}
         scrollToX={this.props.scrollToX}
+        toggleCellsRecycling={this.toggleCellsRecycling}
         getCellGroupWidth={this.getCellGroupWidth}
       />
     );
+  }
+
+  /**
+   * @deprecated
+   * @param {boolean} value
+   * @param {string} columnKey
+   */
+  toggleCellsRecycling = (value, columnKey) => {
+    // Only set in state, when value is false, means reordering has started
+    if(!value) {
+      this.setState({ recycling: { [columnKey]: value } })
+    } else {
+      this.setState({
+        recycling: {}
+      })
+    }
   }
 }
 

@@ -29,96 +29,10 @@ import cx from 'cx';
  */
 class ResizeReorderCell extends React.PureComponent {
 
-  static propTypes = {
-
-    /**
-     * Outer height of the cell.
-     */
-    height: PropTypes.number,
-
-    /**
-     * Outer width of the cell.
-     */
-    width: PropTypes.number,
-
-    /**
-     * Optional prop that if specified on the `Column` will be passed to the
-     * cell. It can be used to uniquely identify which column is the cell is in.
-     */
-    columnKey: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
-
-    /**
-     * Optional prop that represents the rows index in the table.
-     * For the 'cell' prop of a Column, this parameter will exist for any
-     * cell in a row with a positive index.
-     *
-     * Below that entry point the user is welcome to consume or
-     * pass the prop through at their discretion.
-     */
-    rowIndex: PropTypes.number,
-
-    /**
-     * The height of the table.
-     */
-    tableHeight: PropTypes.number,
-
-    /**
-     * The left offset in pixels of the cell.
-     * Space between cell's left edge and left edge of table
-     */
-    left: PropTypes.number,
-
-    /**
-     * The left offset in pixels of the cell group.
-     */
-    cellGroupLeft: PropTypes.number,
-
-    /**
-     * Whether touch is enabled or not.
-     */
-    touchEnabled: PropTypes.bool,
-
-    /**
-     * If the component should render for RTL direction
-     */
-    isRTL: PropTypes.bool,
-
-    /**
-     * availableScrollWidth returned from ColumnWidths.
-     */
-    availableScrollWidth: PropTypes.number,
-
-    /**
-     * Function to change the scroll position by interacting
-     * with the store.
-     */
-    scrollToX: PropTypes.func,
-
-    /**
-     * Whether the cells belongs to the fixed group
-     */
-    isFixed: PropTypes.bool,
-
-    /**
-     * The minimum width of the column.
-     */
-    minWidth: PropTypes.number,
-
-    /**
-     * The maximum width of the column.
-     */
-    maxWidth: PropTypes.number,
-  };
-
-  initialState = {
+  state = {
     isColumnReordering: false,
     displacement: 0,
   };
-
-  state = { ...this.initialState };
 
   /**
    *
@@ -131,7 +45,6 @@ class ResizeReorderCell extends React.PureComponent {
     if (this.state.isColumnReordering && columnNotMoved) {
       return;
     }
-
     this.setState(data);
   };
 
@@ -142,6 +55,7 @@ class ResizeReorderCell extends React.PureComponent {
 
     return (
       <ReorderHandle
+        toggleCellsRecycling={this.props.toggleCellsRecycling}
         touchEnabled={this.props.touchEnabled}
         height={this.props.height}
         isRTL={this.props.isRTL}
@@ -193,6 +107,8 @@ class ResizeReorderCell extends React.PureComponent {
       isFixed,
       scrollToX,
       getCellGroupWidth,
+      toggleCellsRecycling,
+      columnGroupWidth,
       ...props
     } = this.props;
 
@@ -244,6 +160,103 @@ class ResizeReorderCell extends React.PureComponent {
       </div>
     );
   }
+}
+
+ResizeReorderCell.propTypes = {
+  /**
+   * Outer height of the cell.
+   */
+  height: PropTypes.number,
+
+  /**
+   * Outer width of the cell.
+   */
+  width: PropTypes.number,
+
+  /**
+   * Optional prop that if specified on the `Column` will be passed to the
+   * cell. It can be used to uniquely identify which column is the cell is in.
+   */
+  columnKey: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+
+  /**
+   * Optional prop that represents the rows index in the table.
+   * For the 'cell' prop of a Column, this parameter will exist for any
+   * cell in a row with a positive index.
+   *
+   * Below that entry point the user is welcome to consume or
+   * pass the prop through at their discretion.
+   */
+  rowIndex: PropTypes.number,
+
+  /**
+   * The height of the table.
+   */
+  tableHeight: PropTypes.number,
+
+  /**
+   * The left offset in pixels of the cell.
+   * Space between cell's left edge and left edge of table
+   */
+  left: PropTypes.number,
+
+  /**
+   * The left offset in pixels of the cell group.
+   */
+  cellGroupLeft: PropTypes.number,
+
+  /**
+   * Whether touch is enabled or not.
+   */
+  touchEnabled: PropTypes.bool,
+
+  /**
+   * If the component should render for RTL direction
+   */
+  isRTL: PropTypes.bool,
+
+  /**
+   * availableScrollWidth returned from ColumnWidths.
+   */
+  availableScrollWidth: PropTypes.number,
+
+  /**
+   * Function to change the scroll position by interacting
+   * with the store.
+   */
+  scrollToX: PropTypes.func,
+
+  /**
+   * Whether the cells belongs to the fixed group
+   */
+  isFixed: PropTypes.bool,
+
+  /**
+   * The minimum width of the column.
+   */
+  minWidth: PropTypes.number,
+
+  /**
+   * The maximum width of the column.
+   */
+  maxWidth: PropTypes.number,
+
+  /**
+   * Functions which toggles cells recycling for a cell
+   */
+  toggleCellsRecycling: PropTypes.func,
+
+  /**
+   * Function to return cell group widths
+   */
+  getCellGroupWidth: PropTypes.func
+}
+
+ResizeReorderCell.defaultProps = {
+  toggleCellsRecycling: _.noop,
 }
 
 export default ResizeReorderCell;

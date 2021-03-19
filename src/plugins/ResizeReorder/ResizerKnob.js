@@ -20,7 +20,7 @@ import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
 import _ from 'lodash';
 
 
-class ResizerKnob extends React.Component {
+class ResizerKnob extends React.PureComponent {
 
   initialState = {
     /**

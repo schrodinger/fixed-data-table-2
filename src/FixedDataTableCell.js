@@ -86,7 +86,7 @@ class FixedDataTableCell extends React.Component {
      * and column needs to be updated.
      *
      * Only for backward compatibility.
-     * 
+     *
      * Required if the isResizable property is true on any column.
      *
      * ```
@@ -145,6 +145,11 @@ class FixedDataTableCell extends React.Component {
      * in the current cell group.
      */
     getCellGroupWidth: PropTypes.Func,
+
+    /**
+     * Functions which toggles cells recycling for a cell
+     */
+    toggleCellsRecycling: PropTypes.Func
   }
 
   shouldComponentUpdate(nextProps) {
@@ -228,7 +233,8 @@ class FixedDataTableCell extends React.Component {
         maxScrollX: this.props.maxScrollX,
         cellGroupColumnWidths: this.props.cellGroupColumnWidths,
         scrollToX: this.props.scrollToX,
-        getCellGroupWidth: this.props.getCellGroupWidth
+        getCellGroupWidth: this.props.getCellGroupWidth,
+        columnGroupWidth: this.props.columnGroupWidth
       };
     }
 
@@ -239,8 +245,9 @@ class FixedDataTableCell extends React.Component {
     var content;
     if (this.props.isHeader && (this.props.onColumnResizeEndCallback || this.props.onColumnReorderEndCallback)) {
       content = (
-        <ResizeReorderCell 
+        <ResizeReorderCell
           {...cellProps}
+          toggleCellsRecycling={this.props.toggleCellsRecycling}
           onColumnResizeEndCallback={this.props.onColumnResizeEndCallback}
           onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}>
           {props.cell}
@@ -275,7 +282,7 @@ class FixedDataTableCell extends React.Component {
       event
     );
   }
-  
+
 }
 
 export default lifecycleCompatibilityPolyfill(FixedDataTableCell);

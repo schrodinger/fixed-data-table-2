@@ -9,12 +9,12 @@ import ReactDOM from 'react-dom';
 import Scrollbar from 'Scrollbar';
 import { Table, Column } from '../src/FixedDataTableRoot';
 import * as requestAnimation from '../src/vendor_upstream/core/requestAnimationFramePolyfill';
-import { 
+import {
   createRenderer,
   findRenderedComponentWithType,
   findRenderedDOMComponentWithClass,
   isElement,
-} from 'react-addons-test-utils';
+} from 'react-dom/test-utils';
 
 describe('FixedDataTableRoot', function() {
   describe('render ', function() {

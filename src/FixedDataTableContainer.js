@@ -21,6 +21,11 @@ import pick from 'lodash/pick';
 import * as scrollActions from 'scrollActions';
 import ScrollContainer from 'ScrollContainer';
 import Scrollbar from 'Scrollbar';
+import { PluginContext } from './Context';
+import shallowEqualSelector from 'shallowEqualSelector';
+
+const memoizeContext = shallowEqualSelector([state => state], ({maxScrollX, scrollX}) => ({maxScrollX, scrollX}))
+
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
@@ -70,21 +75,24 @@ class FixedDataTableContainer extends React.Component {
 
   render() {
     const fdt = (
-        <FixedDataTable
-            {...this.props}
-            {...this.state}
-            scrollActions={this.scrollActions}
-        />
+          <FixedDataTable
+              {...this.props}
+              {...this.state}
+              scrollActions={this.scrollActions}
+          />
     );
     // For backward compatibility, by default we render FDT-2 scrollbars
     if (this.props.defaultScrollbars) {
+      const { maxScrollX, scrollX } = this.state;
       return (
-          <ScrollContainer {...this.props}>
-            {fdt}
-          </ScrollContainer>
-      );
+          <PluginContext.Provider value={memoizeContext({ maxScrollX, scrollX })}>
+            <ScrollContainer {...this.props}>
+              {fdt}
+            </ScrollContainer>
+          </PluginContext.Provider>
+            );
     }
-    return fdt;
+    return <PluginContext.Provider value={{maxScrollX: this.state.maxScrollX}}>{fdt}</PluginContext.Provider>;
   }
 
   getBoundState() {

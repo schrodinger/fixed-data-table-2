@@ -94,6 +94,7 @@ class FixedDataTableCellDefault extends React.Component {
           cellGroupColumnWidths,
           scrollToX,
           getCellGroupWidth,
+          columnGroupWidth,
           ...props} = this.props;
 
     var innerStyle = {

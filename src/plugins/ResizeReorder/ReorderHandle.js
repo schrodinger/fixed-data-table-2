@@ -14,28 +14,12 @@ import React from 'react';
 import cx from 'cx';
 import PropTypes from 'prop-types';
 import DOMMouseMoveTracker from 'DOMMouseMoveTracker';
-import { getState } from 'FixedDataTableStore';
+import { PluginContext } from '../../Context';
 
-const DRAG_SCROLL_SPEED = 10;
+const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
 
-class ReorderHandle extends React.Component {
-
-  static propTypes = {
-    height: PropTypes.number,
-    touchEnabled: PropTypes.bool,
-    isRTL: PropTypes.bool,
-    left: PropTypes.number,
-    availableScrollWidth: PropTypes.number,
-    isFixed: PropTypes.bool,
-    scrollToX: PropTypes.func,
-    onColumnReorderEndCallback: PropTypes.func,
-    getCellGroupWidth: PropTypes.func,
-    columnKey: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]),
-  };
+class ReorderHandle extends React.PureComponent {
 
   /**
    * Instance of DOMMouseMoveTracker to capture mouse events
@@ -79,17 +63,17 @@ class ReorderHandle extends React.Component {
     };
 
     return (
-      <div
-        className={cx({
-          'fixedDataTableCellLayout/columnReorderContainer': true,
-          'fixedDataTableCellLayout/columnReorderContainer/active': false,
-        })}
-        onMouseDown={this.onMouseDown}
-        onTouchStart={this.onTouchStart}
-        onTouchEnd={this.onTouchEnd}
-        onTouchMove={this.onTouchMove}
-        style={style}>
-      </div>
+        <div
+            className={cx({
+              'fixedDataTableCellLayout/columnReorderContainer': true,
+              'fixedDataTableCellLayout/columnReorderContainer/active': false,
+            })}
+            onMouseDown={this.onMouseDown}
+            onTouchStart={this.onTouchStart}
+            onTouchEnd={this.onTouchEnd}
+            onTouchMove={this.onTouchMove}
+            style={style}>
+        </div>
     );
   }
 
@@ -115,9 +99,10 @@ class ReorderHandle extends React.Component {
    * @param {MouseEvent} event
    */
   onMouseDown = (event) => {
+    this.props.toggleCellsRecycling(false, this.props.columnKey);
     this.cursorDeltaX = 0;
     this.isReordering = true;
-    this.scrollStart = getState().scrollX;
+    this.scrollStart = this.context.scrollX;
     this.originalLeft = this.props.left;
     this.initializeDOMMouseMoveTracker(event);
     this.updateParentReorderingData({
@@ -135,16 +120,17 @@ class ReorderHandle extends React.Component {
   };
 
   onMouseUp = () => {
+    this.props.toggleCellsRecycling(true, this.props.columnKey);
     cancelAnimationFrame(this.frameId);
+    this.updateParentReorderingData({
+      isColumnReordering: false,
+      displacement: 0
+    });
     this.updateColumnOrder();
     this.isReordering = false;
     this.frameId = null;
     this.cursorDeltaX = 0;
     this.mouseMoveTracker.releaseMouseMoves();
-    this.updateParentReorderingData({
-      isColumnReordering: false,
-      displacement: 0
-    });
   };
 
   /**
@@ -194,7 +180,7 @@ class ReorderHandle extends React.Component {
   updateDisplacementWithScroll = () => {
     const scrollStart = this.scrollStart;
     let { isFixed } = this.props;
-    let { scrollX, maxScrollX } = getState();
+    let { scrollX, maxScrollX } = this.context;
     let deltaX = this.cursorDeltaX;
     if (!isFixed) {
       // Relative dragX position on scroll
@@ -276,6 +262,25 @@ class ReorderHandle extends React.Component {
       reorderColumn: this.props.columnKey
     });
   };
+}
+
+ReorderHandle.contextType = PluginContext;
+
+ReorderHandle.propTypes = {
+  height: PropTypes.number,
+  touchEnabled: PropTypes.bool,
+  isRTL: PropTypes.bool,
+  left: PropTypes.number,
+  availableScrollWidth: PropTypes.number,
+  isFixed: PropTypes.bool,
+  scrollToX: PropTypes.func,
+  onColumnReorderEndCallback: PropTypes.func,
+  getCellGroupWidth: PropTypes.func,
+  columnKey: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  toggleCellsRecycling: PropTypes.func
 }
 
 export default ReorderHandle;
