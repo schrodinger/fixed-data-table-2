@@ -22,7 +22,6 @@ var ExampleHeader = require('./ExampleHeader');
 var ExamplesWrapper = require('./ExamplesWrapper');
 var React = require('react');
 var Constants = require('../Constants');
-const Dimensions = require('react-dimensions');
 
 var ExamplePages = Constants.ExamplePages;
 
