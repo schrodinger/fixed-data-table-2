@@ -48,23 +48,11 @@ exports.ExamplePages = {
     title: 'Resizable columns',
     description: 'Table with drag and drop column resizing and a dummy "store" for persistence. The Last Name column demonstrates the ability to constrain to both a min- and max-width.',
   },
-  CUSTOM_RESIZE_EXAMPLE: {
-    location: 'example-customresize.html',
-    fileName: 'CustomResizeExample.js',
-    title: 'Custom Resize columns',
-    description: 'Table with drag and drop column resizing with custom resize plugin. The Last Name column demonstrates the ability to constrain to both a min-width and max-width.',
-  },
   REORDER_EXAMPLE: {
     location: 'example-reorder.html',
     fileName: 'ReorderExample.js',
     title: 'Reorderable columns',
     description: 'Table with drag and drop column reordering and a dummy "store" for persistence.',
-  },
-  CUSTOM_REORDER_EXAMPLE: {
-    location: 'example-customreorder.html',
-    fileName: 'CustomReorderExample.js',
-    title: 'Custom Reorder columns',
-    description: 'Table with drag and drop column reordering using custom reorder plugin.',
   },
   COLUMN_GROUPS_RESIZE_REORDER_EXAMPLE: {
     location: 'example-column-groups-resize-reorder.html',

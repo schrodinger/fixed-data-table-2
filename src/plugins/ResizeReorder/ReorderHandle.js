@@ -221,7 +221,7 @@ class ReorderHandle extends React.PureComponent {
     let columnBefore = cellGroupColumnWidths.keys[columnIndex - 1];
     let columnAfter = cellGroupColumnWidths.keys[columnIndex + 1];
 
-    let localDisplacement = this.cursorDeltaX + this.props.scrollX - this.scrollStart;
+    let localDisplacement = this.cursorDeltaX + this.context.scrollX - this.scrollStart;
     if (this.isColumnMovedToRight(localDisplacement)) {
       for (let i = columnIndex + 1, j = cellGroupColumnWidths.widths.length; i < j; i++) {
         let curWidth = cellGroupColumnWidths.widths[i];

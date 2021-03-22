@@ -6,8 +6,9 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, Cell } from 'fixed-data-table-2';
+import { Table, Column, Plugins } from 'fixed-data-table-2';
 import React from 'react';
+import _ from 'lodash';
 
 var columnTitles = {
   'firstName': 'First Name',
@@ -49,9 +50,11 @@ class ReorderExample extends React.Component {
         'sentence',
         'companyName'
       ],
+      recycling: {}
     };
 
     this._onColumnReorderEndCallback = this._onColumnReorderEndCallback.bind(this);
+    this.toggleCellsRecycling = this.toggleCellsRecycling.bind(this);
   }
 
   _onColumnReorderEndCallback(event) {
@@ -74,32 +77,44 @@ class ReorderExample extends React.Component {
     });
   }
 
-  render() {
-    var {dataList} = this.state;
+  toggleCellsRecycling(enable, columnKey) {
+    this.setState({
+      recycling: {
+        [columnKey]: enable
+      }
+    })
+  }
 
+  render() {
+    var {dataList, recycling} = this.state;
+    var onColumnReorderEndCallback= this._onColumnReorderEndCallback
+    const toggleCellsRecycling = this.toggleCellsRecycling
     return (
-      <Table
-        rowHeight={30}
-        headerHeight={50}
-        rowsCount={dataList.getSize()}
-        onColumnReorderEndCallback={this._onColumnReorderEndCallback}
-        isColumnReordering={false}
-        width={1000}
-        height={500}
-        {...this.props}>
-        {this.state.columnOrder.map(function (columnKey, i) {
-          return <Column
-            allowCellsRecycling={true}
-            columnKey={columnKey}
-            key={i}
-            isReorderable={true}
-            header={<Cell>{columnTitles[columnKey]}</Cell>}
-            cell={<TextCell data={dataList} />}
-            fixed={fixedColumns.indexOf(columnKey) !== -1}
-            width={columnWidths[columnKey]}
-           />;
-        })}
-       </Table>
+        <Table
+            rowHeight={30}
+            headerHeight={50}
+            rowsCount={dataList.getSize()}
+            isColumnReordering={false}
+            width={1000}
+            height={500}
+            {...this.props}>
+          {this.state.columnOrder.map(function (columnKey, i) {
+            return <Column
+                allowCellsRecycling={_.get(recycling, columnKey, true)}
+                columnKey={columnKey}
+                key={i}
+                header={
+                  <Plugins.ResizeReorderCell
+                      toggleCellsRecycling={toggleCellsRecycling}
+                      onColumnReorderEndCallback={onColumnReorderEndCallback}>
+                    {columnTitles[columnKey]}
+                  </Plugins.ResizeReorderCell>}
+                cell={<TextCell data={dataList} />}
+                fixed={fixedColumns.indexOf(columnKey) !== -1}
+                width={columnWidths[columnKey]}
+            />;
+          })}
+        </Table>
     );
   }
 }
