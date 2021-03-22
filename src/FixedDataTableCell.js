@@ -239,6 +239,7 @@ class FixedDataTableCell extends React.Component {
 
     var content;
     if (this.props.isHeader && (this.props.onColumnResizeEndCallback || this.props.onColumnReorderEndCallback)) {
+      // NOTE: Use plugins manually for backward compatibility. Will be removed in future release.
       content = (
         <ResizeReorderCell
           {...cellProps}
