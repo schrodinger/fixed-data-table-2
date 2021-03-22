@@ -268,16 +268,6 @@ class FixedDataTableCell extends React.Component {
       </div>
     );
   }
-
-  _onColumnReorderMouseDown = (/*object*/ event) => {
-    this.props.onColumnReorder(
-      this.props.columnKey,
-      this.props.width,
-      this.props.left,
-      event
-    );
-  }
-
 }
 
 export default lifecycleCompatibilityPolyfill(FixedDataTableCell);
