@@ -16,11 +16,13 @@ import Cell from 'FixedDataTableCellDefault';
 import Column from 'FixedDataTableColumn';
 import ColumnGroup from 'FixedDataTableColumnGroup';
 import ResizeReorderCell from 'ResizeReorderCell';
+import { PluginContext } from './Context';
 
 const version = '1.1.0';
 
 const Plugins = {
   ResizeReorderCell,
+  PluginContext
 };
 
 export {
