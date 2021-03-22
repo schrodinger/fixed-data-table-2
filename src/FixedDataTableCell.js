@@ -231,7 +231,6 @@ class FixedDataTableCell extends React.Component {
         isFixed: this.props.isFixed,
         availableScrollWidth: this.props.availableScrollWidth,
         maxScrollX: this.props.maxScrollX,
-        cellGroupColumnWidths: this.props.cellGroupColumnWidths,
         scrollToX: this.props.scrollToX,
         getCellGroupWidth: this.props.getCellGroupWidth,
         columnGroupWidth: this.props.columnGroupWidth
@@ -258,8 +257,7 @@ class FixedDataTableCell extends React.Component {
       content = props.cell(cellProps);
     } else {
       content = (
-        <FixedDataTableCellDefault
-          {...cellProps}>
+        <FixedDataTableCellDefault {...cellProps}>
           {props.cell}
         </FixedDataTableCellDefault>
       );
