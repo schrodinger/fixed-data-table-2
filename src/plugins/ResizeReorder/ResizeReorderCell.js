@@ -17,6 +17,7 @@ import ResizerKnob from 'ResizerKnob';
 import ReorderHandle from 'ReorderHandle';
 import joinClasses from 'joinClasses';
 import cx from 'cx';
+import { PluginContext } from '../../Context';
 
 /**
  * A plugin that can make use of ResizerKnob and ReorderHandle to provide the
@@ -58,7 +59,7 @@ class ResizeReorderCell extends React.PureComponent {
         toggleCellsRecycling={this.props.toggleCellsRecycling}
         touchEnabled={this.props.touchEnabled}
         height={this.props.height}
-        isRTL={this.props.isRTL}
+        isRTL={this.context.isRTL}
         columnKey={this.props.columnKey}
         left={this.props.left}
         onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}
@@ -85,7 +86,7 @@ class ResizeReorderCell extends React.PureComponent {
         columnKey={this.props.columnKey}
         cellGroupLeft={this.props.cellGroupLeft}
         touchEnabled={this.props.touchEnabled}
-        isRTL={this.props.isRTL} />
+        isRTL={this.context.isRTL} />
     );
   };
 
@@ -102,7 +103,6 @@ class ResizeReorderCell extends React.PureComponent {
       left,
       cellGroupLeft,
       touchEnabled,
-      isRTL,
       tableHeight,
       isFixed,
       scrollToX,
@@ -117,7 +117,7 @@ class ResizeReorderCell extends React.PureComponent {
       width: props.width - 1, // subtracting border width
     };
 
-    if (this.props.isRTL) {
+    if (this.context.isRTL) {
       style.right = left;
     } else {
       style.left = left;
@@ -134,7 +134,7 @@ class ResizeReorderCell extends React.PureComponent {
     );
 
     if (this.state.isColumnReordering) {
-      const DIR_SIGN = this.props.isRTL ? -1 : 1;
+      const DIR_SIGN = this.context.isRTL ? -1 : 1;
       // Todo(deshpsuy): Investigate if translation logic can be moved ReorderHandle be modifying the component Hierarchy
       style.transform = `translateX(${this.state.displacement * DIR_SIGN}px) translateZ(0)`;
     }
@@ -214,11 +214,6 @@ ResizeReorderCell.propTypes = {
   touchEnabled: PropTypes.bool,
 
   /**
-   * If the component should render for RTL direction
-   */
-  isRTL: PropTypes.bool,
-
-  /**
    * availableScrollWidth returned from ColumnWidths.
    */
   availableScrollWidth: PropTypes.number,
@@ -254,6 +249,8 @@ ResizeReorderCell.propTypes = {
    */
   getCellGroupWidth: PropTypes.func
 }
+
+ResizeReorderCell.contextType = PluginContext;
 
 ResizeReorderCell.defaultProps = {
   toggleCellsRecycling: _.noop,

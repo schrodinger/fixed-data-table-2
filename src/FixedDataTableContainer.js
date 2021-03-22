@@ -24,7 +24,20 @@ import Scrollbar from 'Scrollbar';
 import { PluginContext } from './Context';
 import shallowEqualSelector from 'shallowEqualSelector';
 
-const memoizeContext = shallowEqualSelector([state => state], ({maxScrollX, scrollX}) => ({maxScrollX, scrollX}))
+const memoizeContext = shallowEqualSelector([state => state],
+    ({
+       maxScrollX,
+       scrollX,
+       isRTL,
+       tableHeight,
+       touchEnabled
+    }) => ({
+      maxScrollX,
+      scrollX,
+      isRTL,
+      tableHeight,
+      touchEnabled
+    }))
 
 
 class FixedDataTableContainer extends React.Component {
@@ -74,6 +87,8 @@ class FixedDataTableContainer extends React.Component {
   }
 
   render() {
+    const { maxScrollX, scrollX, tableSize } = this.state;
+    const { isRTL } = this.props;
     const fdt = (
           <FixedDataTable
               {...this.props}
@@ -83,16 +98,27 @@ class FixedDataTableContainer extends React.Component {
     );
     // For backward compatibility, by default we render FDT-2 scrollbars
     if (this.props.defaultScrollbars) {
-      const { maxScrollX, scrollX } = this.state;
       return (
-          <PluginContext.Provider value={memoizeContext({ maxScrollX, scrollX })}>
+          <PluginContext.Provider value={memoizeContext({
+            maxScrollX,
+            scrollX,
+            isRTL,
+            tableHeight: tableSize.height,
+            touchEnabled: this.props.touchScrollEnabled
+          })}>
             <ScrollContainer {...this.props}>
               {fdt}
             </ScrollContainer>
           </PluginContext.Provider>
             );
     }
-    return <PluginContext.Provider value={{maxScrollX: this.state.maxScrollX}}>{fdt}</PluginContext.Provider>;
+    return <PluginContext.Provider value={memoizeContext({
+      maxScrollX,
+      scrollX,
+      isRTL,
+      tableHeight: tableSize.height,
+      touchEnabled: this.props.touchScrollEnabled
+    })}>{fdt}</PluginContext.Provider>;
   }
 
   getBoundState() {

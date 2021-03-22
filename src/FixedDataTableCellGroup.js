@@ -261,7 +261,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
   }
 
   /**
-   * @deprecated
+   * @deprecated Added to have backward compatibility. This will be removed in future release.
    * @param {boolean} value
    * @param {string} columnKey
    */
@@ -328,9 +328,7 @@ class FixedDataTableCellGroup extends React.Component {
     }
 
     return (
-      <div
-        style={style}
-        className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
+      <div style={style} className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
         <FixedDataTableCellGroupImpl
           {...props}
         />
