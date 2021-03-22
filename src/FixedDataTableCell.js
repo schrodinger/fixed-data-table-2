@@ -218,7 +218,6 @@ class FixedDataTableCell extends React.Component {
       height,
       width,
     };
-    // Todo(deshpsuy): Clean the unused props
     if (this.props.isHeader) {
       cellProps = {
         ...cellProps,
