@@ -17,18 +17,30 @@ import invariant from './stubs/invariant';
 import pick from 'lodash/pick';
 
 import * as ActionTypes from './actions/ActionTypes';
-import * as columnActions from './actions/columnActions';
 import * as scrollActions from './actions/scrollActions';
 import FixedDataTable from './FixedDataTable';
 import FixedDataTableStore from './FixedDataTableStore';
 import Scrollbar from './plugins/Scrollbar';
 import ScrollContainer from './plugins/ScrollContainer';
+import { PluginContext } from './Context';
+import shallowEqualSelector from './helper/shallowEqualSelector';
+
+const memoizeContext = shallowEqualSelector(
+  [(state) => state],
+  ({ maxScrollX, scrollX, isRTL, tableHeight, touchEnabled }) => ({
+    maxScrollX,
+    scrollX,
+    isRTL,
+    tableHeight,
+    touchEnabled,
+  })
+);
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
     defaultScrollbars: true,
     scrollbarXHeight: Scrollbar.SIZE,
-    scrollbarYWidth: Scrollbar.SIZE
+    scrollbarYWidth: Scrollbar.SIZE,
   };
 
   constructor(props) {
@@ -38,8 +50,10 @@ class FixedDataTableContainer extends React.Component {
 
     this.reduxStore = FixedDataTableStore.get();
 
-    this.scrollActions = bindActionCreators(scrollActions, this.reduxStore.dispatch);
-    this.columnActions = bindActionCreators(columnActions, this.reduxStore.dispatch);
+    this.scrollActions = bindActionCreators(
+      scrollActions,
+      this.reduxStore.dispatch
+    );
 
     this.reduxStore.dispatch({
       type: ActionTypes.INITIALIZE,
@@ -72,23 +86,44 @@ class FixedDataTableContainer extends React.Component {
   }
 
   render() {
+    const { maxScrollX, scrollX, tableSize } = this.state;
+    const { isRTL } = this.props;
     const fdt = (
-        <FixedDataTable
-            {...this.props}
-            {...this.state}
-            scrollActions={this.scrollActions}
-            columnActions={this.columnActions}
-        />
+      <FixedDataTable
+        {...this.props}
+        {...this.state}
+        scrollActions={this.scrollActions}
+      />
     );
     // For backward compatibility, by default we render FDT-2 scrollbars
     if (this.props.defaultScrollbars) {
       return (
-          <ScrollContainer {...this.props}>
-            {fdt}
-          </ScrollContainer>
+        <PluginContext.Provider
+          value={memoizeContext({
+            maxScrollX,
+            scrollX,
+            isRTL,
+            tableHeight: tableSize.height,
+            touchEnabled: this.props.touchScrollEnabled,
+          })}
+        >
+          <ScrollContainer {...this.props}>{fdt}</ScrollContainer>
+        </PluginContext.Provider>
       );
     }
-    return fdt;
+    return (
+      <PluginContext.Provider
+        value={memoizeContext({
+          maxScrollX,
+          scrollX,
+          isRTL,
+          tableHeight: tableSize.height,
+          touchEnabled: this.props.touchScrollEnabled,
+        })}
+      >
+        {fdt}
+      </PluginContext.Provider>
+    );
   }
 
   getBoundState() {

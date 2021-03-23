@@ -11,3 +11,5 @@ docs/api
 dist
 .tmp
 *.swp
+.idea
+.eslintcache

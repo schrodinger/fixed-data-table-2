@@ -33,6 +33,11 @@ var FILES_TO_READ = [
     path: path.join(PROJECT_ROOT, 'src/FixedDataTableCellDefault.js'),
     name: 'Cell',
     markdownFileName: 'CellAPI.md'
+  },
+  {
+    path: path.join(PROJECT_ROOT, 'src/plugins/ResizeReorder/ResizeReorderCell.js'),
+    name: 'ResizeReorderCell',
+    markdownFileName: 'ResizeReorderCellAPI.md'
   }
 ];
 

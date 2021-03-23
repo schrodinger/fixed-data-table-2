@@ -2,13 +2,12 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { DateCell } from './helpers/cells';
 import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
-import Dimensions from 'react-dimensions';
 
 class OwnerExample extends React.Component {
   constructor(props) {
@@ -48,7 +47,8 @@ class OwnerExample extends React.Component {
         width={400}
         height={600}
         footerHeight={30}
-        ownerHeight={this.props.height + 60 + pageYOffset}>
+        ownerHeight={this.props.height + 60 + pageYOffset}
+      >
         <Column
           columnKey="date"
           header={<DataCell>DOB</DataCell>}

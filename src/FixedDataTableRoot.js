@@ -16,14 +16,14 @@ import Cell from './FixedDataTableCellDefaultDeprecated';
 import DataCell from './FixedDataTableCellDefault';
 import Column from './FixedDataTableColumn';
 import ColumnGroup from './FixedDataTableColumnGroup';
+import ResizeReorderCell from '././plugins/ResizeReorder/ResizeReorderCell';
+import { PluginContext } from './Context';
 
 const version = '1.2.0';
 
-export {
-  Cell,
-  Column,
-  ColumnGroup,
-  DataCell,
-  Table,
-  version,
+const Plugins = {
+  ResizeReorderCell,
+  PluginContext,
 };
+
+export { Cell, Column, ColumnGroup, DataCell, Table, Plugins, version };

@@ -6,15 +6,8 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule fixedDataTableColumnResizerLine
- *
  */
 
-/**
- * Column resizer line.
- */
-.public/fixedDataTableColumnResizerLine/main {
-  border-color: #0284ff;
-  width: 1px;
-  position: fixed;
-}
+import React from 'react';
+
+export const PluginContext = React.createContext({});

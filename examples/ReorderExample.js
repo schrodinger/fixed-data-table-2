@@ -2,21 +2,22 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, DataCell } from 'fixed-data-table-2';
+import { Table, Column, Plugins } from 'fixed-data-table-2';
 import React from 'react';
+import _ from 'lodash';
 
 var columnTitles = {
-  'firstName': 'First Name',
-  'lastName': 'Last Name',
-  'sentence': 'Sentence',
-  'companyName': 'Company',
-  'city': 'City',
-  'street': 'Street',
-  'zipCode': 'Zip Code'
+  firstName: 'First Name',
+  lastName: 'Last Name',
+  sentence: 'Sentence',
+  companyName: 'Company',
+  city: 'City',
+  street: 'Street',
+  zipCode: 'Zip Code',
 };
 
 var columnWidths = {
@@ -26,13 +27,10 @@ var columnWidths = {
   companyName: 100,
   city: 240,
   street: 260,
-  zipCode: 240
+  zipCode: 240,
 };
 
-var fixedColumns = [
-  'firstName',
-  'lastName'
-];
+var fixedColumns = ['firstName', 'lastName'];
 
 class ReorderExample extends React.Component {
   constructor(props) {
@@ -47,15 +45,18 @@ class ReorderExample extends React.Component {
         'street',
         'zipCode',
         'sentence',
-        'companyName'
+        'companyName',
       ],
+      recycling: {},
     };
 
-    this._onColumnReorderEndCallback = this._onColumnReorderEndCallback.bind(this);
+    this._onColumnReorderEndCallback = this._onColumnReorderEndCallback.bind(
+      this
+    );
+    this.toggleCellsRecycling = this.toggleCellsRecycling.bind(this);
   }
 
   _onColumnReorderEndCallback(event) {
-    console.log(event);
     var columnOrder = this.state.columnOrder.filter((columnKey) => {
       return columnKey !== event.reorderColumn;
     });
@@ -65,42 +66,59 @@ class ReorderExample extends React.Component {
       columnOrder.splice(index, 0, event.reorderColumn);
     } else {
       if (fixedColumns.indexOf(event.reorderColumn) !== -1) {
-        columnOrder.splice(fixedColumns.length - 1, 0, event.reorderColumn)
+        columnOrder.splice(fixedColumns.length - 1, 0, event.reorderColumn);
       } else {
         columnOrder.push(event.reorderColumn);
       }
     }
     this.setState({
-      columnOrder: columnOrder
+      columnOrder: columnOrder,
+    });
+  }
+
+  toggleCellsRecycling(enable, columnKey) {
+    this.setState({
+      recycling: {
+        [columnKey]: enable,
+      },
     });
   }
 
   render() {
-    var {dataList} = this.state;
-
+    var { dataList, recycling } = this.state;
+    var onColumnReorderEndCallback = this._onColumnReorderEndCallback;
+    const toggleCellsRecycling = this.toggleCellsRecycling;
     return (
       <Table
         rowHeight={30}
         headerHeight={50}
         rowsCount={dataList.getSize()}
-        onColumnReorderEndCallback={this._onColumnReorderEndCallback}
         isColumnReordering={false}
         width={1000}
         height={500}
-        {...this.props}>
+        {...this.props}
+      >
         {this.state.columnOrder.map(function (columnKey, i) {
-          return <Column
-            allowCellsRecycling={true}
-            columnKey={columnKey}
-            key={i}
-            isReorderable={true}
-            header={<DataCell>{columnTitles[columnKey]}</DataCell>}
-            cell={<TextCell data={dataList} />}
-            fixed={fixedColumns.indexOf(columnKey) !== -1}
-            width={columnWidths[columnKey]}
-           />;
+          return (
+            <Column
+              allowCellsRecycling={_.get(recycling, columnKey, true)}
+              columnKey={columnKey}
+              key={i}
+              header={
+                <Plugins.ResizeReorderCell
+                  toggleCellsRecycling={toggleCellsRecycling}
+                  onColumnReorderEndCallback={onColumnReorderEndCallback}
+                >
+                  {columnTitles[columnKey]}
+                </Plugins.ResizeReorderCell>
+              }
+              cell={<TextCell data={dataList} />}
+              fixed={fixedColumns.indexOf(columnKey) !== -1}
+              width={columnWidths[columnKey]}
+            />
+          );
         })}
-       </Table>
+      </Table>
     );
   }
 }
