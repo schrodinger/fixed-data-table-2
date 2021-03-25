@@ -72,7 +72,7 @@ class ReorderHandle extends React.PureComponent {
         onTouchEnd={this.onTouchEnd}
         onTouchMove={this.onTouchMove}
         style={style}
-      ></div>
+      />
     );
   }
 
@@ -102,7 +102,7 @@ class ReorderHandle extends React.PureComponent {
     this.scrollStart = this.context.scrollX;
     this.originalLeft = this.props.left;
     this.initializeDOMMouseMoveTracker(event);
-    this.updateParentReorderingData({
+    this.props.updateParentReorderingData({
       isColumnReordering: true,
       displacement: 0,
     });
@@ -119,7 +119,7 @@ class ReorderHandle extends React.PureComponent {
   onMouseUp = () => {
     this.props.toggleCellsRecycling(true, this.props.columnKey);
     cancelAnimationFrame(this.frameId);
-    this.updateParentReorderingData({
+    this.props.updateParentReorderingData({
       isColumnReordering: false,
       displacement: 0,
     });
@@ -142,10 +142,6 @@ class ReorderHandle extends React.PureComponent {
       this.props.touchEnabled
     );
     this.mouseMoveTracker.captureMouseMoves(event);
-  };
-
-  updateParentReorderingData = (state) => {
-    this.props.updateParentReorderingData(state);
   };
 
   updateDisplacementPeriodically = () => {
@@ -194,7 +190,7 @@ class ReorderHandle extends React.PureComponent {
       this.props.scrollToX(scrollX);
     }
     deltaX = this.getBoundedDeltaX(deltaX);
-    this.updateParentReorderingData({ displacement: deltaX });
+    this.props.updateParentReorderingData({ displacement: deltaX });
   };
 
   /**
@@ -212,16 +208,15 @@ class ReorderHandle extends React.PureComponent {
   isColumnMovedToLeft = (deltaX) => deltaX < 0;
 
   updateColumnOrder = () => {
-    // Todo(deshpsuy): Investigate if same code can be reused instead of duplicating the logic for right and left movement
-    const cellGroupColumnWidths = this.props.getCellGroupWidth();
-    const columnIndex = cellGroupColumnWidths.keys.indexOf(
-      this.props.columnKey
-    );
+    const { getCellGroupWidth, columnKey } = this.props;
+    const cellGroupColumnWidths = getCellGroupWidth();
+    const columnIndex = cellGroupColumnWidths.keys.indexOf(columnKey);
     let columnBefore = cellGroupColumnWidths.keys[columnIndex - 1];
     let columnAfter = cellGroupColumnWidths.keys[columnIndex + 1];
 
-    let localDisplacement =
-      this.cursorDeltaX + this.context.scrollX - this.scrollStart;
+    let localDisplacement = this.getBoundedDeltaX(
+      this.cursorDeltaX + this.context.scrollX - this.scrollStart
+    );
     if (this.isColumnMovedToRight(localDisplacement)) {
       for (
         let i = columnIndex + 1, j = cellGroupColumnWidths.widths.length;
