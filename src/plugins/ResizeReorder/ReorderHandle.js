@@ -8,6 +8,7 @@
  *
  * @providesModule ReorderHandle
  * @typechecks
+ * @file Contains the reordering logic
  */
 
 import React from 'react';

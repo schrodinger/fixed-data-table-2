@@ -8,6 +8,7 @@
  *
  * @providesModule ResizerKnob
  * @typechecks
+ * @file Contains resizing logic
  */
 
 import React from 'react';

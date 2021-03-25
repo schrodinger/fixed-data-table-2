@@ -26,7 +26,7 @@ import { PluginContext } from './Context';
 import shallowEqualSelector from './helper/shallowEqualSelector';
 
 const memoizeContext = shallowEqualSelector(
-  [(state) => state],
+  [(pluginsData) => pluginsData],
   ({ maxScrollX, scrollX, isRTL, tableHeight, touchEnabled }) => ({
     maxScrollX,
     scrollX,

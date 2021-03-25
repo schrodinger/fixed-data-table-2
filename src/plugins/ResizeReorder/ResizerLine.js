@@ -11,6 +11,7 @@
  * you to resize the corresponding column.
  * @providesModule ResizerLine
  * @typechecks
+ * @file Big blue line which is visible while resizing
  */
 
 import React from 'react';

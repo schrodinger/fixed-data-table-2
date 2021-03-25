@@ -8,6 +8,7 @@
  *
  * @providesModule ResizeReorderCell
  * @typechecks
+ * @file Wrapper component for ResizerKnob and ReorderHandle. It is responsible for translating cell in case of reordering
  */
 
 import FixedDataTableCellDefault from '../../FixedDataTableCellDefault';
@@ -18,6 +19,8 @@ import ReorderHandle from './ReorderHandle';
 import joinClasses from '../../vendor_upstream/core/joinClasses';
 import cx from '../../vendor_upstream/stubs/cx';
 import { PluginContext } from '../../Context';
+
+const BORDER_WIDTH = 1;
 
 /**
  * A plugin that can make use of ResizerKnob and ReorderHandle to provide the
@@ -113,7 +116,7 @@ class ResizeReorderCell extends React.PureComponent {
 
     let style = {
       height: props.height,
-      width: props.width - 1, // subtracting border width
+      width: props.width - BORDER_WIDTH,
     };
 
     if (this.context.isRTL) {
@@ -129,7 +132,7 @@ class ResizeReorderCell extends React.PureComponent {
         'public/fixedDataTableCell/reordering': this.state.isColumnReordering,
         'resize-reorder-cell-container': true,
       }),
-      props.className
+      props.className,
     );
 
     if (this.state.isColumnReordering) {
