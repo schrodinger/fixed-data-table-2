@@ -32,32 +32,39 @@ const BORDER_WIDTH = 1;
  *
  */
 class ResizeReorderCell extends React.PureComponent {
-  state = {
-    isColumnReordering: false,
-    displacement: 0,
-  };
 
   /**
-   *
-   * @param {Object} data
-   * @param {boolean} data.isColumnReordering
-   * @param {number} data.displacement
+   * @param {JSX.Element} content
+   * @param {CSSProperties} style
+   * @param {string} className
+   * @returns {function(CSSProperties, React.ReactNode, boolean)}
    */
-  updateReorderingData = (data) => {
-    const columnNotMoved = data.displacement === this.state.displacement;
-    if (this.state.isColumnReordering && columnNotMoved) {
-      return;
-    }
-    this.setState(data);
-  };
+  renderReorderHandleContent = (content, style, className) =>
+    (reorderStyles, reorderHandle, isReordering) => {
+      const reorderClasses = joinClasses(className, cx({
+        'public/fixedDataTableCell/hasReorderHandle': true,
+        'public/fixedDataTableCell/reordering': isReordering,
+      }));
+      return <div className={reorderClasses} style={{ ...style, ...reorderStyles }}>
+        {reorderHandle}
+        {content}
+      </div>;
+    };
 
-  renderReorderHandle = () => {
+  /**
+   * @param {JSX.Element} content
+   * @param {CSSProperties} style
+   * @param {string} className
+   * @returns {JSX.Element|null}
+   */
+  renderReorderHandle = (content, style, className) => {
     if (!this.props.onColumnReorderEndCallback) {
       return null;
     }
 
     return (
       <ReorderHandle
+        render={this.renderReorderHandleContent(content, style, className)}
         toggleCellsRecycling={this.props.toggleCellsRecycling}
         touchEnabled={this.props.touchEnabled}
         height={this.props.height}
@@ -65,7 +72,6 @@ class ResizeReorderCell extends React.PureComponent {
         columnKey={this.props.columnKey}
         left={this.props.left}
         onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}
-        updateParentReorderingData={this.updateReorderingData}
         {...this.props}
       />
     );
@@ -127,21 +133,10 @@ class ResizeReorderCell extends React.PureComponent {
 
     let className = joinClasses(
       cx({
-        // '.public/fixedDataTableCell/main': true,
-        'public/fixedDataTableCell/hasReorderHandle': !!onColumnReorderEndCallback,
-        'public/fixedDataTableCell/reordering': this.state.isColumnReordering,
         'resize-reorder-cell-container': true,
       }),
       props.className,
     );
-
-    if (this.state.isColumnReordering) {
-      const DIR_SIGN = this.context.isRTL ? -1 : 1;
-      // Todo(deshpsuy): Investigate if translation logic can be moved ReorderHandle be modifying the component Hierarchy
-      style.transform = `translateX(${
-        this.state.displacement * DIR_SIGN
-      }px) translateZ(0)`;
-    }
 
     let content;
     if (React.isValidElement(children)) {
@@ -156,9 +151,16 @@ class ResizeReorderCell extends React.PureComponent {
       );
     }
 
+    if (onColumnReorderEndCallback) {
+      return (
+        <>
+          {this.renderReorderHandle(content, style, className)}
+          {this.renderResizerKnob()}
+        </>
+      );
+    }
     return (
       <div className={className} style={style}>
-        {this.renderReorderHandle()}
         {this.renderResizerKnob()}
         {content}
       </div>

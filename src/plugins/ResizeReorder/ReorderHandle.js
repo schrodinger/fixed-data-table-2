@@ -21,6 +21,12 @@ const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
 
 class ReorderHandle extends React.PureComponent {
+
+  state = {
+    displacement: 0,
+    isReordering: false,
+  };
+
   /**
    * Instance of DOMMouseMoveTracker to capture mouse events
    * @type {DOMMouseMoveTracker}
@@ -32,12 +38,6 @@ class ReorderHandle extends React.PureComponent {
    * @type {number}
    */
   cursorDeltaX = 0;
-
-  /**
-   * Set true while reordering
-   * @type {boolean}
-   */
-  isReordering = false;
 
   /**
    * Frame Id of requested animation frame
@@ -58,22 +58,28 @@ class ReorderHandle extends React.PureComponent {
   originalLeft = 0;
 
   render() {
+    const DIR_SIGN = this.context.isRTL ? -1 : 1;
     const style = {
       height: this.props.height,
     };
+    const reorderStyles = {
+      transform: `translateX(${this.state.displacement * DIR_SIGN}px) translateZ(0)`,
+    };
 
     return (
-      <div
-        className={cx({
-          'fixedDataTableCellLayout/columnReorderContainer': true,
-          'fixedDataTableCellLayout/columnReorderContainer/active': false,
-        })}
-        onMouseDown={this.onMouseDown}
-        onTouchStart={this.onTouchStart}
-        onTouchEnd={this.onTouchEnd}
-        onTouchMove={this.onTouchMove}
-        style={style}
-      />
+      <>
+        {this.props.render(reorderStyles, <div
+          className={cx({
+            'fixedDataTableCellLayout/columnReorderContainer': true,
+            'fixedDataTableCellLayout/columnReorderContainer/active': false,
+          })}
+          onMouseDown={this.onMouseDown}
+          onTouchStart={this.onTouchStart}
+          onTouchEnd={this.onTouchEnd}
+          onTouchMove={this.onTouchMove}
+          style={style}
+        />, this.state.isReordering)}
+      </>
     );
   }
 
@@ -99,14 +105,10 @@ class ReorderHandle extends React.PureComponent {
   onMouseDown = (event) => {
     this.props.toggleCellsRecycling(false, this.props.columnKey);
     this.cursorDeltaX = 0;
-    this.isReordering = true;
     this.scrollStart = this.context.scrollX;
     this.originalLeft = this.props.left;
     this.initializeDOMMouseMoveTracker(event);
-    this.props.updateParentReorderingData({
-      isColumnReordering: true,
-      displacement: 0,
-    });
+    this.setState({ displacement: 0, isReordering: true });
     this.frameId = requestAnimationFrame(this.updateDisplacementPeriodically);
   };
 
@@ -120,12 +122,8 @@ class ReorderHandle extends React.PureComponent {
   onMouseUp = () => {
     this.props.toggleCellsRecycling(true, this.props.columnKey);
     cancelAnimationFrame(this.frameId);
-    this.props.updateParentReorderingData({
-      isColumnReordering: false,
-      displacement: 0,
-    });
+    this.setState({ displacement: 0, isReordering: false });
     this.updateColumnOrder();
-    this.isReordering = false;
     this.frameId = null;
     this.cursorDeltaX = 0;
     this.mouseMoveTracker.releaseMouseMoves();
@@ -140,7 +138,7 @@ class ReorderHandle extends React.PureComponent {
       this.onMouseMove,
       this.onMouseUp,
       document.body,
-      this.props.touchEnabled
+      this.props.touchEnabled,
     );
     this.mouseMoveTracker.captureMouseMoves(event);
   };
@@ -191,7 +189,7 @@ class ReorderHandle extends React.PureComponent {
       this.props.scrollToX(scrollX);
     }
     deltaX = this.getBoundedDeltaX(deltaX);
-    this.props.updateParentReorderingData({ displacement: deltaX });
+    this.setState({ displacement: deltaX });
   };
 
   /**
@@ -215,9 +213,7 @@ class ReorderHandle extends React.PureComponent {
     let columnBefore = cellGroupColumnWidths.keys[columnIndex - 1];
     let columnAfter = cellGroupColumnWidths.keys[columnIndex + 1];
 
-    let localDisplacement = this.getBoundedDeltaX(
-      this.cursorDeltaX + this.context.scrollX - this.scrollStart
-    );
+    let localDisplacement = this.getBoundedDeltaX(this.cursorDeltaX + this.context.scrollX - this.scrollStart);
     if (this.isColumnMovedToRight(localDisplacement)) {
       for (
         let i = columnIndex + 1, j = cellGroupColumnWidths.widths.length;

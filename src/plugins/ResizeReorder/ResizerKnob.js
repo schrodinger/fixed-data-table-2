@@ -24,7 +24,7 @@ class ResizerKnob extends React.PureComponent {
     /**
      * @type {boolean} Set true when column resizing starts. It is used to make ResizerLine visible.
      */
-    isColumnResizing: undefined,
+    isColumnResizing: false,
 
     /**
      * @type {number} X coordinate of ResizerLine during resizing. It is passed do to ResizerLine to render at appropriate position.
@@ -44,7 +44,10 @@ class ResizerKnob extends React.PureComponent {
 
   state = { ...this.initialState };
 
-  // Ref to ResizerKnob
+  /**
+   * Ref to ResizerKnob
+   * @type {HTMLDivElement}
+   */
   curRef = null;
 
   /**
@@ -100,7 +103,7 @@ class ResizerKnob extends React.PureComponent {
       this.onMouseMove,
       this.onMouseUp,
       document.body,
-      this.props.touchEnabled
+      this.props.touchEnabled,
     );
     this.mouseMoveTracker.captureMouseMoves(event);
   };
@@ -110,9 +113,7 @@ class ResizerKnob extends React.PureComponent {
    */
   onMouseDown = (ev) => {
     this.initializeDOMMouseMoveTracker(ev);
-    const initialMouseXCoordinate = FixedDataTableEventHelper.getCoordinatesFromEvent(
-      ev
-    ).x;
+    const initialMouseXCoordinate = FixedDataTableEventHelper.getCoordinatesFromEvent(ev).x;
     this.setState({
       initialMouseXCoordinate,
       isColumnResizing: true,
@@ -125,9 +126,9 @@ class ResizerKnob extends React.PureComponent {
     const { minWidth, maxWidth } = this.getMinMaxWidth();
     const newWidth = clamp(
       this.props.width +
-        this.state.totalDisplacement * (this.props.isRTL ? -1 : 1),
+      this.state.totalDisplacement * (this.props.isRTL ? -1 : 1),
       minWidth,
-      maxWidth
+      maxWidth,
     );
     this.mouseMoveTracker.releaseMouseMoves();
     this.resetColumnResizing(() =>
@@ -177,7 +178,7 @@ class ResizerKnob extends React.PureComponent {
         if (_.isFunction(callback)) {
           callback();
         }
-      }
+      },
     );
   };
 
