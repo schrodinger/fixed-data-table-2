@@ -49,14 +49,9 @@ class ReorderExample extends React.Component {
       ],
       recycling: {},
     };
-
-    this._onColumnReorderEndCallback = this._onColumnReorderEndCallback.bind(
-      this
-    );
-    this.toggleCellsRecycling = this.toggleCellsRecycling.bind(this);
   }
 
-  _onColumnReorderEndCallback(event) {
+  _onColumnReorderEndCallback = (event) => {
     var columnOrder = this.state.columnOrder.filter((columnKey) => {
       return columnKey !== event.reorderColumn;
     });
@@ -76,7 +71,7 @@ class ReorderExample extends React.Component {
     });
   }
 
-  toggleCellsRecycling(enable, columnKey) {
+  toggleCellsRecycling = (enable, columnKey) => {
     this.setState({
       recycling: {
         [columnKey]: enable,
