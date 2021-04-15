@@ -7,46 +7,28 @@
 
 'use strict';
 
-import {
-  COLUMN_REORDER_START,
-  COLUMN_REORDER_END,
-  COLUMN_REORDER_MOVE,
-  COLUMN_RESIZE,
-} from './ActionTypes';
-
 /**
  * Initiates column reordering
  *
  * @param {{scrollStart: number, columnKey: string, with: number, left: number}} reorderData
  */
-export const startColumnReorder = (reorderData) => ({
-  type: COLUMN_REORDER_START,
-  reorderData,
-});
+export { columnReorderStart as startColumnReorder } from '../reducers'
 
 /**
  * Stops column reordering
  */
-export const stopColumnReorder = () => ({
-  type: COLUMN_REORDER_END,
-});
+export { columnReorderEnd as stopColumnReorder } from '../reducers'
 
 /**
  * Stops column reordering
  *
  * @param {number} deltaX
  */
-export const moveColumnReorder = (deltaX) => ({
-  type: COLUMN_REORDER_MOVE,
-  deltaX
-});
+export { columnReorderMove as moveColumnReorder } from '../reducers'
 
 /**
  * Fires a resize on column
  *
  * @param {!Object} reorderData
  */
-export const resizeColumn = (resizeData) => ({
-  type: COLUMN_RESIZE,
-  resizeData,
-});
+export { columnResize as resizeColumn } from '../reducers'

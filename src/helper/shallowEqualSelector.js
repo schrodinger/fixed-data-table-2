@@ -9,10 +9,8 @@
  * @providesModule shallowEqualSelector
  */
 
-'use strict'
+'use strict';
 
-import { createSelectorCreator, defaultMemoize } from 'reselect';
+import { createSelector } from 'reselect';
 
-import shallowEqual from '../vendor_upstream/core/shallowEqual';
-
-export default createSelectorCreator(defaultMemoize, shallowEqual);
+export default createSelector;

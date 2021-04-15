@@ -18,11 +18,11 @@ import PrefixIntervalTree from '../vendor_upstream/struct/PrefixIntervalTree';
 import shallowEqual from '../vendor_upstream/core/shallowEqual';
 
 import convertColumnElementsToData from '../helper/convertColumnElementsToData';
-import * as ActionTypes from '../actions/ActionTypes';
 import { getScrollAnchor, scrollTo } from './scrollAnchor';
 import columnStateHelper from './columnStateHelper'
 import computeRenderedRows from './computeRenderedRows';
 import Scrollbar from '../plugins/Scrollbar';
+import { createSlice } from '@reduxjs/toolkit';
 
 /**
  * Returns the default initial state for the redux store.
@@ -105,19 +105,21 @@ function getInitialState() {
   };
 }
 
-function reducers(state = getInitialState(), action) {
-  switch (action.type) {
-    case ActionTypes.INITIALIZE: {
-      const { props } = action;
+const slice = createSlice({
+  name: 'FDT',
+  initialState: getInitialState(),
+  reducers: {
+    initialize(state, action) {
+      const props = action.payload;
 
       let newState = setStateFromProps(state, props);
       newState = initializeRowHeightsAndOffsets(newState);
       const scrollAnchor = getScrollAnchor(newState, props);
       newState = computeRenderedRows(newState, scrollAnchor);
       return columnStateHelper.initialize(newState, props, {});
-    }
-    case ActionTypes.PROP_CHANGE: {
-      const { newProps, oldProps } = action;
+    },
+    propChange(state, action) {
+      const { newProps, oldProps } = action.payload;
       let newState = setStateFromProps(state, newProps);
 
       if (oldProps.rowsCount !== newProps.rowsCount ||
@@ -151,8 +153,8 @@ function reducers(state = getInitialState(), action) {
       // children column widths and flex widths are unchanged
       // alternatively shallow diff and reconcile props
       return newState;
-    }
-    case ActionTypes.SCROLL_END: {
+    },
+    scrollEnd(state) {
       const newState = Object.assign({}, state, {
         scrolling: false,
       });
@@ -162,45 +164,42 @@ function reducers(state = getInitialState(), action) {
         lastIndex: state.lastIndex,
       };
       return computeRenderedRows(newState, previousScrollAnchor);
-    }
-    case ActionTypes.SCROLL_TO_Y: {
-      let { scrollY } = action;
+    },
+    scrollToY(state, action) {
+      let scrollY = action.payload;
       const newState = Object.assign({}, state, {
         scrolling: true,
       });
       const scrollAnchor = scrollTo(newState, scrollY);
       return computeRenderedRows(newState, scrollAnchor);
-    }
-    case ActionTypes.COLUMN_RESIZE: {
-      const { resizeData } = action;
+    },
+    columnResize(state, action) {
+      const resizeData = action.payload;
       return columnStateHelper.resizeColumn(state, resizeData);
-    }
-    case ActionTypes.COLUMN_REORDER_START: {
-      const { reorderData } = action;
+    },
+    columnReorderStart(state, action) {
+      const reorderData = action.payload;
       return columnStateHelper.reorderColumn(state, reorderData);
-    }
-    case ActionTypes.COLUMN_REORDER_END: {
+    },
+    columnReorderEnd(state) {
       return Object.assign({}, state, {
         isColumnReordering: false,
         columnReorderingData: {}
       });
-    }
-    case ActionTypes.COLUMN_REORDER_MOVE: {
-      const { deltaX } = action;
+    },
+    columnReorderMove(state, action) {
+      const deltaX = action.payload;
       return columnStateHelper.reorderColumnMove(state, deltaX);
-    }
-    case ActionTypes.SCROLL_TO_X: {
-      const { scrollX } = action;
+    },
+    scrollToX(state, action) {
+      const scrollX = action.payload;
       return Object.assign({}, state, {
         scrolling: true,
         scrollX,
       });
     }
-    default: {
-      return state;
-    }
   }
-}
+})
 
 /**
  * Initialize row heights (storedHeights) & offsets based on the default rowHeight
@@ -269,4 +268,6 @@ function setStateFromProps(state, props) {
   return newState;
 }
 
-export default reducers;
+const { reducer, actions } = slice
+export const { columnReorderEnd, columnReorderMove, columnReorderStart, columnResize, initialize, propChange, scrollEnd, scrollToX, scrollToY } = actions
+export default reducer;
