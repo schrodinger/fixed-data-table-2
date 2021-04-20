@@ -21,7 +21,7 @@ export default {
   get: () => configureStore({
     reducer: reducers,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-      // Todo: Have to disable immutableCheck because state has circular JSON somewhere in it. Need to investigate it.
+      // Todo(deshpsuy): Have to disable immutableCheck because state has circular JSON somewhere in it. Need to investigate it.
       immutableCheck: false,
       serializableCheck: false,
     }),
