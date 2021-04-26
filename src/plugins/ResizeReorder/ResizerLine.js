@@ -33,9 +33,9 @@ class ResizerLine extends React.PureComponent {
     height: PropTypes.number.isRequired,
 
     /**
-     * X coordinate that will be left position of ResizerLine
+     * Left position of ResizerLine
      */
-    xCoordinate: PropTypes.number,
+    left: PropTypes.number,
 
     /**
      * Top position of resizer line
@@ -51,7 +51,7 @@ class ResizerLine extends React.PureComponent {
     const style = {
       height: this.props.height,
       top: this.props.top,
-      left: this.props.xCoordinate,
+      left: this.props.left,
     };
 
     return (

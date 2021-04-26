@@ -21,13 +21,9 @@ class ResizeExample extends React.Component {
         companyName: 60,
       },
     };
-
-    this._onColumnResizeEndCallback = this._onColumnResizeEndCallback.bind(
-      this
-    );
   }
 
-  _onColumnResizeEndCallback(newColumnWidth, columnKey) {
+  _onColumnResizeEndCallback = (newColumnWidth, columnKey) => {
     this.setState(({ columnWidths }) => ({
       columnWidths: {
         ...columnWidths,
@@ -52,7 +48,7 @@ class ResizeExample extends React.Component {
           columnKey="firstName"
           header={
             <Plugins.ResizeReorderCell
-              onColumnResizeEndCallback={this._onColumnResizeEndCallback}
+              onColumnResizeEnd={this._onColumnResizeEndCallback}
             >
               First Name{' '}
             </Plugins.ResizeReorderCell>
@@ -67,7 +63,7 @@ class ResizeExample extends React.Component {
             <Plugins.ResizeReorderCell
               minWidth={70}
               maxWidth={170}
-              onColumnResizeEndCallback={this._onColumnResizeEndCallback}
+              onColumnResizeEnd={this._onColumnResizeEndCallback}
             >
               Last Name (min/max constrained)
             </Plugins.ResizeReorderCell>
@@ -79,7 +75,7 @@ class ResizeExample extends React.Component {
           columnKey="companyName"
           header={
             <Plugins.ResizeReorderCell
-              onColumnResizeEndCallback={this._onColumnResizeEndCallback}
+              onColumnResizeEnd={this._onColumnResizeEndCallback}
             >
               Company{' '}
             </Plugins.ResizeReorderCell>
@@ -91,7 +87,7 @@ class ResizeExample extends React.Component {
           columnKey="sentence"
           header={
             <Plugins.ResizeReorderCell
-              onColumnResizeEndCallback={this._onColumnResizeEndCallback}
+              onColumnResizeEnd={this._onColumnResizeEndCallback}
             >
               Sentence{' '}
             </Plugins.ResizeReorderCell>

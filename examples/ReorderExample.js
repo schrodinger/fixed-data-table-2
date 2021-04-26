@@ -101,8 +101,8 @@ class ReorderExample extends React.Component {
               key={i}
               header={
                 <Plugins.ResizeReorderCell
-                  toggleCellsRecycling={toggleCellsRecycling}
-                  onColumnReorderEndCallback={onColumnReorderEndCallback}
+                  onColumnReorderStart={toggleCellsRecycling}
+                  onColumnReorderEnd={onColumnReorderEndCallback}
                 >
                   {columnTitles[columnKey]}
                 </Plugins.ResizeReorderCell>

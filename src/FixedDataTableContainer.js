@@ -25,16 +25,15 @@ import ScrollContainer from './plugins/ScrollContainer';
 import { PluginContext } from './Context';
 import shallowEqualSelector from './helper/shallowEqualSelector';
 
-const memoizeContext = shallowEqualSelector(
-  [(pluginsData) => pluginsData],
-  ({ maxScrollX, scrollX, isRTL, tableHeight, touchEnabled }) => ({
-    maxScrollX,
-    scrollX,
-    isRTL,
-    tableHeight,
-    touchEnabled,
-  })
-);
+const memoizeContext = shallowEqualSelector([
+  state => state.maxScrollX,
+  state => state.scrollX,
+  state => state.tableSize.height,
+], (/*number*/maxScrollX, /*number*/scrollX, /*number*/tableHeight) => ({
+  maxScrollX,
+  scrollX,
+  tableHeight,
+}));
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
@@ -86,8 +85,11 @@ class FixedDataTableContainer extends React.Component {
   }
 
   render() {
-    const { maxScrollX, scrollX, tableSize } = this.state;
-    const { isRTL } = this.props;
+    const contextValue = {
+      ...memoizeContext(this.state),
+      isRTL: this.props.isRTL,
+      touchEnabled: this.props.touchEnabled,
+    };
     const fdt = (
       <FixedDataTable
         {...this.props}
@@ -98,29 +100,13 @@ class FixedDataTableContainer extends React.Component {
     // For backward compatibility, by default we render FDT-2 scrollbars
     if (this.props.defaultScrollbars) {
       return (
-        <PluginContext.Provider
-          value={memoizeContext({
-            maxScrollX,
-            scrollX,
-            isRTL,
-            tableHeight: tableSize.height,
-            touchEnabled: this.props.touchScrollEnabled,
-          })}
-        >
+        <PluginContext.Provider value={contextValue}>
           <ScrollContainer {...this.props}>{fdt}</ScrollContainer>
         </PluginContext.Provider>
       );
     }
     return (
-      <PluginContext.Provider
-        value={memoizeContext({
-          maxScrollX,
-          scrollX,
-          isRTL,
-          tableHeight: tableSize.height,
-          touchEnabled: this.props.touchScrollEnabled,
-        })}
-      >
+      <PluginContext.Provider value={contextValue}>
         {fdt}
       </PluginContext.Provider>
     );

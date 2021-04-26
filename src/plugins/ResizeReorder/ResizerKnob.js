@@ -18,6 +18,7 @@ import ResizerLine from './ResizerLine';
 import clamp from '../../vendor_upstream/core/clamp';
 import DOMMouseMoveTracker from '../../vendor_upstream/dom/DOMMouseMoveTracker';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 
 class ResizerKnob extends React.PureComponent {
   initialState = {
@@ -74,7 +75,7 @@ class ResizerKnob extends React.PureComponent {
       <ResizerLine
         height={this.props.resizerLineHeight}
         visible={!!this.state.isColumnResizing}
-        xCoordinate={this.state.currentMouseXCoordinate}
+        left={this.state.currentMouseXCoordinate}
         top={this.state.top}
       />
     );
@@ -203,3 +204,52 @@ class ResizerKnob extends React.PureComponent {
 }
 
 export default ResizerKnob;
+
+ResizerKnob.propTypes = {
+
+  /**
+   * Optional prop that if specified on the `Column` will be passed to the
+   * cell. It can be used to uniquely identify which column is the cell is in.
+   */
+  columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
+  /**
+   * The minimum width of the column.
+   */
+  minWidth: PropTypes.number,
+
+  /**
+   * The maximum width of the column.
+   */
+  maxWidth: PropTypes.number,
+
+  /**
+   * Outer width of the cell.
+   */
+  width: PropTypes.number,
+
+  /**
+   * Line of resizing line
+   */
+  resizerLineHeight: PropTypes.number.isRequired,
+
+  /**
+   * Whether touch is enabled or not.
+   */
+  touchEnabled: PropTypes.bool,
+
+  /**
+   * True if FDT has right to left orientation
+   */
+  isRTL: PropTypes.bool,
+
+  /**
+   * Callback function which is called when reordering ends
+   */
+  onColumnResizeEnd: PropTypes.func,
+
+  /**
+   * Outer height of the cell.
+   */
+  height: PropTypes.number,
+};

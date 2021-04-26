@@ -27,7 +27,7 @@ const BORDER_WIDTH = 1;
  * resize and reorder functionality to the columns.
  *
  * Pass this to the `header` prop of the `Column` to invoke resizer/reorder handle.
- * `onColumnResizeEndCallback` and `onColumnReorderEndCallback` activate the respective
+ * `onColumnResizeEnd` and `onColumnReorderEnd` activate the respective
  * functionality. Either one or both can be used together.
  *
  */
@@ -58,41 +58,40 @@ class ResizeReorderCell extends React.PureComponent {
    * @returns {JSX.Element|null}
    */
   renderReorderHandle = (content, style, className) => {
-    if (!this.props.onColumnReorderEndCallback) {
+    if (!this.props.onColumnReorderEnd) {
       return null;
     }
 
     return (
       <ReorderHandle
         render={this.renderReorderHandleContent(content, style, className)}
-        toggleCellsRecycling={this.props.toggleCellsRecycling}
+        onColumnReorderStart={this.props.onColumnReorderStart}
         touchEnabled={this.props.touchEnabled}
         height={this.props.height}
         isRTL={this.context.isRTL}
         columnKey={this.props.columnKey}
         left={this.props.left}
-        onColumnReorderEndCallback={this.props.onColumnReorderEndCallback}
+        onColumnReorderEndCallback={this.props.onColumnReorderEnd}
         {...this.props}
       />
     );
   };
 
   renderResizerKnob = () => {
-    if (!this.props.onColumnResizeEndCallback) {
+    if (!this.props.onColumnResizeEnd) {
       return null;
     }
 
     return (
       <ResizerKnob
         height={this.props.height}
-        resizerLineHeight={this.props.tableHeight}
-        onColumnResizeEnd={this.props.onColumnResizeEndCallback}
+        resizerLineHeight={this.context.tableHeight}
+        onColumnResizeEnd={this.props.onColumnResizeEnd}
         left={this.props.left}
         width={this.props.width}
         minWidth={this.props.minWidth}
         maxWidth={this.props.maxWidth}
         columnKey={this.props.columnKey}
-        cellGroupLeft={this.props.cellGroupLeft}
         touchEnabled={this.props.touchEnabled}
         isRTL={this.context.isRTL}
       />
@@ -105,17 +104,15 @@ class ResizeReorderCell extends React.PureComponent {
       availableScrollWidth,
       minWidth,
       maxWidth,
-      onColumnResizeEndCallback,
-      onColumnReorderEndCallback,
+      onColumnResizeEnd,
+      onColumnReorderEnd,
       rowIndex,
       left,
-      cellGroupLeft,
       touchEnabled,
-      tableHeight,
       isFixed,
       scrollToX,
       getCellGroupWidth,
-      toggleCellsRecycling,
+      onColumnReorderStart,
       columnGroupWidth,
       ...props
     } = this.props;
@@ -151,7 +148,7 @@ class ResizeReorderCell extends React.PureComponent {
       );
     }
 
-    if (onColumnReorderEndCallback) {
+    if (onColumnReorderEnd) {
       return (
         <>
           {this.renderReorderHandle(content, style, className)}
@@ -196,20 +193,10 @@ ResizeReorderCell.propTypes = {
   rowIndex: PropTypes.number,
 
   /**
-   * The height of the table.
-   */
-  tableHeight: PropTypes.number,
-
-  /**
    * The left offset in pixels of the cell.
    * Space between cell's left edge and left edge of table
    */
   left: PropTypes.number,
-
-  /**
-   * The left offset in pixels of the cell group.
-   */
-  cellGroupLeft: PropTypes.number,
 
   /**
    * Whether touch is enabled or not.
@@ -243,20 +230,30 @@ ResizeReorderCell.propTypes = {
   maxWidth: PropTypes.number,
 
   /**
-   * Functions which toggles cells recycling for a cell
+   * Callback function which is called when reordering starts
    */
-  toggleCellsRecycling: PropTypes.func,
+  onColumnReorderStart: PropTypes.func,
 
   /**
    * Function to return cell group widths
    */
   getCellGroupWidth: PropTypes.func,
+
+  /**
+   * Callback function which is called when resizing ends
+   */
+  onColumnResizeEnd: PropTypes.func,
+
+  /**
+   * Callback function which is called when reordering ends
+   */
+  onColumnReorderEnd: PropTypes.func,
 };
 
 ResizeReorderCell.contextType = PluginContext;
 
 ResizeReorderCell.defaultProps = {
-  toggleCellsRecycling: _.noop,
+  onColumnReorderStart: _.noop,
 };
 
 export default ResizeReorderCell;

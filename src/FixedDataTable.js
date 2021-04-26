@@ -439,7 +439,7 @@ class FixedDataTable extends React.Component {
     /**
      * Whether a column is currently being resized.
      *
-     * This prop has been deprecated in favour of the new plugin for resizing (plugins/ResizeReorder)
+     * This prop is deprecated in favor of the ResizeReorder plugin component. Please refer the Resizable Columns example
      */
     isColumnResizing: PropTypes.bool,
 
@@ -671,12 +671,7 @@ class FixedDataTable extends React.Component {
       scrollbarXOffsetTop,
       visibleRowsHeight,
     } = tableHeightsSelector(this.props);
-    const {
-      tableSize: { width },
-      scrollContentHeight,
-      scrollY,
-      scrollX,
-    } = this.props;
+    const { tableSize: { width }, scrollContentHeight, scrollY, scrollX } = this.props;
     const newScrollState = {
       viewportHeight: visibleRowsHeight,
       contentHeight: scrollContentHeight,
@@ -767,7 +762,6 @@ class FixedDataTable extends React.Component {
           width={width}
           height={groupHeaderHeight}
           cellGroupWrapperHeight={cellGroupWrapperHeight}
-          tableHeight={componentHeight}
           index={0}
           zIndex={1}
           offsetTop={0}
@@ -849,7 +843,6 @@ class FixedDataTable extends React.Component {
         )}
         width={width}
         height={headerHeight}
-        tableHeight={componentHeight}
         cellGroupWrapperHeight={cellGroupWrapperHeight}
         index={-1}
         zIndex={1}

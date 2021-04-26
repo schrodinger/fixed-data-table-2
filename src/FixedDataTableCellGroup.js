@@ -59,11 +59,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
     isRTL: PropTypes.bool,
 
     /**
-     * The height of the table.
-     */
-    tableHeight: PropTypes.number,
-
-    /**
      * Callback that is called when resizer has been released
      * and column needs to be updated.
      *
@@ -107,11 +102,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
     availableScrollWidth: PropTypes.number,
 
     /**
-     * Maximum horizontal scroll possible.
-     */
-    maxScrollX: PropTypes.number,
-
-    /**
      * Function to change the scroll position by interacting
      * with the store.
      */
@@ -120,11 +110,15 @@ class FixedDataTableCellGroupImpl extends React.Component {
     /**
      * Whether the cells belongs to the fixed group
      */
-    isFixed: PropTypes.bool,
+    isFixed: PropTypes.bool.isRequired,
   };
 
   state = {
-    recycling: {},
+    /**
+     * @deprecated
+     * @type {Object<string, boolean>}
+     */
+    isCellRecyclableByColumnId: {},
   };
 
   constructor(props) {
@@ -168,7 +162,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       var cellTemplate = columns[i].template;
 
       var recyclable = _.get(
-        this.state.recycling,
+        this.state.isCellRecyclableByColumnId,
         [columnProps.columnKey],
         columnProps.allowCellsRecycling
       );
@@ -238,7 +232,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
         isScrolling={this.props.isScrolling}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
         isHeader={this.props.isHeader}
-        tableHeight={this.props.tableHeight}
         align={columnProps.align}
         className={className}
         height={height}
@@ -252,7 +245,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
         columnKey={columnProps.columnKey}
         width={columnProps.width}
         left={left}
-        cellGroupLeft={this.props.left}
         cell={cellTemplate}
         columnGroupWidth={columnGroupWidth}
         pureRendering={pureRendering}
@@ -260,9 +252,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
         scrollX={this.props.scrollX}
         isFixed={this.props.isFixed}
         availableScrollWidth={this.props.availableScrollWidth}
-        maxScrollX={this.props.maxScrollX}
         scrollToX={this.props.scrollToX}
-        toggleCellsRecycling={this.toggleCellsRecycling}
+        onColumnReorderStart={this.toggleCellsRecycling}
         getCellGroupWidth={this.getCellGroupWidth}
       />
     );
@@ -270,16 +261,20 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
   /**
    * @deprecated Added to have backward compatibility. This will be removed in future release.
+   * @description If column reordering is happening and recycling is enabled,
+   * when column moves out of the view, column gets destroyed while reordering.
+   * Thus, we need to disabled cells recycling during reordering.
+   *
    * @param {boolean} value
    * @param {string} columnKey
    */
   toggleCellsRecycling = (value, columnKey) => {
     // Only set in state, when value is false, means reordering has started
     if (!value) {
-      this.setState({ recycling: { [columnKey]: value } });
+      this.setState({ isCellRecyclableByColumnId: { [columnKey]: value } });
     } else {
       this.setState({
-        recycling: {},
+        isCellRecyclableByColumnId: {},
       });
     }
   };

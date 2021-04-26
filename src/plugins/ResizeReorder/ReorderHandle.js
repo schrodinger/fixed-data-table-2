@@ -103,7 +103,7 @@ class ReorderHandle extends React.PureComponent {
    * @param {MouseEvent} event
    */
   onMouseDown = (event) => {
-    this.props.toggleCellsRecycling(false, this.props.columnKey);
+    this.props.onColumnReorderStart(false, this.props.columnKey);
     this.cursorDeltaX = 0;
     this.scrollStart = this.context.scrollX;
     this.originalLeft = this.props.left;
@@ -120,7 +120,7 @@ class ReorderHandle extends React.PureComponent {
   };
 
   onMouseUp = () => {
-    this.props.toggleCellsRecycling(true, this.props.columnKey);
+    this.props.onColumnReorderStart(true, this.props.columnKey);
     cancelAnimationFrame(this.frameId);
     this.setState({ displacement: 0, isReordering: false });
     this.updateColumnOrder();
@@ -269,17 +269,19 @@ class ReorderHandle extends React.PureComponent {
 ReorderHandle.contextType = PluginContext;
 
 ReorderHandle.propTypes = {
-  height: PropTypes.number,
+  width: PropTypes.number,
+  height: PropTypes.number.isRequired,
   touchEnabled: PropTypes.bool,
   isRTL: PropTypes.bool,
-  left: PropTypes.number,
+  left: PropTypes.number.isRequired,
   availableScrollWidth: PropTypes.number,
   isFixed: PropTypes.bool,
   scrollToX: PropTypes.func,
-  onColumnReorderEndCallback: PropTypes.func,
-  getCellGroupWidth: PropTypes.func,
-  columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  toggleCellsRecycling: PropTypes.func,
+  onColumnReorderEndCallback: PropTypes.func.isRequired,
+  getCellGroupWidth: PropTypes.func.isRequired,
+  columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  onColumnReorderStart: PropTypes.func,
+  render: PropTypes.func,
 };
 
 export default ReorderHandle;

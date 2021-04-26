@@ -111,7 +111,7 @@
   "lint-staged": {
     "*.js": [
       "eslint --cache --fix",
-      "prettier --ignore-path ./.gitignore --write ."
+      "prettier --write"
     ]
   }
 }
