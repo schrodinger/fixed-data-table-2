@@ -69,7 +69,7 @@ class ReorderExample extends React.Component {
     this.setState({
       columnOrder: columnOrder,
     });
-  }
+  };
 
   toggleCellsRecycling = (enable, columnKey) => {
     this.setState({
@@ -77,7 +77,7 @@ class ReorderExample extends React.Component {
         [columnKey]: enable,
       },
     });
-  }
+  };
 
   render() {
     var { dataList, recycling } = this.state;

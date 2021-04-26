@@ -12,6 +12,7 @@ import React from 'react';
 class ResizeExample extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       dataList: new FakeObjectDataListStore(1000000),
       columnWidths: {
@@ -30,7 +31,7 @@ class ResizeExample extends React.Component {
         [columnKey]: newColumnWidth,
       },
     }));
-  }
+  };
 
   render() {
     var { dataList, columnWidths } = this.state;
