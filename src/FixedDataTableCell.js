@@ -91,7 +91,7 @@ class FixedDataTableCell extends React.Component {
      * )
      * ```
      */
-    onColumnResizeEndCallback: PropTypes.func,
+    onColumnResizeEnd: PropTypes.func,
 
     /**
      * Callback that is called when reordering has been completed
@@ -107,7 +107,7 @@ class FixedDataTableCell extends React.Component {
      * )
      * ```
      */
-    onColumnReorderEndCallback: PropTypes.func,
+    onColumnReorderEnd: PropTypes.func,
 
     /**
      * Whether these cells belong to the header/group-header
@@ -226,16 +226,16 @@ class FixedDataTableCell extends React.Component {
     var content;
     if (
       this.props.isHeader &&
-      (this.props.onColumnResizeEndCallback ||
-        this.props.onColumnReorderEndCallback)
+      (this.props.onColumnResizeEnd ||
+        this.props.onColumnReorderEnd)
     ) {
       // NOTE: Use plugins manually for backward compatibility. Will be removed in future release.
       content = (
         <ResizeReorderCell
           {...cellProps}
           onColumnReorderStart={this.props.onColumnReorderStart}
-          onColumnResizeEnd={this.props.onColumnResizeEndCallback}
-          onColumnReorderEnd={this.props.onColumnReorderEndCallback}
+          onColumnResizeEnd={this.props.onColumnResizeEnd}
+          onColumnReorderEnd={this.props.onColumnReorderEnd}
         >
           {props.cell}
         </ResizeReorderCell>

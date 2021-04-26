@@ -82,6 +82,7 @@ var ARROW_SCROLL_SPEED = 25;
  */
 class FixedDataTable extends React.Component {
   static propTypes = {
+
     // TODO (jordan) Remove propType of width without losing documentation (moved to tableSize)
     /**
      * Pixel width of table. If all columns do not fit,
@@ -245,7 +246,10 @@ class FixedDataTable extends React.Component {
      * If you pass in a function, you will receive the same props object as the
      * first argument.
      */
-    rowExpanded: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
+    rowExpanded: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.func,
+    ]),
 
     /**
      * To get any additional CSS classes that should be added to a row,
@@ -437,16 +441,14 @@ class FixedDataTable extends React.Component {
     onColumnReorderEndCallback: PropTypes.func,
 
     /**
+     * @deprecated This prop is deprecated in favor of the ResizeReorder plugin component. Please refer the Resizable Columns example
      * Whether a column is currently being resized.
-     *
-     * This prop is deprecated in favor of the ResizeReorder plugin component. Please refer the Resizable Columns example
      */
     isColumnResizing: PropTypes.bool,
 
     /**
+     * @deprecated This prop has been deprecated in favour of the new plugin for reorder (plugins/ResizeReorder)
      * Whether columns are currently being reordered.
-     *
-     * This prop has been deprecated in favour of the new plugin for reorder (plugins/ResizeReorder)
      */
     isColumnReordering: PropTypes.bool,
 
@@ -777,7 +779,6 @@ class FixedDataTable extends React.Component {
           isRTL={this.props.isRTL}
           isHeader={true}
           availableScrollWidth={availableScrollWidth}
-          maxScrollX={maxScrollX}
           scrollToX={this._scrollToX}
         />
       );
@@ -860,7 +861,6 @@ class FixedDataTable extends React.Component {
         isRTL={this.props.isRTL}
         isHeader={true}
         availableScrollWidth={availableScrollWidth}
-        maxScrollX={maxScrollX}
         scrollToX={this._scrollToX}
       />
     );
