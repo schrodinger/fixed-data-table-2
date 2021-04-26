@@ -130,7 +130,7 @@ class ResizeReorderCell extends React.PureComponent {
 
     let className = joinClasses(
       cx({
-        'resize-reorder-cell-container': true,
+        'public/fixedDataTableCell/resizeReorderCellContainer': true,
       }),
       props.className,
     );
