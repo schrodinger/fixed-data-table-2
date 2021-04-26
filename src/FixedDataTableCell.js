@@ -115,11 +115,6 @@ class FixedDataTableCell extends React.Component {
     isHeader: PropTypes.bool,
 
     /**
-     * availableScrollWidth returned from ColumnWidths.
-     */
-    availableScrollWidth: PropTypes.number,
-
-    /**
      * Function to change the scroll position by interacting
      * with the store.
      */
@@ -212,7 +207,6 @@ class FixedDataTableCell extends React.Component {
         ...cellProps,
         left: this.props.left,
         isFixed: this.props.isFixed,
-        availableScrollWidth: this.props.availableScrollWidth,
         scrollToX: this.props.scrollToX,
         getCellGroupWidth: this.props.getCellGroupWidth,
         columnGroupWidth: this.props.columnGroupWidth,

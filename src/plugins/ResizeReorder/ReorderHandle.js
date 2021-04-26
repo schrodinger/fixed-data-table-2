@@ -172,12 +172,11 @@ class ReorderHandle extends React.PureComponent {
   updateDisplacementWithScroll = () => {
     const scrollStart = this.scrollStart;
     let { isFixed } = this.props;
-    let { scrollX, maxScrollX } = this.context;
+    let { scrollX, maxScrollX, availableScrollWidth } = this.context;
     let deltaX = this.cursorDeltaX;
     if (!isFixed) {
       // Relative dragX position on scroll
       const dragX = this.originalLeft - scrollStart + deltaX;
-      const availableScrollWidth = this.props.availableScrollWidth;
       deltaX += scrollX - scrollStart;
 
       // Scroll the table left or right if we drag near the edges of the table
@@ -274,7 +273,6 @@ ReorderHandle.propTypes = {
   touchEnabled: PropTypes.bool,
   isRTL: PropTypes.bool,
   left: PropTypes.number.isRequired,
-  availableScrollWidth: PropTypes.number,
   isFixed: PropTypes.bool,
   scrollToX: PropTypes.func,
   onColumnReorderEndCallback: PropTypes.func.isRequired,

@@ -67,7 +67,10 @@ class FixedDataTableRowImpl extends React.Component {
     /**
      * the row expanded.
      */
-    rowExpanded: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
+    rowExpanded: PropTypes.oneOfType([
+      PropTypes.element,
+      PropTypes.func,
+    ]),
 
     /**
      * The row index.
@@ -171,11 +174,6 @@ class FixedDataTableRowImpl extends React.Component {
     isHeader: PropTypes.bool,
 
     /**
-     * availableScrollWidth returned from ColumnWidths.
-     */
-    availableScrollWidth: PropTypes.number,
-
-    /**
      * Function to change the scroll position by interacting with the store.
      */
     scrollToX: PropTypes.func,
@@ -239,7 +237,6 @@ class FixedDataTableRowImpl extends React.Component {
         isRTL={this.props.isRTL}
         scrollX={this.props.scrollLeft}
         isFixed={true}
-        availableScrollWidth={this.props.availableScrollWidth}
       />
     );
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
@@ -266,7 +263,6 @@ class FixedDataTableRowImpl extends React.Component {
         isHeader={this.props.isHeader}
         isRTL={this.props.isRTL}
         scrollX={this.props.scrollLeft}
-        availableScrollWidth={this.props.availableScrollWidth}
       />
     );
     var fixedRightColumnsShadow = fixedRightColumnsWidth
@@ -300,7 +296,6 @@ class FixedDataTableRowImpl extends React.Component {
         isHeader={this.props.isHeader}
         scrollX={this.props.scrollLeft}
         isRTL={this.props.isRTL}
-        availableScrollWidth={this.props.availableScrollWidth}
         scrollToX={this.props.scrollToX}
       />
     );

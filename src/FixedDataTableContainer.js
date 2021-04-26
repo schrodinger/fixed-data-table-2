@@ -24,16 +24,21 @@ import Scrollbar from './plugins/Scrollbar';
 import ScrollContainer from './plugins/ScrollContainer';
 import { PluginContext } from './Context';
 import shallowEqualSelector from './helper/shallowEqualSelector';
+import columnWidths from './selectors/columnWidths';
 
 const memoizeContext = shallowEqualSelector([
   state => state.maxScrollX,
   state => state.scrollX,
   state => state.tableSize.height,
-], (/*number*/maxScrollX, /*number*/scrollX, /*number*/tableHeight) => ({
-  maxScrollX,
-  scrollX,
-  tableHeight,
-}));
+  state => columnWidths(state)
+], (/*number*/maxScrollX, /*number*/scrollX, /*number*/tableHeight, { /*number*/availableScrollWidth }) => {
+  return {
+    maxScrollX,
+    scrollX,
+    tableHeight,
+    availableScrollWidth
+  }
+});
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
@@ -86,7 +91,7 @@ class FixedDataTableContainer extends React.Component {
 
   render() {
     const contextValue = {
-      ...memoizeContext(this.state),
+      ...memoizeContext({ ...this.state, ...this.props }),
       isRTL: this.props.isRTL,
       touchEnabled: this.props.touchEnabled,
     };

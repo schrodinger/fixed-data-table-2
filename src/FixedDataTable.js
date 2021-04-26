@@ -25,7 +25,6 @@ import ReactWheelHandler from './vendor_upstream/dom/ReactWheelHandler';
 
 import ariaAttributesSelector from './selectors/ariaAttributes';
 import columnTemplatesSelector from './selectors/columnTemplates';
-import columnWidths from './selectors/columnWidths';
 import scrollbarsVisible from './selectors/scrollbarsVisible';
 import tableHeightsSelector from './selectors/tableHeights';
 import FixedDataTableBufferedRows from './FixedDataTableBufferedRows';
@@ -747,8 +746,6 @@ class FixedDataTable extends React.Component {
     const { scrollEnabledX, scrollEnabledY } = scrollbarsVisible(this.props);
     const attributes = gridAttributesGetter && gridAttributesGetter();
 
-    const { availableScrollWidth } = columnWidths(this.props);
-
     let groupHeader;
     if (groupHeaderHeight > 0) {
       groupHeader = (
@@ -778,7 +775,6 @@ class FixedDataTable extends React.Component {
           scrollbarYWidth={scrollbarYWidth}
           isRTL={this.props.isRTL}
           isHeader={true}
-          availableScrollWidth={availableScrollWidth}
           scrollToX={this._scrollToX}
         />
       );
@@ -860,7 +856,6 @@ class FixedDataTable extends React.Component {
         scrollbarYWidth={scrollbarYWidth}
         isRTL={this.props.isRTL}
         isHeader={true}
-        availableScrollWidth={availableScrollWidth}
         scrollToX={this._scrollToX}
       />
     );

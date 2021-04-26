@@ -97,11 +97,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
     isHeader: PropTypes.bool,
 
     /**
-     * availableScrollWidth returned from ColumnWidths.
-     */
-    availableScrollWidth: PropTypes.number,
-
-    /**
      * Function to change the scroll position by interacting
      * with the store.
      */
@@ -251,7 +246,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
         isRTL={this.props.isRTL}
         scrollX={this.props.scrollX}
         isFixed={this.props.isFixed}
-        availableScrollWidth={this.props.availableScrollWidth}
         scrollToX={this.props.scrollToX}
         onColumnReorderStart={this.toggleCellsRecycling}
         getCellGroupWidth={this.getCellGroupWidth}
