@@ -268,7 +268,7 @@ class ReorderHandle extends React.PureComponent {
 ReorderHandle.contextType = PluginContext;
 
 ReorderHandle.propTypes = {
-  width: PropTypes.number,
+  width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   touchEnabled: PropTypes.bool,
   isRTL: PropTypes.bool,
@@ -278,8 +278,8 @@ ReorderHandle.propTypes = {
   onColumnReorderEndCallback: PropTypes.func.isRequired,
   getCellGroupWidth: PropTypes.func.isRequired,
   columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  onColumnReorderStart: PropTypes.func,
-  render: PropTypes.func,
+  onColumnReorderStart: PropTypes.func.isRequired,
+  render: PropTypes.func.isRequired,
 };
 
 export default ReorderHandle;

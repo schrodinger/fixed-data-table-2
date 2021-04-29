@@ -19,6 +19,7 @@ import { Portal } from 'react-portal';
 import PropTypes from 'prop-types';
 
 import cx from '../../vendor_upstream/stubs/cx';
+import joinClasses from '../../vendor_upstream/core/joinClasses';
 
 class ResizerLine extends React.PureComponent {
   static propTypes = {
@@ -35,12 +36,12 @@ class ResizerLine extends React.PureComponent {
     /**
      * Left position of ResizerLine
      */
-    left: PropTypes.number,
+    left: PropTypes.number.isRequired,
 
     /**
      * Top position of resizer line
      */
-    top: PropTypes.number,
+    top: PropTypes.number.isRequired,
   };
 
   render() {
@@ -57,10 +58,10 @@ class ResizerLine extends React.PureComponent {
     return (
       <Portal>
         <div
-          className={cx({
-            'fixedDataTableColumnResizerLineLayout/main': true,
-            'public/fixedDataTableColumnResizerLine/main': true,
-          })}
+          className={joinClasses(
+            cx('fixedDataTableColumnResizerLineLayout/main'),
+            cx('public/fixedDataTableColumnResizerLine/main'),
+          )}
           style={style}
         >
           <div

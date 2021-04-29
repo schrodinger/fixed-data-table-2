@@ -49,7 +49,7 @@ File Descriptions
   * Renders the horizontal and vertical scrollbars for the table
   * Used by FixedDataTable.js
 * ResizeReorderCell.js
-  * Renders ReorderHandle and ResizerKnob
+  * Renders ReorderHandle and ResizerKnob which can be used in resizing/reordering the columns
   * Used by FixedDataTableCell.js
 * ReorderHandle.js
   * Contains reordering logic
@@ -113,3 +113,4 @@ Public API Index
 * Cell (FixedDataTableCellDefault.js)
 * Column (FixedDataTableColumn.js)
 * ColumnGroup (FixedDataTableColumnGroup.js)
+* Plugins.ResizeReorderCell (ResizeReorderCell.js)

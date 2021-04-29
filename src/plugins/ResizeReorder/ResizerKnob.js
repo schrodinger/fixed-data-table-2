@@ -203,15 +203,13 @@ class ResizerKnob extends React.PureComponent {
   };
 }
 
-export default ResizerKnob;
-
 ResizerKnob.propTypes = {
 
   /**
    * Optional prop that if specified on the `Column` will be passed to the
    * cell. It can be used to uniquely identify which column is the cell is in.
    */
-  columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 
   /**
    * The minimum width of the column.
@@ -226,7 +224,7 @@ ResizerKnob.propTypes = {
   /**
    * Outer width of the cell.
    */
-  width: PropTypes.number,
+  width: PropTypes.number.isRequired,
 
   /**
    * Line of resizing line
@@ -246,10 +244,12 @@ ResizerKnob.propTypes = {
   /**
    * Callback function which is called when reordering ends
    */
-  onColumnResizeEnd: PropTypes.func,
+  onColumnResizeEnd: PropTypes.func.isRequired,
 
   /**
    * Outer height of the cell.
    */
-  height: PropTypes.number,
+  height: PropTypes.number.isRequired,
 };
+
+export default ResizerKnob;

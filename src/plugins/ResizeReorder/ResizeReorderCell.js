@@ -101,7 +101,6 @@ class ResizeReorderCell extends React.PureComponent {
   render() {
     const {
       children,
-      availableScrollWidth,
       minWidth,
       maxWidth,
       onColumnResizeEnd,
@@ -204,11 +203,6 @@ ResizeReorderCell.propTypes = {
   touchEnabled: PropTypes.bool,
 
   /**
-   * availableScrollWidth returned from ColumnWidths.
-   */
-  availableScrollWidth: PropTypes.number,
-
-  /**
    * Function to change the scroll position by interacting
    * with the store.
    */
@@ -232,7 +226,7 @@ ResizeReorderCell.propTypes = {
   /**
    * Callback function which is called when reordering starts
    */
-  onColumnReorderStart: PropTypes.func,
+  onColumnReorderStart: PropTypes.func.isRequired,
 
   /**
    * Function to return cell group widths

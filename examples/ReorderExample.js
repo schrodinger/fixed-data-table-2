@@ -74,7 +74,7 @@ class ReorderExample extends React.Component {
     });
   };
 
-  toggleCellsRecycling = (enable, columnKey) => {
+  onColumnReorderStart  = (enable, columnKey) => {
     this.setState({
       recycling: {
         [columnKey]: enable,
@@ -83,9 +83,9 @@ class ReorderExample extends React.Component {
   };
 
   render() {
-    var { dataList, recycling } = this.state;
-    var onColumnReorderEndCallback = this._onColumnReorderEndCallback;
-    const toggleCellsRecycling = this.toggleCellsRecycling;
+    const { dataList, recycling } = this.state;
+    const onColumnReorderEndCallback = this._onColumnReorderEndCallback;
+    const onColumnReorderStart = this.onColumnReorderStart
     return (
       <Table
         rowHeight={30}
@@ -104,7 +104,7 @@ class ReorderExample extends React.Component {
               key={i}
               header={
                 <Plugins.ResizeReorderCell
-                  onColumnReorderStart={toggleCellsRecycling}
+                  onColumnReorderStart={onColumnReorderStart}
                   onColumnReorderEnd={onColumnReorderEndCallback}
                 >
                   {columnTitles[columnKey]}
