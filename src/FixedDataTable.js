@@ -480,6 +480,16 @@ class FixedDataTable extends React.Component {
      * Callback that returns an object of html attributes to add to the grid element
      */
     gridAttributesGetter: PropTypes.func,
+
+    // TODO (pradeep) Remove propType of rowAttributesGetter without losing documentation (moved to rowSettings)
+    /**
+     * Callback that returns an object of html attributes to add to each row element.
+     *
+     * ```
+     * function(rowIndex: number)
+     * ```
+     */
+    rowAttributesGetter: PropTypes.func,
   }
 
   static defaultProps = /*object*/ {
