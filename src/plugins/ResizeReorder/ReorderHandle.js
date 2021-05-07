@@ -103,7 +103,7 @@ class ReorderHandle extends React.PureComponent {
    * @param {MouseEvent} event
    */
   onMouseDown = (event) => {
-    this.props.onColumnReorderStart(false, this.props.columnKey);
+    this.props.onColumnReorderStart(this.props.columnKey);
     this.cursorDeltaX = 0;
     this.scrollStart = this.context.scrollX;
     this.originalLeft = this.props.left;
@@ -120,7 +120,6 @@ class ReorderHandle extends React.PureComponent {
   };
 
   onMouseUp = () => {
-    this.props.onColumnReorderStart(true, this.props.columnKey);
     cancelAnimationFrame(this.frameId);
     this.setState({ displacement: 0, isReordering: false });
     this.updateColumnOrder();

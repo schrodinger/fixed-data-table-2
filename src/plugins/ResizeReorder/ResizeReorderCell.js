@@ -225,6 +225,9 @@ ResizeReorderCell.propTypes = {
 
   /**
    * Callback function which is called when reordering starts
+   * ```
+   * function(columnKey: string)
+   * ```
    */
   onColumnReorderStart: PropTypes.func.isRequired,
 
@@ -240,6 +243,9 @@ ResizeReorderCell.propTypes = {
 
   /**
    * Callback function which is called when reordering ends
+   * ```
+   * function({columnBefore: string, columnAfter: string, reorderColumn: string})
+   * ```
    */
   onColumnReorderEnd: PropTypes.func,
 };

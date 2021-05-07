@@ -247,7 +247,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         scrollX={this.props.scrollX}
         isFixed={this.props.isFixed}
         scrollToX={this.props.scrollToX}
-        onColumnReorderStart={this.toggleCellsRecycling}
+        toggleCellsRecycling={this.toggleCellsRecycling}
         getCellGroupWidth={this.getCellGroupWidth}
       />
     );

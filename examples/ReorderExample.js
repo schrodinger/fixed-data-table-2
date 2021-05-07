@@ -71,13 +71,14 @@ class ReorderExample extends React.Component {
     }
     this.setState({
       columnOrder: columnOrder,
+      recycling: {}
     });
   };
 
-  onColumnReorderStart  = (enable, columnKey) => {
+  onColumnReorderStart  = (columnKey) => {
     this.setState({
       recycling: {
-        [columnKey]: enable,
+        [columnKey]: false,
       },
     });
   };

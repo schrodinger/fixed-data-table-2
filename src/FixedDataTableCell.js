@@ -132,9 +132,10 @@ class FixedDataTableCell extends React.Component {
     getCellGroupWidth: PropTypes.func.isRequired,
 
     /**
+     * @deprecated
      * Functions which toggles cells recycling for a cell
      */
-    onColumnReorderStart: PropTypes.func,
+    toggleCellsRecycling: PropTypes.func,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -227,9 +228,14 @@ class FixedDataTableCell extends React.Component {
       content = (
         <ResizeReorderCell
           {...cellProps}
-          onColumnReorderStart={this.props.onColumnReorderStart}
+          onColumnReorderStart={(/*string*/columnKey) => {
+            this.props.toggleCellsRecycling(false, columnKey);
+          }}
           onColumnResizeEnd={this.props.onColumnResizeEnd}
-          onColumnReorderEnd={this.props.onColumnReorderEnd}
+          onColumnReorderEnd={(/*object*/val) => {
+            this.props.toggleCellsRecycling(true);
+            this.props.onColumnReorderEnd(val)
+          }}
         >
           {props.cell}
         </ResizeReorderCell>
