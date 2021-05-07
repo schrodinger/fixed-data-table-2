@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.1.2 
+ * FixedDataTable v1.1.3 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -21,8 +21,7 @@
  */
 
 .fixedDataTableCellGroupLayout_cellGroup {
-  -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
+  backface-visibility: hidden;
   left: 0;
   overflow: hidden;
   position: absolute;
@@ -249,8 +248,7 @@
 }
 
 .fixedDataTableRowLayout_fixedColumnsDivider {
-  -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
+  backface-visibility: hidden;
   border-left-style: solid;
   border-left-width: 1px;
   left: 0;
@@ -299,10 +297,9 @@
   outline: none;
   overflow: hidden;
   position: absolute;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  -moz-user-select: none;
+   -ms-user-select: none;
+       user-select: none;
 }
 
 .ScrollbarLayout_mainVertical {
