@@ -132,9 +132,12 @@ class ResizerKnob extends React.PureComponent {
       maxWidth,
     );
     this.mouseMoveTracker.releaseMouseMoves();
-    this.resetColumnResizing(() =>
+    this.setState({
+        isColumnResizing: false,
+        totalDisplacement: 0,
+      }, () => {
       this.props.onColumnResizeEnd(newWidth, this.props.columnKey)
-    );
+    });
   };
 
   /**
@@ -163,24 +166,6 @@ class ResizerKnob extends React.PureComponent {
       totalDisplacement: newTotalDisplacement,
       currentMouseXCoordinate: newResizerLineXCoordinate,
     });
-  };
-
-  /**
-   * Set isColumnResizing to false to hide the ResizerLine and set displacement to 0
-   * @param {Function} callback Called after resetting state
-   */
-  resetColumnResizing = (callback) => {
-    this.setState(
-      {
-        isColumnResizing: false,
-        totalDisplacement: 0,
-      },
-      () => {
-        if (_.isFunction(callback)) {
-          callback();
-        }
-      },
-    );
   };
 
   /**
