@@ -312,10 +312,9 @@ blockquote > :last-child {
   outline: none;
   overflow: hidden;
   position: absolute;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  -moz-user-select: none;
+   -ms-user-select: none;
+       user-select: none;
 }
 
 .ScrollbarLayout_mainVertical {
@@ -546,8 +545,7 @@ blockquote > :last-child {
  */
 
 .fixedDataTableCellGroupLayout_cellGroup {
-  -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
+  backface-visibility: hidden;
   left: 0;
   overflow: hidden;
   position: absolute;
@@ -643,8 +641,7 @@ blockquote > :last-child {
 }
 
 .fixedDataTableRowLayout_fixedColumnsDivider {
-  -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
+  backface-visibility: hidden;
   border-left-style: solid;
   border-left-width: 1px;
   left: 0;
@@ -1718,4 +1715,4 @@ html[dir="rtl"] .exampleContents {
 }
 
 
-/*# sourceMappingURL=main-7ad29b00e3efa82b4136.css.map*/
+/*# sourceMappingURL=main-b08d3cea9b23dae65c92.css.map*/
