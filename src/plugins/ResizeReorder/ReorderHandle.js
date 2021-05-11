@@ -58,28 +58,23 @@ class ReorderHandle extends React.PureComponent {
   originalLeft = 0;
 
   render() {
-    const DIR_SIGN = this.context.isRTL ? -1 : 1;
+
     const style = {
       height: this.props.height,
     };
-    const reorderStyles = {
-      transform: `translateX(${this.state.displacement * DIR_SIGN}px) translateZ(0)`,
-    };
 
     return (
-      <>
-        {this.props.render(reorderStyles, <div
-          className={cx({
-            'fixedDataTableCellLayout/columnReorderContainer': true,
-            'fixedDataTableCellLayout/columnReorderContainer/active': false,
-          })}
-          onMouseDown={this.onMouseDown}
-          onTouchStart={this.onTouchStart}
-          onTouchEnd={this.onTouchEnd}
-          onTouchMove={this.onTouchMove}
-          style={style}
-        />, this.state.isReordering)}
-      </>
+      <div
+        className={cx({
+          'fixedDataTableCellLayout/columnReorderContainer': true,
+          'fixedDataTableCellLayout/columnReorderContainer/active': false,
+        })}
+        onMouseDown={this.onMouseDown}
+        onTouchStart={this.onTouchStart}
+        onTouchEnd={this.onTouchEnd}
+        onTouchMove={this.onTouchMove}
+        style={style}
+      />
     );
   }
 
@@ -188,6 +183,7 @@ class ReorderHandle extends React.PureComponent {
     }
     deltaX = this.getBoundedDeltaX(deltaX);
     this.setState({ displacement: deltaX });
+    this.props.translateCell(deltaX);
   };
 
   /**
@@ -278,7 +274,7 @@ ReorderHandle.propTypes = {
   getCellGroupWidth: PropTypes.func.isRequired,
   columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   onColumnReorderStart: PropTypes.func.isRequired,
-  render: PropTypes.func.isRequired,
+  translateCell: PropTypes.func.isRequired,
 };
 
 export default ReorderHandle;

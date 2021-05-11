@@ -104,12 +104,12 @@ class ReorderExample extends React.Component {
               columnKey={columnKey}
               key={i}
               header={
-                <Plugins.ResizeReorderCell
+                <Plugins.ReorderCell
                   onColumnReorderStart={onColumnReorderStart}
                   onColumnReorderEnd={onColumnReorderEndCallback}
                 >
                   {columnTitles[columnKey]}
-                </Plugins.ResizeReorderCell>
+                </Plugins.ReorderCell>
               }
               cell={<TextCell data={dataList} />}
               fixed={fixedColumns.indexOf(columnKey) !== -1}

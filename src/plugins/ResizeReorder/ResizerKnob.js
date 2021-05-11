@@ -133,10 +133,10 @@ class ResizerKnob extends React.PureComponent {
     );
     this.mouseMoveTracker.releaseMouseMoves();
     this.setState({
-        isColumnResizing: false,
-        totalDisplacement: 0,
-      }, () => {
-      this.props.onColumnResizeEnd(newWidth, this.props.columnKey)
+      isColumnResizing: false,
+      totalDisplacement: 0,
+    }, () => {
+      this.props.onColumnResizeEnd(newWidth, this.props.columnKey);
     });
   };
 
@@ -145,6 +145,7 @@ class ResizerKnob extends React.PureComponent {
    * @param {number} displacementX Displacement of mouse along x-direction
    */
   onMouseMove = (displacementX) => {
+    const { isRTL, width } = this.props;
     const {
       initialMouseXCoordinate,
       totalDisplacement: previousTotalDisplacement,
@@ -154,11 +155,10 @@ class ResizerKnob extends React.PureComponent {
     let newResizerLineXCoordinate =
       initialMouseXCoordinate + newTotalDisplacement;
     const { minWidth, maxWidth } = this.getMinMaxWidth();
+
+    const currentWidth = width + newTotalDisplacement * (isRTL ? -1 : 1);
     // Limit the resizer line to not move ahead or back of maxWidth and minWidth respectively
-    if (
-      this.props.width + newTotalDisplacement < minWidth ||
-      this.props.width + newTotalDisplacement > maxWidth
-    ) {
+    if (currentWidth < minWidth || currentWidth > maxWidth) {
       // If new position is going out of bounds, instead of updating,  use the previous value
       newResizerLineXCoordinate = this.state.currentMouseXCoordinate;
     }

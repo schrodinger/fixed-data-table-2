@@ -48,11 +48,11 @@ class ResizeExample extends React.Component {
         <Column
           columnKey="firstName"
           header={
-            <Plugins.ResizeReorderCell
+            <Plugins.ResizeCell
               onColumnResizeEnd={this._onColumnResizeEndCallback}
             >
               First Name{' '}
-            </Plugins.ResizeReorderCell>
+            </Plugins.ResizeCell>
           }
           cell={<TextCell data={dataList} />}
           fixed={true}
@@ -61,13 +61,13 @@ class ResizeExample extends React.Component {
         <Column
           columnKey="lastName"
           header={
-            <Plugins.ResizeReorderCell
+            <Plugins.ResizeCell
               minWidth={70}
               maxWidth={170}
               onColumnResizeEnd={this._onColumnResizeEndCallback}
             >
               Last Name (min/max constrained)
-            </Plugins.ResizeReorderCell>
+            </Plugins.ResizeCell>
           }
           cell={<TextCell data={dataList} />}
           width={columnWidths.lastName}
@@ -75,11 +75,11 @@ class ResizeExample extends React.Component {
         <Column
           columnKey="companyName"
           header={
-            <Plugins.ResizeReorderCell
+            <Plugins.ResizeCell
               onColumnResizeEnd={this._onColumnResizeEndCallback}
             >
               Company{' '}
-            </Plugins.ResizeReorderCell>
+            </Plugins.ResizeCell>
           }
           cell={<TextCell data={dataList} />}
           width={columnWidths.companyName}
@@ -87,11 +87,11 @@ class ResizeExample extends React.Component {
         <Column
           columnKey="sentence"
           header={
-            <Plugins.ResizeReorderCell
+            <Plugins.ResizeCell
               onColumnResizeEnd={this._onColumnResizeEndCallback}
             >
               Sentence{' '}
-            </Plugins.ResizeReorderCell>
+            </Plugins.ResizeCell>
           }
           cell={<TextCell data={dataList} />}
           width={columnWidths.sentence}

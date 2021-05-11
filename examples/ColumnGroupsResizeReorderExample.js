@@ -162,28 +162,30 @@ class ColumnGroupsExample extends React.Component {
             <ColumnGroup
               key={i}
               header={
-                <Plugins.ResizeReorderCell
-                  onColumnReorderEnd={onColumnGroupReorderEndCallback}
-                  onColumnResizeEnd={onColumnGroupResizeEndCallback}
-                >
-                  {columnGroupTitles[columnGroupKey]}
-                </Plugins.ResizeReorderCell>
+                <Plugins.ReorderCell
+                  onColumnReorderEnd={onColumnGroupReorderEndCallback}>
+                  <Plugins.ResizeCell
+                    onColumnResizeEnd={onColumnGroupResizeEndCallback}>
+                    {columnGroupTitles[columnGroupKey]}
+                  </Plugins.ResizeCell>
+                </Plugins.ReorderCell>
               }
               columnKey={columnGroupKey}
             >
-              {columnOrder[columnGroupKey].map(function (columnKey, j) {
+              {columnOrder[columnGroupKey].map(function(columnKey, j) {
                 return (
                   <Column
                     allowCellsRecycling={true}
                     columnKey={columnKey}
                     key={i + '.' + j}
                     header={
-                      <Plugins.ResizeReorderCell
-                        onColumnReorderEnd={onColumnReorderEndCallback}
-                        onColumnResizeEnd={onColumnResizeEndCallback}
-                      >
-                        {columnTitles[columnKey]}
-                      </Plugins.ResizeReorderCell>
+                      <Plugins.ReorderCell
+                        onColumnReorderEnd={onColumnReorderEndCallback}>
+                        <Plugins.ResizeCell
+                          onColumnResizeEnd={onColumnResizeEndCallback}>
+                          {columnTitles[columnKey]}
+                        </Plugins.ResizeCell>
+                      </Plugins.ReorderCell>
                     }
                     cell={<TextCell data={dataList} />}
                     width={columnWidths[columnKey]}

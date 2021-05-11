@@ -17,7 +17,8 @@ import joinClasses from './vendor_upstream/core/joinClasses';
 import shallowEqual from './vendor_upstream/core/shallowEqual';
 import FixedDataTableCellDefaultDeprecated from './FixedDataTableCellDefaultDeprecated';
 import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
-import ResizeReorderCell from './plugins/ResizeReorder/ResizeReorderCell';
+import ReorderCell from './plugins/ResizeReorder/ReorderCell';
+import ResizeCell from './plugins/ResizeReorder/ResizeCell';
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -219,27 +220,55 @@ class FixedDataTableCell extends React.Component {
     }
 
     var content;
-    if (
-      this.props.isHeader &&
-      (this.props.onColumnResizeEnd ||
-        this.props.onColumnReorderEnd)
-    ) {
+    if (this.props.isHeader && (this.props.onColumnResizeEnd || this.props.onColumnReorderEnd)) {
       // NOTE: Use plugins manually for backward compatibility. Will be removed in future release.
-      content = (
-        <ResizeReorderCell
-          {...cellProps}
-          onColumnReorderStart={(/*string*/columnKey) => {
-            this.props.toggleCellsRecycling(false, columnKey);
-          }}
-          onColumnResizeEnd={this.props.onColumnResizeEnd}
-          onColumnReorderEnd={(/*object*/val) => {
-            this.props.toggleCellsRecycling(true);
-            this.props.onColumnReorderEnd(val)
-          }}
-        >
-          {props.cell}
-        </ResizeReorderCell>
-      );
+      if (this.props.onColumnResizeEnd && this.props.onColumnReorderEnd) {
+        content = (
+          <ReorderCell
+            {...cellProps}
+            onColumnReorderStart={(/*string*/columnKey) => {
+              this.props.toggleCellsRecycling(false, columnKey);
+            }}
+            onColumnReorderEnd={(/*object*/val) => {
+              this.props.toggleCellsRecycling(true);
+              this.props.onColumnReorderEnd(val);
+            }}
+          >
+            <ResizeCell
+              onColumnResizeEnd={this.props.onColumnResizeEnd}
+            >
+              {props.cell}
+            </ResizeCell>
+          </ReorderCell>
+        );
+      } else if (this.props.onColumnReorderEnd) {
+        content = (
+          <ReorderCell
+            {...cellProps}
+            onColumnReorderStart={(/*string*/columnKey) => {
+              this.props.toggleCellsRecycling(false, columnKey);
+            }}
+            onColumnReorderEnd={(/*object*/val) => {
+              this.props.toggleCellsRecycling(true);
+              this.props.onColumnReorderEnd(val);
+            }}>
+            {props.cell}
+          </ReorderCell>
+        );
+      } else {
+        cellProps = {
+          ...cellProps,
+          minWidth: this.props.minWidth,
+          maxWidth: this.props.maxWidth
+        };
+        content = (
+          <ResizeCell
+            {...cellProps}
+            onColumnResizeEnd={this.props.onColumnResizeEnd}>
+            {props.cell}
+          </ResizeCell>
+        );
+      }
     } else if (React.isValidElement(props.cell)) {
       content = React.cloneElement(props.cell, cellProps);
     } else if (typeof props.cell === 'function') {

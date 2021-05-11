@@ -35,9 +35,14 @@ var FILES_TO_READ = [
     markdownFileName: 'CellAPI.md'
   },
   {
-    path: path.join(PROJECT_ROOT, 'src/plugins/ResizeReorder/ResizeReorderCell.js'),
-    name: 'ResizeReorderCell',
-    markdownFileName: 'ResizeReorderCellAPI.md'
+    path: path.join(PROJECT_ROOT, 'src/plugins/ResizeReorder/ReorderCell.js'),
+    name: 'ReorderCell',
+    markdownFileName: 'ReorderCell.md'
+  },
+  {
+    path: path.join(PROJECT_ROOT, 'src/plugins/ResizeReorder/ResizeCell.js'),
+    name: 'ResizeCell',
+    markdownFileName: 'ResizeCell.md'
   }
 ];
 
