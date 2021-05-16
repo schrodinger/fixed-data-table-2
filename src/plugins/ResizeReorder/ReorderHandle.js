@@ -16,6 +16,8 @@ import cx from '../../vendor_upstream/stubs/cx';
 import PropTypes from 'prop-types';
 import DOMMouseMoveTracker from '../../vendor_upstream/dom/DOMMouseMoveTracker';
 import { PluginContext } from '../../Context';
+import requestAnimationFramePolyfill from '../../vendor_upstream/core/requestAnimationFramePolyfill';
+import cancelAnimationFramePolyfill from '../../vendor_upstream/core/cancelAnimationFramePolyfill';
 
 const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
@@ -104,7 +106,7 @@ class ReorderHandle extends React.PureComponent {
     this.originalLeft = this.props.left;
     this.initializeDOMMouseMoveTracker(event);
     this.setState({ displacement: 0, isReordering: true });
-    this.frameId = requestAnimationFrame(this.updateDisplacementPeriodically);
+    this.frameId = requestAnimationFramePolyfill(this.updateDisplacementPeriodically);
   };
 
   /**
@@ -115,7 +117,7 @@ class ReorderHandle extends React.PureComponent {
   };
 
   onMouseUp = () => {
-    cancelAnimationFrame(this.frameId);
+    cancelAnimationFramePolyfill(this.frameId);
     this.setState({ displacement: 0, isReordering: false });
     this.updateColumnOrder();
     this.frameId = null;
@@ -140,7 +142,7 @@ class ReorderHandle extends React.PureComponent {
   updateDisplacementPeriodically = () => {
     /* NOTE: We need to use requestAnimationFrame because whenever column reaches the end of table (scroll width is left),
      we want to update the scrollX which can't be updated if we uer onMouseMove*/
-    this.frameId = requestAnimationFrame(this.updateDisplacementPeriodically);
+    this.frameId = requestAnimationFramePolyfill(this.updateDisplacementPeriodically);
     this.updateDisplacementWithScroll();
   };
 
