@@ -50,7 +50,7 @@ class ReorderExample extends React.Component {
         'sentence',
         'companyName'
       ],
-      recycling: {},
+      isReordering: {},
     };
   }
 
@@ -71,20 +71,20 @@ class ReorderExample extends React.Component {
     }
     this.setState({
       columnOrder: columnOrder,
-      recycling: {}
+      isReordering: {}
     });
   };
 
   onColumnReorderStart  = (columnKey) => {
     this.setState({
-      recycling: {
+      isReordering: {
         [columnKey]: false,
       },
     });
   };
 
   render() {
-    const { dataList, recycling } = this.state;
+    const { dataList, isReordering } = this.state;
     const onColumnReorderEndCallback = this._onColumnReorderEndCallback;
     const onColumnReorderStart = this.onColumnReorderStart
     return (
@@ -100,7 +100,7 @@ class ReorderExample extends React.Component {
         {this.state.columnOrder.map(function (columnKey, i) {
           return (
             <Column
-              allowCellsRecycling={_.get(recycling, columnKey, true)}
+              allowCellsisReordering={_.get(isReordering, columnKey, true)}
               columnKey={columnKey}
               key={i}
               header={
