@@ -22,7 +22,6 @@ var ExampleHeader = require('./ExampleHeader');
 var ExamplesWrapper = require('./ExamplesWrapper');
 var React = require('react');
 var Constants = require('../Constants');
-const Dimensions = require('react-dimensions');
 
 var ExamplePages = Constants.ExamplePages;
 
@@ -30,6 +29,7 @@ var EXAMPLE_COMPONENTS = {
   [ExamplePages.OBJECT_DATA_EXAMPLE.location]: require('../../examples/ObjectDataExample'),
   [ExamplePages.RESIZE_EXAMPLE.location]: require('../../examples/ResizeExample'),
   [ExamplePages.REORDER_EXAMPLE.location]: require('../../examples/ReorderExample'),
+  [ExamplePages.COLUMN_GROUPS_RESIZE_REORDER_EXAMPLE.location]: require('../../examples/ColumnGroupsResizeReorderExample'),
   [ExamplePages.HIDE_COLUMN_EXAMPLE.location]: require('../../examples/HideColumnExample'),
   [ExamplePages.SCROLL_TO_ROW_EXAMPLE.location]: require('../../examples/ScrollToRowExample'),
   [ExamplePages.SCROLL_TO_COLUMN_EXAMPLE.location]: require('../../examples/ScrollToColumnExample'),

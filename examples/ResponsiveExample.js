@@ -8,7 +8,7 @@ import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
 import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
-import Dimensions from 'react-dimensions';
+import debounce from 'lodash/debounce';
 
 class ResponsiveExample extends React.Component {
   constructor(props) {
@@ -16,20 +16,38 @@ class ResponsiveExample extends React.Component {
 
     this.state = {
       dataList: new FakeObjectDataListStore(1000000),
+      tableHeight: window.innerHeight - 200,
+      tableWidth: window.innerWidth - (window.innerWidth < 680 ? 0 : 240),
     };
   }
 
+  componentDidMount() {
+    window.addEventListener('resize', this.updateTableDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateTableDimensions);
+  }
+
+  updateTableDimensions = debounce(() => {
+    const tableHeight = window.innerHeight - 200;
+    const widthOffset = window.innerWidth < 680 ? 0 : 240;
+    const tableWidth = window.innerWidth - widthOffset;
+    this.setState({ tableHeight, tableWidth });
+  }, 200);
+
   render() {
-    const {dataList} = this.state;
-    const {height, width, containerHeight, containerWidth, ...props} = this.props;
+    const { dataList, tableHeight, tableWidth } = this.state;
+    const { height, width, ...props } = this.props;
     return (
       <Table
         rowHeight={50}
         headerHeight={50}
         rowsCount={dataList.getSize()}
-        width={containerWidth}
-        height={containerHeight}
-        {...props}>
+        width={tableWidth}
+        height={tableHeight}
+        {...props}
+      >
         <Column
           columnKey="firstName"
           header={<DataCell>First Name</DataCell>}
@@ -56,14 +74,4 @@ class ResponsiveExample extends React.Component {
   }
 }
 
-// See react-dimensions for the best way to configure
-// https://github.com/digidem/react-dimensions
-export default Dimensions({
-  getHeight: function(element) {
-    return window.innerHeight - 200;
-  },
-  getWidth: function(element) {
-    var widthOffset = window.innerWidth < 680 ? 0 : 240;
-    return window.innerWidth - widthOffset;
-  }
-})(ResponsiveExample);
+export default ResponsiveExample;

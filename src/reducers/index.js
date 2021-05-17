@@ -76,12 +76,8 @@ function getInitialState() {
      * Output state passed as props to the the rendered FixedDataTable
      * NOTE (jordan) rows may contain undefineds if we don't need all the buffer positions
      */
-    columnReorderingData: {},
-    columnResizingData: {},
     firstRowIndex: 0,
     firstRowOffset: 0,
-    isColumnReordering: false,
-    isColumnResizing: false,
     maxScrollX: 0,
     maxScrollY: 0,
     rowOffsets: {},
@@ -170,24 +166,6 @@ function reducers(state = getInitialState(), action) {
       });
       const scrollAnchor = scrollTo(newState, scrollY);
       return computeRenderedRows(newState, scrollAnchor);
-    }
-    case ActionTypes.COLUMN_RESIZE: {
-      const { resizeData } = action;
-      return columnStateHelper.resizeColumn(state, resizeData);
-    }
-    case ActionTypes.COLUMN_REORDER_START: {
-      const { reorderData } = action;
-      return columnStateHelper.reorderColumn(state, reorderData);
-    }
-    case ActionTypes.COLUMN_REORDER_END: {
-      return Object.assign({}, state, {
-        isColumnReordering: false,
-        columnReorderingData: {}
-      });
-    }
-    case ActionTypes.COLUMN_REORDER_MOVE: {
-      const { deltaX } = action;
-      return columnStateHelper.reorderColumnMove(state, deltaX);
     }
     case ActionTypes.SCROLL_TO_X: {
       const { scrollX } = action;

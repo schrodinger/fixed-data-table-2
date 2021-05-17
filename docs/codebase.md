@@ -48,14 +48,17 @@ File Descriptions
 * Scrollbar.js
   * Renders the horizontal and vertical scrollbars for the table
   * Used by FixedDataTable.js
-* ColumnResizerLine.js
-  * Renders the line displayed while resizing a column
-  * Used by FixedDataTable.js
-* FixedDataTableColumnReorderHandle.js
-  * Renders the knob used to reorder a column
+* ResizeReorderCell.js
+  * Renders ReorderHandle and ResizerKnob which can be used in resizing/reordering the columns
   * Used by FixedDataTableCell.js
+* ReorderHandle.js
+  * Contains reordering logic
+* ResizerKnob.js
+  * Renders blue thick line when hover on column separation area
+* ResizerLine.js
+  * Renders blue line during reordering
 
-### State Management  
+### State Management
 * scrollAnchor.js
   * Finds the vertical scroll 'anchor'
   * Scroll anchor decides the first/last row's index amd offset from edge of table
@@ -67,7 +70,7 @@ File Descriptions
 * columnStateHelper.js
   * Finds horizontal scroll offset
   * Also manages column reordering and resizing
- 
+
 ### Selectors
 * ariaAttributes.js
   * Calculates the aria roles and attributes to be given to our columns, rows, cells, .etc
@@ -87,7 +90,7 @@ File Descriptions
   * Calculates scrollbar state (i.e., if it should be visible or not needed)
   * Also calculates the height available for the viewport
 * tableHeights.js
-  * Calculates height and offset for different components of the table (full table, viewport, scrollbar, etc.)  
+  * Calculates height and offset for different components of the table (full table, viewport, scrollbar, etc.)
 
 ### Helpers
 * ReactTouchHandler.js
@@ -106,7 +109,8 @@ File Descriptions
 
 Public API Index
 ---------------
-  * Table (FixedDataTableContainer.js)
-  * Cell (FixedDataTableCellDefault.js)
-  * Column (FixedDataTableColumn.js)
-  * ColumnGroup (FixedDataTableColumnGroup.js)
+* Table (FixedDataTableContainer.js)
+* Cell (FixedDataTableCellDefault.js)
+* Column (FixedDataTableColumn.js)
+* ColumnGroup (FixedDataTableColumnGroup.js)
+* Plugins.ResizeReorderCell (ResizeReorderCell.js)

@@ -20,6 +20,10 @@ var DOCS_MARKDOWN_FILES = {
   [DocsPages.API.COLUMN_API.location]: require('../../docs/api/ColumnAPI.md'),
   [DocsPages.API.COLUMNGROUP_API.location]: require('../../docs/api/ColumnGroupAPI.md'),
   [DocsPages.API.CELL_API.location]: require('../../docs/api/CellAPI.md'),
+
+  // Plugins API
+  [DocsPages.PLUGIN_API.REORDERCELL_API.location]: require('../../docs/api/ReorderCell.md'),
+  [DocsPages.PLUGIN_API.RESIZECELL_API.location]: require('../../docs/api/ResizeCell.md')
 };
 
 class DocsPage extends React.Component {

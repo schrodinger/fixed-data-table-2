@@ -20,6 +20,11 @@ exports.DocsPages = {
     COLUMNGROUP_API: {location: 'api-columngroup.html', title: 'Column Group'},
     CELL_API: {location: 'api-cell.html', title: 'Cell'},
   },
+  PLUGIN_API: {
+    groupTitle: 'Plugins API',
+    REORDERCELL_API: {location: 'api-reordercell.html',title: 'ReorderCell'},
+    RESIZECELL_API: {location: 'api-resizecell.html',title: 'ResizeCell'}
+  }
 };
 
 exports.ExamplePages = {
@@ -52,6 +57,13 @@ exports.ExamplePages = {
     fileName: 'ReorderExample.js',
     title: 'Reorderable columns',
     description: 'Table with drag and drop column reordering and a dummy "store" for persistence.',
+  },
+  COLUMN_GROUPS_RESIZE_REORDER_EXAMPLE: {
+    location: 'example-column-groups-resize-reorder.html',
+    fileName: 'ColumnGroupsResizeReorderExample.js',
+    title: 'Resizable and Reorderable Column Groups',
+    description:
+      'Table with column groupings with the ability to reorder groups.',
   },
   SCROLL_TO_ROW_EXAMPLE: {
     location: 'example-scroll-to-row.html',

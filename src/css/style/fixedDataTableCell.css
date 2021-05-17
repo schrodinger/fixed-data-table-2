@@ -44,3 +44,16 @@
 .fixedDataTable_isRTL .public/fixedDataTableCell/hasReorderHandle .public/fixedDataTableCell/wrap.public/fixedDataTableCell/cellContent {
   padding-right: 20px;
 }
+
+.public/fixedDataTableCell/reordering {
+  z-index: 2;
+}
+
+.public/fixedDataTableCell/resizeReorderCellContainer {
+  position: fixed;
+  background-color: var(--fbui-desktop-background-light);
+  background-image: linear-gradient(#fff, #efefef);
+  border-color: var(--border-color);
+  border-right-style: solid;
+  border-right-width: 1px;
+}

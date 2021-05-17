@@ -6,17 +6,18 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, DataCell } from 'fixed-data-table-2';
+import { Table, Column, Plugins } from 'fixed-data-table-2';
 import React from 'react';
+import _ from 'lodash';
 
 var columnTitles = {
-  'firstName': 'First Name',
-  'lastName': 'Last Name',
-  'sentence': 'Sentence',
-  'companyName': 'Company',
-  'city': 'City',
-  'street': 'Street',
-  'zipCode': 'Zip Code'
+  firstName: 'First Name',
+  lastName: 'Last Name',
+  sentence: 'Sentence',
+  companyName: 'Company',
+  city: 'City',
+  street: 'Street',
+  zipCode: 'Zip Code',
 };
 
 var columnWidths = {
@@ -49,13 +50,11 @@ class ReorderExample extends React.Component {
         'sentence',
         'companyName'
       ],
+      isReordering: {},
     };
-
-    this._onColumnReorderEndCallback = this._onColumnReorderEndCallback.bind(this);
   }
 
-  _onColumnReorderEndCallback(event) {
-    console.log(event);
+  _onColumnReorderEndCallback = (event) => {
     var columnOrder = this.state.columnOrder.filter((columnKey) => {
       return columnKey !== event.reorderColumn;
     });
@@ -65,42 +64,60 @@ class ReorderExample extends React.Component {
       columnOrder.splice(index, 0, event.reorderColumn);
     } else {
       if (fixedColumns.indexOf(event.reorderColumn) !== -1) {
-        columnOrder.splice(fixedColumns.length - 1, 0, event.reorderColumn)
+        columnOrder.splice(fixedColumns.length - 1, 0, event.reorderColumn);
       } else {
         columnOrder.push(event.reorderColumn);
       }
     }
     this.setState({
-      columnOrder: columnOrder
+      columnOrder: columnOrder,
+      isReordering: {}
     });
-  }
+  };
+
+  onColumnReorderStart  = (columnKey) => {
+    this.setState({
+      isReordering: {
+        [columnKey]: false,
+      },
+    });
+  };
 
   render() {
-    var {dataList} = this.state;
-
+    const { dataList, isReordering } = this.state;
+    const onColumnReorderEndCallback = this._onColumnReorderEndCallback;
+    const onColumnReorderStart = this.onColumnReorderStart
     return (
       <Table
         rowHeight={30}
         headerHeight={50}
         rowsCount={dataList.getSize()}
-        onColumnReorderEndCallback={this._onColumnReorderEndCallback}
         isColumnReordering={false}
         width={1000}
         height={500}
-        {...this.props}>
+        {...this.props}
+      >
         {this.state.columnOrder.map(function (columnKey, i) {
-          return <Column
-            allowCellsRecycling={true}
-            columnKey={columnKey}
-            key={i}
-            isReorderable={true}
-            header={<DataCell>{columnTitles[columnKey]}</DataCell>}
-            cell={<TextCell data={dataList} />}
-            fixed={fixedColumns.indexOf(columnKey) !== -1}
-            width={columnWidths[columnKey]}
-           />;
+          return (
+            <Column
+              allowCellsisReordering={_.get(isReordering, columnKey, true)}
+              columnKey={columnKey}
+              key={i}
+              header={
+                <Plugins.ReorderCell
+                  onColumnReorderStart={onColumnReorderStart}
+                  onColumnReorderEnd={onColumnReorderEndCallback}
+                >
+                  {columnTitles[columnKey]}
+                </Plugins.ReorderCell>
+              }
+              cell={<TextCell data={dataList} />}
+              fixed={fixedColumns.indexOf(columnKey) !== -1}
+              width={columnWidths[columnKey]}
+            />
+          );
         })}
-       </Table>
+      </Table>
     );
   }
 }

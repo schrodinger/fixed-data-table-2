@@ -71,20 +71,5 @@
 
 .fixedDataTableCellLayout/columnResizerContainer:hover {
   cursor: ew-resize;
-}
-
-.fixedDataTableCellLayout/columnResizerContainer:hover .fixedDataTableCellLayout/columnResizerKnob {
-  visibility: visible;
-}
-
-.fixedDataTableCellLayout/columnResizerKnob {
-  position: absolute;
-  right: 0px;
-  visibility: hidden;
-  width: 4px;
-}
-
-.fixedDataTable_isRTL .fixedDataTableCellLayout/columnResizerKnob {
-  left: 0px;
-  right: auto;
+  background-color: #0284ff;
 }
