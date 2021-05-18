@@ -16,7 +16,6 @@ import { bindActionCreators } from 'redux';
 import invariant from './stubs/invariant';
 import pick from 'lodash/pick';
 
-import * as ActionTypes from './actions/ActionTypes';
 import * as scrollActions from './actions/scrollActions';
 import FixedDataTable from './FixedDataTable';
 import FixedDataTableStore from './FixedDataTableStore';
@@ -25,6 +24,8 @@ import ScrollContainer from './plugins/ScrollContainer';
 import { PluginContext } from './Context';
 import shallowEqualSelector from './helper/shallowEqualSelector';
 import columnWidths from './selectors/columnWidths';
+import { initialize, propChange } from './reducers';
+
 
 const memoizeContext = shallowEqualSelector([
   state => state.maxScrollX,
@@ -59,10 +60,7 @@ class FixedDataTableContainer extends React.Component {
       this.reduxStore.dispatch
     );
 
-    this.reduxStore.dispatch({
-      type: ActionTypes.INITIALIZE,
-      props,
-    });
+    this.reduxStore.dispatch(initialize(props))
 
     this.unsubscribe = this.reduxStore.subscribe(this.update);
     this.state = this.getBoundState();
@@ -74,11 +72,10 @@ class FixedDataTableContainer extends React.Component {
       'You must set either a height or a maxHeight'
     );
 
-    this.reduxStore.dispatch({
-      type: ActionTypes.PROP_CHANGE,
+    this.reduxStore.dispatch(propChange({
       newProps: nextProps,
-      oldProps: this.props,
-    });
+      oldProps: this.props
+    }))
   }
 
   componentWillUnmount() {
