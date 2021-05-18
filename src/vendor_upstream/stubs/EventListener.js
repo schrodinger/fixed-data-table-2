@@ -25,20 +25,20 @@ var EventListener = {
    * @param {function} callback Callback function.
    * @return {object} Object with a `remove` method.
    */
-  listen: function(target, eventType, callback) {
+  listen: function (target, eventType, callback) {
     if (target.addEventListener) {
       target.addEventListener(eventType, callback, false);
       return {
-        remove: function() {
+        remove: function () {
           target.removeEventListener(eventType, callback, false);
-        }
+        },
       };
     } else if (target.attachEvent) {
       target.attachEvent('on' + eventType, callback);
       return {
-        remove: function() {
+        remove: function () {
           target.detachEvent('on' + eventType, callback);
-        }
+        },
       };
     }
   },
@@ -51,29 +51,29 @@ var EventListener = {
    * @param {function} callback Callback function.
    * @return {object} Object with a `remove` method.
    */
-  capture: function(target, eventType, callback) {
+  capture: function (target, eventType, callback) {
     if (target.addEventListener) {
       target.addEventListener(eventType, callback, true);
       return {
-        remove: function() {
+        remove: function () {
           target.removeEventListener(eventType, callback, true);
-        }
+        },
       };
     } else {
       if (__DEV__) {
         console.error(
           'Attempted to listen to events during the capture phase on a ' +
-          'browser that does not support the capture phase. Your application ' +
-          'will not receive some events.'
+            'browser that does not support the capture phase. Your application ' +
+            'will not receive some events.'
         );
       }
       return {
-        remove: emptyFunction
+        remove: emptyFunction,
       };
     }
   },
 
-  registerDefault: function() { }
+  registerDefault: function () {},
 };
 
 export default EventListener;

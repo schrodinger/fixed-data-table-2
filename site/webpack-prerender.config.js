@@ -23,43 +23,43 @@ module.exports = {
         test: /\.md$/,
         loader: [
           'html-loader?{"minimize":false}',
-          path.join(__dirname, '../build_helpers/markdownLoader')
-        ].join('!')
+          path.join(__dirname, '../build_helpers/markdownLoader'),
+        ].join('!'),
       },
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
       },
       {
         test: /\.css$/,
-        loader: 'null-loader'
+        loader: 'null-loader',
       },
       {
         test: /\.less$/,
-        loader: 'null-loader'
+        loader: 'null-loader',
       },
       {
         test: /\.png$/,
         loader: 'file-loader',
-        query: { mimetype: 'image/png', name: 'images/[name]-[hash].[ext]' }
-      }
-    ]
+        query: { mimetype: 'image/png', name: 'images/[name]-[hash].[ext]' },
+      },
+    ],
   },
 
   resolve: {
     alias: {
       'fixed-data-table-2/css': path.join(__dirname, '../src/css'),
-      'fixed-data-table-2': path.join(__dirname, '../src/FixedDataTableRoot')
+      'fixed-data-table-2': path.join(__dirname, '../src/FixedDataTableRoot'),
     },
   },
 
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-      '__DEV__': JSON.stringify(isDev || true)
-    })
-  ]
+      __DEV__: JSON.stringify(isDev || true),
+    }),
+  ],
 };
 
 if (process.env.NODE_ENV === 'production') {
@@ -68,10 +68,10 @@ if (process.env.NODE_ENV === 'production') {
       new UglifyJsPlugin({
         uglifyOptions: {
           compressor: {
-            warnings: false
-          }
-        }
-      })
-    ]
-  }
+            warnings: false,
+          },
+        },
+      }),
+    ],
+  };
 }

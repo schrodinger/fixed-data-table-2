@@ -38,7 +38,6 @@ class ReactTouchHandler {
     /*?boolean*/ preventDefault,
     /*?boolean*/ stopPropagation
   ) {
-
     // The animation frame id for the drag scroll
     this._dragAnimationId = null;
 
@@ -68,15 +67,15 @@ class ReactTouchHandler {
     this._autoScrollTimestamp = Date.now();
 
     if (typeof handleScrollX !== 'function') {
-      handleScrollX = handleScrollX ?
-        emptyFunction.thatReturnsTrue :
-        emptyFunction.thatReturnsFalse;
+      handleScrollX = handleScrollX
+        ? emptyFunction.thatReturnsTrue
+        : emptyFunction.thatReturnsFalse;
     }
 
     if (typeof handleScrollY !== 'function') {
-      handleScrollY = handleScrollY ?
-        emptyFunction.thatReturnsTrue :
-        emptyFunction.thatReturnsFalse;
+      handleScrollY = handleScrollY
+        ? emptyFunction.thatReturnsTrue
+        : emptyFunction.thatReturnsFalse;
     }
 
     this._handleScrollX = handleScrollX;
@@ -138,7 +137,6 @@ class ReactTouchHandler {
   }
 
   onTouchCancel(/*object*/ event) {
-
     // Stop tracking velocity
     clearInterval(this._trackerId);
     this._trackerId = null;
@@ -227,19 +225,21 @@ class ReactTouchHandler {
     // If the previous velocity is 0, put the full weight on the last 100 ms
     var weight = 0.8;
     if (elapsed < TRACKER_TIMEOUT) {
-      weight *= (elapsed / TRACKER_TIMEOUT);
+      weight *= elapsed / TRACKER_TIMEOUT;
     }
     if (oldVelocityX === 0 && oldVelocityY === 0) {
       weight = 1;
     }
 
     // Formula for computing weighted average of velocity
-    this._velocityX = weight * (TRACKER_TIMEOUT * this._accumulatedDeltaX / (1 + elapsed));
+    this._velocityX =
+      weight * ((TRACKER_TIMEOUT * this._accumulatedDeltaX) / (1 + elapsed));
     if (weight < 1) {
       this._velocityX += (1 - weight) * oldVelocityX;
     }
 
-    this._velocityY = weight * (TRACKER_TIMEOUT * this._accumulatedDeltaY / (1 + elapsed));
+    this._velocityY =
+      weight * ((TRACKER_TIMEOUT * this._accumulatedDeltaY) / (1 + elapsed));
     if (weight < 1) {
       this._velocityY += (1 - weight) * oldVelocityY;
     }
@@ -258,7 +258,7 @@ class ReactTouchHandler {
   _startAutoScroll() {
     this._autoScrollTimestamp = Date.now();
     if (this._deltaX > 0 || this.deltaY > 0) {
-      this._didTouchMove()
+      this._didTouchMove();
     }
     this._track();
     this._autoScroll();
@@ -270,7 +270,8 @@ class ReactTouchHandler {
    */
   _autoScroll() {
     var elapsed = Date.now() - this._autoScrollTimestamp;
-    var factor = DECELERATION_AMPLITUDE * Math.exp(-elapsed / DECELERATION_FACTOR);
+    var factor =
+      DECELERATION_AMPLITUDE * Math.exp(-elapsed / DECELERATION_FACTOR);
     var deltaX = factor * this._velocityX;
     var deltaY = factor * this._velocityY;
 

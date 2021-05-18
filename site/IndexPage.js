@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 require('./base.less');
 
@@ -29,7 +29,7 @@ function getPageForLocation(pages, location) {
     }
 
     if (pages[key].location === location) {
-      return {pageType: key, page: pages[key]};
+      return { pageType: key, page: pages[key] };
     }
   }
 
@@ -42,15 +42,17 @@ class IndexPage extends React.Component {
   }
 
   static renderToString(props) {
-    return IndexPage.getDoctype() +
-      ReactDOMServer.renderToString(<IndexPage {...props} />);
+    return (
+      IndexPage.getDoctype() +
+      ReactDOMServer.renderToString(<IndexPage {...props} />)
+    );
   }
 
   constructor(props) {
     super(props);
 
     this.state = {
-      renderPage: !this.props.devMode
+      renderPage: !this.props.devMode,
     };
   }
 
@@ -59,7 +61,7 @@ class IndexPage extends React.Component {
     // when initialising the browser environment we can bootstrap from the
     // same props as what each page was rendered with.
     var browserInitScriptObj = {
-      __html: 'window.INITIAL_PROPS = ' + JSON.stringify(this.props) + ';\n'
+      __html: 'window.INITIAL_PROPS = ' + JSON.stringify(this.props) + ';\n',
     };
 
     return (
@@ -67,9 +69,16 @@ class IndexPage extends React.Component {
         <head>
           <meta charSet="utf-8" />
           <title>FixedDataTable</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+          />
           <link rel="stylesheet" href="//code.cdn.mozilla.net/fonts/fira.css" />
-          <link rel="stylesheet" type="text/css" href={this.props.files['main.css']} />
+          <link
+            rel="stylesheet"
+            type="text/css"
+            href={this.props.files['main.css']}
+          />
           <link rel="shortcut icon" type="image/png" href={faviconURL} />
           <base target="_blank" />
         </head>
@@ -99,7 +108,10 @@ class IndexPage extends React.Component {
       );
     }
 
-    var activeExamplePage = getPageForLocation(ExamplePages, this.props.location);
+    var activeExamplePage = getPageForLocation(
+      ExamplePages,
+      this.props.location
+    );
     if (activeExamplePage) {
       return (
         <ExamplesPage
@@ -110,19 +122,17 @@ class IndexPage extends React.Component {
     }
 
     throw new Error(
-      'Page of location ' +
-        JSON.stringify(this.props.location) +
-        ' not found.'
+      'Page of location ' + JSON.stringify(this.props.location) + ' not found.'
     );
   }
 
   componentDidMount() {
     if (!this.state.renderPage) {
       this.setState({
-        renderPage: true
+        renderPage: true,
       });
     }
   }
-};
+}
 
 module.exports = IndexPage;

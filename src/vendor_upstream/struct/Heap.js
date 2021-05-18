@@ -41,7 +41,7 @@ class Heap {
    * @return {*}
    */
   pop() {
-    if (this._size === 0){
+    if (this._size === 0) {
       return;
     }
 
@@ -85,7 +85,7 @@ class Heap {
   }
 
   _heapify() {
-    for (var index = Math.floor((this._size + 1)/ 2); index >= 0; index--) {
+    for (var index = Math.floor((this._size + 1) / 2); index >= 0; index--) {
       this._sinkDown(index);
     }
   }
@@ -132,8 +132,10 @@ class Heap {
       if (rightChildIndex < this._size) {
         var rightChild = this._items[rightChildIndex];
         if (this._comparator(rightChild, elt)) {
-          if (swapIndex === -1 ||
-              this._comparator(rightChild, this._items[swapIndex])) {
+          if (
+            swapIndex === -1 ||
+            this._comparator(rightChild, this._items[swapIndex])
+          ) {
             swapIndex = rightChildIndex;
           }
         }

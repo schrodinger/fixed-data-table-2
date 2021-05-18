@@ -10,10 +10,10 @@
  */
 
 var nativeRequestAnimationFrame =
-  global.requestAnimationFrame       ||
+  global.requestAnimationFrame ||
   global.webkitRequestAnimationFrame ||
-  global.mozRequestAnimationFrame    ||
-  global.oRequestAnimationFrame      ||
+  global.mozRequestAnimationFrame ||
+  global.oRequestAnimationFrame ||
   global.msRequestAnimationFrame;
 
 export default nativeRequestAnimationFrame;

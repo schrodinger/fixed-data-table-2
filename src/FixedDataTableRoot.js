@@ -19,11 +19,4 @@ import ColumnGroup from './FixedDataTableColumnGroup';
 
 const version = '1.2.0';
 
-export {
-  Cell,
-  Column,
-  ColumnGroup,
-  DataCell,
-  Table,
-  version,
-};
+export { Cell, Column, ColumnGroup, DataCell, Table, version };

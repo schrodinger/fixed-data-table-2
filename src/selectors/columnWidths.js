@@ -40,21 +40,29 @@ import scrollbarsVisible from './scrollbarsVisible';
  *   maxScrollX: number,
  * }} The total width of all columns.
  */
-function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width, scrollbarYWidth) {
+function columnWidths(
+  columnGroupProps,
+  columnProps,
+  scrollEnabledY,
+  width,
+  scrollbarYWidth
+) {
   const scrollbarSpace = scrollEnabledY ? scrollbarYWidth : 0;
   const viewportWidth = width - scrollbarSpace;
 
-  const {
-    newColumnGroupProps,
-    newColumnProps,
-  } = flexWidths(columnGroupProps, columnProps, viewportWidth);
-  const {
-    fixedColumns,
-    fixedRightColumns,
-    scrollableColumns,
-  } = groupColumns(newColumnProps);
+  const { newColumnGroupProps, newColumnProps } = flexWidths(
+    columnGroupProps,
+    columnProps,
+    viewportWidth
+  );
+  const { fixedColumns, fixedRightColumns, scrollableColumns } = groupColumns(
+    newColumnProps
+  );
 
-  const availableScrollWidth = viewportWidth - getTotalWidth(fixedColumns) - getTotalWidth(fixedRightColumns);
+  const availableScrollWidth =
+    viewportWidth -
+    getTotalWidth(fixedColumns) -
+    getTotalWidth(fixedRightColumns);
   const maxScrollX = Math.max(0, getTotalWidth(newColumnProps) - viewportWidth);
   return {
     columnGroupProps: newColumnGroupProps,
@@ -86,7 +94,7 @@ function flexWidths(columnGroupProps, columnProps, viewportWidth) {
     let remainingFlexWidth = Math.max(viewportWidth - columnsWidth, 0);
 
     // calculate and set width for each column
-    newColumnProps = map(columnProps, column => {
+    newColumnProps = map(columnProps, (column) => {
       const { flexGrow } = column;
 
       // if no flexGrow is specified, column defaults to original width
@@ -94,7 +102,9 @@ function flexWidths(columnGroupProps, columnProps, viewportWidth) {
         return column;
       }
 
-      const flexWidth = Math.floor(flexGrow * remainingFlexWidth / remainingFlexGrow);
+      const flexWidth = Math.floor(
+        (flexGrow * remainingFlexWidth) / remainingFlexGrow
+      );
       const newWidth = column.width + flexWidth;
       remainingFlexGrow -= flexGrow;
       remainingFlexWidth -= flexWidth;
@@ -105,7 +115,7 @@ function flexWidths(columnGroupProps, columnProps, viewportWidth) {
 
   // calculate width for each column group
   const columnGroupWidths = map(columnGroupProps, () => 0);
-  forEach(newColumnProps, column => {
+  forEach(newColumnProps, (column) => {
     if (column.groupIdx !== undefined) {
       columnGroupWidths[column.groupIdx] += column.width;
     }
@@ -138,7 +148,7 @@ function groupColumns(columnProps) {
   const fixedRightColumns = [];
   const scrollableColumns = [];
 
-  forEach(columnProps, columnProp => {
+  forEach(columnProps, (columnProp) => {
     let container = scrollableColumns;
     if (columnProp.fixed) {
       container = fixedColumns;
@@ -155,10 +165,13 @@ function groupColumns(columnProps) {
   };
 }
 
-export default shallowEqualSelector([
-  state => state.columnGroupProps,
-  state => state.columnProps,
-  state => scrollbarsVisible(state).scrollEnabledY,
-  state => state.tableSize.width,
-  state => state.scrollbarYWidth
-], columnWidths);
+export default shallowEqualSelector(
+  [
+    (state) => state.columnGroupProps,
+    (state) => state.columnProps,
+    (state) => scrollbarsVisible(state).scrollEnabledY,
+    (state) => state.tableSize.width,
+    (state) => state.scrollbarYWidth,
+  ],
+  columnWidths
+);

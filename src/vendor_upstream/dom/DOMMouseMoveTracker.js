@@ -34,7 +34,8 @@ class DOMMouseMoveTracker {
     /*function*/ onMove,
     /*function*/ onMoveEnd,
     /*DOMElement*/ domNode,
-    /*boolean*/ touchEnabled) {
+    /*boolean*/ touchEnabled
+  ) {
     this._isDragging = false;
     this._isTouchEnabled = touchEnabled;
     this._animationFrameID = null;
@@ -54,7 +55,11 @@ class DOMMouseMoveTracker {
    * in order to grab inital state.
    */
   captureMouseMoves(/*object*/ event) {
-    if (!this._eventMoveToken && !this._eventUpToken && !this._eventLeaveToken) {
+    if (
+      !this._eventMoveToken &&
+      !this._eventUpToken &&
+      !this._eventLeaveToken
+    ) {
       this._eventMoveToken = EventListener.listen(
         this._domNode,
         'mousemove',
@@ -72,8 +77,12 @@ class DOMMouseMoveTracker {
       );
     }
 
-    if (this._isTouchEnabled && !this._eventTouchStartToken &&
-        !this._eventTouchMoveToken && !this._eventTouchEndToken) {
+    if (
+      this._isTouchEnabled &&
+      !this._eventTouchStartToken &&
+      !this._eventTouchMoveToken &&
+      !this._eventTouchEndToken
+    ) {
       this._eventTouchStartToken = EventListener.listen(
         this._domNode,
         'touchstart',
@@ -95,7 +104,9 @@ class DOMMouseMoveTracker {
       this._deltaX = 0;
       this._deltaY = 0;
       this._isDragging = true;
-      var coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
+      var coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(
+        event
+      );
       var x = coordinates.x;
       var y = coordinates.y;
       this._x = x;
@@ -117,8 +128,12 @@ class DOMMouseMoveTracker {
       this._eventLeaveToken = null;
     }
 
-    if (this._isTouchEnabled && this._eventTouchStartToken &&
-        this._eventTouchMoveToken && this._eventTouchEndToken) {
+    if (
+      this._isTouchEnabled &&
+      this._eventTouchStartToken &&
+      this._eventTouchMoveToken &&
+      this._eventTouchEndToken
+    ) {
       this._eventTouchStartToken.remove();
       this._eventTouchStartToken = null;
       this._eventTouchMoveToken.remove();
@@ -154,14 +169,15 @@ class DOMMouseMoveTracker {
     var x = coordinates.x;
     var y = coordinates.y;
 
-    this._deltaX += (x - this._x);
-    this._deltaY += (y - this._y);
+    this._deltaX += x - this._x;
+    this._deltaY += y - this._y;
 
     if (this._animationFrameID === null) {
       // The mouse may move faster then the animation frame does.
       // Use `requestAnimationFramePolyfill` to avoid over-updating.
-      this._animationFrameID =
-        requestAnimationFramePolyfill(this._didMouseMove);
+      this._animationFrameID = requestAnimationFramePolyfill(
+        this._didMouseMove
+      );
     }
 
     this._x = x;

@@ -117,7 +117,6 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     };
   }
 
-
   // If our first or last index is greater than our rowsCount,
   // treat it as if the last row is at the bottom of the viewport
   let { firstIndex, firstOffset, lastIndex } = scrollAnchor;
@@ -139,8 +138,11 @@ function calculateRenderedRowRange(state, scrollAnchor) {
   // Loop to walk the viewport until we've touched enough rows to fill its height
   let rowIdx = startIdx;
   let endIdx = rowIdx;
-  while (rowIdx < rowsCount && rowIdx >= 0 &&
-    totalHeight < maxAvailableHeight) {
+  while (
+    rowIdx < rowsCount &&
+    rowIdx >= 0 &&
+    totalHeight < maxAvailableHeight
+  ) {
     totalHeight += updateRowHeight(state, rowIdx);
     endIdx = rowIdx;
     rowIdx += step;
@@ -151,7 +153,11 @@ function calculateRenderedRowRange(state, scrollAnchor) {
      In this case process earlier rows as needed and act as if we've scrolled to the last row.
    */
   let forceScrollToLastRow = false;
-  if (totalHeight < maxAvailableHeight && rowIdx === rowsCount && lastIndex === undefined) {
+  if (
+    totalHeight < maxAvailableHeight &&
+    rowIdx === rowsCount &&
+    lastIndex === undefined
+  ) {
     forceScrollToLastRow = true;
     rowIdx = firstIndex - 1;
 
@@ -175,7 +181,6 @@ function calculateRenderedRowRange(state, scrollAnchor) {
   for (rowIdx = endViewportIdx; rowIdx < endBufferIdx; rowIdx++) {
     updateRowHeight(state, rowIdx);
   }
-
 
   const { availableHeight } = scrollbarsVisibleSelector(state);
   if (lastIndex !== undefined || forceScrollToLastRow) {
@@ -248,13 +253,18 @@ function computeRenderedRowOffsets(state, rowRange, viewportOnly) {
 
   // compute row index and offsets for every rows inside the buffer
   for (let rowIdx = startIdx; rowIdx < endIdx; rowIdx++) {
-
     // Update the offset for rendering the row
     rowOffsets[rowIdx] = runningOffset;
     runningOffset += storedHeights[rowIdx];
 
     // Get position for the viewport row
-    const rowPosition = addRowToBuffer(rowIdx, rowBufferSet, startIdx, endIdx, renderedRowsCount);
+    const rowPosition = addRowToBuffer(
+      rowIdx,
+      rowBufferSet,
+      startIdx,
+      endIdx,
+      renderedRowsCount
+    );
     rows[rowPosition] = rowIdx;
   }
 
@@ -276,7 +286,13 @@ function computeRenderedRowOffsets(state, rowRange, viewportOnly) {
  * @return {?number} the position of the row after being added to the buffer set
  * @private
  */
-function addRowToBuffer(rowIdx, rowBufferSet, startRange, endRange, maxBufferSize) {
+function addRowToBuffer(
+  rowIdx,
+  rowBufferSet,
+  startRange,
+  endRange,
+  maxBufferSize
+) {
   // Check if row already has a position in the buffer
   let rowPosition = rowBufferSet.getValuePosition(rowIdx);
 

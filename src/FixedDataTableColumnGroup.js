@@ -49,11 +49,7 @@ class FixedDataTableColumnGroup extends React.Component {
      * You can also pass in a function that returns a react elemnt, with the
      * props object above passed in as the first parameter.
      */
-    header: PropTypes.oneOfType([
-      PropTypes.node,
-      PropTypes.func,
-    ]),
-
+    header: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   };
 
   static defaultProps = {

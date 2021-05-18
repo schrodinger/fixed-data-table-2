@@ -20,7 +20,7 @@ import shallowEqual from '../vendor_upstream/core/shallowEqual';
 import convertColumnElementsToData from '../helper/convertColumnElementsToData';
 import * as ActionTypes from '../actions/ActionTypes';
 import { getScrollAnchor, scrollTo } from './scrollAnchor';
-import columnStateHelper from './columnStateHelper'
+import columnStateHelper from './columnStateHelper';
 import computeRenderedRows from './computeRenderedRows';
 import Scrollbar from '../plugins/Scrollbar';
 
@@ -120,9 +120,11 @@ function reducers(state = getInitialState(), action) {
       const { newProps, oldProps } = action;
       let newState = setStateFromProps(state, newProps);
 
-      if (oldProps.rowsCount !== newProps.rowsCount ||
+      if (
+        oldProps.rowsCount !== newProps.rowsCount ||
         oldProps.rowHeight !== newProps.rowHeight ||
-        oldProps.subRowHeight !== newProps.subRowHeight) {
+        oldProps.subRowHeight !== newProps.subRowHeight
+      ) {
         newState = initializeRowHeightsAndOffsets(newState);
       }
 
@@ -142,7 +144,10 @@ function reducers(state = getInitialState(), action) {
       newState = columnStateHelper.initialize(newState, newProps, oldProps);
 
       // if scroll values have changed, then we're scrolling!
-      if (newState.scrollX !== state.scrollX || newState.scrollY !== state.scrollY) {
+      if (
+        newState.scrollX !== state.scrollX ||
+        newState.scrollY !== state.scrollY
+      ) {
         newState.scrolling = newState.scrolling || true;
       }
 
@@ -182,7 +187,7 @@ function reducers(state = getInitialState(), action) {
     case ActionTypes.COLUMN_REORDER_END: {
       return Object.assign({}, state, {
         isColumnReordering: false,
-        columnReorderingData: {}
+        columnReorderingData: {},
       });
     }
     case ActionTypes.COLUMN_REORDER_MOVE: {
@@ -211,7 +216,10 @@ function reducers(state = getInitialState(), action) {
 function initializeRowHeightsAndOffsets(state) {
   const { rowHeight, rowsCount, subRowHeight } = state.rowSettings;
   const defaultFullRowHeight = rowHeight + subRowHeight;
-  const rowOffsetIntervalTree = PrefixIntervalTree.uniform(rowsCount, defaultFullRowHeight);
+  const rowOffsetIntervalTree = PrefixIntervalTree.uniform(
+    rowsCount,
+    defaultFullRowHeight
+  );
   const scrollContentHeight = rowsCount * defaultFullRowHeight;
   const storedHeights = new Array(rowsCount);
   for (let idx = 0; idx < rowsCount; idx++) {
@@ -238,17 +246,31 @@ function setStateFromProps(state, props) {
     useGroupHeader,
   } = convertColumnElementsToData(props.children);
 
-  const newState = Object.assign({}, state,
-    { columnGroupProps, columnProps, elementTemplates });
+  const newState = Object.assign({}, state, {
+    columnGroupProps,
+    columnProps,
+    elementTemplates,
+  });
 
-  newState.elementHeights = Object.assign({}, newState.elementHeights,
-    pick(props, ['cellGroupWrapperHeight', 'footerHeight', 'groupHeaderHeight', 'headerHeight']));
+  newState.elementHeights = Object.assign(
+    {},
+    newState.elementHeights,
+    pick(props, [
+      'cellGroupWrapperHeight',
+      'footerHeight',
+      'groupHeaderHeight',
+      'headerHeight',
+    ])
+  );
   if (!useGroupHeader) {
     newState.elementHeights.groupHeaderHeight = 0;
   }
 
-  newState.rowSettings = Object.assign({}, newState.rowSettings,
-    pick(props, ['bufferRowCount', 'rowHeight', 'rowsCount', 'subRowHeight']));
+  newState.rowSettings = Object.assign(
+    {},
+    newState.rowSettings,
+    pick(props, ['bufferRowCount', 'rowHeight', 'rowsCount', 'subRowHeight'])
+  );
   const { rowHeight, subRowHeight } = newState.rowSettings;
   newState.rowSettings.rowHeightGetter =
     props.rowHeightGetter || (() => rowHeight);
@@ -256,13 +278,18 @@ function setStateFromProps(state, props) {
     props.subRowHeightGetter || (() => subRowHeight || 0);
   newState.rowSettings.rowAttributesGetter = props.rowAttributesGetter;
 
-  newState.scrollFlags = Object.assign({}, newState.scrollFlags,
-    pick(props, ['overflowX', 'overflowY', 'showScrollbarX', 'showScrollbarY']));
+  newState.scrollFlags = Object.assign(
+    {},
+    newState.scrollFlags,
+    pick(props, ['overflowX', 'overflowY', 'showScrollbarX', 'showScrollbarY'])
+  );
 
-  newState.tableSize = Object.assign({}, newState.tableSize,
-    pick(props, ['height', 'maxHeight', 'ownerHeight', 'width']));
-  newState.tableSize.useMaxHeight =
-    newState.tableSize.height === undefined;
+  newState.tableSize = Object.assign(
+    {},
+    newState.tableSize,
+    pick(props, ['height', 'maxHeight', 'ownerHeight', 'width'])
+  );
+  newState.tableSize.useMaxHeight = newState.tableSize.height === undefined;
 
   newState.scrollbarXHeight = props.scrollbarXHeight;
   newState.scrollbarYWidth = props.scrollbarYWidth;

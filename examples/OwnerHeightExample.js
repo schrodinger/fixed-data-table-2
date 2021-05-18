@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { DateCell } from './helpers/cells';
@@ -48,7 +48,8 @@ class OwnerExample extends React.Component {
         width={400}
         height={600}
         footerHeight={30}
-        ownerHeight={this.props.height + 60 + pageYOffset}>
+        ownerHeight={this.props.height + 60 + pageYOffset}
+      >
         <Column
           columnKey="date"
           header={<DataCell>DOB</DataCell>}

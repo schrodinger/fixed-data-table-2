@@ -28,7 +28,7 @@ class FixedDataTableContainer extends React.Component {
   static defaultProps = {
     defaultScrollbars: true,
     scrollbarXHeight: Scrollbar.SIZE,
-    scrollbarYWidth: Scrollbar.SIZE
+    scrollbarYWidth: Scrollbar.SIZE,
   };
 
   constructor(props) {
@@ -38,8 +38,14 @@ class FixedDataTableContainer extends React.Component {
 
     this.reduxStore = FixedDataTableStore.get();
 
-    this.scrollActions = bindActionCreators(scrollActions, this.reduxStore.dispatch);
-    this.columnActions = bindActionCreators(columnActions, this.reduxStore.dispatch);
+    this.scrollActions = bindActionCreators(
+      scrollActions,
+      this.reduxStore.dispatch
+    );
+    this.columnActions = bindActionCreators(
+      columnActions,
+      this.reduxStore.dispatch
+    );
 
     this.reduxStore.dispatch({
       type: ActionTypes.INITIALIZE,
@@ -73,20 +79,16 @@ class FixedDataTableContainer extends React.Component {
 
   render() {
     const fdt = (
-        <FixedDataTable
-            {...this.props}
-            {...this.state}
-            scrollActions={this.scrollActions}
-            columnActions={this.columnActions}
-        />
+      <FixedDataTable
+        {...this.props}
+        {...this.state}
+        scrollActions={this.scrollActions}
+        columnActions={this.columnActions}
+      />
     );
     // For backward compatibility, by default we render FDT-2 scrollbars
     if (this.props.defaultScrollbars) {
-      return (
-          <ScrollContainer {...this.props}>
-            {fdt}
-          </ScrollContainer>
-      );
+      return <ScrollContainer {...this.props}>{fdt}</ScrollContainer>;
     }
     return fdt;
   }

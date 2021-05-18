@@ -9,7 +9,7 @@
  * @providesModule shallowEqualSelector
  */
 
-'use strict'
+'use strict';
 
 import { createSelectorCreator, defaultMemoize } from 'reselect';
 

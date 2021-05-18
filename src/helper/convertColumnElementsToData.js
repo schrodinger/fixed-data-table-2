@@ -33,13 +33,13 @@ function _extractProps(column) {
     'pureRendering',
     'width',
   ]);
-};
+}
 
 function _extractTemplates(elementTemplates, columnElement) {
   elementTemplates.cell.push(columnElement.props.cell);
   elementTemplates.footer.push(columnElement.props.footer);
   elementTemplates.header.push(columnElement.props.header);
-};
+}
 
 /**
  * Converts React column / column group elements into props and cell rendering templates
@@ -50,8 +50,10 @@ function convertColumnElementsToData(childComponents) {
     if (child == null) {
       return;
     }
-    invariant(child.type.__TableColumnGroup__ || child.type.__TableColumn__,
-      'child type should be <FixedDataTableColumn /> or <FixedDataTableColumnGroup />');
+    invariant(
+      child.type.__TableColumnGroup__ || child.type.__TableColumn__,
+      'child type should be <FixedDataTableColumn /> or <FixedDataTableColumnGroup />'
+    );
 
     children.push(child);
   });
@@ -64,7 +66,8 @@ function convertColumnElementsToData(childComponents) {
   };
 
   const columnProps = [];
-  const hasGroupHeader = children.length && children[0].type.__TableColumnGroup__;
+  const hasGroupHeader =
+    children.length && children[0].type.__TableColumnGroup__;
   if (hasGroupHeader) {
     const columnGroupProps = map(children, _extractProps);
     forEach(children, (columnGroupElement, index) => {
@@ -97,6 +100,6 @@ function convertColumnElementsToData(childComponents) {
     elementTemplates,
     useGroupHeader: false,
   };
-};
+}
 
 export default convertColumnElementsToData;

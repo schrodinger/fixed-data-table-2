@@ -123,7 +123,7 @@ function columnTemplates(columnWidths, elementTemplates) {
   };
 }
 
-export default shallowEqualSelector([
-  state => columnWidths(state),
-  state => state.elementTemplates,
-], columnTemplates);
+export default shallowEqualSelector(
+  [(state) => columnWidths(state), (state) => state.elementTemplates],
+  columnTemplates
+);

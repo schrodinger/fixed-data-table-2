@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
@@ -23,20 +23,22 @@ class ResizeExample extends React.Component {
       },
     };
 
-    this._onColumnResizeEndCallback = this._onColumnResizeEndCallback.bind(this);
+    this._onColumnResizeEndCallback = this._onColumnResizeEndCallback.bind(
+      this
+    );
   }
 
   _onColumnResizeEndCallback(newColumnWidth, columnKey) {
-    this.setState(({columnWidths}) => ({
+    this.setState(({ columnWidths }) => ({
       columnWidths: {
         ...columnWidths,
         [columnKey]: newColumnWidth,
-      }
+      },
     }));
   }
 
   render() {
-    var {dataList, columnWidths} = this.state;
+    var { dataList, columnWidths } = this.state;
     return (
       <Table
         rowHeight={30}
@@ -47,7 +49,8 @@ class ResizeExample extends React.Component {
         touchScrollEnabled={true}
         width={1000}
         height={500}
-        {...this.props}>
+        {...this.props}
+      >
         <Column
           columnKey="firstName"
           header={<DataCell>First Name</DataCell>}

@@ -6,11 +6,11 @@ import { assert } from 'chai';
 import { ScrollbarState } from '../../src/selectors/roughHeights';
 import scrollbarsVisible from '../../src/selectors/scrollbarsVisible';
 
-describe('scrollbarsVisible', function() {
+describe('scrollbarsVisible', function () {
   let roughHeights;
   let scrollFlags;
 
-  beforeEach(function() {
+  beforeEach(function () {
     roughHeights = {
       minAvailableHeight: 785,
       maxAvailableHeight: 785,
@@ -23,9 +23,12 @@ describe('scrollbarsVisible', function() {
     };
   });
 
-  it('should show scrollbars when content overflows', function() {
+  it('should show scrollbars when content overflows', function () {
     const result = scrollbarsVisible.resultFunc(
-      roughHeights, 1000, scrollFlags);
+      roughHeights,
+      1000,
+      scrollFlags
+    );
 
     assert.deepEqual(result, {
       availableHeight: 785,
@@ -34,7 +37,7 @@ describe('scrollbarsVisible', function() {
     });
   });
 
-  it('should not show horizontal scrollbar when hidden', function() {
+  it('should not show horizontal scrollbar when hidden', function () {
     roughHeights = {
       minAvailableHeight: 800,
       maxAvailableHeight: 800,
@@ -42,7 +45,10 @@ describe('scrollbarsVisible', function() {
     };
 
     const result = scrollbarsVisible.resultFunc(
-      roughHeights, 1000, scrollFlags);
+      roughHeights,
+      1000,
+      scrollFlags
+    );
 
     assert.deepEqual(result, {
       availableHeight: 800,
@@ -51,11 +57,14 @@ describe('scrollbarsVisible', function() {
     });
   });
 
-  it('should not show vertical scrollbar when hidden', function() {
+  it('should not show vertical scrollbar when hidden', function () {
     scrollFlags.overflowY = 'hidden';
 
     const result = scrollbarsVisible.resultFunc(
-      roughHeights, 1000, scrollFlags);
+      roughHeights,
+      1000,
+      scrollFlags
+    );
 
     assert.deepEqual(result, {
       availableHeight: 785,
@@ -64,11 +73,14 @@ describe('scrollbarsVisible', function() {
     });
   });
 
-  it('should not show vertical scrollbar when disabled', function() {
+  it('should not show vertical scrollbar when disabled', function () {
     scrollFlags.showScrollbarY = false;
 
     const result = scrollbarsVisible.resultFunc(
-      roughHeights, 1000, scrollFlags);
+      roughHeights,
+      1000,
+      scrollFlags
+    );
 
     assert.deepEqual(result, {
       availableHeight: 785,
@@ -77,8 +89,8 @@ describe('scrollbarsVisible', function() {
     });
   });
 
-  describe('horizontal state is "if vertical is visible"', function() {
-    beforeEach(function() {
+  describe('horizontal state is "if vertical is visible"', function () {
+    beforeEach(function () {
       roughHeights = {
         minAvailableHeight: 785,
         maxAvailableHeight: 800,
@@ -91,9 +103,12 @@ describe('scrollbarsVisible', function() {
       };
     });
 
-    it('should not show scrollbars when vertical content does not overflow', function() {
+    it('should not show scrollbars when vertical content does not overflow', function () {
       const result = scrollbarsVisible.resultFunc(
-        roughHeights, 790, scrollFlags);
+        roughHeights,
+        790,
+        scrollFlags
+      );
 
       assert.deepEqual(result, {
         availableHeight: 800,
@@ -102,9 +117,12 @@ describe('scrollbarsVisible', function() {
       });
     });
 
-    it('should show both scrollbars when vertical content overflows', function() {
+    it('should show both scrollbars when vertical content overflows', function () {
       const result = scrollbarsVisible.resultFunc(
-        roughHeights, 805, scrollFlags);
+        roughHeights,
+        805,
+        scrollFlags
+      );
 
       assert.deepEqual(result, {
         availableHeight: 785,

@@ -38,7 +38,7 @@ export const stopColumnReorder = () => ({
  */
 export const moveColumnReorder = (deltaX) => ({
   type: COLUMN_REORDER_MOVE,
-  deltaX
+  deltaX,
 });
 
 /**

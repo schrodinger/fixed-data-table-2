@@ -8,8 +8,8 @@ import sinon from 'sinon';
 
 import computeRenderedRows from '../../src/reducers/computeRenderedRows';
 
-describe('computeRenderedRows', function() {
-  beforeEach(function() {
+describe('computeRenderedRows', function () {
+  beforeEach(function () {
     computeRenderedRows.__Rewire__('roughHeightsSelector', () => ({
       bufferRowCount: 2,
       maxAvailableHeight: 600,
@@ -22,15 +22,15 @@ describe('computeRenderedRows', function() {
     }));
   });
 
-  afterEach(function() {
+  afterEach(function () {
     computeRenderedRows.__ResetDependency__('roughHeightsSelector');
     computeRenderedRows.__ResetDependency__('scrollbarsVisibleSelector');
     computeRenderedRows.__ResetDependency__('tableHeightsSelector');
   });
 
-  describe('computeRenderedRows', function() {
+  describe('computeRenderedRows', function () {
     let oldState;
-    beforeEach(function() {
+    beforeEach(function () {
       const initialStoredHeights = {};
       for (let rowIdx = 0; rowIdx < 80; rowIdx++) {
         initialStoredHeights[rowIdx] = 125;
@@ -49,11 +49,11 @@ describe('computeRenderedRows', function() {
       };
     });
 
-    afterEach(function() {
+    afterEach(function () {
       sinon.restore();
     });
 
-    it('should update rowBufferSet & row heights for buffered rows', function() {
+    it('should update rowBufferSet & row heights for buffered rows', function () {
       const scrollAnchor = {
         firstIndex: 15,
         firstOffset: -25,
@@ -68,29 +68,42 @@ describe('computeRenderedRows', function() {
         expectedRows.push(rowIdx);
         expectedRowOffsets[rowIdx] = rowIdx * 125;
 
-        assert.strictEqual(newState.storedHeights[rowIdx], 125,
-          'expected stored height of 125 for each row');
-        assert.strictEqual(newState.rowOffsetIntervalTree.get(rowIdx), 125,
-          'expected row offsets for each row to be set to 125');
-        assert.isNotNull(newState.rowBufferSet.getValuePosition(rowIdx),
-          `expected a buffer position for each row. rowIdx: ${rowIdx}`);
+        assert.strictEqual(
+          newState.storedHeights[rowIdx],
+          125,
+          'expected stored height of 125 for each row'
+        );
+        assert.strictEqual(
+          newState.rowOffsetIntervalTree.get(rowIdx),
+          125,
+          'expected row offsets for each row to be set to 125'
+        );
+        assert.isNotNull(
+          newState.rowBufferSet.getValuePosition(rowIdx),
+          `expected a buffer position for each row. rowIdx: ${rowIdx}`
+        );
       }
 
-      assert.isNull(newState.rowBufferSet.getValuePosition(12),
-        'expected no buffer position for other row');
+      assert.isNull(
+        newState.rowBufferSet.getValuePosition(12),
+        'expected no buffer position for other row'
+      );
 
-      assert.deepEqual(newState, Object.assign(oldState, {
-        firstRowIndex: 15,
-        endRowIndex: 20,
-        firstRowOffset: -25,
-        maxScrollY: 9400,
-        rowOffsets: expectedRowOffsets,
-        rows: expectedRows,
-        scrollY: 1900,
-      }));
+      assert.deepEqual(
+        newState,
+        Object.assign(oldState, {
+          firstRowIndex: 15,
+          endRowIndex: 20,
+          firstRowOffset: -25,
+          maxScrollY: 9400,
+          rowOffsets: expectedRowOffsets,
+          rows: expectedRows,
+          scrollY: 1900,
+        })
+      );
     });
 
-    it('should work as expected when lastIndex is specified', function() {
+    it('should work as expected when lastIndex is specified', function () {
       const scrollAnchor = {
         firstIndex: undefined,
         firstOffset: 0,
@@ -105,29 +118,42 @@ describe('computeRenderedRows', function() {
         expectedRows.push(rowIdx);
         expectedRowOffsets[rowIdx] = rowIdx * 125;
 
-        assert.strictEqual(newState.storedHeights[rowIdx], 125,
-          'expected stored height of 125 for each row');
-        assert.strictEqual(newState.rowOffsetIntervalTree.get(rowIdx), 125,
-          'expected row offsets for each row to be set to 125');
-        assert.isNotNull(newState.rowBufferSet.getValuePosition(rowIdx),
-          `expected a buffer position for each row. rowIdx: ${rowIdx}`);
+        assert.strictEqual(
+          newState.storedHeights[rowIdx],
+          125,
+          'expected stored height of 125 for each row'
+        );
+        assert.strictEqual(
+          newState.rowOffsetIntervalTree.get(rowIdx),
+          125,
+          'expected row offsets for each row to be set to 125'
+        );
+        assert.isNotNull(
+          newState.rowBufferSet.getValuePosition(rowIdx),
+          `expected a buffer position for each row. rowIdx: ${rowIdx}`
+        );
       }
 
-      assert.isNull(newState.rowBufferSet.getValuePosition(12),
-        'expected no buffer position for other row');
+      assert.isNull(
+        newState.rowBufferSet.getValuePosition(12),
+        'expected no buffer position for other row'
+      );
 
-      assert.deepEqual(newState, Object.assign(oldState, {
-        firstRowIndex: 26,
-        endRowIndex: 31,
-        firstRowOffset: -25,
-        maxScrollY: 9400,
-        rowOffsets: expectedRowOffsets,
-        rows: expectedRows,
-        scrollY: 3275,
-      }));
+      assert.deepEqual(
+        newState,
+        Object.assign(oldState, {
+          firstRowIndex: 26,
+          endRowIndex: 31,
+          firstRowOffset: -25,
+          maxScrollY: 9400,
+          rowOffsets: expectedRowOffsets,
+          rows: expectedRows,
+          scrollY: 3275,
+        })
+      );
     });
 
-    it('should handle things well when rowsCount is 0', function() {
+    it('should handle things well when rowsCount is 0', function () {
       const scrollAnchor = {
         firstIndex: 15,
         firstOffset: -25,
@@ -137,18 +163,21 @@ describe('computeRenderedRows', function() {
 
       const newState = computeRenderedRows(oldState, scrollAnchor);
 
-      assert.deepEqual(newState, Object.assign(oldState, {
-        endRowIndex: 0,
-        firstRowIndex: 0,
-        firstRowOffset: 0,
-        maxScrollY: 9400,
-        rowOffsets: {},
-        rows: [],
-        scrollY: 0,
-      }));
+      assert.deepEqual(
+        newState,
+        Object.assign(oldState, {
+          endRowIndex: 0,
+          firstRowIndex: 0,
+          firstRowOffset: 0,
+          maxScrollY: 9400,
+          rowOffsets: {},
+          rows: [],
+          scrollY: 0,
+        })
+      );
     });
 
-    it('should clamp scrollY to maxScrollY', function() {
+    it('should clamp scrollY to maxScrollY', function () {
       const scrollAnchor = {
         firstIndex: 90,
         firstOffset: 0,
@@ -163,29 +192,42 @@ describe('computeRenderedRows', function() {
         expectedRows.push(rowIdx);
         expectedRowOffsets[rowIdx] = rowIdx * 125;
 
-        assert.strictEqual(newState.storedHeights[rowIdx], 125,
-          'expected stored height of 125 for each row');
-        assert.strictEqual(newState.rowOffsetIntervalTree.get(rowIdx), 125,
-          'expected row offsets for each row to be set to 125');
-        assert.isNotNull(newState.rowBufferSet.getValuePosition(rowIdx),
-          `expected a buffer position for each row. rowIdx: ${rowIdx}`);
+        assert.strictEqual(
+          newState.storedHeights[rowIdx],
+          125,
+          'expected stored height of 125 for each row'
+        );
+        assert.strictEqual(
+          newState.rowOffsetIntervalTree.get(rowIdx),
+          125,
+          'expected row offsets for each row to be set to 125'
+        );
+        assert.isNotNull(
+          newState.rowBufferSet.getValuePosition(rowIdx),
+          `expected a buffer position for each row. rowIdx: ${rowIdx}`
+        );
       }
 
-      assert.isNull(newState.rowBufferSet.getValuePosition(80),
-        'expected no buffer position for other row');
+      assert.isNull(
+        newState.rowBufferSet.getValuePosition(80),
+        'expected no buffer position for other row'
+      );
 
-      assert.deepEqual(newState, Object.assign(oldState, {
-        firstRowIndex: 75,
-        endRowIndex: 80,
-        firstRowOffset: -25,
-        maxScrollY: 9400,
-        rowOffsets: expectedRowOffsets,
-        rows: expectedRows,
-        scrollY: 9400,
-      }));
+      assert.deepEqual(
+        newState,
+        Object.assign(oldState, {
+          firstRowIndex: 75,
+          endRowIndex: 80,
+          firstRowOffset: -25,
+          maxScrollY: 9400,
+          rowOffsets: expectedRowOffsets,
+          rows: expectedRows,
+          scrollY: 9400,
+        })
+      );
     });
 
-    it('should update row heights and scrollContentHeight', function() {
+    it('should update row heights and scrollContentHeight', function () {
       const scrollAnchor = {
         firstIndex: 15,
         firstOffset: -25,
@@ -193,7 +235,9 @@ describe('computeRenderedRows', function() {
       };
       oldState.rowSettings.rowHeightGetter = () => 200;
 
-      const rowOffsetIntervalTreeMock = sinon.mock(PrefixIntervalTree.prototype);
+      const rowOffsetIntervalTreeMock = sinon.mock(
+        PrefixIntervalTree.prototype
+      );
       oldState.rowOffsetIntervalTree = PrefixIntervalTree.uniform(80, 125);
       for (let rowIdx = 13; rowIdx < 21; rowIdx++) {
         rowOffsetIntervalTreeMock.expects('set').once().withArgs(rowIdx, 200);
@@ -210,20 +254,26 @@ describe('computeRenderedRows', function() {
         expectedRowOffsets[rowIdx] = priorHeight;
         priorHeight += 200;
 
-        assert.strictEqual(newState.storedHeights[rowIdx], 200,
-          'expected stored height of 200 for each row');
+        assert.strictEqual(
+          newState.storedHeights[rowIdx],
+          200,
+          'expected stored height of 200 for each row'
+        );
       }
 
-      assert.deepEqual(newState, Object.assign(oldState, {
-        firstRowIndex: 15,
-        endRowIndex: 19,
-        firstRowOffset: -25,
-        maxScrollY: 10000,
-        rowOffsets: expectedRowOffsets,
-        rows: expectedRows,
-        scrollContentHeight: 10600,
-        scrollY: 2050,
-      }));
+      assert.deepEqual(
+        newState,
+        Object.assign(oldState, {
+          firstRowIndex: 15,
+          endRowIndex: 19,
+          firstRowOffset: -25,
+          maxScrollY: 10000,
+          rowOffsets: expectedRowOffsets,
+          rows: expectedRows,
+          scrollContentHeight: 10600,
+          scrollY: 2050,
+        })
+      );
     });
   });
 });
