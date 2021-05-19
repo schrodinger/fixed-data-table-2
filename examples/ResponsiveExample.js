@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
@@ -20,8 +20,14 @@ class ResponsiveExample extends React.Component {
   }
 
   render() {
-    const {dataList} = this.state;
-    const {height, width, containerHeight, containerWidth, ...props} = this.props;
+    const { dataList } = this.state;
+    const {
+      height,
+      width,
+      containerHeight,
+      containerWidth,
+      ...props
+    } = this.props;
     return (
       <Table
         rowHeight={50}
@@ -29,7 +35,8 @@ class ResponsiveExample extends React.Component {
         rowsCount={dataList.getSize()}
         width={containerWidth}
         height={containerHeight}
-        {...props}>
+        {...props}
+      >
         <Column
           columnKey="firstName"
           header={<DataCell>First Name</DataCell>}
@@ -59,11 +66,11 @@ class ResponsiveExample extends React.Component {
 // See react-dimensions for the best way to configure
 // https://github.com/digidem/react-dimensions
 export default Dimensions({
-  getHeight: function(element) {
+  getHeight: function (element) {
     return window.innerHeight - 200;
   },
-  getWidth: function(element) {
+  getWidth: function (element) {
     var widthOffset = window.innerWidth < 680 ? 0 : 240;
     return window.innerWidth - widthOffset;
-  }
+  },
 })(ResponsiveExample);

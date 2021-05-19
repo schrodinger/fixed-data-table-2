@@ -31,14 +31,12 @@ var HEADER_BORDER_BOTTOM_WIDTH = 1;
  * only <FixedDataTable /> should use the component internally.
  */
 class FixedDataTableRowImpl extends React.Component {
-
   /**
    * The index of a row for which to fire the onMouseLeave event.
    */
   mouseLeaveIndex = null;
 
   static propTypes = {
-
     isScrolling: PropTypes.bool,
 
     /**
@@ -69,10 +67,7 @@ class FixedDataTableRowImpl extends React.Component {
     /**
      * the row expanded.
      */
-    rowExpanded: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.func,
-    ]),
+    rowExpanded: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
 
     /**
      * The row index.
@@ -208,12 +203,12 @@ class FixedDataTableRowImpl extends React.Component {
     var className = cx({
       'fixedDataTableRowLayout/main': true,
       'public/fixedDataTableRow/main': true,
-      'public/fixedDataTableRow/highlighted': (this.props.index % 2 === 1),
-      'public/fixedDataTableRow/odd': (this.props.index % 2 === 1),
-      'public/fixedDataTableRow/even': (this.props.index % 2 === 0),
+      'public/fixedDataTableRow/highlighted': this.props.index % 2 === 1,
+      'public/fixedDataTableRow/odd': this.props.index % 2 === 1,
+      'public/fixedDataTableRow/even': this.props.index % 2 === 0,
     });
     var fixedColumnsWidth = sumPropWidths(this.props.fixedColumns);
-    var fixedColumns =
+    var fixedColumns = (
       <FixedDataTableCellGroup
         key="fixed_cells"
         isScrolling={this.props.isScrolling}
@@ -234,11 +229,14 @@ class FixedDataTableRowImpl extends React.Component {
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
         isRTL={this.props.isRTL}
-      />;
+      />
+    );
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
     var fixedRightColumnsWidth = sumPropWidths(this.props.fixedRightColumns);
-    var scrollbarOffset = this.props.showScrollbarY ? this.props.scrollbarYWidth : 0;
-    var fixedRightColumns =
+    var scrollbarOffset = this.props.showScrollbarY
+      ? this.props.scrollbarYWidth
+      : 0;
+    var fixedRightColumns = (
       <FixedDataTableCellGroup
         key="fixed_right_cells"
         isScrolling={this.props.isScrolling}
@@ -259,10 +257,14 @@ class FixedDataTableRowImpl extends React.Component {
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
         isRTL={this.props.isRTL}
-      />;
-    var fixedRightColumnsShadow = fixedRightColumnsWidth ?
-      this._renderFixedRightColumnsShadow(this.props.width - fixedRightColumnsWidth - scrollbarOffset - 5) : null;
-    var scrollableColumns =
+      />
+    );
+    var fixedRightColumnsShadow = fixedRightColumnsWidth
+      ? this._renderFixedRightColumnsShadow(
+          this.props.width - fixedRightColumnsWidth - scrollbarOffset - 5
+        )
+      : null;
+    var scrollableColumns = (
       <FixedDataTableCellGroup
         key="scrollable_cells"
         isScrolling={this.props.isScrolling}
@@ -271,7 +273,12 @@ class FixedDataTableRowImpl extends React.Component {
         align="right"
         left={this.props.scrollLeft}
         offsetLeft={fixedColumnsWidth}
-        width={this.props.width - fixedColumnsWidth - fixedRightColumnsWidth - scrollbarOffset}
+        width={
+          this.props.width -
+          fixedColumnsWidth -
+          fixedRightColumnsWidth -
+          scrollbarOffset
+        }
         zIndex={0}
         columns={this.props.scrollableColumns}
         touchEnabled={this.props.touchEnabled}
@@ -285,9 +292,12 @@ class FixedDataTableRowImpl extends React.Component {
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
         isRTL={this.props.isRTL}
-      />;
+      />
+    );
     var scrollableColumnsWidth = sumPropWidths(this.props.scrollableColumns);
-    var columnsRightShadow = this._renderColumnsRightShadow(fixedColumnsWidth + scrollableColumnsWidth);
+    var columnsRightShadow = this._renderColumnsRightShadow(
+      fixedColumnsWidth + scrollableColumnsWidth
+    );
     var rowExpanded = this._getRowExpanded(subRowHeight);
     var rowExpandedStyle = {
       height: subRowHeight,
@@ -304,11 +314,12 @@ class FixedDataTableRowImpl extends React.Component {
         // so we need to account for the left and right border
         left: this.props.isRTL ? 2 : this.props.width - scrollbarOffset - 2,
       };
-      scrollbarSpacer =
+      scrollbarSpacer = (
         <div
           style={spacerStyles}
           className={cx('public/fixedDataTable/scrollbarSpacer')}
-        />;
+        />
+      );
     }
 
     return (
@@ -322,12 +333,17 @@ class FixedDataTableRowImpl extends React.Component {
         onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
         onMouseDown={this.props.onMouseDown ? this._onMouseDown : null}
         onMouseUp={this.props.onMouseUp ? this._onMouseUp : null}
-        onMouseEnter={this.props.onMouseEnter || this.props.onMouseLeave ? this._onMouseEnter : null}
+        onMouseEnter={
+          this.props.onMouseEnter || this.props.onMouseLeave
+            ? this._onMouseEnter
+            : null
+        }
         onMouseLeave={this.props.onMouseLeave ? this._onMouseLeave : null}
         onTouchStart={this.props.onTouchStart ? this._onTouchStart : null}
         onTouchEnd={this.props.onTouchEnd ? this._onTouchEnd : null}
         onTouchMove={this.props.onTouchMove ? this._onTouchMove : null}
-        style={style}>
+        style={style}
+      >
         <div className={cx('fixedDataTableRowLayout/body')}>
           {fixedColumns}
           {scrollableColumns}
@@ -336,11 +352,14 @@ class FixedDataTableRowImpl extends React.Component {
           {fixedRightColumnsShadow}
           {scrollbarSpacer}
         </div>
-        {rowExpanded && <div
-          className={cx('fixedDataTableRowLayout/rowExpanded')}
-          style={rowExpandedStyle}>
-          {rowExpanded}
-        </div>}
+        {rowExpanded && (
+          <div
+            className={cx('fixedDataTableRowLayout/rowExpanded')}
+            style={rowExpandedStyle}
+          >
+            {rowExpanded}
+          </div>
+        )}
         {columnsRightShadow}
       </div>
     );
@@ -356,7 +375,10 @@ class FixedDataTableRowImpl extends React.Component {
 
       var rowExpanded;
       if (React.isValidElement(this.props.rowExpanded)) {
-        rowExpanded = React.cloneElement(this.props.rowExpanded, rowExpandedProps);
+        rowExpanded = React.cloneElement(
+          this.props.rowExpanded,
+          rowExpandedProps
+        );
       } else if (typeof this.props.rowExpanded === 'function') {
         rowExpanded = this.props.rowExpanded(rowExpandedProps);
       }
@@ -372,11 +394,12 @@ class FixedDataTableRowImpl extends React.Component {
       'public/fixedDataTableRow/fixedColumnsDivider': left > 0,
       'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0,
     });
-    var dividerHeight = this.props.cellGroupWrapperHeight ?
-      this.props.cellGroupWrapperHeight - HEADER_BORDER_BOTTOM_WIDTH : this.props.height;
+    var dividerHeight = this.props.cellGroupWrapperHeight
+      ? this.props.cellGroupWrapperHeight - HEADER_BORDER_BOTTOM_WIDTH
+      : this.props.height;
     var style = {
       left: left,
-      height: dividerHeight
+      height: dividerHeight,
     };
     if (this.props.isRTL) {
       style.right = left;
@@ -396,7 +419,7 @@ class FixedDataTableRowImpl extends React.Component {
     );
     var style = {
       height: this.props.height,
-      left: left
+      left: left,
     };
     if (this.props.isRTL) {
       style.right = left;
@@ -406,7 +429,10 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   _renderColumnsRightShadow = (/*number*/ totalWidth) => /*?object*/ {
-    if (Math.ceil(this.props.scrollLeft + this.props.width) < Math.floor(totalWidth)) {
+    if (
+      Math.ceil(this.props.scrollLeft + this.props.width) <
+      Math.floor(totalWidth)
+    ) {
       var className = cx(
         'fixedDataTableRowLayout/columnsShadow',
         'fixedDataTableRowLayout/columnsRightShadow',
@@ -414,7 +440,7 @@ class FixedDataTableRowImpl extends React.Component {
         'public/fixedDataTableRow/columnsRightShadow'
       );
       var style = {
-        height: this.props.height
+        height: this.props.height,
       };
       return <div className={className} style={style} />;
     }
@@ -425,7 +451,7 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   _onContextMenu = (/*object*/ event) => {
-    this.props.onContextMenu(event, this.props.index)
+    this.props.onContextMenu(event, this.props.index);
   };
 
   _onDoubleClick = (/*object*/ event) => {
@@ -475,7 +501,6 @@ class FixedDataTableRowImpl extends React.Component {
 
 class FixedDataTableRow extends React.Component {
   static propTypes = {
-
     isScrolling: PropTypes.bool,
 
     /**
@@ -543,16 +568,19 @@ class FixedDataTableRow extends React.Component {
     var style = {
       width: this.props.width,
       height: this.props.height,
-      zIndex: (zIndex ? zIndex : 0),
-      visibility: (rowProps.visible ? 'visible' : 'hidden'),
+      zIndex: zIndex ? zIndex : 0,
+      visibility: rowProps.visible ? 'visible' : 'hidden',
     };
-    FixedDataTableTranslateDOMPosition(style, 0, offsetTop, this._initialRender, this.props.isRTL);
+    FixedDataTableTranslateDOMPosition(
+      style,
+      0,
+      offsetTop,
+      this._initialRender,
+      this.props.isRTL
+    );
 
     return (
-      <div
-        style={style}
-        className={cx('fixedDataTableRowLayout/rowWrapper')}
-      >
+      <div style={style} className={cx('fixedDataTableRowLayout/rowWrapper')}>
         <FixedDataTableRowImpl {...rowProps} />
       </div>
     );

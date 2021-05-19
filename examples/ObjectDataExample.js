@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { DateCell, ImageCell, LinkCell, TextCell } from './helpers/cells';
@@ -19,7 +19,7 @@ class ObjectDataExample extends React.Component {
   }
 
   render() {
-    var {dataList} = this.state;
+    var { dataList } = this.state;
     return (
       <Table
         rowHeight={50}
@@ -27,7 +27,8 @@ class ObjectDataExample extends React.Component {
         rowsCount={dataList.getSize()}
         width={1000}
         height={500}
-        {...this.props}>
+        {...this.props}
+      >
         <Column
           columnKey="avatar"
           cell={<ImageCell data={dataList} />}

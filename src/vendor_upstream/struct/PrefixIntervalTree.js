@@ -15,10 +15,11 @@
 
 import invariant from '../../stubs/invariant';
 
-var parent = node => Math.floor(node / 2);
+var parent = (node) => Math.floor(node / 2);
 
-var Int32Array = global.Int32Array ||
-  function(size: number): Array<number> {
+var Int32Array =
+  global.Int32Array ||
+  function (size: number): Array<number> {
     var xs = [];
     for (var i = size - 1; i >= 0; --i) {
       xs[i] = 0;
@@ -103,28 +104,19 @@ class PrefixIntervalTree {
   }
 
   set(index: number, value: number): void {
-    invariant(
-      0 <= index && index < this._size,
-      'Index out of range %s',
-      index
-    );
+    invariant(0 <= index && index < this._size, 'Index out of range %s', index);
 
     var node = this._half + index;
     this._heap[node] = value;
 
     node = parent(node);
     for (; node !== 0; node = parent(node)) {
-      this._heap[node] =
-        this._heap[2 * node] + this._heap[2 * node + 1];
+      this._heap[node] = this._heap[2 * node] + this._heap[2 * node + 1];
     }
   }
 
   get(index: number): number {
-    invariant(
-      0 <= index && index < this._size,
-      'Index out of range %s',
-      index
-    );
+    invariant(0 <= index && index < this._size, 'Index out of range %s', index);
 
     var node = this._half + index;
     return this._heap[node];
@@ -138,11 +130,7 @@ class PrefixIntervalTree {
    * Returns the sum get(0) + get(1) + ... + get(end - 1).
    */
   sumUntil(end: number): number {
-    invariant(
-      0 <= end && end < this._size + 1,
-      'Index out of range %s',
-      end
-    );
+    invariant(0 <= end && end < this._size + 1, 'Index out of range %s', end);
 
     if (end === 0) {
       return 0;

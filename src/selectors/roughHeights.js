@@ -76,19 +76,36 @@ export const ScrollbarState = {
  *   scrollStateX: ScrollbarState,
  * }}
  */
-function roughHeights(columnProps, elementHeights, rowSettings,
-  scrollFlags, tableSize, scrollbarXHeight, scrollbarYWidth) {
-  const { cellGroupWrapperHeight, footerHeight, headerHeight, groupHeaderHeight } = elementHeights;
+function roughHeights(
+  columnProps,
+  elementHeights,
+  rowSettings,
+  scrollFlags,
+  tableSize,
+  scrollbarXHeight,
+  scrollbarYWidth
+) {
+  const {
+    cellGroupWrapperHeight,
+    footerHeight,
+    headerHeight,
+    groupHeaderHeight,
+  } = elementHeights;
   // we don't need border height to be added to the table if we are using cellGroupWrapperHeight
   const borderHeight = cellGroupWrapperHeight ? 0 : 2 * BORDER_HEIGHT;
-  const reservedHeight = footerHeight + headerHeight +
-    groupHeaderHeight + borderHeight;
+  const reservedHeight =
+    footerHeight + headerHeight + groupHeaderHeight + borderHeight;
 
   const { height, maxHeight, useMaxHeight, width } = tableSize;
   const maxComponentHeight = Math.round(useMaxHeight ? maxHeight : height);
   const roughAvailableHeight = maxComponentHeight - reservedHeight;
 
-  const scrollStateX = getScrollStateX(columnProps, scrollFlags, width, scrollbarYWidth);
+  const scrollStateX = getScrollStateX(
+    columnProps,
+    scrollFlags,
+    width,
+    scrollbarYWidth
+  );
 
   /*
    * Early estimates of how much height we have to show rows.
@@ -171,12 +188,15 @@ function getBufferRowCount(maxAvailableHeight, rowSettings) {
   );
 }
 
-export default shallowEqualSelector([
-  state => state.columnProps,
-  state => state.elementHeights,
-  state => state.rowSettings,
-  state => state.scrollFlags,
-  state => state.tableSize,
-  state => state.scrollbarXHeight,
-  state => state.scrollbarYWidth
-], roughHeights);
+export default shallowEqualSelector(
+  [
+    (state) => state.columnProps,
+    (state) => state.elementHeights,
+    (state) => state.rowSettings,
+    (state) => state.scrollFlags,
+    (state) => state.tableSize,
+    (state) => state.scrollbarXHeight,
+    (state) => state.scrollbarYWidth,
+  ],
+  roughHeights
+);

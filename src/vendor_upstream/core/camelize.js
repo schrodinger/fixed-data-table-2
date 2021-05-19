@@ -22,7 +22,7 @@ var _hyphenPattern = /-(.)/g;
  * @return {string}
  */
 function camelize(string) {
-  return string.replace(_hyphenPattern, function(_, character) {
+  return string.replace(_hyphenPattern, function (_, character) {
     return character.toUpperCase();
   });
 }

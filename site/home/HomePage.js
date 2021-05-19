@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 require('./homePageStyle.less');
 
@@ -21,6 +21,6 @@ class HomePage extends React.Component {
       </div>
     );
   }
-};
+}
 
 module.exports = HomePage;

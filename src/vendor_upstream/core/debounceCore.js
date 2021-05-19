@@ -33,7 +33,7 @@
  * @param {*} context - optional context to invoke the function in
  * @param {function} [setTimeoutFunc] - an implementation of setTimeout
  *  if nothing is passed in the default setTimeout function is used
-  * @param {function} [clearTimeoutFunc] - an implementation of clearTimeout
+ * @param {function} [clearTimeoutFunc] - an implementation of clearTimeout
  *  if nothing is passed in the default clearTimeout function is used
  */
 function debounce(func, wait, context, setTimeoutFunc, clearTimeoutFunc) {
@@ -44,14 +44,14 @@ function debounce(func, wait, context, setTimeoutFunc, clearTimeoutFunc) {
   function debouncer(...args) {
     debouncer.reset();
 
-    var callback = function() {
+    var callback = function () {
       func.apply(context, args);
     };
     callback.__SMmeta = func.__SMmeta;
     timeout = setTimeoutFunc(callback, wait);
   }
 
-  debouncer.reset = function() {
+  debouncer.reset = function () {
     clearTimeoutFunc(timeout);
   };
 

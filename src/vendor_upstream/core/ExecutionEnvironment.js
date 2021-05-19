@@ -26,7 +26,6 @@ var canUseDOM = !!(
  * `ReactWorker` dependency.
  */
 var ExecutionEnvironment = {
-
   canUseDOM: canUseDOM,
 
   canUseWorkers: typeof Worker !== 'undefined',
@@ -36,8 +35,7 @@ var ExecutionEnvironment = {
 
   canUseViewport: canUseDOM && !!window.screen,
 
-  isInWorker: !canUseDOM // For now, this is true - might change in the future.
-
+  isInWorker: !canUseDOM, // For now, this is true - might change in the future.
 };
 
 export default ExecutionEnvironment;

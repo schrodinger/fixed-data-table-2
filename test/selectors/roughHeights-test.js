@@ -5,21 +5,24 @@ import { assert } from 'chai';
 import roughHeights, { ScrollbarState } from '../../src/selectors/roughHeights';
 import Scrollbar from '../../src/plugins/Scrollbar';
 
-describe('roughHeights', function() {
+describe('roughHeights', function () {
   let columnProps;
   let elementHeights;
   let rowSettings;
   let scrollFlags;
   let tableSize;
 
-  beforeEach(function() {
-    columnProps = [{
-      fixed: true,
-      width: 250,
-    }, {
-      fixed: false,
-      width: 350,
-    }];
+  beforeEach(function () {
+    columnProps = [
+      {
+        fixed: true,
+        width: 250,
+      },
+      {
+        fixed: false,
+        width: 350,
+      },
+    ];
     elementHeights = {
       footerHeight: 0,
       groupHeaderHeight: 0,
@@ -42,8 +45,8 @@ describe('roughHeights', function() {
     };
   });
 
-  describe('height calculations', function() {
-    beforeEach(function() {
+  describe('height calculations', function () {
+    beforeEach(function () {
       elementHeights = {
         footerHeight: 10,
         groupHeaderHeight: 35,
@@ -52,9 +55,16 @@ describe('roughHeights', function() {
       tableSize.height = 800;
     });
 
-    it('should estimate component heights', function() {
+    it('should estimate component heights', function () {
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.deepEqual(result, {
         bufferRowCount: 6,
@@ -65,11 +75,18 @@ describe('roughHeights', function() {
       });
     });
 
-    it('should adjust to scrollbar visibility', function() {
+    it('should adjust to scrollbar visibility', function () {
       tableSize.width = 500;
 
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.deepEqual(result, {
         bufferRowCount: 6,
@@ -80,11 +97,18 @@ describe('roughHeights', function() {
       });
     });
 
-    it('should adjust to scrollbar possible visibility', function() {
+    it('should adjust to scrollbar possible visibility', function () {
       tableSize.width = 610;
 
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.deepEqual(result, {
         bufferRowCount: 6,
@@ -95,7 +119,7 @@ describe('roughHeights', function() {
       });
     });
 
-    it('should use maxHeight when appropriate', function() {
+    it('should use maxHeight when appropriate', function () {
       tableSize = {
         height: undefined,
         maxHeight: 400,
@@ -104,7 +128,14 @@ describe('roughHeights', function() {
       };
 
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.deepEqual(result, {
         bufferRowCount: 4,
@@ -115,12 +146,19 @@ describe('roughHeights', function() {
       });
     });
 
-    it('should not have negative available height', function() {
+    it('should not have negative available height', function () {
       tableSize.height = 50;
       tableSize.width = 610;
 
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.deepEqual(result, {
         bufferRowCount: 3,
@@ -132,65 +170,110 @@ describe('roughHeights', function() {
     });
   });
 
-  describe('scrollStateX', function() {
-    beforeEach(function() {
-      columnProps = [{
-        fixed: true,
-        width: 250,
-      }, {
-        fixed: false,
-        width: 750,
-      }];
+  describe('scrollStateX', function () {
+    beforeEach(function () {
+      columnProps = [
+        {
+          fixed: true,
+          width: 250,
+        },
+        {
+          fixed: false,
+          width: 750,
+        },
+      ];
     });
 
-    it('should show scrollbar if content width exceeds width', function() {
+    it('should show scrollbar if content width exceeds width', function () {
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.strictEqual(result.scrollStateX, ScrollbarState.VISIBLE);
     });
 
-    it('should have a conditional scrollbar if content is within a scrollbar size of width', function() {
+    it('should have a conditional scrollbar if content is within a scrollbar size of width', function () {
       columnProps[0].width -= 210;
 
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.strictEqual(result.scrollStateX, ScrollbarState.JOINT_SCROLLBARS);
     });
 
-    it('should show not show scrollbar if content width is less than width', function() {
+    it('should show not show scrollbar if content width is less than width', function () {
       columnProps[1].width -= 500;
 
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.strictEqual(result.scrollStateX, ScrollbarState.HIDDEN);
     });
 
-    it('should not show scrollbar if overflowX is hidden', function() {
+    it('should not show scrollbar if overflowX is hidden', function () {
       scrollFlags.overflowX = 'hidden';
 
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.strictEqual(result.scrollStateX, ScrollbarState.HIDDEN);
     });
 
-    it('should not show scrollbar if showScrollbarX is false', function() {
+    it('should not show scrollbar if showScrollbarX is false', function () {
       scrollFlags.showScrollbarX = false;
 
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.strictEqual(result.scrollStateX, ScrollbarState.HIDDEN);
     });
   });
 
-  describe('bufferRowCount', function() {
-    it('should return half the max visible rows count', function() {
+  describe('bufferRowCount', function () {
+    it('should return half the max visible rows count', function () {
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.deepEqual(result, {
         bufferRowCount: 5,
@@ -201,11 +284,18 @@ describe('roughHeights', function() {
       });
     });
 
-    it('should round max visible rows count up', function() {
+    it('should round max visible rows count up', function () {
       tableSize.height = 427;
 
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.deepEqual(result, {
         bufferRowCount: 5,
@@ -216,11 +306,18 @@ describe('roughHeights', function() {
       });
     });
 
-    it('should round buffer rows count down', function() {
+    it('should round buffer rows count down', function () {
       tableSize.height = 402;
 
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.deepEqual(result, {
         bufferRowCount: 4,
@@ -231,11 +328,18 @@ describe('roughHeights', function() {
       });
     });
 
-    it('should be at least 3', function() {
+    it('should be at least 3', function () {
       tableSize.height = 152;
 
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.deepEqual(result, {
         bufferRowCount: 3,
@@ -246,11 +350,18 @@ describe('roughHeights', function() {
       });
     });
 
-    it('should be at most 6', function() {
+    it('should be at most 6', function () {
       tableSize.height = 652;
 
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.deepEqual(result, {
         bufferRowCount: 6,
@@ -261,11 +372,18 @@ describe('roughHeights', function() {
       });
     });
 
-    it('should be settable via prop', function() {
+    it('should be settable via prop', function () {
       rowSettings.bufferRowCount = 1;
 
       const result = roughHeights.resultFunc(
-        columnProps, elementHeights, rowSettings, scrollFlags, tableSize, Scrollbar.SIZE, Scrollbar.SIZE);
+        columnProps,
+        elementHeights,
+        rowSettings,
+        scrollFlags,
+        tableSize,
+        Scrollbar.SIZE,
+        Scrollbar.SIZE
+      );
 
       assert.deepEqual(result, {
         bufferRowCount: 1,

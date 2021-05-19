@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import ExampleImage from './helpers/ExampleImage';
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
@@ -21,9 +21,7 @@ class DataListWrapper {
   }
 
   getObjectAt(index) {
-    return this._data.getObjectAt(
-      this._indexMap[index],
-    );
+    return this._data.getObjectAt(this._indexMap[index]);
   }
 }
 
@@ -50,7 +48,7 @@ class FilterExample extends React.Component {
     var size = this._dataList.getSize();
     var filteredIndexes = [];
     for (var index = 0; index < size; index++) {
-      var {firstName} = this._dataList.getObjectAt(index);
+      var { firstName } = this._dataList.getObjectAt(index);
       if (firstName.toLowerCase().indexOf(filterBy) !== -1) {
         filteredIndexes.push(index);
       }
@@ -62,7 +60,7 @@ class FilterExample extends React.Component {
   }
 
   render() {
-    var {filteredDataList} = this.state;
+    var { filteredDataList } = this.state;
     return (
       <div>
         <input
@@ -76,7 +74,8 @@ class FilterExample extends React.Component {
           headerHeight={50}
           width={1000}
           height={500}
-          {...this.props}>
+          {...this.props}
+        >
           <Column
             columnKey="avatar"
             cell={<ImageCell data={filteredDataList} />}

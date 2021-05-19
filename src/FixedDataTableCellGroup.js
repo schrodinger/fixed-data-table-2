@@ -27,7 +27,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
    * development, but please don't commit this component with enabled propTypes.
    */
   static propTypes_DISABLED_FOR_PERFORMANCE = {
-
     /**
      * Array of per column configuration properties.
      */
@@ -63,7 +62,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     isHeaderOrFooter: PropTypes.bool,
 
     isRTL: PropTypes.bool,
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -80,18 +79,24 @@ class FixedDataTableCellGroupImpl extends React.Component {
     var cells = new Array(columns.length);
     var contentWidth = sumPropWidths(columns);
 
-    var isColumnReordering = props.isColumnReordering && columns.reduce(function(acc, column) {
-      return acc || props.columnReorderingData.columnKey === column.props.columnKey;
-    }, false);
+    var isColumnReordering =
+      props.isColumnReordering &&
+      columns.reduce(function (acc, column) {
+        return (
+          acc || props.columnReorderingData.columnKey === column.props.columnKey
+        );
+      }, false);
 
     var currentPosition = 0;
     for (var i = 0, j = columns.length; i < j; i++) {
       var columnProps = columns[i].props;
       var cellTemplate = columns[i].template;
       var recyclable = columnProps.allowCellsRecycling && !isColumnReordering;
-      if (!recyclable || (
-        currentPosition - props.left <= props.width &&
-        currentPosition - props.left + columnProps.width >= 0)) {
+      if (
+        !recyclable ||
+        (currentPosition - props.left <= props.width &&
+          currentPosition - props.left + columnProps.width >= 0)
+      ) {
         var key = columnProps.columnKey || 'cell_' + i;
         cells[i] = this._renderCell(
           props.rowIndex,
@@ -112,12 +117,19 @@ class FixedDataTableCellGroupImpl extends React.Component {
       width: contentWidth,
       zIndex: props.zIndex,
     };
-    FixedDataTableTranslateDOMPosition(style, -1 * props.left, 0, this._initialRender, this.props.isRTL);
+    FixedDataTableTranslateDOMPosition(
+      style,
+      -1 * props.left,
+      0,
+      this._initialRender,
+      this.props.isRTL
+    );
 
     return (
       <div
         className={cx('fixedDataTableCellGroupLayout/cellGroup')}
-        style={style}>
+        style={style}
+      >
         {cells}
       </div>
     );
@@ -133,12 +145,14 @@ class FixedDataTableCellGroupImpl extends React.Component {
     /*number*/ columnGroupWidth,
     /*boolean*/ isColumnReordering
   ) /*object*/ => {
-
-    var cellIsResizable = columnProps.isResizable &&
-      this.props.onColumnResize;
+    var cellIsResizable = columnProps.isResizable && this.props.onColumnResize;
     var onColumnResize = cellIsResizable ? this.props.onColumnResize : null;
 
-    var cellIsReorderable = columnProps.isReorderable && this.props.onColumnReorder && rowIndex === -1 && columnGroupWidth !== columnProps.width;
+    var cellIsReorderable =
+      columnProps.isReorderable &&
+      this.props.onColumnReorder &&
+      rowIndex === -1 &&
+      columnGroupWidth !== columnProps.width;
     var onColumnReorder = cellIsReorderable ? this.props.onColumnReorder : null;
 
     var className = columnProps.cellClassName;
@@ -171,7 +185,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         isRTL={this.props.isRTL}
       />
     );
-  }
+  };
 }
 
 class FixedDataTableCellGroup extends React.Component {
@@ -195,7 +209,7 @@ class FixedDataTableCellGroup extends React.Component {
      * header and footer in front of other rows.
      */
     zIndex: PropTypes.number.isRequired,
-  }
+  };
 
   shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
     /// if offsets haven't changed for the same cell group while scrolling, then skip update
@@ -210,14 +224,14 @@ class FixedDataTableCellGroup extends React.Component {
   static defaultProps = /*object*/ {
     left: 0,
     offsetLeft: 0,
-  }
+  };
 
   render() /*object*/ {
     var { offsetLeft, ...props } = this.props;
 
     var style = {
       height: props.cellGroupWrapperHeight || props.height,
-      width: props.width
+      width: props.width,
     };
 
     if (this.props.isRTL) {
@@ -231,7 +245,8 @@ class FixedDataTableCellGroup extends React.Component {
     return (
       <div
         style={style}
-        className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
+        className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}
+      >
         <FixedDataTableCellGroupImpl
           {...props}
           onColumnResize={onColumnResize}
@@ -248,15 +263,16 @@ class FixedDataTableCellGroup extends React.Component {
     /*string|number*/ columnKey,
     /*object*/ event
   ) => {
-    this.props.onColumnResize && this.props.onColumnResize(
-      this.props.offsetLeft,
-      left - this.props.left + width,
-      width,
-      minWidth,
-      maxWidth,
-      columnKey,
-      event
-    );
-  }
+    this.props.onColumnResize &&
+      this.props.onColumnResize(
+        this.props.offsetLeft,
+        left - this.props.left + width,
+        width,
+        minWidth,
+        maxWidth,
+        columnKey,
+        event
+      );
+  };
 }
 export default FixedDataTableCellGroup;

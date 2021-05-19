@@ -18,8 +18,9 @@ import camelize from './camelize';
 var memoized = {};
 var prefixes = ['Webkit', 'ms', 'Moz', 'O'];
 var prefixRegex = new RegExp('^(' + prefixes.join('|') + ')');
-var testStyle =
-  ExecutionEnvironment.canUseDOM ? document.createElement('div').style : {};
+var testStyle = ExecutionEnvironment.canUseDOM
+  ? document.createElement('div').style
+  : {};
 
 function getWithPrefix(name) {
   for (var i = 0; i < prefixes.length; i++) {
@@ -44,11 +45,11 @@ function getVendorPrefixedName(property) {
       invariant(
         false,
         'getVendorPrefixedName must only be called with unprefixed' +
-        'CSS property names. It was called with %s', property
+          'CSS property names. It was called with %s',
+        property
       );
     }
-    memoized[name] =
-      (name in testStyle) ? name : getWithPrefix(capitalizedName);
+    memoized[name] = name in testStyle ? name : getWithPrefix(capitalizedName);
   }
   return memoized[name];
 }

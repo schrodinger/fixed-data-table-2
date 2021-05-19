@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -47,11 +47,7 @@ function DataCtxt(Wrapped) {
 
     render() {
       const other = except(this.props, Object.keys(ContextClass.propTypes));
-      return (
-        <Wrapped
-          rowsCount={this.state.data.getSize()}
-          {...other}
-        />);
+      return <Wrapped rowsCount={this.state.data.getSize()} {...other} />;
     }
   }
 
@@ -93,9 +89,7 @@ class DataListWrapper {
       return this._data.getObjectAt(index);
     }
 
-    return this._data.getObjectAt(
-      this._indexMap[index]
-    );
+    return this._data.getObjectAt(this._indexMap[index]);
   }
 }
 
@@ -125,12 +119,11 @@ function AddFilter(TableComponent) {
     filter() {
       // Get and prep filters
       const filters = {};
-      Object
-        .keys(this.props.filters)
-        .filter(key => this.props.filters[key].length > 0)
+      Object.keys(this.props.filters)
+        .filter((key) => this.props.filters[key].length > 0)
         .forEach((key) => {
           filters[key] = this.props.filters[key].toLowerCase();
-          return (null);
+          return null;
         });
 
       const match = (haystack, needle) =>
@@ -165,17 +158,14 @@ function AddFilter(TableComponent) {
         }
       }
 
-      return (this._getDataWrapper(filteredIndexes));
+      return this._getDataWrapper(filteredIndexes);
     }
 
     render() {
       const other = except(this.props, Object.keys(FilterTable.propTypes));
       const filteredData = this.filter();
       return (
-        <TableComponent
-          data={filteredData}
-          {...other}
-        >
+        <TableComponent data={filteredData} {...other}>
           {this.props.children}
         </TableComponent>
       );
@@ -185,14 +175,11 @@ function AddFilter(TableComponent) {
   FilterTable.propTypes = {
     data: examplePropTypes.CtxtDataListStore,
     children: PropTypes.node,
-    filters: examplePropTypes.FilterObject
+    filters: examplePropTypes.FilterObject,
   };
 
   return FilterTable;
 }
 
 // Export both HOC and the PropType for the data if required
-export {
-  DataCtxt,
-  AddFilter,
-};
+export { DataCtxt, AddFilter };

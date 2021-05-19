@@ -32,7 +32,7 @@ class ReactWheelHandler {
     /*boolean|function*/ handleScrollY,
     /*?boolean*/ isRTL,
     /*?boolean*/ preventDefault,
-    /*?boolean*/ stopPropagation,
+    /*?boolean*/ stopPropagation
   ) {
     this._animationFrameID = null;
     this._deltaX = 0;
@@ -41,15 +41,15 @@ class ReactWheelHandler {
     this._rootRef = null;
 
     if (typeof handleScrollX !== 'function') {
-      handleScrollX = handleScrollX ?
-        emptyFunction.thatReturnsTrue :
-        emptyFunction.thatReturnsFalse;
+      handleScrollX = handleScrollX
+        ? emptyFunction.thatReturnsTrue
+        : emptyFunction.thatReturnsFalse;
     }
 
     if (typeof handleScrollY !== 'function') {
-      handleScrollY = handleScrollY ?
-        emptyFunction.thatReturnsTrue :
-        emptyFunction.thatReturnsFalse;
+      handleScrollY = handleScrollY
+        ? emptyFunction.thatReturnsTrue
+        : emptyFunction.thatReturnsFalse;
     }
 
     this._handleScrollX = handleScrollX;
@@ -71,9 +71,11 @@ class ReactWheelHandler {
 
     // if shift is held, swap the axis of scrolling.
     if (event.shiftKey && ReactWheelHandler._allowInternalAxesSwap()) {
-      normalizedEvent = ReactWheelHandler._swapNormalizedWheelAxis(normalizedEvent);
+      normalizedEvent = ReactWheelHandler._swapNormalizedWheelAxis(
+        normalizedEvent
+      );
     } else if (!event.shiftKey) {
-      normalizedEvent.pixelX *= (this._isRTL ? -1 : 1);
+      normalizedEvent.pixelX *= this._isRTL ? -1 : 1;
     }
 
     var deltaX = this._deltaX + normalizedEvent.pixelX;
@@ -131,7 +133,7 @@ class ReactWheelHandler {
     return false;
   }
 
-  static _swapNormalizedWheelAxis(/*object*/normalizedEvent) /*object*/ {
+  static _swapNormalizedWheelAxis(/*object*/ normalizedEvent) /*object*/ {
     return {
       spinX: normalizedEvent.spinY,
       spinY: normalizedEvent.spinX,
@@ -141,7 +143,7 @@ class ReactWheelHandler {
   }
 
   static _allowInternalAxesSwap() /*boolean*/ {
-    return navigator.platform !== "MacIntel";
+    return navigator.platform !== 'MacIntel';
   }
 }
 

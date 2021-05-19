@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, TextCell } from './helpers/cells';
@@ -32,7 +32,7 @@ class ScrollToColumnExample extends React.Component {
   }
 
   render() {
-    var {filteredDataList, currentIndex } = this.state;
+    var { filteredDataList, currentIndex } = this.state;
 
     return (
       <div>
@@ -47,7 +47,8 @@ class ScrollToColumnExample extends React.Component {
           headerHeight={50}
           width={1000}
           height={500}
-          {...this.props}>
+          {...this.props}
+        >
           <Column
             columnKey="firstName"
             header={<DataCell>First Name [0]</DataCell>}
@@ -110,7 +111,6 @@ class ScrollToColumnExample extends React.Component {
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />
-
         </Table>
       </div>
     );

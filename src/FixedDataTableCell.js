@@ -41,10 +41,7 @@ class FixedDataTableCell extends React.Component {
       PropTypes.func,
     ]),
 
-    columnKey: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
+    columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     /**
      * The row index that will be passed to `cellRenderer` to render.
@@ -90,13 +87,13 @@ class FixedDataTableCell extends React.Component {
      * If the component should render for RTL direction
      */
     isRTL: PropTypes.bool,
-  }
+  };
 
   state = {
     isReorderingThisColumn: false,
     displacement: 0,
-    reorderingDisplacement: 0
-  }
+    reorderingDisplacement: 0,
+  };
 
   shouldComponentUpdate(nextProps) {
     if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
@@ -108,8 +105,16 @@ class FixedDataTableCell extends React.Component {
       return true;
     }
 
-    const { cell: oldCell, isScrolling: oldIsScrolling, ...oldProps } = this.props;
-    const { cell: newCell, isScrolling: newIsScrolling, ...newProps } = nextProps;
+    const {
+      cell: oldCell,
+      isScrolling: oldIsScrolling,
+      ...oldProps
+    } = this.props;
+    const {
+      cell: newCell,
+      isScrolling: newIsScrolling,
+      ...newProps
+    } = nextProps;
 
     if (!shallowEqual(oldProps, newProps)) {
       return true;
@@ -137,10 +142,12 @@ class FixedDataTableCell extends React.Component {
       newState.displacement = 0;
       return newState;
     }
-    
+
     var originalLeft = nextProps.columnReorderingData.originalLeft;
-    var reorderCellLeft = originalLeft + nextProps.columnReorderingData.dragDistance;
-    var farthestPossiblePoint = nextProps.columnGroupWidth - nextProps.columnReorderingData.columnWidth;
+    var reorderCellLeft =
+      originalLeft + nextProps.columnReorderingData.dragDistance;
+    var farthestPossiblePoint =
+      nextProps.columnGroupWidth - nextProps.columnReorderingData.columnWidth;
 
     // ensure the cell isn't being dragged out of the column group
     reorderCellLeft = Math.max(reorderCellLeft, 0);
@@ -153,9 +160,11 @@ class FixedDataTableCell extends React.Component {
       return newState;
     }
 
-    var reorderCellRight = reorderCellLeft + nextProps.columnReorderingData.columnWidth;
-    var reorderCellCenter = reorderCellLeft + (nextProps.columnReorderingData.columnWidth / 2);
-    var centerOfThisColumn = left + (nextProps.width / 2);
+    var reorderCellRight =
+      reorderCellLeft + nextProps.columnReorderingData.columnWidth;
+    var reorderCellCenter =
+      reorderCellLeft + nextProps.columnReorderingData.columnWidth / 2;
+    var centerOfThisColumn = left + nextProps.width / 2;
 
     var cellIsBeforeOneBeingDragged = reorderCellCenter > centerOfThisColumn;
     var cellWasOriginallyBeforeOneBeingDragged = originalLeft > nextProps.left;
@@ -176,7 +185,8 @@ class FixedDataTableCell extends React.Component {
         if (cellWasOriginallyBeforeOneBeingDragged) {
           newState.displacement = 0;
         } else {
-          newState.displacement = nextProps.columnReorderingData.columnWidth * -1;
+          newState.displacement =
+            nextProps.columnReorderingData.columnWidth * -1;
         }
       }
     }
@@ -201,10 +211,9 @@ class FixedDataTableCell extends React.Component {
   static defaultProps = /*object*/ {
     align: 'left',
     highlighted: false,
-  }
+  };
 
   render() /*object*/ {
-
     var { height, width, columnKey, isHeaderOrFooter, ...props } = this.props;
 
     var style = {
@@ -220,7 +229,9 @@ class FixedDataTableCell extends React.Component {
 
     if (this.state.isReorderingThisColumn) {
       const DIR_SIGN = this.props.isRTL ? -1 : 1;
-      style.transform = `translateX(${this.state.displacement * DIR_SIGN}px) translateZ(0)`;
+      style.transform = `translateX(${
+        this.state.displacement * DIR_SIGN
+      }px) translateZ(0)`;
       style.zIndex = 1;
     }
 
@@ -234,28 +245,32 @@ class FixedDataTableCell extends React.Component {
         'public/fixedDataTableCell/highlighted': props.highlighted,
         'public/fixedDataTableCell/main': true,
         'public/fixedDataTableCell/hasReorderHandle': !!props.onColumnReorder,
-        'public/fixedDataTableCell/reordering': this.state.isReorderingThisColumn,
+        'public/fixedDataTableCell/reordering': this.state
+          .isReorderingThisColumn,
       }),
-      props.className,
+      props.className
     );
 
     var columnResizerComponent;
     if (props.onColumnResize) {
       var columnResizerStyle = {
-        height
+        height,
       };
       columnResizerComponent = (
         <div
           className={cx('fixedDataTableCellLayout/columnResizerContainer')}
           style={columnResizerStyle}
           onMouseDown={this._onColumnResizerMouseDown}
-          onTouchStart={this.props.touchEnabled ? this._onColumnResizerMouseDown : null}
+          onTouchStart={
+            this.props.touchEnabled ? this._onColumnResizerMouseDown : null
+          }
           onTouchEnd={this.props.touchEnabled ? this._suppressEvent : null}
-          onTouchMove={this.props.touchEnabled ? this._suppressEvent : null}>
+          onTouchMove={this.props.touchEnabled ? this._suppressEvent : null}
+        >
           <div
             className={joinClasses(
               cx('fixedDataTableCellLayout/columnResizerKnob'),
-              cx('public/fixedDataTableCell/columnResizerKnob'),
+              cx('public/fixedDataTableCell/columnResizerKnob')
             )}
             style={columnResizerStyle}
           />
@@ -264,7 +279,8 @@ class FixedDataTableCell extends React.Component {
     }
 
     var columnReorderComponent;
-    if (props.onColumnReorder) { //header row
+    if (props.onColumnReorder) {
+      //header row
       columnReorderComponent = (
         <FixedDataTableColumnReorderHandle
           columnKey={this.columnKey}
@@ -280,7 +296,7 @@ class FixedDataTableCell extends React.Component {
     var cellProps = {
       columnKey,
       height,
-      width
+      width,
     };
 
     if (props.rowIndex >= 0) {
@@ -328,7 +344,7 @@ class FixedDataTableCell extends React.Component {
       event.preventDefault();
       event.stopPropagation();
     }
-  }
+  };
 
   _onColumnReorderMouseDown = (/*object*/ event) => {
     this.props.onColumnReorder(
@@ -337,12 +353,12 @@ class FixedDataTableCell extends React.Component {
       this.props.left,
       event
     );
-  }
+  };
 
   _suppressEvent = (/*object*/ event) => {
     event.preventDefault();
     event.stopPropagation();
-  }
+  };
 }
 
 export default lifecycleCompatibilityPolyfill(FixedDataTableCell);

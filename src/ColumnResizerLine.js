@@ -72,10 +72,7 @@ class ColumnResizerLine extends React.PureComponent {
     /**
      * Column key for the column being resized.
      */
-    columnKey: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]),
+    columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     /**
      * Whether the resize handle should respond to touch events or not.
@@ -86,12 +83,12 @@ class ColumnResizerLine extends React.PureComponent {
      * Whether the line should render in RTL mode
      */
     isRTL: PropTypes.bool,
-  }
+  };
 
   state = /*object*/ {
     width: 0,
     cursorDelta: 0,
-  }
+  };
 
   componentDidUpdate() {
     if (this.props.initialEvent && !this._mouseMoveTracker.isDragging()) {
@@ -131,10 +128,12 @@ class ColumnResizerLine extends React.PureComponent {
       <div
         className={cx({
           'fixedDataTableColumnResizerLineLayout/main': true,
-          'fixedDataTableColumnResizerLineLayout/hiddenElem': !this.props.visible,
+          'fixedDataTableColumnResizerLineLayout/hiddenElem': !this.props
+            .visible,
           'public/fixedDataTableColumnResizerLine/main': true,
         })}
-        style={style}>
+        style={style}
+      >
         <div
           className={cx('fixedDataTableColumnResizerLineLayout/mouseArea')}
           style={{ height: this.props.height }}
@@ -148,23 +147,23 @@ class ColumnResizerLine extends React.PureComponent {
       deltaX = -deltaX;
     }
     var newWidth = this.state.cursorDelta + deltaX;
-    var newColumnWidth =
-      clamp(newWidth, this.props.minWidth, this.props.maxWidth);
+    var newColumnWidth = clamp(
+      newWidth,
+      this.props.minWidth,
+      this.props.maxWidth
+    );
 
     // Please note cursor delta is the different between the currently width
     // and the new width.
     this.setState({
       width: newColumnWidth,
-      cursorDelta: newWidth
+      cursorDelta: newWidth,
     });
-  }
+  };
 
   _onColumnResizeEnd = () => {
     this._mouseMoveTracker.releaseMouseMoves();
-    this.props.onColumnResizeEnd(
-      this.state.width,
-      this.props.columnKey
-    );
-  }
+    this.props.onColumnResizeEnd(this.state.width, this.props.columnKey);
+  };
 }
 export default ColumnResizerLine;

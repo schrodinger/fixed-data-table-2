@@ -42,10 +42,7 @@ class FixedDataTableBufferedRows extends React.Component {
     onRowTouchEnd: PropTypes.func,
     onRowTouchMove: PropTypes.func,
     rowClassNameGetter: PropTypes.func,
-    rowExpanded: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.func,
-    ]),
+    rowExpanded: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
     rowOffsets: PropTypes.object.isRequired,
     rowKeyGetter: PropTypes.func,
     rowSettings: PropTypes.shape({
@@ -62,7 +59,7 @@ class FixedDataTableBufferedRows extends React.Component {
     showScrollbarY: PropTypes.bool,
     width: PropTypes.number.isRequired,
     isRTL: PropTypes.bool,
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -84,12 +81,21 @@ class FixedDataTableBufferedRows extends React.Component {
   }
 
   render() /*object*/ {
-    let { offsetTop, rowOffsets, scrollTop, isScrolling, rowsToRender } = this.props;
+    let {
+      offsetTop,
+      rowOffsets,
+      scrollTop,
+      isScrolling,
+      rowsToRender,
+    } = this.props;
     rowsToRender = rowsToRender || [];
 
     if (isScrolling) {
       // allow static array to grow while scrolling
-      this._staticRowArray.length = Math.max(this._staticRowArray.length, rowsToRender.length);
+      this._staticRowArray.length = Math.max(
+        this._staticRowArray.length,
+        rowsToRender.length
+      );
     } else {
       // when scrolling is done, static array can shrink to fit the buffer
       this._staticRowArray.length = rowsToRender.length;
@@ -121,9 +127,12 @@ class FixedDataTableBufferedRows extends React.Component {
       let rowIndex = rowsToRender[i];
       // if the row doesn't exist in the buffer set, then take the previous one
       if (rowIndex === undefined) {
-        rowIndex = this._staticRowArray[i] && this._staticRowArray[i].props.index;
+        rowIndex =
+          this._staticRowArray[i] && this._staticRowArray[i].props.index;
       }
-      const rowOffsetTop = rowOffsets[rowIndex] - (Math.floor(scrollTop / bufferHeight) * bufferHeight);
+      const rowOffsetTop =
+        rowOffsets[rowIndex] -
+        Math.floor(scrollTop / bufferHeight) * bufferHeight;
 
       this._staticRowArray[i] = this.renderRow({
         rowIndex,
@@ -143,7 +152,7 @@ class FixedDataTableBufferedRows extends React.Component {
    * @prop {number} rowIndex
    * @prop {number} key
    * @prop {number} rowOffsetTop
-   * 
+   *
    * @param {RowProps} rowProps
    * @return {!Object}
    */
@@ -156,12 +165,17 @@ class FixedDataTableBufferedRows extends React.Component {
     // if row exists, then calculate row specific props
     if (!fake) {
       rowProps.height = this.props.rowSettings.rowHeightGetter(rowIndex);
-      rowProps.subRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
+      rowProps.subRowHeight = this.props.rowSettings.subRowHeightGetter(
+        rowIndex
+      );
       rowProps.offsetTop = rowOffsetTop;
       rowProps.key = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : key;
-      rowProps.attributes = props.rowSettings.rowAttributesGetter && props.rowSettings.rowAttributesGetter(rowIndex);
+      rowProps.attributes =
+        props.rowSettings.rowAttributesGetter &&
+        props.rowSettings.rowAttributesGetter(rowIndex);
 
-      const hasBottomBorder = (rowIndex === props.rowSettings.rowsCount - 1) && props.showLastRowBorder;
+      const hasBottomBorder =
+        rowIndex === props.rowSettings.rowsCount - 1 && props.showLastRowBorder;
       rowProps.className = joinClasses(
         rowClassNameGetter(rowIndex),
         cx('public/fixedDataTable/bodyRow'),
@@ -172,7 +186,11 @@ class FixedDataTableBufferedRows extends React.Component {
       );
     }
 
-    const visible = inRange(rowIndex, this.props.firstViewportRowIndex, this.props.endViewportRowIndex);
+    const visible = inRange(
+      rowIndex,
+      this.props.firstViewportRowIndex,
+      this.props.endViewportRowIndex
+    );
 
     return (
       <FixedDataTableRow

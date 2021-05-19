@@ -43,8 +43,9 @@ class IntegerBufferSet {
     this.getNewPositionForValue = this.getNewPositionForValue.bind(this);
     this.getValuePosition = this.getValuePosition.bind(this);
     this.getSize = this.getSize.bind(this);
-    this.replaceFurthestValuePosition =
-      this.replaceFurthestValuePosition.bind(this);
+    this.replaceFurthestValuePosition = this.replaceFurthestValuePosition.bind(
+      this
+    );
   }
 
   getSize() /*number*/ {
@@ -78,7 +79,7 @@ class IntegerBufferSet {
     invariant(
       this._valueToPositionMap[newValue] === undefined,
       "Shouldn't try to replace values with value already stored value in " +
-      "BufferSet"
+        'BufferSet'
     );
 
     this._cleanHeaps();
@@ -127,10 +128,14 @@ class IntegerBufferSet {
     // Here we make sure that there is no stale data on top of heaps.
     this._cleanHeap(this._smallValues);
     this._cleanHeap(this._largeValues);
-    var minHeapSize =
-      Math.min(this._smallValues.size(), this._largeValues.size());
-    var maxHeapSize =
-      Math.max(this._smallValues.size(), this._largeValues.size());
+    var minHeapSize = Math.min(
+      this._smallValues.size(),
+      this._largeValues.size()
+    );
+    var maxHeapSize = Math.max(
+      this._smallValues.size(),
+      this._largeValues.size()
+    );
     if (maxHeapSize > 10 * minHeapSize) {
       // There are many old values in one of heaps. We nned to get rid of them
       // to not use too avoid memory leaks
@@ -139,9 +144,10 @@ class IntegerBufferSet {
   }
 
   _recreateHeaps() {
-    var sourceHeap = this._smallValues.size() < this._largeValues.size() ?
-      this._smallValues :
-      this._largeValues;
+    var sourceHeap =
+      this._smallValues.size() < this._largeValues.size()
+        ? this._smallValues
+        : this._largeValues;
     var newSmallValues = new Heap(
       [], // Initial data in the heap
       this._smallerComparator
@@ -163,8 +169,10 @@ class IntegerBufferSet {
   }
 
   _cleanHeap(/*object*/ heap) {
-    while (!heap.empty() &&
-      this._valueToPositionMap[heap.peek().value] === undefined) {
+    while (
+      !heap.empty() &&
+      this._valueToPositionMap[heap.peek().value] === undefined
+    ) {
       heap.pop();
     }
   }
@@ -176,7 +184,6 @@ class IntegerBufferSet {
   _greaterComparator(/*object*/ lhs, /*object*/ rhs) /*boolean*/ {
     return lhs.value > rhs.value;
   }
-
 }
 
 export default IntegerBufferSet;

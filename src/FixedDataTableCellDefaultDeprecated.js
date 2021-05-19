@@ -35,7 +35,7 @@ import joinClasses from './vendor_upstream/core/joinClasses';
  *         height={height}
  *         className="my-class">
  *         Cell number: <span>{rowIndex}</span>
-*        </Cell>
+ *        </Cell>
  *     )}
  *     width={100}
  *   />
@@ -44,7 +44,6 @@ import joinClasses from './vendor_upstream/core/joinClasses';
  */
 class FixedDataTableCellDefault extends React.Component {
   static propTypes = {
-
     /**
      * Outer height of the cell.
      */
@@ -59,10 +58,7 @@ class FixedDataTableCellDefault extends React.Component {
      * Optional prop that if specified on the `Column` will be passed to the
      * cell. It can be used to uniquely identify which column is the cell is in.
      */
-    columnKey: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
+    columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     /**
      * Optional prop that represents the rows index in the table.
@@ -72,12 +68,21 @@ class FixedDataTableCellDefault extends React.Component {
      * Below that entry point the user is welcome to consume or
      * pass the prop through at their discretion.
      */
-    rowIndex: PropTypes.number
+    rowIndex: PropTypes.number,
   };
 
   render() {
     //Remove some props like columnKey and rowIndex so we don't pass it into the div
-    var {height, width, style, className, children, columnKey, rowIndex, ...props} = this.props;
+    var {
+      height,
+      width,
+      style,
+      className,
+      children,
+      columnKey,
+      rowIndex,
+      ...props
+    } = this.props;
 
     var innerStyle = {
       height,
@@ -91,19 +96,22 @@ class FixedDataTableCellDefault extends React.Component {
         className={joinClasses(
           cx('fixedDataTableCellLayout/wrap1'),
           cx('public/fixedDataTableCell/wrap1'),
-          className,
+          className
         )}
-        style={innerStyle}>
+        style={innerStyle}
+      >
         <div
           className={joinClasses(
             cx('fixedDataTableCellLayout/wrap2'),
-            cx('public/fixedDataTableCell/wrap2'),
-          )}>
+            cx('public/fixedDataTableCell/wrap2')
+          )}
+        >
           <div
             className={joinClasses(
               cx('fixedDataTableCellLayout/wrap3'),
-              cx('public/fixedDataTableCell/wrap3'),
-            )}>
+              cx('public/fixedDataTableCell/wrap3')
+            )}
+          >
             <div className={cx('public/fixedDataTableCell/cellContent')}>
               {children}
             </div>
