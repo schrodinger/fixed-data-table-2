@@ -312,9 +312,10 @@ blockquote > :last-child {
   outline: none;
   overflow: hidden;
   position: absolute;
-  -moz-user-select: none;
-   -ms-user-select: none;
-       user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 .ScrollbarLayout_mainVertical {
@@ -489,6 +490,12 @@ blockquote > :last-child {
   text-align: center;
 }
 
+.fixedDataTableCellLayout_wrap {
+  display: table-cell;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
 .fixedDataTableCellLayout_wrap1 {
   display: table;
 }
@@ -545,7 +552,8 @@ blockquote > :last-child {
  */
 
 .fixedDataTableCellGroupLayout_cellGroup {
-  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
   left: 0;
   overflow: hidden;
   position: absolute;
@@ -641,7 +649,8 @@ blockquote > :last-child {
 }
 
 .fixedDataTableRowLayout_fixedColumnsDivider {
-  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
   border-left-style: solid;
   border-left-width: 1px;
   left: 0;
@@ -761,13 +770,21 @@ blockquote > :last-child {
 .public_fixedDataTableCell_columnResizerKnob {
   background-color: #0284ff;
 }
-.public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_cellContent {
+
+.public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_wrap1 .public_fixedDataTableCell_cellContent {
   margin-left: 12px;
 }
+.public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_wrap.public_fixedDataTableCell_cellContent {
+  padding-left: 20px;
+}
 
-.fixedDataTable_isRTL .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_cellContent {
+.fixedDataTable_isRTL .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_wrap1 .public_fixedDataTableCell_cellContent {
   margin-left: auto;
   margin-right: 12px;
+}
+
+.fixedDataTable_isRTL .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_wrap.public_fixedDataTableCell_cellContent {
+  padding-right: 20px;
 }
 /**
  * Copyright Schrodinger, LLC
@@ -1715,4 +1732,4 @@ html[dir="rtl"] .exampleContents {
 }
 
 
-/*# sourceMappingURL=main-b08d3cea9b23dae65c92.css.map*/
+/*# sourceMappingURL=main-f2c6947660491fc231d5.css.map*/
