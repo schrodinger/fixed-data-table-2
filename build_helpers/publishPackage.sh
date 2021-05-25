@@ -86,8 +86,8 @@ if [ $BETA = true ]; then
   echo "Publishing beta tag"
   npm publish --tag beta
 else
-  echo "Publishing $next_version to npm"
-  npm publish --tag $next_version
+  echo "Publishing $next_ref to npm"
+  npm publish --tag $next_ref
 fi
 
 if [ $LATEST = true ]; then
