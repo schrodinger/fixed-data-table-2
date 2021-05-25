@@ -85,6 +85,12 @@
   text-align: center;
 }
 
+.fixedDataTableCellLayout_wrap {
+  display: table-cell;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
 .fixedDataTableCellLayout_wrap1 {
   display: table;
 }
@@ -477,13 +483,21 @@
 .public_fixedDataTableCell_columnResizerKnob {
   background-color: #0284ff;
 }
-.public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_cellContent {
+
+.public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_wrap1 .public_fixedDataTableCell_cellContent {
   margin-left: 12px;
 }
+.public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_wrap.public_fixedDataTableCell_cellContent {
+  padding-left: 20px;
+}
 
-.fixedDataTable_isRTL .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_cellContent {
+.fixedDataTable_isRTL .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_wrap1 .public_fixedDataTableCell_cellContent {
   margin-left: auto;
   margin-right: 12px;
+}
+
+.fixedDataTable_isRTL .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_wrap.public_fixedDataTableCell_cellContent {
+  padding-right: 20px;
 }
 /**
  * Column reorder goodies.
