@@ -477,6 +477,16 @@ class FixedDataTable extends React.Component {
      * Callback that returns an object of html attributes to add to the grid element
      */
     gridAttributesGetter: PropTypes.func,
+
+    // TODO (pradeep) Remove propType of rowAttributesGetter without losing documentation (moved to rowSettings)
+    /**
+     * Callback that returns an object of html attributes to add to each row element.
+     *
+     * ```
+     * function(rowIndex: number)
+     * ```
+     */
+    rowAttributesGetter: PropTypes.func,
   };
 
   static defaultProps = /*object*/ {
@@ -1200,6 +1210,7 @@ class FixedDataTable extends React.Component {
       onHorizontalScroll,
       onVerticalScroll,
       tableSize: { ownerHeight },
+      scrolling,
     } = this.props;
 
     const {
@@ -1208,6 +1219,7 @@ class FixedDataTable extends React.Component {
       scrollX: oldScrollX,
       scrollY: oldScrollY,
       tableSize: { ownerHeight: oldOwnerHeight },
+      scrolling: oldScrolling,
     } = prevProps;
 
     // check if scroll values have changed - we have an extra check on NaN because (NaN !== NaN)
@@ -1223,7 +1235,7 @@ class FixedDataTable extends React.Component {
     }
 
     // only call onScrollStart if scrolling wasn't on previously
-    if (!this.props.scrolling && onScrollStart) {
+    if (!oldScrolling && scrolling && onScrollStart) {
       onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex, oldEndRowIndex);
     }
 

@@ -105,16 +105,8 @@ class FixedDataTableCell extends React.Component {
       return true;
     }
 
-    const {
-      cell: oldCell,
-      isScrolling: oldIsScrolling,
-      ...oldProps
-    } = this.props;
-    const {
-      cell: newCell,
-      isScrolling: newIsScrolling,
-      ...newProps
-    } = nextProps;
+    const { cell: oldCell, ...oldProps } = this.props;
+    const { cell: newCell, ...newProps } = nextProps;
 
     if (!shallowEqual(oldProps, newProps)) {
       return true;
