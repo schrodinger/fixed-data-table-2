@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.2.0 
+ * FixedDataTable v2.0.0-beta.1 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -85,6 +85,12 @@
   text-align: center;
 }
 
+.fixedDataTableCellLayout_wrap {
+  display: table-cell;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
 .fixedDataTableCellLayout_wrap1 {
   display: table;
 }
@@ -112,22 +118,7 @@
 
 .fixedDataTableCellLayout_columnResizerContainer:hover {
   cursor: ew-resize;
-}
-
-.fixedDataTableCellLayout_columnResizerContainer:hover .fixedDataTableCellLayout_columnResizerKnob {
-  visibility: visible;
-}
-
-.fixedDataTableCellLayout_columnResizerKnob {
-  position: absolute;
-  right: 0px;
-  visibility: hidden;
-  width: 4px;
-}
-
-.fixedDataTable_isRTL .fixedDataTableCellLayout_columnResizerKnob {
-  left: 0px;
-  right: auto;
+  background-color: #0284ff;
 }
 /**
  * Copyright Schrodinger, LLC
@@ -165,10 +156,6 @@
   border-right-width: 0;
   border-left-style: solid;
   border-left-width: 1px;
-}
-
-.fixedDataTableColumnResizerLineLayout_hiddenElem {
-  display: none !important;
 }
 /**
  * Copyright Schrodinger, LLC
@@ -477,13 +464,34 @@
 .public_fixedDataTableCell_columnResizerKnob {
   background-color: #0284ff;
 }
-.public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_cellContent {
+
+.public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_wrap1 .public_fixedDataTableCell_cellContent {
   margin-left: 12px;
 }
+.public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_wrap.public_fixedDataTableCell_cellContent {
+  padding-left: 20px;
+}
 
-.fixedDataTable_isRTL .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_cellContent {
+.fixedDataTable_isRTL .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_wrap1 .public_fixedDataTableCell_cellContent {
   margin-left: auto;
   margin-right: 12px;
+}
+
+.fixedDataTable_isRTL .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_wrap.public_fixedDataTableCell_cellContent {
+  padding-right: 20px;
+}
+
+.public_fixedDataTableCell_reordering {
+  z-index: 2;
+}
+
+.public_fixedDataTableCell_resizeReorderCellContainer {
+  position: fixed;
+  background-color: #f6f7f8;
+  background-image: linear-gradient(#fff, #efefef);
+  border-color: #d3d3d3;
+  border-right-style: solid;
+  border-right-width: 1px;
 }
 /**
  * Column reorder goodies.
@@ -532,6 +540,8 @@
  */
 .public_fixedDataTableColumnResizerLine_main {
   border-color: #0284ff;
+  width: 1px;
+  position: fixed;
 }
 /**
  * Copyright Schrodinger, LLC

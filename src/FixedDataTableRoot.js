@@ -20,12 +20,12 @@ import { PluginContext } from './Context';
 import ResizeCell from './plugins/ResizeReorder/ResizeCell';
 import ReorderCell from './plugins/ResizeReorder/ReorderCell';
 
-const version = '1.2.0';
+const version = '2.0.0-beta.1';
 
 const Plugins = {
   PluginContext,
   ResizeCell,
-  ReorderCell
+  ReorderCell,
 };
 
 export { Cell, Column, ColumnGroup, DataCell, Table, Plugins, version };
