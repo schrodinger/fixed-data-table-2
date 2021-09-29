@@ -11,10 +11,18 @@
 
 'use strict';
 
-import { createStore } from 'redux'
+import { configureStore } from '@reduxjs/toolkit';
 
 import reducers from './reducers'
 
 export default {
-  get: () => createStore(reducers)
+  get: () => configureStore({
+    reducer: reducers,
+    devTools: __DEV__,
+    middleware: getDefaultMiddleware => getDefaultMiddleware({
+      // Todo(deshpsuy): Have to disable immutableCheck because state has circular JSON somewhere in it. Need to investigate it.
+      immutableCheck: false,
+      serializableCheck: false
+    })
+  })
 };
