@@ -60,7 +60,7 @@ class ResizerLine extends React.PureComponent {
         <div
           className={joinClasses(
             cx('fixedDataTableColumnResizerLineLayout/main'),
-            cx('public/fixedDataTableColumnResizerLine/main'),
+            cx('public/fixedDataTableColumnResizerLine/main')
           )}
           style={style}
         >

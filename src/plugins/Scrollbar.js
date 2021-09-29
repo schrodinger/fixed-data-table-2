@@ -48,11 +48,11 @@ class Scrollbar extends React.PureComponent {
     touchEnabled: PropTypes.bool,
     zIndex: PropTypes.number,
     verticalTop: PropTypes.number,
-    isRTL: PropTypes.bool
-  }
+    isRTL: PropTypes.bool,
+  };
 
   constructor(props) /*object*/ {
-    super(props)
+    super(props);
     this.state = this._calculateState(
       props.position || props.defaultPosition || 0,
       props.size,
@@ -92,11 +92,11 @@ class Scrollbar extends React.PureComponent {
     onScroll: emptyFunction,
     orientation: 'vertical',
     zIndex: 99,
-  }
+  };
 
-  _onRefFace = (ref) => this._faceRef = ref;
+  _onRefFace = (ref) => (this._faceRef = ref);
 
-  _onRefRoot = (ref) => this._rootRef = ref;
+  _onRefRoot = (ref) => (this._rootRef = ref);
 
   render() /*?object*/ {
     if (!this.state.scrollable) {
@@ -143,7 +143,13 @@ class Scrollbar extends React.PureComponent {
         top: 0,
         bottom: 0,
       };
-      FixedDataTableTranslateDOMPosition(faceStyle, position, 0, this._initialRender, this.props.isRTL);
+      FixedDataTableTranslateDOMPosition(
+        faceStyle,
+        position,
+        0,
+        this._initialRender,
+        this.props.isRTL
+      );
     } else {
       mainStyle = {
         top: verticalTop,
@@ -156,7 +162,13 @@ class Scrollbar extends React.PureComponent {
       faceStyle = {
         height: faceSize - FACE_MARGIN_2,
       };
-      FixedDataTableTranslateDOMPosition(faceStyle, 0, position, this._initialRender, this.props.isRTL);
+      FixedDataTableTranslateDOMPosition(
+        faceStyle,
+        0,
+        position,
+        this._initialRender,
+        this.props.isRTL
+      );
       faceStyle.left = 0;
       faceStyle.right = 0;
     }
@@ -180,7 +192,8 @@ class Scrollbar extends React.PureComponent {
         onTouchStart={this._onTouchStart}
         className={mainClassName}
         style={mainStyle}
-        ref={this._onRefRoot}>
+        ref={this._onRefRoot}
+      >
         <div
           ref={this._onRefFace}
           className={faceClassName}
@@ -201,11 +214,10 @@ class Scrollbar extends React.PureComponent {
       this.props.isRTL
     );
 
-    this._rootRef && this._rootRef.addEventListener(
-      'wheel',
-      this._wheelHandler.onWheel,
-      { passive: false }
-    );
+    this._rootRef &&
+      this._rootRef.addEventListener('wheel', this._wheelHandler.onWheel, {
+        passive: false,
+      });
     this._mouseMoveTracker = new DOMMouseMoveTracker(
       this._onMouseMove,
       this._onMouseMoveEnd,
@@ -213,19 +225,20 @@ class Scrollbar extends React.PureComponent {
       this.props.touchEnabled
     );
 
-    if (this.props.position !== undefined &&
-      this.state.position !== this.props.position) {
+    if (
+      this.props.position !== undefined &&
+      this.state.position !== this.props.position
+    ) {
       this._didScroll();
     }
     this._initialRender = false;
   }
 
   componentWillUnmount() {
-    this._rootRef && this._rootRef.removeEventListener(
-      'wheel',
-      this._wheelHandler.onWheel,
-      { passive: false }
-    );
+    this._rootRef &&
+      this._rootRef.removeEventListener('wheel', this._wheelHandler.onWheel, {
+        passive: false,
+      });
     this._nextState = null;
     this._mouseMoveTracker.releaseMouseMoves();
     if (_lastScrolledScrollbar === this) {
@@ -236,17 +249,17 @@ class Scrollbar extends React.PureComponent {
 
   scrollBy = (/*number*/ delta) => {
     this._onWheel(delta);
-  }
+  };
 
   _shouldHandleX = (/*number*/ delta) /*boolean*/ =>
-    this.props.orientation === 'horizontal' ?
-      this._shouldHandleChange(delta) :
-      false
+    this.props.orientation === 'horizontal'
+      ? this._shouldHandleChange(delta)
+      : false;
 
   _shouldHandleY = (/*number*/ delta) /*boolean*/ =>
-    this.props.orientation !== 'horizontal' ?
-      this._shouldHandleChange(delta) :
-      false;
+    this.props.orientation !== 'horizontal'
+      ? this._shouldHandleChange(delta)
+      : false;
 
   _shouldHandleChange = (/*number*/ delta) /*boolean*/ => {
     var nextState = this._calculateState(
@@ -256,7 +269,7 @@ class Scrollbar extends React.PureComponent {
       this.props.orientation
     );
     return nextState.position !== this.state.position;
-  }
+  };
 
   _calculateState = (
     /*number*/ position,
@@ -264,7 +277,6 @@ class Scrollbar extends React.PureComponent {
     /*number*/ contentSize,
     /*string*/ orientation
   ) /*object*/ => {
-
     const clampedSize = Math.max(1, size);
     if (contentSize <= clampedSize) {
       return UNSCROLLABLE_STATE;
@@ -299,9 +311,9 @@ class Scrollbar extends React.PureComponent {
       position = maxPosition;
     }
 
-    var isDragging = this._mouseMoveTracker ?
-      this._mouseMoveTracker.isDragging() :
-      false;
+    var isDragging = this._mouseMoveTracker
+      ? this._mouseMoveTracker.isDragging()
+      : false;
 
     // This function should only return flat values that can be compared quiclky
     // by `ReactComponentWithPureRenderMixin`.
@@ -318,15 +330,15 @@ class Scrollbar extends React.PureComponent {
     this._stateKey = stateKey;
     this._stateForKey = state;
     return state;
-  }
+  };
 
   _onWheelY = (/*number*/ deltaX, /*number*/ deltaY) => {
     this._onWheel(deltaY);
-  }
+  };
 
   _onWheelX = (/*number*/ deltaX, /*number*/ deltaY) => {
     this._onWheel(deltaX);
-  }
+  };
 
   _onWheel = (/*number*/ delta) => {
     var props = this.props;
@@ -341,7 +353,7 @@ class Scrollbar extends React.PureComponent {
         props.orientation
       )
     );
-  }
+  };
 
   _onMouseDown = (/*object*/ event) => {
     /** @type {object} */
@@ -351,16 +363,20 @@ class Scrollbar extends React.PureComponent {
       // Both `offsetX` and `layerX` are non-standard DOM property but they are
       // magically available for browsers somehow.
       var nativeEvent = event.nativeEvent;
-      var position = this.state.isHorizontal ?
-        nativeEvent.offsetX || nativeEvent.layerX || this.getTouchX(nativeEvent) :
-        nativeEvent.offsetY || nativeEvent.layerY || this.getTouchY(nativeEvent);
+      var position = this.state.isHorizontal
+        ? nativeEvent.offsetX ||
+          nativeEvent.layerX ||
+          this.getTouchX(nativeEvent)
+        : nativeEvent.offsetY ||
+          nativeEvent.layerY ||
+          this.getTouchY(nativeEvent);
 
       // MouseDown on the scroll-track directly, move the center of the
       // scroll-face to the mouse position.
       var props = this.props;
       position /= this.state.scale;
       nextState = this._calculateState(
-        position - (this.state.faceSize * 0.5 / this.state.scale),
+        position - (this.state.faceSize * 0.5) / this.state.scale,
         props.size,
         props.contentSize,
         props.orientation
@@ -375,28 +391,30 @@ class Scrollbar extends React.PureComponent {
     this._mouseMoveTracker.captureMouseMoves(event);
     // Focus the node so it may receive keyboard event.
     this._rootRef.focus();
-  }
+  };
 
   _onTouchCancel = (/*object*/ event) => {
     event.stopPropagation();
-  }
+  };
 
   _onTouchEnd = (/*object*/ event) => {
     event.stopPropagation();
-  }
+  };
 
   _onTouchMove = (/*object*/ event) => {
     event.stopPropagation();
-  }
+  };
 
   _onTouchStart = (/*object*/ event) => {
     event.stopPropagation();
     this._onMouseDown(event);
-  }
+  };
 
   _onMouseMove = (/*number*/ deltaX, /*number*/ deltaY) => {
     var props = this.props;
-    var delta = this.state.isHorizontal ? deltaX * (this.props.isRTL ? -1 : 1) : deltaY;
+    var delta = this.state.isHorizontal
+      ? deltaX * (this.props.isRTL ? -1 : 1)
+      : deltaY;
     delta /= this.state.scale;
 
     this._setNextState(
@@ -407,13 +425,13 @@ class Scrollbar extends React.PureComponent {
         props.orientation
       )
     );
-  }
+  };
 
   _onMouseMoveEnd = () => {
     this._nextState = null;
     this._mouseMoveTracker.releaseMouseMoves();
     this.setState({ isDragging: false });
-  }
+  };
 
   _onKeyDown = (/*object*/ event) => {
     var keyCode = event.keyCode;
@@ -489,25 +507,25 @@ class Scrollbar extends React.PureComponent {
     var props = this.props;
     this._setNextState(
       this._calculateState(
-        this.state.position + (distance * direction),
+        this.state.position + distance * direction,
         props.size,
         props.contentSize,
         props.orientation
       )
     );
-  }
+  };
 
   _onFocus = () => {
     this.setState({
       focused: true,
     });
-  }
+  };
 
   _onBlur = () => {
     this.setState({
       focused: false,
     });
-  }
+  };
 
   _blur = () => {
     var el = ReactDOM.findDOMNode(this);
@@ -521,15 +539,19 @@ class Scrollbar extends React.PureComponent {
     } catch (oops) {
       // pass
     }
-  }
+  };
 
   getTouchX = (/*object*/ e) => {
-    return Math.round(e.targetTouches[0].clientX - e.target.getBoundingClientRect().x);
-  }
+    return Math.round(
+      e.targetTouches[0].clientX - e.target.getBoundingClientRect().x
+    );
+  };
 
   getTouchY = (/*object*/ e) => {
-    return Math.round(e.targetTouches[0].clientY - e.target.getBoundingClientRect().y);
-  }
+    return Math.round(
+      e.targetTouches[0].clientY - e.target.getBoundingClientRect().y
+    );
+  };
 
   _setNextState = (/*object*/ nextState, /*?object*/ props) => {
     props = props || this.props;
@@ -543,8 +565,10 @@ class Scrollbar extends React.PureComponent {
     } else {
       // Scrolling is controlled. Don't update the state and let the owner
       // to update the scrollbar instead.
-      if (nextState.position !== undefined &&
-        nextState.position !== this.state.position) {
+      if (
+        nextState.position !== undefined &&
+        nextState.position !== this.state.position
+      ) {
         this.props.onScroll(nextState.position);
       }
       return;
@@ -554,11 +578,11 @@ class Scrollbar extends React.PureComponent {
       _lastScrolledScrollbar && _lastScrolledScrollbar._blur();
       _lastScrolledScrollbar = this;
     }
-  }
+  };
 
   _didScroll = () => {
     this.props.onScroll(this.state.position);
-  }
+  };
 }
 
 Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;

@@ -5,14 +5,14 @@
 var glob = require('glob');
 var path = require('path');
 var fs = require('fs');
+var rimraf = require('rimraf');
 var babel = require('@babel/core');
 var mkdirp = require('mkdirp');
 
 var internalPath = path.join(__dirname, '../internal');
 var sourcePath = path.join(__dirname, '../src');
-if (!fs.existsSync(internalPath)) {
-  fs.mkdirSync(internalPath);
-}
+rimraf.sync(internalPath); // remove older entries
+fs.mkdirSync(internalPath);
 
 var moduleRequireRegex = /require\((?:'|")([\w\.\/]+)(?:'|")\)/gm;
 var excludePathRegex = /^(react|lodash|redux|reselect)($|\/)/;

@@ -23,7 +23,6 @@ import PropTypes from 'prop-types';
 const BORDER_WIDTH = 1;
 
 class ReorderCell extends React.PureComponent {
-
   state = {
     isReordering: false,
     displacement: 0,
@@ -76,20 +75,25 @@ class ReorderCell extends React.PureComponent {
       cx({
         'public/fixedDataTableCell/resizeReorderCellContainer': true,
       }),
-      props.className,
+      props.className
     );
 
-    const reorderClasses = joinClasses(className, cx({
-      'public/fixedDataTableCell/hasReorderHandle': true,
-      'public/fixedDataTableCell/reordering': this.state.isReordering,
-    }));
+    const reorderClasses = joinClasses(
+      className,
+      cx({
+        'public/fixedDataTableCell/hasReorderHandle': true,
+        'public/fixedDataTableCell/reordering': this.state.isReordering,
+      })
+    );
 
     const DIR_SIGN = this.context.isRTL ? -1 : 1;
 
     let style = {
       height: props.height,
       width: props.width - BORDER_WIDTH,
-      transform: `translateX(${this.state.displacement * DIR_SIGN}px) translateZ(0)`,
+      transform: `translateX(${
+        this.state.displacement * DIR_SIGN
+      }px) translateZ(0)`,
     };
 
     if (this.context.isRTL) {
@@ -101,7 +105,10 @@ class ReorderCell extends React.PureComponent {
     let content;
     if (React.isValidElement(children)) {
       if (children.type === ResizeCell) {
-        content = React.cloneElement(children, { ...children.props, ...this.props });
+        content = React.cloneElement(children, {
+          ...children.props,
+          ...this.props,
+        });
       } else content = React.cloneElement(children, props);
     } else if (typeof children === 'function') {
       content = children(props);

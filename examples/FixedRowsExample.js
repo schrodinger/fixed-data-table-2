@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { DateCell, ImageCell, LinkCell, TextCell } from './helpers/cells';
@@ -21,9 +21,7 @@ class DataListWrapper {
   }
 
   getObjectAt(index) {
-    return this._data.getObjectAt(
-      this._indexMap[index]
-    );
+    return this._data.getObjectAt(this._indexMap[index]);
   }
 }
 
@@ -70,7 +68,8 @@ class FixedRowsExample extends React.Component {
     const headerHeight = 50;
     const topTableHeight = topDataList.getSize() * 50;
     const bottomTableHeight = bottomDataList.getSize() * 50;
-    const middleTableHeight = totalTableHeight - topTableHeight - bottomTableHeight - headerHeight;
+    const middleTableHeight =
+      totalTableHeight - topTableHeight - bottomTableHeight - headerHeight;
     return (
       <div>
         {this.renderTable(headerDataList, {
@@ -104,7 +103,7 @@ class FixedRowsExample extends React.Component {
     );
   }
 
-  renderTable(dataList, additionalProps={}) {
+  renderTable(dataList, additionalProps = {}) {
     return (
       <Table
         rowHeight={50}
@@ -199,7 +198,7 @@ class FixedRowsExample extends React.Component {
   onHorizontalScroll = (scrollLeft) => {
     this.setState({ scrollLeft });
     return false;
-  }
+  };
 }
 
 export default FixedRowsExample;

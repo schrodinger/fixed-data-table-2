@@ -10,7 +10,7 @@
  * @typechecks
  */
 
-"use strict";
+'use strict';
 
 // If you change these, you'll need to restart the dev server for it to take effect.
 var CSS_VARS = {

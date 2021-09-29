@@ -34,8 +34,7 @@ import roughHeights, { ScrollbarState } from './roughHeights';
  */
 function scrollbarsVisible(roughHeights, scrollContentHeight, scrollFlags) {
   const { overflowY, showScrollbarY } = scrollFlags;
-  const allowScrollbarY = overflowY !== 'hidden' &&
-    showScrollbarY !== false;
+  const allowScrollbarY = overflowY !== 'hidden' && showScrollbarY !== false;
 
   const { minAvailableHeight, maxAvailableHeight, scrollStateX } = roughHeights;
   let scrollEnabledY = false;
@@ -61,11 +60,14 @@ function scrollbarsVisible(roughHeights, scrollContentHeight, scrollFlags) {
     availableHeight,
     scrollEnabledX,
     scrollEnabledY,
-  }
+  };
 }
 
-export default shallowEqualSelector([
-  roughHeights,
-  state => state.scrollContentHeight,
-  state => state.scrollFlags,
-], scrollbarsVisible);
+export default shallowEqualSelector(
+  [
+    roughHeights,
+    (state) => state.scrollContentHeight,
+    (state) => state.scrollFlags,
+  ],
+  scrollbarsVisible
+);

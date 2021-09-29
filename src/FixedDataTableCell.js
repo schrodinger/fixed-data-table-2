@@ -42,10 +42,7 @@ class FixedDataTableCell extends React.Component {
       PropTypes.func,
     ]),
 
-    columnKey: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
+    columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     /**
      * The row index that will be passed to `cellRenderer` to render.
@@ -149,8 +146,8 @@ class FixedDataTableCell extends React.Component {
       return true;
     }
 
-    const { cell: oldCell, isScrolling: oldIsScrolling, ...oldProps } = this.props;
-    const { cell: newCell, isScrolling: newIsScrolling, ...newProps } = nextProps;
+    const { cell: oldCell, ...oldProps } = this.props;
+    const { cell: newCell, ...newProps } = nextProps;
 
     if (!shallowEqual(oldProps, newProps)) {
       return true;
@@ -220,23 +217,24 @@ class FixedDataTableCell extends React.Component {
     }
 
     var content;
-    if (this.props.isHeader && (this.props.onColumnResizeEnd || this.props.onColumnReorderEnd)) {
+    if (
+      this.props.isHeader &&
+      (this.props.onColumnResizeEnd || this.props.onColumnReorderEnd)
+    ) {
       // NOTE: Use plugins manually for backward compatibility. Will be removed in future release.
       if (this.props.onColumnResizeEnd && this.props.onColumnReorderEnd) {
         content = (
           <ReorderCell
             {...cellProps}
-            onColumnReorderStart={(/*string*/columnKey) => {
+            onColumnReorderStart={(/*string*/ columnKey) => {
               this.props.toggleCellsRecycling(false, columnKey);
             }}
-            onColumnReorderEnd={(/*object*/val) => {
+            onColumnReorderEnd={(/*object*/ val) => {
               this.props.toggleCellsRecycling(true);
               this.props.onColumnReorderEnd(val);
             }}
           >
-            <ResizeCell
-              onColumnResizeEnd={this.props.onColumnResizeEnd}
-            >
+            <ResizeCell onColumnResizeEnd={this.props.onColumnResizeEnd}>
               {props.cell}
             </ResizeCell>
           </ReorderCell>
@@ -245,13 +243,14 @@ class FixedDataTableCell extends React.Component {
         content = (
           <ReorderCell
             {...cellProps}
-            onColumnReorderStart={(/*string*/columnKey) => {
+            onColumnReorderStart={(/*string*/ columnKey) => {
               this.props.toggleCellsRecycling(false, columnKey);
             }}
-            onColumnReorderEnd={(/*object*/val) => {
+            onColumnReorderEnd={(/*object*/ val) => {
               this.props.toggleCellsRecycling(true);
               this.props.onColumnReorderEnd(val);
-            }}>
+            }}
+          >
             {props.cell}
           </ReorderCell>
         );
@@ -259,12 +258,13 @@ class FixedDataTableCell extends React.Component {
         cellProps = {
           ...cellProps,
           minWidth: this.props.minWidth,
-          maxWidth: this.props.maxWidth
+          maxWidth: this.props.maxWidth,
         };
         content = (
           <ResizeCell
             {...cellProps}
-            onColumnResizeEnd={this.props.onColumnResizeEnd}>
+            onColumnResizeEnd={this.props.onColumnResizeEnd}
+          >
             {props.cell}
           </ResizeCell>
         );

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var React = require('react');
 var Constants = require('./Constants');
@@ -15,7 +15,7 @@ class SideBar extends React.Component {
   }
 
   _renderSections(pages) {
-    return Object.keys(pages).map(pageKey => {
+    return Object.keys(pages).map((pageKey) => {
       var page = pages[pageKey];
       if (typeof page !== 'object') {
         return null;
@@ -28,17 +28,12 @@ class SideBar extends React.Component {
         ];
       }
 
-      return this._renderLink(
-        page.title,
-        page.location
-      );
+      return this._renderLink(page.title, page.location);
     });
   }
 
   _renderGroupTitle(title) {
-    return (
-      <h4 className="groupTitle">{title}</h4>
-    );
+    return <h4 className="groupTitle">{title}</h4>;
   }
 
   _renderLink(linkName, linkUrl) {
@@ -57,6 +52,6 @@ class SideBar extends React.Component {
       </h2>
     );
   }
-};
+}
 
 module.exports = SideBar;

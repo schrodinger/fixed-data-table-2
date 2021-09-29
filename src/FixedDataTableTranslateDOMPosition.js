@@ -13,7 +13,13 @@
 import BrowserSupportCore from './vendor_upstream/dom/BrowserSupportCore';
 import translateDOMPositionXY from './vendor_upstream/dom/translateDOMPositionXY';
 
-function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*number*/ y, /*boolean*/ initialRender = false, /*boolean*/ isRTL = false) {
+function FixedDataTableTranslateDOMPosition(
+  /*object*/ style,
+  /*number*/ x,
+  /*number*/ y,
+  /*boolean*/ initialRender = false,
+  /*boolean*/ isRTL = false
+) {
   if (style.display === 'none') {
     return;
   }
@@ -22,7 +28,7 @@ function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*nu
     style.top = y + 'px';
   } else {
     if (BrowserSupportCore.hasCSSTransforms()) {
-      x *= (isRTL ? -1 : 1);
+      x *= isRTL ? -1 : 1;
     }
 
     translateDOMPositionXY(style, x, y);
@@ -32,7 +38,6 @@ function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*nu
     style.right = style.left;
     style.left = 'auto';
   }
-
 }
 
 export default FixedDataTableTranslateDOMPosition;

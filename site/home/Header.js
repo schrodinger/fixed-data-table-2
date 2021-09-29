@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -47,16 +47,19 @@ class Header extends React.Component {
       fixed: this.offsetWidth <= FIXED_THRESHOLD,
     });
     this.forceUpdate();
-  }
+  };
 
   handleScroll = (event) => {
     var scrollPos = window.scrollY;
     scrollPos = scrollPos < this.offsetHeight ? scrollPos : this.offsetHeight;
     this.setState({ scroll: Math.max(scrollPos, 0) });
-  }
+  };
 
   _getWindowWidth() {
-    return Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    return Math.max(
+      document.documentElement.clientWidth,
+      window.innerWidth || 0
+    );
   }
 
   _renderHero() {
@@ -75,7 +78,7 @@ class Header extends React.Component {
   }
 
   render() {
-    var coverHeight  = this.offsetHeight - this.state.scroll;
+    var coverHeight = this.offsetHeight - this.state.scroll;
     var topClip = coverHeight < 0 ? 0 : coverHeight;
     topClip = coverHeight > HEADER_HEIGHT ? HEADER_HEIGHT : coverHeight;
 
@@ -92,28 +95,37 @@ class Header extends React.Component {
       <div className="header">
         <div
           className={miniHeaderClasses}
-          style={this.state.fixed ? EMPTY_OBJECT : clipStyles}>
+          style={this.state.fixed ? EMPTY_OBJECT : clipStyles}
+        >
           <div className="miniHeaderContents">
             <a href="./" target="_self" className="miniLogo" />
-            <a href={DOCS_DEFAULT_LOCATION} target="_self">Docs</a>
-            <a href={EXAMPLES_DEFAULT_LOCATION} target="_self">Examples</a>
+            <a href={DOCS_DEFAULT_LOCATION} target="_self">
+              Docs
+            </a>
+            <a href={EXAMPLES_DEFAULT_LOCATION} target="_self">
+              Examples
+            </a>
             <a href={GITHUB_URL}>Github</a>
           </div>
         </div>
         <div className="cover">
           {this.state.renderHero && this._renderHero()}
           <div className="logo">
-            <div className="title">
-              FixedDataTable
-            </div>
+            <div className="title">FixedDataTable</div>
             <div className="subtitle">
               A fast and flexible lazily rendered table for React.js
             </div>
-            <a href={GITHUB_URL} className="button">View on GitHub</a>
+            <a href={GITHUB_URL} className="button">
+              View on GitHub
+            </a>
             <div className="links">
-              <a href={DOCS_DEFAULT_LOCATION} target="_self">Docs</a>
+              <a href={DOCS_DEFAULT_LOCATION} target="_self">
+                Docs
+              </a>
               &bull;
-              <a href={EXAMPLES_DEFAULT_LOCATION} target="_self">Examples</a>
+              <a href={EXAMPLES_DEFAULT_LOCATION} target="_self">
+                Examples
+              </a>
             </div>
           </div>
         </div>

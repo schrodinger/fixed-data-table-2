@@ -23,7 +23,6 @@ const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
 
 class ReorderHandle extends React.PureComponent {
-
   state = {
     displacement: 0,
     isReordering: false,
@@ -60,7 +59,6 @@ class ReorderHandle extends React.PureComponent {
   originalLeft = 0;
 
   render() {
-
     const style = {
       height: this.props.height,
     };
@@ -106,7 +104,9 @@ class ReorderHandle extends React.PureComponent {
     this.originalLeft = this.props.left;
     this.initializeDOMMouseMoveTracker(event);
     this.setState({ displacement: 0, isReordering: true });
-    this.frameId = requestAnimationFramePolyfill(this.updateDisplacementPeriodically);
+    this.frameId = requestAnimationFramePolyfill(
+      this.updateDisplacementPeriodically
+    );
   };
 
   /**
@@ -134,7 +134,7 @@ class ReorderHandle extends React.PureComponent {
       this.onMouseMove,
       this.onMouseUp,
       document.body,
-      this.props.touchEnabled,
+      this.props.touchEnabled
     );
     this.mouseMoveTracker.captureMouseMoves(event);
   };
@@ -142,7 +142,9 @@ class ReorderHandle extends React.PureComponent {
   updateDisplacementPeriodically = () => {
     /* NOTE: We need to use requestAnimationFrame because whenever column reaches the end of table (scroll width is left),
      we want to update the scrollX which can't be updated if we uer onMouseMove*/
-    this.frameId = requestAnimationFramePolyfill(this.updateDisplacementPeriodically);
+    this.frameId = requestAnimationFramePolyfill(
+      this.updateDisplacementPeriodically
+    );
     this.updateDisplacementWithScroll();
   };
 
@@ -209,7 +211,9 @@ class ReorderHandle extends React.PureComponent {
     let columnBefore = cellGroupColumnWidths.keys[columnIndex - 1];
     let columnAfter = cellGroupColumnWidths.keys[columnIndex + 1];
 
-    let localDisplacement = this.getBoundedDeltaX(this.cursorDeltaX + this.context.scrollX - this.scrollStart);
+    let localDisplacement = this.getBoundedDeltaX(
+      this.cursorDeltaX + this.context.scrollX - this.scrollStart
+    );
     if (this.isColumnMovedToRight(localDisplacement)) {
       for (
         let i = columnIndex + 1, j = cellGroupColumnWidths.widths.length;
@@ -274,7 +278,8 @@ ReorderHandle.propTypes = {
   scrollToX: PropTypes.func,
   onColumnReorderEndCallback: PropTypes.func.isRequired,
   getCellGroupWidth: PropTypes.func.isRequired,
-  columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
   onColumnReorderStart: PropTypes.func.isRequired,
   translateCell: PropTypes.func.isRequired,
 };

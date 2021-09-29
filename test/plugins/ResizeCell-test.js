@@ -19,9 +19,7 @@ class TextCell extends React.PureComponent {
   render() {
     const { data, rowIndex, columnKey, ...props } = this.props;
     return (
-      <DataCell {...props}>
-        {data.getObjectAt(rowIndex)[columnKey]}
-      </DataCell>
+      <DataCell {...props}>{data.getObjectAt(rowIndex)[columnKey]}</DataCell>
     );
   }
 }
@@ -63,7 +61,7 @@ class ResizeCellTest extends React.Component {
         {...this.props}
       >
         <Column
-          columnKey='firstName'
+          columnKey="firstName"
           header={
             <Plugins.ResizeCell
               onColumnResizeEnd={this._onColumnResizeEndCallback}
@@ -76,7 +74,7 @@ class ResizeCellTest extends React.Component {
           width={columnWidths.firstName}
         />
         <Column
-          columnKey='lastName'
+          columnKey="lastName"
           header={
             <Plugins.ResizeCell
               minWidth={70}
@@ -90,7 +88,7 @@ class ResizeCellTest extends React.Component {
           width={columnWidths.lastName}
         />
         <Column
-          columnKey='companyName'
+          columnKey="companyName"
           header={
             <Plugins.ResizeCell
               onColumnResizeEnd={this._onColumnResizeEndCallback}
@@ -102,7 +100,7 @@ class ResizeCellTest extends React.Component {
           width={columnWidths.companyName}
         />
         <Column
-          columnKey='sentence'
+          columnKey="sentence"
           header={
             <Plugins.ResizeCell
               onColumnResizeEnd={this._onColumnResizeEndCallback}
@@ -145,7 +143,10 @@ describe('ResizeCell', () => {
     act(() => {
       container = document.createElement('div');
       document.body.appendChild(container);
-      renderedTree = ReactDOM.render(<ResizeCellTest {...optionalProps} />, container);
+      renderedTree = ReactDOM.render(
+        <ResizeCellTest {...optionalProps} />,
+        container
+      );
     });
     return scryRenderedComponentsWithType(renderedTree, ResizeCell);
   };
@@ -159,7 +160,7 @@ describe('ResizeCell', () => {
   });
 
   describe('resizing', () => {
-    it('should be equal to new width  after reordering', function() {
+    it('should be equal to new width  after reordering', function () {
       const resizeCells = renderTable();
       const cell = resizeCells[0];
       const resizerKnob = findRenderedComponentWithType(cell, ResizerKnob);
@@ -172,7 +173,10 @@ describe('ResizeCell', () => {
       resizerKnob.onMouseMove(10);
       resizerKnob.onMouseUp();
 
-      const newResizeCells = scryRenderedComponentsWithType(renderedTree, ResizeCell);
+      const newResizeCells = scryRenderedComponentsWithType(
+        renderedTree,
+        ResizeCell
+      );
       const expectedWidth = 250;
       const actualWidth = newResizeCells[0].props.width;
       expect(actualWidth, 'Unexpected width after resizing').eql(expectedWidth);

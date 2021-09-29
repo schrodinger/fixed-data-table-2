@@ -39,7 +39,7 @@ function getClassName(className) {
 function cx(classNames) {
   var classNamesArray;
   if (typeof classNames == 'object') {
-    classNamesArray = Object.keys(classNames).filter(function(className) {
+    classNamesArray = Object.keys(classNames).filter(function (className) {
       return classNames[className];
     });
   } else {

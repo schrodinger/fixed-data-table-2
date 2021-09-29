@@ -35,18 +35,13 @@ const columnWidths = {
   zipCode: 240,
 };
 
-const fixedColumns = [
-  'firstName',
-  'lastName',
-];
+const fixedColumns = ['firstName', 'lastName'];
 
 class TextCell extends React.PureComponent {
   render() {
     const { data, rowIndex, columnKey, ...props } = this.props;
     return (
-      <DataCell {...props}>
-        {data.getObjectAt(rowIndex)[columnKey]}
-      </DataCell>
+      <DataCell {...props}>{data.getObjectAt(rowIndex)[columnKey]}</DataCell>
     );
   }
 }
@@ -113,7 +108,7 @@ class ReorderCellTest extends React.Component {
         height={500}
         {...this.props}
       >
-        {this.state.columnOrder.map(function(columnKey, i) {
+        {this.state.columnOrder.map(function (columnKey, i) {
           return (
             <Column
               allowCellsRecycling={_.get(recycling, columnKey, true)}
@@ -165,7 +160,10 @@ describe('ReorderCell', () => {
     act(() => {
       container = document.createElement('div');
       document.body.appendChild(container);
-      renderedTree = ReactDOM.render(<ReorderCellTest {...optionalProps} />, container);
+      renderedTree = ReactDOM.render(
+        <ReorderCellTest {...optionalProps} />,
+        container
+      );
     });
     return scryRenderedComponentsWithType(renderedTree, ReorderCell);
   };
@@ -179,7 +177,7 @@ describe('ReorderCell', () => {
   });
 
   describe('reordering', () => {
-    it('should be equal to new order after reordering', function() {
+    it('should be equal to new order after reordering', function () {
       const reorderCells = renderTable();
       const cell = reorderCells[0];
       const reorderHandle = findRenderedComponentWithType(cell, ReorderHandle);
@@ -191,12 +189,23 @@ describe('ReorderCell', () => {
       reorderDiv.dispatchEvent(clickEvent);
       const nextCellWidth = 150;
       // Reordering cell should cross more than half of the next cell for swapping order
-      reorderHandle.onMouseMove((nextCellWidth / 2) + 1);
+      reorderHandle.onMouseMove(nextCellWidth / 2 + 1);
       reorderHandle.onMouseUp();
-      const newOrderCells = scryRenderedComponentsWithType(renderedTree, ReorderCell);
-      const expectedOrder = ['Last Name', 'First Name', 'City', 'Street', 'Zip Code'];
-      const actualOrder = newOrderCells.map(cell => cell.props.children);
-      expect(actualOrder, 'Unexpected order after reordering').to.eql(expectedOrder);
+      const newOrderCells = scryRenderedComponentsWithType(
+        renderedTree,
+        ReorderCell
+      );
+      const expectedOrder = [
+        'Last Name',
+        'First Name',
+        'City',
+        'Street',
+        'Zip Code',
+      ];
+      const actualOrder = newOrderCells.map((cell) => cell.props.children);
+      expect(actualOrder, 'Unexpected order after reordering').to.eql(
+        expectedOrder
+      );
     });
   });
 });

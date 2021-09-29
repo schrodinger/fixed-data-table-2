@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 // Require common FixedDataTable CSS.
 require('fixed-data-table-2/css/layout/ScrollbarLayout.css');
@@ -26,31 +26,55 @@ var Constants = require('../Constants');
 var ExamplePages = Constants.ExamplePages;
 
 var EXAMPLE_COMPONENTS = {
-  [ExamplePages.OBJECT_DATA_EXAMPLE.location]: require('../../examples/ObjectDataExample'),
-  [ExamplePages.RESIZE_EXAMPLE.location]: require('../../examples/ResizeExample'),
-  [ExamplePages.REORDER_EXAMPLE.location]: require('../../examples/ReorderExample'),
-  [ExamplePages.COLUMN_GROUPS_RESIZE_REORDER_EXAMPLE.location]: require('../../examples/ColumnGroupsResizeReorderExample'),
-  [ExamplePages.HIDE_COLUMN_EXAMPLE.location]: require('../../examples/HideColumnExample'),
-  [ExamplePages.SCROLL_TO_ROW_EXAMPLE.location]: require('../../examples/ScrollToRowExample'),
-  [ExamplePages.SCROLL_TO_COLUMN_EXAMPLE.location]: require('../../examples/ScrollToColumnExample'),
-  [ExamplePages.TOUCH_SCROLL_EXAMPLE.location]: require('../../examples/TouchScrollExample'),
-  [ExamplePages.EXPANDED_EXAMPLE.location]: require('../../examples/ExpandedExample'),
-  [ExamplePages.FLEXGROW_EXAMPLE.location]: require('../../examples/FlexGrowExample'),
-  [ExamplePages.COLUMN_GROUPS_EXAMPLE.location]: require('../../examples/ColumnGroupsExample'),
-  [ExamplePages.INFINITE_SCROLL_EXAMPLE.location]: require('../../examples/InfiniteScrollExample'),
-  [ExamplePages.FILTER_EXAMPLE.location]: require('../../examples/FilterExample'),
+  [ExamplePages.OBJECT_DATA_EXAMPLE
+    .location]: require('../../examples/ObjectDataExample'),
+  [ExamplePages.RESIZE_EXAMPLE
+    .location]: require('../../examples/ResizeExample'),
+  [ExamplePages.REORDER_EXAMPLE
+    .location]: require('../../examples/ReorderExample'),
+  [ExamplePages.COLUMN_GROUPS_RESIZE_REORDER_EXAMPLE
+    .location]: require('../../examples/ColumnGroupsResizeReorderExample'),
+  [ExamplePages.HIDE_COLUMN_EXAMPLE
+    .location]: require('../../examples/HideColumnExample'),
+  [ExamplePages.SCROLL_TO_ROW_EXAMPLE
+    .location]: require('../../examples/ScrollToRowExample'),
+  [ExamplePages.SCROLL_TO_COLUMN_EXAMPLE
+    .location]: require('../../examples/ScrollToColumnExample'),
+  [ExamplePages.TOUCH_SCROLL_EXAMPLE
+    .location]: require('../../examples/TouchScrollExample'),
+  [ExamplePages.EXPANDED_EXAMPLE
+    .location]: require('../../examples/ExpandedExample'),
+  [ExamplePages.FLEXGROW_EXAMPLE
+    .location]: require('../../examples/FlexGrowExample'),
+  [ExamplePages.COLUMN_GROUPS_EXAMPLE
+    .location]: require('../../examples/ColumnGroupsExample'),
+  [ExamplePages.INFINITE_SCROLL_EXAMPLE
+    .location]: require('../../examples/InfiniteScrollExample'),
+  [ExamplePages.FILTER_EXAMPLE
+    .location]: require('../../examples/FilterExample'),
   [ExamplePages.SORT_EXAMPLE.location]: require('../../examples/SortExample'),
-  [ExamplePages.RESPONSIVE_EXAMPLE.location]: require('../../examples/ResponsiveExample'),
-  [ExamplePages.STYLING_EXAMPLE.location]: require('../../examples/StylingExample'),
-  [ExamplePages.TOOLTIP_EXAMPLE.location]: require('../../examples/TooltipExample'),
-  [ExamplePages.FOOTER_EXAMPLE.location]: require('../../examples/FooterExample'),
-  [ExamplePages.MAX_HEIGHT_EXAMPLE.location]: require('../../examples/MaxHeightExample'),
-  [ExamplePages.OWNER_HEIGHT_EXAMPLE.location]: require('../../examples/OwnerHeightExample'),
-  [ExamplePages.LONG_CLICK_EXAMPLE.location]: require('../../examples/LongClickExample'),
-  [ExamplePages.CONTEXT_EXAMPLE.location]: require('../../examples/ContextExample'),
-  [ExamplePages.FIXED_RIGHT_COLUMNS_EXAMPLE.location]: require('../../examples/FixedRightColumnsExample'),
-  [ExamplePages.FIXED_ROWS_EXAMPLE.location]: require('../../examples/FixedRowsExample'),
-  [ExamplePages.AUTO_SCROLL_EXAMPLE.location]: require('../../examples/AutoScrollExample'),
+  [ExamplePages.RESPONSIVE_EXAMPLE
+    .location]: require('../../examples/ResponsiveExample'),
+  [ExamplePages.STYLING_EXAMPLE
+    .location]: require('../../examples/StylingExample'),
+  [ExamplePages.TOOLTIP_EXAMPLE
+    .location]: require('../../examples/TooltipExample'),
+  [ExamplePages.FOOTER_EXAMPLE
+    .location]: require('../../examples/FooterExample'),
+  [ExamplePages.MAX_HEIGHT_EXAMPLE
+    .location]: require('../../examples/MaxHeightExample'),
+  [ExamplePages.OWNER_HEIGHT_EXAMPLE
+    .location]: require('../../examples/OwnerHeightExample'),
+  [ExamplePages.LONG_CLICK_EXAMPLE
+    .location]: require('../../examples/LongClickExample'),
+  [ExamplePages.CONTEXT_EXAMPLE
+    .location]: require('../../examples/ContextExample'),
+  [ExamplePages.FIXED_RIGHT_COLUMNS_EXAMPLE
+    .location]: require('../../examples/FixedRightColumnsExample'),
+  [ExamplePages.FIXED_ROWS_EXAMPLE
+    .location]: require('../../examples/FixedRowsExample'),
+  [ExamplePages.AUTO_SCROLL_EXAMPLE
+    .location]: require('../../examples/AutoScrollExample'),
 };
 
 class ExamplesPage extends React.Component {
@@ -58,7 +82,7 @@ class ExamplesPage extends React.Component {
     super(props);
 
     this.state = {
-      renderPage: false
+      renderPage: false,
     };
   }
 
@@ -75,10 +99,7 @@ class ExamplesPage extends React.Component {
     var Example = EXAMPLE_COMPONENTS[this.props.page.location].default;
 
     return (
-      <Example
-        height={this.state.tableHeight}
-        width={this.state.tableWidth}
-      />
+      <Example height={this.state.tableHeight} width={this.state.tableWidth} />
     );
   }
 

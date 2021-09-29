@@ -1,6 +1,7 @@
-"use strict";
+'use strict';
 
-var FakeObjectDataListStore = require('../../examples/helpers/FakeObjectDataListStore').default;
+var FakeObjectDataListStore = require('../../examples/helpers/FakeObjectDataListStore')
+  .default;
 var FixedDataTable = require('fixed-data-table-2');
 var React = require('react');
 var Constants = require('../Constants');
@@ -24,10 +25,8 @@ require('fixed-data-table-2/css/style/fixedDataTableRow.css');
 require('fixed-data-table-2/css/style/Scrollbar.css');
 
 var dataList = new FakeObjectDataListStore();
-var FakeTextCell = ({rowIndex, field, ...props}) => (
-  <Cell {...props}>
-    {dataList.getObjectAt(rowIndex)[field].toString()}
-  </Cell>
+var FakeTextCell = ({ rowIndex, field, ...props }) => (
+  <Cell {...props}>{dataList.getObjectAt(rowIndex)[field].toString()}</Cell>
 );
 
 class HeroTable extends React.Component {
@@ -42,7 +41,8 @@ class HeroTable extends React.Component {
         headerHeight={50}
         rowsCount={dataList.getSize()}
         width={this.props.tableWidth}
-        height={this.props.tableHeight}>
+        height={this.props.tableHeight}
+      >
         <Column
           flexGrow={1}
           fixed={true}

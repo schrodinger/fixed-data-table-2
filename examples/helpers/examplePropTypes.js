@@ -1,4 +1,3 @@
-
 /**
  * Data type validator for the paging data store
  *
@@ -12,15 +11,21 @@
 function CtxtDataListStore(props, propName, componentName) {
   const dataObj = props[propName];
   if (dataObj.setCallback === undefined) {
-    return new Error(`${componentName} requires that ${propName} has a setCallback() function`);
+    return new Error(
+      `${componentName} requires that ${propName} has a setCallback() function`
+    );
   }
 
   if (dataObj.getObjectAt === undefined) {
-    return new Error(`${componentName} requires that ${propName} has a getObjectAt() function that retrieves a row`);
+    return new Error(
+      `${componentName} requires that ${propName} has a getObjectAt() function that retrieves a row`
+    );
   }
 
   if (dataObj.getSize === undefined) {
-    return new Error(`${componentName} requires that ${propName} has a getSize() function that returns the number of rows`);
+    return new Error(
+      `${componentName} requires that ${propName} has a getSize() function that returns the number of rows`
+    );
   }
 }
 
@@ -34,8 +39,10 @@ function CtxtDataListStore(props, propName, componentName) {
 function FilterObject(props, propName, componentName) {
   const dataObj = props[propName];
 
-  if (typeof (dataObj) !== 'object') {
-    return new Error(`${componentName} requires that ${propName} is an object that can be used for filtering. You have provided a: ${typeof (dataObj)}`);
+  if (typeof dataObj !== 'object') {
+    return new Error(
+      `${componentName} requires that ${propName} is an object that can be used for filtering. You have provided a: ${typeof dataObj}`
+    );
   }
 
   if (Object.keys(dataObj).length === 0) {
@@ -45,5 +52,5 @@ function FilterObject(props, propName, componentName) {
 
 export default {
   CtxtDataListStore,
-  FilterObject
+  FilterObject,
 };

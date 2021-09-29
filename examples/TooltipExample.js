@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, TooltipCell } from './helpers/cells';
@@ -21,7 +21,7 @@ class TooltipExample extends React.Component {
   }
 
   render() {
-    const {dataList} = this.state;
+    const { dataList } = this.state;
     return (
       <div>
         <Table
@@ -30,7 +30,8 @@ class TooltipExample extends React.Component {
           rowsCount={dataList.getSize()}
           width={1000}
           height={500}
-          {...this.props}>
+          {...this.props}
+        >
           <Column
             columnKey="avatar"
             cell={<ImageCell data={dataList} />}

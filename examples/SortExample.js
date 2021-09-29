@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
@@ -26,7 +26,7 @@ class SortHeaderCell extends React.Component {
   }
 
   render() {
-    var {onSortChange, sortDir, children, ...props} = this.props;
+    var { onSortChange, sortDir, children, ...props } = this.props;
     return (
       <DataCell {...props}>
         <a onClick={this._onSortChange}>
@@ -42,9 +42,9 @@ class SortHeaderCell extends React.Component {
     if (this.props.onSortChange) {
       this.props.onSortChange(
         this.props.columnKey,
-        this.props.sortDir ?
-          reverseSortDirection(this.props.sortDir) :
-          SortTypes.DESC
+        this.props.sortDir
+          ? reverseSortDirection(this.props.sortDir)
+          : SortTypes.DESC
       );
     }
   }
@@ -61,9 +61,7 @@ class DataListWrapper {
   }
 
   getObjectAt(index) {
-    return this._data.getObjectAt(
-      this._indexMap[index],
-    );
+    return this._data.getObjectAt(this._indexMap[index]);
   }
 }
 
@@ -115,7 +113,7 @@ class SortExample extends React.Component {
   }
 
   render() {
-    var {sortedDataList, colSortDirs} = this.state;
+    var { sortedDataList, colSortDirs } = this.state;
     return (
       <Table
         rowHeight={50}
@@ -123,13 +121,15 @@ class SortExample extends React.Component {
         headerHeight={50}
         width={1000}
         height={500}
-        {...this.props}>
+        {...this.props}
+      >
         <Column
           columnKey="id"
           header={
             <SortHeaderCell
               onSortChange={this._onSortChange}
-              sortDir={colSortDirs.id}>
+              sortDir={colSortDirs.id}
+            >
               id
             </SortHeaderCell>
           }
@@ -141,7 +141,8 @@ class SortExample extends React.Component {
           header={
             <SortHeaderCell
               onSortChange={this._onSortChange}
-              sortDir={colSortDirs.firstName}>
+              sortDir={colSortDirs.firstName}
+            >
               First Name
             </SortHeaderCell>
           }
@@ -153,7 +154,8 @@ class SortExample extends React.Component {
           header={
             <SortHeaderCell
               onSortChange={this._onSortChange}
-              sortDir={colSortDirs.lastName}>
+              sortDir={colSortDirs.lastName}
+            >
               Last Name
             </SortHeaderCell>
           }
@@ -165,7 +167,8 @@ class SortExample extends React.Component {
           header={
             <SortHeaderCell
               onSortChange={this._onSortChange}
-              sortDir={colSortDirs.city}>
+              sortDir={colSortDirs.city}
+            >
               City
             </SortHeaderCell>
           }
@@ -177,7 +180,8 @@ class SortExample extends React.Component {
           header={
             <SortHeaderCell
               onSortChange={this._onSortChange}
-              sortDir={colSortDirs.companyName}>
+              sortDir={colSortDirs.companyName}
+            >
               Company Name
             </SortHeaderCell>
           }

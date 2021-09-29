@@ -163,16 +163,18 @@ class ColumnGroupsExample extends React.Component {
               key={i}
               header={
                 <Plugins.ReorderCell
-                  onColumnReorderEnd={onColumnGroupReorderEndCallback}>
+                  onColumnReorderEnd={onColumnGroupReorderEndCallback}
+                >
                   <Plugins.ResizeCell
-                    onColumnResizeEnd={onColumnGroupResizeEndCallback}>
+                    onColumnResizeEnd={onColumnGroupResizeEndCallback}
+                  >
                     {columnGroupTitles[columnGroupKey]}
                   </Plugins.ResizeCell>
                 </Plugins.ReorderCell>
               }
               columnKey={columnGroupKey}
             >
-              {columnOrder[columnGroupKey].map(function(columnKey, j) {
+              {columnOrder[columnGroupKey].map(function (columnKey, j) {
                 return (
                   <Column
                     allowCellsRecycling={true}
@@ -180,9 +182,11 @@ class ColumnGroupsExample extends React.Component {
                     key={i + '.' + j}
                     header={
                       <Plugins.ReorderCell
-                        onColumnReorderEnd={onColumnReorderEndCallback}>
+                        onColumnReorderEnd={onColumnReorderEndCallback}
+                      >
                         <Plugins.ResizeCell
-                          onColumnResizeEnd={onColumnResizeEndCallback}>
+                          onColumnResizeEnd={onColumnResizeEndCallback}
+                        >
                           {columnTitles[columnKey]}
                         </Plugins.ResizeCell>
                       </Plugins.ReorderCell>

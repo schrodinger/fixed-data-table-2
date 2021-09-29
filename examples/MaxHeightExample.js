@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { DateCell } from './helpers/cells';
@@ -26,7 +26,7 @@ class MaxHeightExample extends React.Component {
   }
 
   render() {
-    var {dataList} = this.state;
+    var { dataList } = this.state;
     return (
       <div>
         <a onClick={this.addRow}>Add Row</a>
@@ -37,7 +37,8 @@ class MaxHeightExample extends React.Component {
           rowsCount={dataList.getSize()}
           width={400}
           maxHeight={450}
-          footerHeight={30}>
+          footerHeight={30}
+        >
           <Column
             columnKey="date"
             header={<DataCell>DOB</DataCell>}

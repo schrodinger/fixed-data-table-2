@@ -20,11 +20,11 @@ var lastTime = 0;
  */
 var requestAnimationFrame =
   nativeRequestAnimationFrame ||
-  function(callback) {
+  function (callback) {
     var currTime = Date.now();
     var timeDelay = Math.max(0, 16 - (currTime - lastTime));
     lastTime = currTime + timeDelay;
-    return global.setTimeout(function() {
+    return global.setTimeout(function () {
       callback(Date.now());
     }, timeDelay);
   };

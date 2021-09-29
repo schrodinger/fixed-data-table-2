@@ -34,8 +34,10 @@ function initialize(state, props, oldProps) {
   const { scrollLeft, scrollToColumn } = props;
   let { columnResizingData, isColumnResizing, scrollX } = state;
 
-  if (scrollLeft !== undefined &&
-    (!oldProps || scrollLeft !== oldProps.scrollLeft)) {
+  if (
+    scrollLeft !== undefined &&
+    (!oldProps || scrollLeft !== oldProps.scrollLeft)
+  ) {
     scrollX = scrollLeft;
   }
 
@@ -45,7 +47,10 @@ function initialize(state, props, oldProps) {
   scrollX = clamp(scrollX, 0, maxScrollX);
 
   // isColumnResizing should be overwritten by value from props if available
-  isColumnResizing = props.isColumnResizing !== undefined ? props.isColumnResizing : isColumnResizing;
+  isColumnResizing =
+    props.isColumnResizing !== undefined
+      ? props.isColumnResizing
+      : isColumnResizing;
   columnResizingData = isColumnResizing ? columnResizingData : {};
 
   return Object.assign({}, state, {
@@ -83,15 +88,23 @@ function scrollTo(state, props, oldScrollToColumn, scrollX) {
   const noScrollableColumns = scrollableColumnsCount === 0;
   const scrollToUnchanged = scrollToColumn === oldScrollToColumn;
   const selectedColumnFixed = scrollToColumn < fixedColumnsCount;
-  const selectedColumnFixedRight = scrollToColumn >= fixedColumnsCount + scrollableColumnsCount;
-  if (scrollToUnchanged || selectedColumnFixed || selectedColumnFixedRight || noScrollableColumns) {
+  const selectedColumnFixedRight =
+    scrollToColumn >= fixedColumnsCount + scrollableColumnsCount;
+  if (
+    scrollToUnchanged ||
+    selectedColumnFixed ||
+    selectedColumnFixedRight ||
+    noScrollableColumns
+  ) {
     return scrollX;
   }
 
   // Convert column index (0 indexed) to scrollable index (0 indexed)
   // and clamp to max scrollable index
-  const clampedColumnIndex = Math.min(scrollToColumn - fixedColumnsCount,
-    scrollableColumns.length - 1);
+  const clampedColumnIndex = Math.min(
+    scrollToColumn - fixedColumnsCount,
+    scrollableColumns.length - 1
+  );
 
   // Compute the width of all columns to the left of the column
   let previousWidth = 0;
@@ -105,7 +118,8 @@ function scrollTo(state, props, oldScrollToColumn, scrollX) {
   // Compute the scroll position which sets the column on the right of the viewport
   // Must scroll at least far enough for end of column (previousWidth + selectedColumnWidth)
   // to be in viewport.
-  const minScrollPosition = previousWidth + selectedColumnWidth - availableScrollWidth;
+  const minScrollPosition =
+    previousWidth + selectedColumnWidth - availableScrollWidth;
 
   // Handle offscreen to the left
   // If scrolled less than minimum amount, scroll to minimum amount
