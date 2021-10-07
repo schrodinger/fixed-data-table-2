@@ -17,12 +17,16 @@ import IntegerBufferSet from '../vendor_upstream/struct/IntegerBufferSet';
 import PrefixIntervalTree from '../vendor_upstream/struct/PrefixIntervalTree';
 import shallowEqual from '../vendor_upstream/core/shallowEqual';
 
+import columnTemplates from '../selectors/columnTemplates';
 import convertColumnElementsToData from '../helper/convertColumnElementsToData';
 import { getScrollAnchor, scrollTo } from './scrollAnchor';
+import { getColumnAnchor, scrollToX as scrollToXAnchor } from './columnAnchor';
 import columnStateHelper from './columnStateHelper';
 import computeRenderedRows from './computeRenderedRows';
 import Scrollbar from '../plugins/Scrollbar';
 import { createSlice } from '@reduxjs/toolkit';
+import computeRenderedCols from './computeRenderedCols';
+import clamp from 'lodash/clamp';
 
 /**
  * Returns the default initial state for the redux store.
@@ -58,6 +62,14 @@ function getInitialState() {
       subRowHeight: 0,
       subRowHeightGetter: () => 0,
     },
+    columnSettings: {
+      bufferColCount: undefined,
+      colAttributesGetter: undefined,
+      colWidth: 0,
+      colWidthGetter: () => 0,
+      columnsCount: 0,
+      minColumnWidth: 0,
+    },
     scrollFlags: {
       overflowX: 'auto',
       overflowY: 'auto',
@@ -67,6 +79,7 @@ function getInitialState() {
     tableSize: {
       height: undefined,
       maxHeight: 0,
+      maxWidth: 0,
       ownerHeight: undefined,
       useMaxHeight: false,
       width: 0,
@@ -78,16 +91,33 @@ function getInitialState() {
      */
     firstRowIndex: 0,
     firstRowOffset: 0,
+    firstColumnIndex: 0,
+    firstColumnOffset: 0,
     maxScrollX: 0,
     maxScrollY: 0,
     rowOffsets: {},
+    columnOffsets: {},
+    fixedColumnOffsets: {},
+    fixedRightColumnOffsets: {},
     rows: [], // rowsToRender
+    columnsToRender: [],
+    fixedColumnsToRender: [],
+    fixedRightColumnsToRender: [],
     scrollContentHeight: 0,
+    scrollContentWidth: 0,
+    fixedColumnsWidth: 0,
+    fixedRightColumnsWidth: 0,
+    fixedContentWidth: 0,
     scrollX: 0,
     scrollbarXHeight: Scrollbar.SIZE,
     scrollY: 0,
     scrollbarYWidth: Scrollbar.SIZE,
     scrolling: false,
+    scrollingX: false,
+    scrollableColumns: [],
+    fixedColumns: [],
+    fixedRightColumns: [],
+    scrollableColsCount: 0,
 
     /*
      * Internal state only used by this file
@@ -98,6 +128,9 @@ function getInitialState() {
     rowBufferSet: new IntegerBufferSet(),
     storedHeights: [],
     rowOffsetIntervalTree: null, // PrefixIntervalTree
+    colBufferSet: new IntegerBufferSet(),
+    storedWidths: [],
+    colOffsetIntervalTree: null,
   };
 }
 
@@ -110,12 +143,17 @@ const slice = createSlice({
 
       let newState = setStateFromProps(state, props);
       newState = initializeRowHeightsAndOffsets(newState);
+      newState = initializeColWidthsAndOffsets(newState);
       const scrollAnchor = getScrollAnchor(newState, props);
+      const columnAnchor = getColumnAnchor(newState, props);
       newState = computeRenderedRows(newState, scrollAnchor);
+      newState = computeRenderedCols(newState, columnAnchor);
+
       return columnStateHelper.initialize(newState, props, {});
     },
     propChange(state, action) {
       const { newProps, oldProps } = action.payload;
+
       let newState = setStateFromProps(state, newProps);
 
       if (
@@ -125,6 +163,7 @@ const slice = createSlice({
       ) {
         newState = initializeRowHeightsAndOffsets(newState);
       }
+      newState = initializeColWidthsAndOffsets(newState);
 
       if (oldProps.rowsCount !== newProps.rowsCount) {
         // NOTE (jordan) bad practice to modify state directly, but okay since
@@ -133,10 +172,15 @@ const slice = createSlice({
       }
 
       const scrollAnchor = getScrollAnchor(newState, newProps, oldProps);
-
+      const columnAnchor = getColumnAnchor(newState, newProps, oldProps);
       // If anything has changed in state, update our rendered rows
-      if (!shallowEqual(state, newState) || scrollAnchor.changed) {
+      if (!shallowEqual(state, newState)) {
         newState = computeRenderedRows(newState, scrollAnchor);
+        newState = computeRenderedCols(newState, columnAnchor);
+      } else if (scrollAnchor.changed) {
+        newState = computeRenderedRows(newState, scrollAnchor);
+      } else if (columnAnchor.changed) {
+        newState = computeRenderedCols(newState, columnAnchor);
       }
 
       newState = columnStateHelper.initialize(newState, newProps, oldProps);
@@ -153,6 +197,7 @@ const slice = createSlice({
       // TODO (jordan) check if relevant props unchanged and
       // children column widths and flex widths are unchanged
       // alternatively shallow diff and reconcile props
+
       return newState;
     },
     scrollEnd(state) {
@@ -176,10 +221,11 @@ const slice = createSlice({
     },
     scrollToX(state, action) {
       const scrollX = action.payload;
-      return Object.assign({}, state, {
+      const newState = Object.assign({}, state, {
         scrolling: true,
-        scrollX,
       });
+      const columnAnchor = scrollToXAnchor(newState, scrollX);
+      return computeRenderedCols(newState, columnAnchor);
     },
   },
 });
@@ -206,6 +252,51 @@ function initializeRowHeightsAndOffsets(state) {
     rowOffsetIntervalTree,
     scrollContentHeight,
     storedHeights,
+  });
+}
+
+function initializeColWidthsAndOffsets(state) {
+  const { columnProps } = state;
+  let { columnSettings } = state;
+  const columnsCount = columnProps.length;
+  let scrollContentWidth = 0;
+  let fixedColumnsWidth = 0;
+  let fixedRightColumnsWidth = 0;
+  const storedWidths = [];
+  let minColumnWidth = -1;
+
+  for (let idx = 0; idx < state.scrollableColumns.cell.length; idx++) {
+    const width = state.scrollableColumns.cell[idx].props.width;
+    storedWidths.push(width);
+
+    if (minColumnWidth == -1) {
+      minColumnWidth = width;
+    }
+    minColumnWidth = Math.min(minColumnWidth, width);
+
+    scrollContentWidth += width;
+  }
+  columnSettings.minColumnWidth = minColumnWidth;
+
+  for (let idx = 0; idx < state.fixedColumns.cell.length; idx++) {
+    fixedColumnsWidth += state.fixedColumns.cell[idx].props.width;
+  }
+
+  for (let idx = 0; idx < state.fixedRightColumns.cell.length; idx++) {
+    fixedRightColumnsWidth += state.fixedRightColumns.cell[idx].props.width;
+  }
+
+  const fixedContentWidth = fixedRightColumnsWidth + fixedColumnsWidth;
+
+  const colOffsetIntervalTree = new PrefixIntervalTree(storedWidths);
+  return Object.assign({}, state, {
+    colOffsetIntervalTree,
+    scrollContentWidth,
+    fixedColumnsWidth,
+    fixedRightColumnsWidth,
+    storedWidths,
+    fixedContentWidth,
+    columnSettings,
   });
 }
 
@@ -270,7 +361,29 @@ function setStateFromProps(state, props) {
 
   newState.scrollbarXHeight = props.scrollbarXHeight;
   newState.scrollbarYWidth = props.scrollbarYWidth;
-  return newState;
+
+  const {
+    fixedColumnGroups,
+    fixedColumns,
+    fixedRightColumnGroups,
+    fixedRightColumns,
+    scrollableColumnGroups,
+    scrollableColumns,
+  } = columnTemplates(newState);
+
+  return {
+    ...newState,
+    fixedColumnGroups,
+    fixedColumns,
+    fixedRightColumnGroups,
+    fixedRightColumns,
+    scrollableColumnGroups,
+    scrollableColumns,
+    columnSettings: {
+      ...newState.columnSettings,
+      columnsCount: columnProps.length,
+    },
+  };
 }
 
 const { reducer, actions } = slice;

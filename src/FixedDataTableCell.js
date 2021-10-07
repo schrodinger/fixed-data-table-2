@@ -137,7 +137,22 @@ class FixedDataTableCell extends React.Component {
   };
 
   shouldComponentUpdate(nextProps) {
-    if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
+    // we need to render the cell to hide/show it
+    if (this.props.visible !== nextProps.visible) {
+      return true;
+    }
+
+    // if cell is still not visible then no need to update
+    if (!nextProps.visible) {
+      return false;
+    }
+
+    // skip update for the same cell if we're scrolling
+    if (
+      nextProps.isScrolling &&
+      this.props.rowIndex === nextProps.rowIndex &&
+      this.props.columnIndex === nextProps.columnIndex
+    ) {
       return false;
     }
 
@@ -170,11 +185,19 @@ class FixedDataTableCell extends React.Component {
   };
 
   render() /*object*/ {
-    var { height, width, columnKey, isHeaderOrFooter, ...props } = this.props;
+    var {
+      height,
+      width,
+      columnKey,
+      isHeaderOrFooter,
+      visible,
+      ...props
+    } = this.props;
 
     var style = {
       height,
       width,
+      visibility: visible ? 'visible' : 'hidden',
     };
 
     if (this.props.isRTL) {

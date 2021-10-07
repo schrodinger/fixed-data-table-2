@@ -719,7 +719,7 @@ class FixedDataTable extends React.Component {
       fixedRightColumns,
       scrollableColumnGroups,
       scrollableColumns,
-    } = columnTemplatesSelector(this.props);
+    } = this.props;
 
     const {
       bodyHeight,
@@ -786,6 +786,12 @@ class FixedDataTable extends React.Component {
           scrollbarYWidth={scrollbarYWidth}
           isRTL={this.props.isRTL}
           isHeader={true}
+          columnOffsets={this.props.columnOffsets}
+          fixedColumnOffsets={this.props.fixedColumnOffsets}
+          fixedRightColumnOffsets={this.props.fixedRightColumnOffsets}
+          scrollableColumnsWidth={this.props.scrollContentWidth}
+          fixedColumnsWidth={this.props.fixedColumnsWidth}
+          fixedRightColumnsWidth={this.props.fixedRightColumnsWidth}
           scrollToX={this._scrollToX}
         />
       );
@@ -826,6 +832,15 @@ class FixedDataTable extends React.Component {
           showScrollbarY={scrollEnabledY}
           scrollbarYWidth={scrollbarYWidth}
           isRTL={this.props.isRTL}
+          columnsToRender={this.props.columnsToRender}
+          fixedColumnsToRender={this.props.fixedColumnsToRender}
+          fixedRightColumnsToRender={this.props.fixedRightColumnsToRender}
+          columnOffsets={this.props.columnOffsets}
+          fixedColumnOffsets={this.props.fixedColumnOffsets}
+          fixedRightColumnOffsets={this.props.fixedRightColumnOffsets}
+          scrollableColumnsWidth={this.props.scrollContentWidth}
+          fixedColumnsWidth={this.props.fixedColumnsWidth}
+          fixedRightColumnsWidth={this.props.fixedRightColumnsWidth}
         />
       );
     }
@@ -868,6 +883,17 @@ class FixedDataTable extends React.Component {
         isRTL={this.props.isRTL}
         isHeader={true}
         scrollToX={this._scrollToX}
+        columnsToRender={this.props.columnsToRender}
+        fixedColumnsToRender={this.props.fixedColumnsToRender}
+        fixedRightColumnsToRender={this.props.fixedRightColumnsToRender}
+        columnOffsets={this.props.columnOffsets}
+        fixedColumnOffsets={this.props.fixedColumnOffsets}
+        fixedRightColumnOffsets={this.props.fixedRightColumnOffsets}
+        scrollableColumnsWidth={this.props.scrollContentWidth}
+        fixedColumnsWidth={this.props.fixedColumnsWidth}
+        fixedRightColumnsWidth={this.props.fixedRightColumnsWidth}
+        firstViewportColumnIndex={this.props.firstColumnIndex}
+        endViewportColumnIndex={this.props.endColumnIndex}
       />
     );
 
@@ -967,6 +993,7 @@ class FixedDataTable extends React.Component {
   ) /*object*/ => {
     const { scrollEnabledY } = scrollbarsVisible(this.props);
     const props = this.props;
+
     return (
       <FixedDataTableBufferedRows
         ariaRowIndexOffset={ariaRowIndexOffset}
@@ -975,6 +1002,8 @@ class FixedDataTable extends React.Component {
         fixedRightColumns={fixedRightCellTemplates}
         firstViewportRowIndex={props.firstRowIndex}
         endViewportRowIndex={props.endRowIndex}
+        firstViewportColumnIndex={props.firstColumnIndex}
+        endViewportColumnIndex={props.endColumnIndex}
         height={bodyHeight}
         offsetTop={offsetTop}
         onRowClick={props.onRowClick}
@@ -999,8 +1028,17 @@ class FixedDataTable extends React.Component {
         showLastRowBorder={true}
         width={props.tableSize.width}
         rowsToRender={props.rows}
+        columnsToRender={props.columnsToRender}
+        fixedColumnsToRender={props.fixedColumnsToRender}
+        fixedRightColumnsToRender={props.fixedRightColumnsToRender}
         rowOffsets={props.rowOffsets}
         showScrollbarY={scrollEnabledY}
+        columnOffsets={props.columnOffsets}
+        fixedColumnOffsets={props.fixedColumnOffsets}
+        fixedRightColumnOffsets={props.fixedRightColumnOffsets}
+        scrollableColumnsWidth={this.props.scrollContentWidth}
+        fixedColumnsWidth={this.props.fixedColumnsWidth}
+        fixedRightColumnsWidth={this.props.fixedRightColumnsWidth}
         scrollbarYWidth={props.scrollbarYWidth}
         isRTL={props.isRTL}
       />

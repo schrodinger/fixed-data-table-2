@@ -17,7 +17,8 @@ import { getTotalWidth } from '../helper/widthHelper';
 const BORDER_HEIGHT = 1;
 const MIN_BUFFER_ROWS = 3;
 const MAX_BUFFER_ROWS = 6;
-
+const MIN_BUFFER_COLS = 5;
+const MAX_BUFFER_COLS = 8;
 export const ScrollbarState = {
   HIDDEN: 'hidden',
   JOINT_SCROLLBARS: 'JOINT_SCROLLBARS',
@@ -77,13 +78,15 @@ export const ScrollbarState = {
  * }}
  */
 function roughHeights(
-  columnProps,
   elementHeights,
   rowSettings,
   scrollFlags,
   tableSize,
   scrollbarXHeight,
-  scrollbarYWidth
+  scrollbarYWidth,
+  columnSettings,
+  fixedContentWidth,
+  scrollContentWidth
 ) {
   const {
     cellGroupWrapperHeight,
@@ -99,12 +102,14 @@ function roughHeights(
   const { height, maxHeight, useMaxHeight, width } = tableSize;
   const maxComponentHeight = Math.round(useMaxHeight ? maxHeight : height);
   const roughAvailableHeight = maxComponentHeight - reservedHeight;
+  const roughAvailableWidth = Math.max(0, width - fixedContentWidth);
 
   const scrollStateX = getScrollStateX(
-    columnProps,
     scrollFlags,
     width,
-    scrollbarYWidth
+    scrollbarYWidth,
+    fixedContentWidth,
+    scrollContentWidth
   );
 
   /*
@@ -116,14 +121,19 @@ function roughHeights(
    */
   let minAvailableHeight = roughAvailableHeight;
   let maxAvailableHeight = roughAvailableHeight;
+  let minAvailableWidth = roughAvailableWidth;
+  let maxAvailableWidth = roughAvailableWidth;
   switch (scrollStateX) {
     case ScrollbarState.VISIBLE: {
       minAvailableHeight -= scrollbarXHeight;
       maxAvailableHeight -= scrollbarXHeight;
+      minAvailableWidth -= scrollbarYWidth;
+      maxAvailableWidth -= scrollbarYWidth;
       break;
     }
     case ScrollbarState.JOINT_SCROLLBARS: {
       minAvailableHeight -= scrollbarXHeight;
+      minAvailableWidth -= scrollbarYWidth;
       break;
     }
   }
@@ -134,23 +144,34 @@ function roughHeights(
     maxAvailableHeight: Math.max(maxAvailableHeight, 0),
     reservedHeight,
     scrollStateX,
+    bufferColCount: getBufferColCount(maxAvailableWidth, columnSettings),
+    minAvailableWidth: Math.max(minAvailableWidth, 0),
+    maxAvailableWidth: Math.max(maxAvailableWidth, 0),
   };
 }
 
 /**
- * @param {!Array.<{
- *   width: number,
- * }>} columnProps
  * @param {{
  *   overflowX: string,
  *   showScrollbarX: boolean,
  * }} scrollFlags
  * @param {number} width
+ * @param {number} scrollbarYWidth
+ * @param {number} fixedContentWidth
+ * @param {number} scrollContentWidth
  * @return {ScrollbarState}
  */
-function getScrollStateX(columnProps, scrollFlags, width, scrollbarYWidth) {
+function getScrollStateX(
+  scrollFlags,
+  width,
+  scrollbarYWidth,
+  fixedContentWidth,
+  scrollContentWidth
+) {
   const { overflowX, showScrollbarX } = scrollFlags;
-  const minColWidth = getTotalWidth(columnProps);
+
+  var minColWidth = scrollContentWidth + fixedContentWidth;
+
   if (overflowX === 'hidden' || showScrollbarX === false) {
     return ScrollbarState.HIDDEN;
   } else if (minColWidth > width) {
@@ -175,7 +196,6 @@ function getScrollStateX(columnProps, scrollFlags, width, scrollbarYWidth) {
 function getBufferRowCount(maxAvailableHeight, rowSettings) {
   const { bufferRowCount, rowHeight, subRowHeight } = rowSettings;
   if (bufferRowCount !== undefined) {
-    console.log('buffer set: ' + bufferRowCount);
     return bufferRowCount;
   }
 
@@ -188,15 +208,31 @@ function getBufferRowCount(maxAvailableHeight, rowSettings) {
   );
 }
 
+function getBufferColCount(maxAvailableWidth, columnSettings) {
+  const { bufferColCount, minColumnWidth } = columnSettings;
+  if (bufferColCount !== undefined) {
+    return bufferColCount;
+  }
+
+  const avgVisibleColCount = Math.ceil(maxAvailableWidth / minColumnWidth) + 1;
+  return clamp(
+    Math.floor(avgVisibleColCount / 2),
+    MIN_BUFFER_COLS,
+    MAX_BUFFER_COLS
+  );
+}
+
 export default shallowEqualSelector(
   [
-    (state) => state.columnProps,
     (state) => state.elementHeights,
     (state) => state.rowSettings,
     (state) => state.scrollFlags,
     (state) => state.tableSize,
     (state) => state.scrollbarXHeight,
     (state) => state.scrollbarYWidth,
+    (state) => state.columnSettings,
+    (state) => state.fixedContentWidth,
+    (state) => state.scrollContentWidth,
   ],
   roughHeights
 );

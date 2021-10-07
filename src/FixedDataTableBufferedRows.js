@@ -220,6 +220,17 @@ class FixedDataTableBufferedRows extends React.Component {
         visible={visible}
         fake={fake}
         {...rowProps}
+        columnOffsets={props.columnOffsets}
+        fixedColumnOffsets={props.fixedColumnOffsets}
+        fixedRightColumnOffsets={props.fixedRightColumnOffsets}
+        columnsToRender={props.columnsToRender}
+        fixedColumnsToRender={props.fixedColumnsToRender}
+        fixedRightColumnsToRender={props.fixedRightColumnsToRender}
+        scrollableColumnsWidth={this.props.scrollableColumnsWidth}
+        fixedColumnsWidth={this.props.fixedColumnsWidth}
+        fixedRightColumnsWidth={this.props.fixedRightColumnsWidth}
+        firstViewportColumnIndex={this.props.firstViewportColumnIndex}
+        endViewportColumnIndex={this.props.endViewportColumnIndex}
       />
     );
   }

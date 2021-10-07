@@ -36,7 +36,13 @@ function scrollbarsVisible(roughHeights, scrollContentHeight, scrollFlags) {
   const { overflowY, showScrollbarY } = scrollFlags;
   const allowScrollbarY = overflowY !== 'hidden' && showScrollbarY !== false;
 
-  const { minAvailableHeight, maxAvailableHeight, scrollStateX } = roughHeights;
+  const {
+    minAvailableHeight,
+    maxAvailableHeight,
+    scrollStateX,
+    minAvailableWidth,
+    maxAvailableWidth,
+  } = roughHeights;
   let scrollEnabledY = false;
   let scrollEnabledX = false;
   if (scrollStateX === ScrollbarState.VISIBLE) {
@@ -52,14 +58,19 @@ function scrollbarsVisible(roughHeights, scrollContentHeight, scrollFlags) {
   }
 
   let availableHeight = maxAvailableHeight;
+  let availableWidth = maxAvailableWidth;
   if (scrollEnabledX) {
     availableHeight = minAvailableHeight;
+  }
+  if (scrollEnabledY) {
+    availableWidth = minAvailableWidth;
   }
 
   return {
     availableHeight,
     scrollEnabledX,
     scrollEnabledY,
+    availableWidth,
   };
 }
 

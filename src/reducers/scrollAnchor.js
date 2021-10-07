@@ -11,6 +11,8 @@
 
 'use strict';
 
+// TODO (pradeep): Rename this file to `rowAnchor.js` before column virtualization work is merged.
+
 import clamp from '../vendor_upstream/core/clamp';
 
 import scrollbarsVisibleSelector from '../selectors/scrollbarsVisible';
