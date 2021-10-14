@@ -150,7 +150,7 @@ function scrollToRow(state, rowIndex) {
   rowIndex = clamp(rowIndex, 0, Math.max(rowsCount - 1, 0));
   updateRowHeight(state, rowIndex);
   let rowBegin = rowOffsetIntervalTree.sumUntil(rowIndex);
-  let rowEnd = rowBegin + storedHeights[rowIndex];
+  let rowEnd = rowBegin + storedHeights.array[rowIndex];
 
   let firstIndex = rowIndex;
   let lastIndex = undefined;

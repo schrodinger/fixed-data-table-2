@@ -23,7 +23,6 @@ import Scrollbar from './plugins/Scrollbar';
 import ScrollContainer from './plugins/ScrollContainer';
 import { PluginContext } from './Context';
 import shallowEqualSelector from './helper/shallowEqualSelector';
-import columnWidths from './selectors/columnWidths';
 import { initialize, propChange } from './reducers';
 
 const memoizeContext = shallowEqualSelector(
@@ -31,13 +30,13 @@ const memoizeContext = shallowEqualSelector(
     (state) => state.maxScrollX,
     (state) => state.scrollX,
     (state) => state.tableSize.height,
-    (state) => columnWidths(state),
+    (state) => state.bodyWidth, // TODO (pradeep): This is wrongly named
   ],
   (
     /*number*/ maxScrollX,
     /*number*/ scrollX,
     /*number*/ tableHeight,
-    { /*number*/ availableScrollWidth }
+    /*number*/ availableScrollWidth
   ) => {
     return {
       maxScrollX,
@@ -127,25 +126,33 @@ class FixedDataTableContainer extends React.Component {
     const state = this.reduxStore.getState();
     const boundState = pick(state, [
       'columnGroupProps',
+      'columnGroupOffsets',
       'columnOffsets',
       'columnProps',
       'columnReorderingData',
       'columnResizingData',
       'columnSettings',
       'columnsToRender',
+      'columnGroupsToRender',
       'elementHeights',
       'elementTemplates',
       'endColumnIndex',
+      'endViewportColumnGroupIndex',
       'endRowIndex',
       'firstColumnIndex',
+      'firstViewportColumnGroupIndex',
       'firstRowIndex',
       'fixedColumnGroups',
+      'fixedColumnGroupsToRender',
+      'fixedColumnGroupOffsets',
       'fixedColumnOffsets',
       'fixedColumns',
       'fixedColumnsToRender',
       'fixedColumnsWidth',
       'fixedContentWidth',
       'fixedRightColumnGroups',
+      'fixedRightColumnGroupsToRender',
+      'fixedRightColumnGroupOffsets',
       'fixedRightColumnOffsets',
       'fixedRightColumns',
       'fixedRightColumnsToRender',

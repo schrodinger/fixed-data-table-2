@@ -209,12 +209,13 @@ function getBufferRowCount(maxAvailableHeight, rowSettings) {
 }
 
 function getBufferColCount(maxAvailableWidth, columnSettings) {
-  const { bufferColCount, minColumnWidth } = columnSettings;
+  const { bufferColCount, defaultColumnWidth } = columnSettings;
   if (bufferColCount !== undefined) {
     return bufferColCount;
   }
 
-  const avgVisibleColCount = Math.ceil(maxAvailableWidth / minColumnWidth) + 1;
+  const avgVisibleColCount =
+    Math.ceil(maxAvailableWidth / defaultColumnWidth) + 1;
   return clamp(
     Math.floor(avgVisibleColCount / 2),
     MIN_BUFFER_COLS,

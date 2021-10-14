@@ -11,12 +11,14 @@
 
 'use strict';
 
+import merge from 'lodash/merge';
 import clamp from 'lodash/clamp';
 
 import roughHeightsSelector from '../selectors/roughHeights';
 import scrollbarsVisibleSelector from '../selectors/scrollbarsVisible';
 import tableHeightsSelector from '../selectors/tableHeights';
-import updateColWidth from './updateColWidth';
+import { getColWidth } from './updateColWidth';
+import convertColumnElementsToData from '../helper/convertColumnElementsToData';
 
 /**
  * Returns data about the columns to render
@@ -34,14 +36,26 @@ import updateColWidth from './updateColWidth';
  * @return {!Object} The updated state object
  */
 export default function computeRenderedCols(state, scrollAnchor) {
-  const newState = Object.assign({}, state);
-  let colRange = calculateRenderedColRange(newState, scrollAnchor);
+  let colRange = calculateRenderedColRange(state, scrollAnchor);
 
-  const { scrollContentWidth } = newState;
-  const scrollableColsCount = newState.scrollableColumns.cell.length;
-  const { bodyWidth } = tableHeightsSelector(newState);
-  computeRenderedFixedCols(newState, bodyWidth);
-  computeRenderedFixedRightCols(newState, bodyWidth);
+  const { scrollContentWidth } = state;
+  const {
+    fixedColumnsCount,
+    fixedRightColumnsCount,
+    scrollableColumnsCount,
+  } = state.columnSettings;
+  const { bodyWidth } = tableHeightsSelector(state);
+
+  const {
+    columnsToRender: fixedColumnsToRender,
+    columnOffsets: fixedColumnOffsets,
+  } = computeRenderedFixedColumns(state, state.fixedColumns);
+
+  const {
+    columnsToRender: fixedRightColumnsToRender,
+    columnOffsets: fixedRightColumnOffsets,
+  } = computeRenderedFixedColumns(state, state.fixedRightColumns);
+
   const maxScrollX = scrollContentWidth - bodyWidth;
   let firstColumnOffset;
 
@@ -49,9 +63,9 @@ export default function computeRenderedCols(state, scrollAnchor) {
   // leave only a subset of columns shown, but no scrollbar to scroll up to the first columns.
   if (maxScrollX === 0) {
     if (colRange.firstViewportIdx > 0) {
-      colRange = calculateRenderedColRange(newState, {
+      colRange = calculateRenderedColRange(state, {
         firstOffset: 0,
-        lastIndex: scrollableColsCount - 1,
+        lastIndex: scrollableColumnsCount - 1,
       });
     }
 
@@ -63,54 +77,75 @@ export default function computeRenderedCols(state, scrollAnchor) {
   const firstColumnIndex = colRange.firstViewportIdx;
   const endColumnIndex = colRange.endViewportIdx;
 
-  computeRenderedColumnOffsets(newState, colRange, state.scrolling);
+  computeRenderedColumnOffsets(state, colRange, state.scrolling);
+
+  // Now that the range of columns, their offsets, and positions are calculated, we can finally get the list of
+  // virtualized columns and column groups.
+  const { scrollableColumns, scrollableColumnGroups } = getVirtualizedColumns(
+    state
+  );
 
   let scrollX = 0;
-  if (scrollableColsCount > 0) {
+  if (scrollableColumnsCount > 0) {
     scrollX =
-      newState.columnOffsets[colRange.firstViewportIdx] - firstColumnOffset;
+      state.columnOffsets[colRange.firstViewportIdx] - firstColumnOffset;
   }
 
   scrollX = clamp(scrollX, 0, maxScrollX);
 
-  return Object.assign(newState, {
+  return Object.assign(state, {
     firstColumnIndex,
     firstColumnOffset,
+    fixedColumnsToRender,
+    fixedColumnOffsets,
+    fixedRightColumnsToRender,
+    fixedRightColumnOffsets,
+    fixedColumnGroupsToRender: [],
+    fixedColumnGroupOffsets: {},
+    fixedRightColumnGroupsToRender: [],
+    fixedRightColumnGroupOffsets: {},
     endColumnIndex,
     maxScrollX,
     scrollX,
+    scrollableColumns,
+    scrollableColumnGroups,
   });
 }
-function computeRenderedFixedCols(state, bodyWidth) {
-  var widthUsed = 0;
-  var columns = [];
-  var columnOffsets = {};
 
-  if (!state.fixedColumns.cell) return;
-  for (var idx = 0; idx < state.fixedColumns.cell.length; idx++) {
-    columns[idx] = idx;
+/**
+ * Computes the buffer positions and offsets for fixed columns.
+ * We do this by iterating over all the fixed columns in order until it fills up the viewport.
+ *
+ * @param state
+ * @param columnsContainer
+ * @returns {{columnsToRender: Array, columnOffsets: {}}}
+ */
+function computeRenderedFixedColumns(state, columnsContainer) {
+  const tableWidth = state.tableSize.width;
+
+  let widthUsed = 0;
+  const columnsToRender = [];
+  const columnOffsets = {};
+
+  // iterate over the fixed columns
+  for (var idx = 0; idx < _.size(columnsContainer); idx++) {
+    // no need to calculate fixed columns past the viewport
+    if (widthUsed > tableWidth) {
+      break;
+    }
+
+    // record column positions and offsets
+    columnsToRender[idx] = idx;
     columnOffsets[idx] = widthUsed;
-    widthUsed += state.fixedColumns.cell[idx].props.width;
-    if (widthUsed > bodyWidth) break;
+
+    const { width } = columnsContainer[idx].props;
+    widthUsed += width;
   }
 
-  state.fixedColumnsToRender = columns;
-  state.fixedColumnOffsets = columnOffsets;
-}
-function computeRenderedFixedRightCols(state, bodyWidth) {
-  var widthUsed = 0;
-  var columns = [];
-  var columnOffsets = {};
-
-  if (!state.fixedRightColumns.cell) return;
-  for (var idx = 0; idx < state.fixedRightColumns.cell.length; idx++) {
-    columns[idx] = idx;
-    columnOffsets[idx] = widthUsed;
-    widthUsed += state.fixedRightColumns.cell[idx].props.width;
-    if (widthUsed > bodyWidth) break;
-  }
-  state.fixedRightColumnsToRender = columns;
-  state.fixedRightColumnOffsets = columnOffsets;
+  return {
+    columnsToRender,
+    columnOffsets,
+  };
 }
 
 /**
@@ -141,9 +176,9 @@ function computeRenderedFixedRightCols(state, bodyWidth) {
 function calculateRenderedColRange(state, scrollAnchor) {
   const { bufferColCount, maxAvailableWidth } = roughHeightsSelector(state);
 
-  const scrollableColsCount = state.scrollableColumns.cell.length;
+  const scrollableColumnsCount = state.columnSettings.scrollableColumnsCount;
 
-  if (scrollableColsCount === 0) {
+  if (scrollableColumnsCount === 0) {
     return {
       endBufferIdx: 0,
       endViewportIdx: 0,
@@ -157,8 +192,11 @@ function calculateRenderedColRange(state, scrollAnchor) {
   // treat it as if the last col is at the bottom of the viewport
   let { firstIndex, firstOffset, lastIndex } = scrollAnchor;
 
-  if (firstIndex >= scrollableColsCount || lastIndex >= scrollableColsCount) {
-    lastIndex = scrollableColsCount - 1;
+  if (
+    firstIndex >= scrollableColumnsCount ||
+    lastIndex >= scrollableColumnsCount
+  ) {
+    lastIndex = scrollableColumnsCount - 1;
   }
 
   // Walk the viewport until filled with columns
@@ -176,11 +214,11 @@ function calculateRenderedColRange(state, scrollAnchor) {
   let colIdx = startIdx;
   let endIdx = colIdx;
   while (
-    colIdx < scrollableColsCount &&
+    colIdx < scrollableColumnsCount &&
     colIdx >= 0 &&
     totalWidth < maxAvailableWidth
   ) {
-    totalWidth += updateColWidth(state, colIdx);
+    totalWidth += getColWidth(state, colIdx);
     endIdx = colIdx;
     colIdx += step;
   }
@@ -193,14 +231,14 @@ function calculateRenderedColRange(state, scrollAnchor) {
   let forceScrollToLastCol = false;
   if (
     totalWidth < maxAvailableWidth &&
-    colIdx === scrollableColsCount &&
+    colIdx === scrollableColumnsCount &&
     lastIndex === undefined
   ) {
     forceScrollToLastCol = true;
     colIdx = firstIndex - 1;
 
     while (colIdx >= 0 && totalWidth < maxAvailableWidth) {
-      totalWidth += updateColWidth(state, colIdx);
+      totalWidth += getColWidth(state, colIdx);
       startIdx = colIdx;
       --colIdx;
     }
@@ -210,17 +248,17 @@ function calculateRenderedColRange(state, scrollAnchor) {
   let firstViewportIdx = Math.min(startIdx, endIdx);
   const firstBufferIdx = Math.max(firstViewportIdx - bufferColCount, 0);
   for (colIdx = firstBufferIdx; colIdx < firstViewportIdx; colIdx++) {
-    updateColWidth(state, colIdx);
+    getColWidth(state, colIdx);
   }
 
   // Loop to walk the trailing buffer
   const endViewportIdx = Math.max(startIdx, endIdx) + 1;
   const endBufferIdx = Math.min(
     endViewportIdx + bufferColCount,
-    scrollableColsCount
+    scrollableColumnsCount
   );
   for (colIdx = endViewportIdx; colIdx < endBufferIdx; colIdx++) {
-    updateColWidth(state, colIdx);
+    getColWidth(state, colIdx);
   }
 
   const { availableWidth } = scrollbarsVisibleSelector(state);
@@ -234,9 +272,9 @@ function calculateRenderedColRange(state, scrollAnchor) {
     // Handle a case where the offset puts the first col fully offscreen
     // This can happen if availableWidth & maxAvailableWidth are different
     const { storedWidths } = state;
-    if (-1 * firstOffset >= storedWidths[firstViewportIdx]) {
+    if (-1 * firstOffset >= storedWidths.array[firstViewportIdx]) {
       firstViewportIdx += 1;
-      firstOffset += storedWidths[firstViewportIdx];
+      firstOffset += storedWidths.array[firstViewportIdx];
     }
   }
 
@@ -295,7 +333,7 @@ function computeRenderedColumnOffsets(state, colRange, viewportOnly) {
   // compute col index and offsets for every columns inside the buffer
   for (let colIdx = startIdx; colIdx < endIdx; colIdx++) {
     columnOffsets[colIdx] = runningOffset;
-    runningOffset += storedWidths[colIdx];
+    runningOffset += storedWidths.array[colIdx];
 
     // Update the offset for rendering the col
 
@@ -313,6 +351,37 @@ function computeRenderedColumnOffsets(state, colRange, viewportOnly) {
   // now we modify the state with the newly calculated columns and offsets
   state.columnsToRender = columnsToRender;
   state.columnOffsets = columnOffsets;
+}
+
+/**
+ * This returns the required slice of columns and column group objects.
+ *
+ * @param state
+ * @returns {{scrollableColumns: Object.<ColumnDetails>, scrollableColumnGroups: Object.<ColumnDetails>}}
+ */
+function getVirtualizedColumns(state) {
+  /**
+   * NOTE (pradeep): We maintain a cache of `columnsToRender` which contains both the active list of columns in
+   * the viewport and also columns from `colBufferSet` that no longer lie inside the viewport.
+   * The cache allows us to keep the columns outside the viewport alive, preventing unmounts.
+   */
+  const cachedColumnsToRender = merge(
+    [],
+    state.cachedColumnsToRender.array,
+    state.columnsToRender
+  );
+  const scrollableColumns = {};
+  for (let colIdx of cachedColumnsToRender) {
+    if (colIdx !== undefined) {
+      scrollableColumns[colIdx] = state.storedScrollableColumns.object[colIdx];
+    }
+  }
+  state.cachedColumnsToRender.array = cachedColumnsToRender;
+
+  return {
+    scrollableColumns,
+    scrollableColumnGroups: {},
+  };
 }
 
 /**

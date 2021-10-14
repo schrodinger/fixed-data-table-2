@@ -30,9 +30,12 @@ class FixedDataTableCellGroupImpl extends React.Component {
    */
   static propTypes_DISABLED_FOR_PERFORMANCE = {
     /**
-     * Array of per column configuration properties.
+     * Array/Object of per column configuration properties.
      */
-    columns: PropTypes.array.isRequired,
+    columns: PropTypes.oneOfType([
+      PropTypes.array.isRequired,
+      PropTypes.object.isRequired,
+    ]),
 
     isScrolling: PropTypes.bool,
 
@@ -107,6 +110,11 @@ class FixedDataTableCellGroupImpl extends React.Component {
      * Whether the cells belongs to the fixed group
      */
     isFixed: PropTypes.bool.isRequired,
+
+    /**
+     * Type of the cell renderer to be used for each column in the cell group
+     */
+    template: PropTypes.oneOf(['cell', 'footer', 'header']).isRequired,
   };
 
   state = {
@@ -231,7 +239,9 @@ class FixedDataTableCellGroupImpl extends React.Component {
       this.props.endViewportColumnIndex
     );
     const columnProps = this.props.columns[columnIndex].props;
-    const cellTemplate = this.props.columns[columnIndex].template;
+    const cellTemplate = this.props.columns[columnIndex].templates[
+      this.props.template
+    ];
 
     var className = columnProps.cellClassName;
     var pureRendering = columnProps.pureRendering || false;

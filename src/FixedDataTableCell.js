@@ -42,6 +42,8 @@ class FixedDataTableCell extends React.Component {
       PropTypes.func,
     ]),
 
+    columnIndex: PropTypes.number.isRequired,
+
     columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     /**
@@ -151,7 +153,8 @@ class FixedDataTableCell extends React.Component {
     if (
       nextProps.isScrolling &&
       this.props.rowIndex === nextProps.rowIndex &&
-      this.props.columnIndex === nextProps.columnIndex
+      this.props.columnIndex === nextProps.columnIndex &&
+      this.props.left === nextProps.left
     ) {
       return false;
     }

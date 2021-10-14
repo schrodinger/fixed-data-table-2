@@ -54,7 +54,7 @@ class FixedDataTableBufferedRows extends React.Component {
     rowsToRender: PropTypes.array.isRequired,
     scrollLeft: PropTypes.number.isRequired,
     scrollTop: PropTypes.number.isRequired,
-    scrollableColumns: PropTypes.array.isRequired,
+    scrollableColumns: PropTypes.object.isRequired,
     showLastRowBorder: PropTypes.bool,
     showScrollbarY: PropTypes.bool,
     width: PropTypes.number.isRequired,
@@ -204,6 +204,7 @@ class FixedDataTableBufferedRows extends React.Component {
         fixedColumns={props.fixedColumns}
         fixedRightColumns={props.fixedRightColumns}
         scrollableColumns={props.scrollableColumns}
+        template={'cell'}
         onClick={props.onRowClick}
         onContextMenu={props.onRowContextMenu}
         onDoubleClick={props.onRowDoubleClick}

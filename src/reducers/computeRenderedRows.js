@@ -193,9 +193,9 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     // Handle a case where the offset puts the first row fully offscreen
     // This can happen if availableHeight & maxAvailableHeight are different
     const { storedHeights } = state;
-    if (-1 * firstOffset >= storedHeights[firstViewportIdx]) {
+    if (-1 * firstOffset >= storedHeights.array[firstViewportIdx]) {
       firstViewportIdx += 1;
-      firstOffset += storedHeights[firstViewportIdx];
+      firstOffset += storedHeights.array[firstViewportIdx];
     }
   }
 
@@ -255,7 +255,7 @@ function computeRenderedRowOffsets(state, rowRange, viewportOnly) {
   for (let rowIdx = startIdx; rowIdx < endIdx; rowIdx++) {
     // Update the offset for rendering the row
     rowOffsets[rowIdx] = runningOffset;
-    runningOffset += storedHeights[rowIdx];
+    runningOffset += storedHeights.array[rowIdx];
 
     // Get position for the viewport row
     const rowPosition = addRowToBuffer(

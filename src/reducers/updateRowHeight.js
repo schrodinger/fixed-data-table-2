@@ -27,12 +27,12 @@ export default function updateRowHeight(state, rowIdx) {
   const { rowHeightGetter, subRowHeightGetter } = rowSettings;
 
   const newHeight = rowHeightGetter(rowIdx) + subRowHeightGetter(rowIdx);
-  const oldHeight = storedHeights[rowIdx];
+  const oldHeight = storedHeights.array[rowIdx];
   if (newHeight !== oldHeight) {
     rowOffsetIntervalTree.set(rowIdx, newHeight);
-    storedHeights[rowIdx] = newHeight;
+    storedHeights.array[rowIdx] = newHeight;
     state.scrollContentHeight += newHeight - oldHeight;
   }
 
-  return storedHeights[rowIdx];
+  return storedHeights.array[rowIdx];
 }

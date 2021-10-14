@@ -11,21 +11,58 @@
 
 'use strict';
 
+import convertColumnElementsToData from '../helper/convertColumnElementsToData';
+import isNil from 'lodash/isNil';
+import min from 'lodash/min';
+import max from 'lodash/max';
+
+// TODO (pradeep): Rename this file to updateColumn
+
 /**
- * Update our cached col width for a specific index
- * based on the value from colWidthGetter
+ * Get's the column props for a specific index and also stores a cache of it
+ *
+ * @param {!Object} state
+ * @param {number} colIdx
+ * @return {!Object} the updated props of the column
+ */
+export function getColumn(state, colIdx) {
+  // retrieve column directly from the cache if it already exists
+  if (state.storedScrollableColumns.object[colIdx]) {
+    return state.storedScrollableColumns.object[colIdx];
+  }
+
+  // if column doesn't exist in cache, then get the column from the user
+  const columnProps = state.columnSettings.getScrollableColumn(colIdx);
+  const column = convertColumnElementsToData(columnProps);
+
+  state.storedScrollableColumns.object[colIdx] = column;
+  updateColWidth(state, colIdx, column.props.width);
+  return column;
+}
+
+/**
+ * Get and cache the width for a specific column
  *
  * @param {!Object} state
  * @param {number} colIdx
  * @return {number} The new col width
  */
-export default function updateColWidth(state, colIdx) {
-  const oldWidth = state.storedWidths[colIdx];
-  const newWidth = state.scrollableColumns.cell[colIdx].props.width;
-  if (newWidth !== oldWidth) {
-    state.colOffsetIntervalTree.set(colIdx, newWidth);
-    state.storedWidths[colIdx] = newWidth;
-    state.scrollContentWidth += newWidth - oldWidth;
-  }
-  return state.storedWidths[colIdx];
+export function getColWidth(state, colIdx) {
+  return getColumn(state, colIdx).props.width;
+}
+
+/**
+ * Update our cached width for a specific column
+ *
+ * @param {!Object} state
+ * @param {number} colIdx
+ * @param {number} newWidth
+ * @return {number} The new col width
+ */
+export function updateColWidth(state, colIdx, newWidth) {
+  state.storedScrollableColumns.object[colIdx].props.width = newWidth;
+  state.colOffsetIntervalTree.set(colIdx, newWidth);
+  state.scrollContentWidth += newWidth - state.storedWidths.array[colIdx];
+  state.storedWidths.array[colIdx] = newWidth;
+  return newWidth;
 }
