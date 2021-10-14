@@ -35,6 +35,30 @@ export function getColumn(state, colIdx) {
   const columnProps = state.columnSettings.getScrollableColumn(colIdx);
   const column = convertColumnElementsToData(columnProps);
 
+  // update column groups associated with the current column
+  const { columnGroupIndex } = column.props;
+  if (!isNil(columnGroupIndex)) {
+    const columnGroupProps = state.columnSettings.getColumnGroup(
+      columnGroupIndex
+    );
+    const columnGroup = convertColumnElementsToData(columnGroupProps);
+    const storedColumnGroup =
+      state.storedScrollableColumnGroups.object[columnGroupIndex];
+
+    // update first and last child column indexes of the column group
+    columnGroup.props.firstChildIdx = _.min([
+      colIdx,
+      _.get(storedColumnGroup, 'props.firstChildIdx'),
+    ]);
+    columnGroup.props.lastChildIdx = _.max([
+      colIdx,
+      _.get(storedColumnGroup, 'props.lastChildIdx'),
+    ]);
+
+    // cache the column group
+    state.storedScrollableColumnGroups.object[columnGroupIndex] = columnGroup;
+  }
+
   state.storedScrollableColumns.object[colIdx] = column;
   updateColWidth(state, colIdx, column.props.width);
   return column;

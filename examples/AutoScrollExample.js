@@ -24,18 +24,25 @@ class AutoScrollExample extends React.Component {
       fixedColumnsCount: 2,
       fixedRightColumnsCount: 2,
       scrollableColumnsCount: 10000 - 2 - 2,
+      columnGroups: [],
     };
 
     const cellRenderer = (props) => `${props.columnKey}, ${props.rowIndex}`;
     const headerCellRenderer = (props) => props.columnKey;
 
     for (let i = 0; i < 10000; i++) {
+      const columnGroupIndex = Math.floor(i / 2);
       this.state.columns[i] = {
         columnKey: 'Column ' + i,
+        columnGroupIndex,
         header: headerCellRenderer,
         cell: cellRenderer,
         width: 100,
         allowCellsRecycling: true,
+      };
+      this.state.columnGroups[columnGroupIndex] = {
+        columnKey: 'Column Group ' + columnGroupIndex,
+        header: headerCellRenderer,
       };
     }
 
@@ -103,6 +110,7 @@ class AutoScrollExample extends React.Component {
     var { dataList, scrollLeft, scrollTop } = this.state;
     return (
       <Table
+        groupHeaderHeight={50}
         rowHeight={50}
         headerHeight={50}
         rowsCount={dataList.getSize()}
@@ -124,6 +132,7 @@ class AutoScrollExample extends React.Component {
             this.state.fixedColumnsCount + this.state.scrollableColumnsCount + i
           ]
         }
+        getColumnGroup={(i) => this.state.columnGroups[i]}
         {...this.props}
       />
     );

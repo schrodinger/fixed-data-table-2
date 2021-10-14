@@ -23,6 +23,7 @@ export function extractProps(columnProps) {
     'allowCellsRecycling',
     'cellClassName',
     'columnKey',
+    'columnGroupIndex',
     'flexGrow',
     'fixed',
     'fixedRight',

@@ -131,6 +131,7 @@ function getInitialState() {
     scrolling: false,
     scrollingX: false,
     scrollableColumns: {}, // we use a sparse object to represent the currently required set of columns
+    scrollableColumnGroups: {}, // we use a sparse object to represent the currently required set of columns
     fixedColumns: [],
     fixedRightColumns: [],
 
@@ -142,12 +143,15 @@ function getInitialState() {
      */
     rowBufferSet: new IntegerBufferSet(), // virtualized positions of rows
     colBufferSet: new IntegerBufferSet(), // virtualized positions of columns
+    colGroupBufferSet: new IntegerBufferSet(), // virtualized positions of column groups
     storedHeights: new ArrayWrapper(), // heights of each row computed lazily
     storedWidths: new ObjectWrapper(), // widths of each column computed lazily
     storedScrollableColumns: new ObjectWrapper(), // virtualized column objects
+    storedScrollableColumnGroups: new ObjectWrapper(), // virtualized column group objects
     rowOffsetIntervalTree: null, // PrefixIntervalTree to calculate offsets of columns efficiently
     colOffsetIntervalTree: null, // PrefixIntervalTree to calculate offsets of columns efficiently
     cachedColumnsToRender: new ArrayWrapper(), // cache of indexes of buffered columns
+    cachedColumnGroupsToRender: new ArrayWrapper(), // cache of indexes of buffered column groups
   };
 }
 
@@ -373,6 +377,7 @@ function setStateFromProps(state, props) {
       'getScrollableColumn',
       'getFixedColumn',
       'getFixedRightColumn',
+      'getColumnGroup',
     ])
   );
 

@@ -49,12 +49,24 @@ export default function computeRenderedCols(state, scrollAnchor) {
   const {
     columnsToRender: fixedColumnsToRender,
     columnOffsets: fixedColumnOffsets,
-  } = computeRenderedFixedColumns(state, state.fixedColumns);
+    columnGroupsToRender: fixedColumnGroupsToRender,
+    columnGroupOffsets: fixedColumnGroupOffsets,
+  } = computeRenderedFixedColumnsAndGroups(
+    state,
+    state.fixedColumns,
+    state.fixedColumnGroups
+  );
 
   const {
     columnsToRender: fixedRightColumnsToRender,
     columnOffsets: fixedRightColumnOffsets,
-  } = computeRenderedFixedColumns(state, state.fixedRightColumns);
+    columnGroupsToRender: fixedRightColumnGroupsToRender,
+    columnGroupOffsets: fixedRightColumnGroupOffsets,
+  } = computeRenderedFixedColumnsAndGroups(
+    state,
+    state.fixedRightColumns,
+    state.fixedRightColumnGroups
+  );
 
   const maxScrollX = scrollContentWidth - bodyWidth;
   let firstColumnOffset;
@@ -78,6 +90,8 @@ export default function computeRenderedCols(state, scrollAnchor) {
   const endColumnIndex = colRange.endViewportIdx;
 
   computeRenderedColumnOffsets(state, colRange, state.scrolling);
+  calculateRenderedColumnGroupRange(state, colRange);
+  computeRenderedColumnGroups(state);
 
   // Now that the range of columns, their offsets, and positions are calculated, we can finally get the list of
   // virtualized columns and column groups.
@@ -100,10 +114,10 @@ export default function computeRenderedCols(state, scrollAnchor) {
     fixedColumnOffsets,
     fixedRightColumnsToRender,
     fixedRightColumnOffsets,
-    fixedColumnGroupsToRender: [],
-    fixedColumnGroupOffsets: {},
-    fixedRightColumnGroupsToRender: [],
-    fixedRightColumnGroupOffsets: {},
+    fixedColumnGroupsToRender,
+    fixedColumnGroupOffsets,
+    fixedRightColumnGroupsToRender,
+    fixedRightColumnGroupOffsets,
     endColumnIndex,
     maxScrollX,
     scrollX,
@@ -113,39 +127,151 @@ export default function computeRenderedCols(state, scrollAnchor) {
 }
 
 /**
- * Computes the buffer positions and offsets for fixed columns.
+ * Computes the buffer positions and offsets for fixed columns and fixed column groups.
  * We do this by iterating over all the fixed columns in order until it fills up the viewport.
+ * We also calculate the column groups associated with these fixed columns along the way.
  *
  * @param state
  * @param columnsContainer
- * @returns {{columnsToRender: Array, columnOffsets: {}}}
+ * @param columnsGroupsContainer
+ * @param columnGroupGetter
+ * @returns {{columnsToRender: Array, columnOffsets: {}, columnGroupsToRender: Array, columnGroupOffsets: {}}}
  */
-function computeRenderedFixedColumns(state, columnsContainer) {
+function computeRenderedFixedColumnsAndGroups(
+  state,
+  columnsContainer,
+  columnsGroupsContainer
+) {
   const tableWidth = state.tableSize.width;
 
   let widthUsed = 0;
   const columnsToRender = [];
+  const columnGroupsToRender = [];
   const columnOffsets = {};
+  const columnGroupOffsets = {};
+  const columnGroupWidths = {};
 
   // iterate over the fixed columns
   for (var idx = 0; idx < _.size(columnsContainer); idx++) {
+    columnsToRender[idx] = idx;
+    columnOffsets[idx] = widthUsed;
+    const { width, columnGroupIndex } = columnsContainer[idx].props;
+
+    // update column group widths and offsets along the way if they exist
+    if (!_.isNil(columnGroupIndex)) {
+      if (_.isNil(columnGroupOffsets[columnGroupIndex])) {
+        columnGroupOffsets[columnGroupIndex] = widthUsed;
+      }
+      if (_.isNil(columnGroupsToRender[columnGroupIndex])) {
+        columnGroupsToRender.push(columnGroupIndex);
+      }
+
+      columnGroupWidths[columnGroupIndex] =
+        (columnGroupWidths[columnGroupIndex] || 0) + width;
+
+      if (_.isNil(columnsGroupsContainer[columnGroupIndex])) {
+        columnsGroupsContainer[columnGroupIndex] = convertColumnElementsToData(
+          state.columnSettings.getColumnGroup(columnGroupIndex)
+        );
+      }
+      columnsGroupsContainer[columnGroupIndex].props.width =
+        columnGroupWidths[columnGroupIndex];
+    }
+
+    widthUsed += width;
+
     // no need to calculate fixed columns past the viewport
     if (widthUsed > tableWidth) {
       break;
     }
-
-    // record column positions and offsets
-    columnsToRender[idx] = idx;
-    columnOffsets[idx] = widthUsed;
-
-    const { width } = columnsContainer[idx].props;
-    widthUsed += width;
   }
 
   return {
     columnsToRender,
     columnOffsets,
+    columnGroupsToRender,
+    columnGroupOffsets,
   };
+}
+
+/**
+ * Calculates the range of column groups that are to be rendered.
+ *
+ * @param {!Object} state
+ * @param {!{
+ *   firstViewportIdx: number,
+ *   endViewportIdx: number
+ * }} colRange
+ */
+function calculateRenderedColumnGroupRange(state, colRange) {
+  const { firstViewportIdx, endViewportIdx } = colRange;
+
+  state.columnGroupRange = {
+    firstViewportColumnGroupIndex: 0,
+    endViewportColumnGroupIndex: 0,
+  };
+
+  if (state.columnSettings.scrollableColumnsCount === 0) {
+    return;
+  }
+
+  const firstViewportColumnGroupIndex =
+    state.storedScrollableColumns.object[firstViewportIdx].props
+      .columnGroupIndex;
+
+  const endViewportColumnGroupIndex =
+    endViewportIdx === 0
+      ? 1
+      : state.storedScrollableColumns.object[endViewportIdx - 1].props
+          .columnGroupIndex + 1;
+
+  // column group doesn't exist
+  if (_.isNil(firstViewportColumnGroupIndex)) {
+    return;
+  }
+
+  state.firstViewportColumnGroupIndex = firstViewportColumnGroupIndex;
+  state.endViewportColumnGroupIndex = endViewportColumnGroupIndex;
+}
+
+/**
+ * Calculate the buffer positions and offsets for each column group in the visible viewport
+ *
+ * @param {!Object} state
+ */
+function computeRenderedColumnGroups(state) {
+  const columnGroupsToRender = [];
+  const columnGroupOffsets = {};
+
+  for (
+    let idx = state.firstViewportColumnGroupIndex;
+    idx < state.endViewportColumnGroupIndex;
+    idx++
+  ) {
+    const columnGroup = state.storedScrollableColumnGroups.object[idx];
+    const { firstChildIdx, lastChildIdx } = columnGroup.props;
+
+    columnGroupOffsets[idx] = state.colOffsetIntervalTree.sumUntil(
+      firstChildIdx
+    );
+    state.storedScrollableColumnGroups.object[idx].props.width =
+      state.colOffsetIntervalTree.sumUntil(lastChildIdx) -
+      columnGroupOffsets[idx] +
+      state.storedWidths.array[lastChildIdx];
+
+    // Get position for the viewport col
+    const colPosition = addColToBuffer(
+      idx,
+      state.colGroupBufferSet,
+      state.firstViewportColumnGroupIndex,
+      state.endViewportColumnGroupIndex,
+      state.endViewportColumnGroupIndex - state.firstViewportColumnGroupIndex
+    );
+    columnGroupsToRender[colPosition] = idx;
+  }
+
+  state.columnGroupOffsets = columnGroupOffsets;
+  state.columnGroupsToRender = columnGroupsToRender;
 }
 
 /**
@@ -378,9 +504,30 @@ function getVirtualizedColumns(state) {
   }
   state.cachedColumnsToRender.array = cachedColumnsToRender;
 
+  /**
+   * NOTE (pradeep): We maintain a cache of `columnGroupsToRender` which contains both the active list of
+   * column groups in the viewport and also column groups from `colBufferSet` that no longer lie inside the viewport.
+   * The cache allows us to keep the columns outside the viewport alive, preventing unmounts.
+   */
+  const cachedColumnGroupsToRender = merge(
+    [],
+    state.cachedColumnGroupsToRender.array,
+    state.columnGroupsToRender
+  );
+  const scrollableColumnGroups = {};
+  for (let colIdx of cachedColumnGroupsToRender) {
+    if (colIdx !== undefined) {
+      scrollableColumnGroups[colIdx] =
+        state.storedScrollableColumnGroups.object[colIdx];
+    }
+  }
+  // TODO (pradeep): Figure out why freezing scrollableColumnGroups is necessary here.
+  Object.freeze(scrollableColumnGroups);
+  state.cachedColumnGroupsToRender.array = cachedColumnGroupsToRender;
+
   return {
     scrollableColumns,
-    scrollableColumnGroups: {},
+    scrollableColumnGroups,
   };
 }
 
