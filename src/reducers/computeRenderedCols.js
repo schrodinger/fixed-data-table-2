@@ -153,6 +153,11 @@ function computeRenderedFixedColumnsAndGroups(
 
   // iterate over the fixed columns
   for (var idx = 0; idx < _.size(columnsContainer); idx++) {
+    // no need to calculate fixed columns past the viewport
+    if (widthUsed > tableWidth) {
+      break;
+    }
+
     columnsToRender[idx] = idx;
     columnOffsets[idx] = widthUsed;
     const { width, columnGroupIndex } = columnsContainer[idx].props;
@@ -179,11 +184,6 @@ function computeRenderedFixedColumnsAndGroups(
     }
 
     widthUsed += width;
-
-    // no need to calculate fixed columns past the viewport
-    if (widthUsed > tableWidth) {
-      break;
-    }
   }
 
   return {
