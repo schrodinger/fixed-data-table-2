@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
@@ -19,7 +19,7 @@ class ColumnGroupsExample extends React.Component {
   }
 
   render() {
-    var {dataList} = this.state;
+    var { dataList } = this.state;
 
     return (
       <Table
@@ -29,10 +29,9 @@ class ColumnGroupsExample extends React.Component {
         rowsCount={dataList.getSize()}
         width={1000}
         height={500}
-        {...this.props}>
-        <ColumnGroup
-          fixed={true}
-          header={<DataCell>Name</DataCell>}>
+        {...this.props}
+      >
+        <ColumnGroup fixed={true} header={<DataCell>Name</DataCell>}>
           <Column
             columnKey="firstName"
             fixed={true}
@@ -48,8 +47,7 @@ class ColumnGroupsExample extends React.Component {
             width={150}
           />
         </ColumnGroup>
-        <ColumnGroup
-          header={<DataCell>About</DataCell>}>
+        <ColumnGroup header={<DataCell>About</DataCell>}>
           <Column
             columnKey="companyName"
             header={<DataCell>Company</DataCell>}

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var React = require('react');
 var Constants = require('./Constants');
@@ -19,14 +19,18 @@ class MiniHeader extends React.Component {
             <a className="homeLink" href="./" target="_self">
               Home
             </a>
-            <a href={DOCS_DEFAULT_LOCATION} target="_self">Docs</a>
-            <a href={EXAMPLES_DEFAULT_LOCATION} target="_self">Examples</a>
+            <a href={DOCS_DEFAULT_LOCATION} target="_self">
+              Docs
+            </a>
+            <a href={EXAMPLES_DEFAULT_LOCATION} target="_self">
+              Examples
+            </a>
             <a href={GITHUB_URL}>Github</a>
           </div>
         </div>
       </div>
     );
   }
-};
+}
 
 module.exports = MiniHeader;

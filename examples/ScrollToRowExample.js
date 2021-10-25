@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, TextCell } from './helpers/cells';
@@ -23,7 +23,7 @@ class ScrollToRowExample extends React.Component {
     };
 
     this._onFilterChange = this._onFilterChange.bind(this);
-    this._rowClassNameGetter= this._rowClassNameGetter.bind(this);
+    this._rowClassNameGetter = this._rowClassNameGetter.bind(this);
     this._prevSearch = this._prevSearch.bind(this);
     this._nextSearch = this._nextSearch.bind(this);
   }
@@ -40,7 +40,7 @@ class ScrollToRowExample extends React.Component {
     var size = this._dataList.getSize();
     var filteredIndexes = [];
     for (var index = 0; index < size; index++) {
-      var {firstName} = this._dataList.getObjectAt(index);
+      var { firstName } = this._dataList.getObjectAt(index);
       if (firstName.toLowerCase().indexOf(filterBy) !== -1) {
         filteredIndexes.push(index);
       }
@@ -54,13 +54,13 @@ class ScrollToRowExample extends React.Component {
 
   _prevSearch() {
     this.setState({
-      currentIndex: this.state.currentIndex - 1
+      currentIndex: this.state.currentIndex - 1,
     });
   }
 
   _nextSearch() {
     this.setState({
-      currentIndex: this.state.currentIndex + 1
+      currentIndex: this.state.currentIndex + 1,
     });
   }
 
@@ -74,14 +74,11 @@ class ScrollToRowExample extends React.Component {
   }
 
   render() {
-    var {filteredDataList, currentIndex, matchedRows} = this.state;
+    var { filteredDataList, currentIndex, matchedRows } = this.state;
 
     var search = matchedRows.length ? (
       <span>
-        <button
-          disabled={currentIndex === 0}
-          onClick={this._prevSearch}
-        >
+        <button disabled={currentIndex === 0} onClick={this._prevSearch}>
           {'<'}
         </button>
         {currentIndex + 1} / {matchedRows.length}
@@ -112,7 +109,8 @@ class ScrollToRowExample extends React.Component {
           headerHeight={50}
           width={1000}
           height={500}
-          {...this.props}>
+          {...this.props}
+        >
           <Column
             columnKey="avatar"
             cell={<ImageCell data={filteredDataList} />}

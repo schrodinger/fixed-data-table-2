@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -87,8 +87,7 @@ class PagedData {
     }
 
     this._pending = true;
-    new Promise(resolve => setTimeout(resolve, 1000))
-    .then(() => {
+    new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
       this._pending = false;
       this._end = end;
       this.runCallbacks();
@@ -97,8 +96,9 @@ class PagedData {
 
   getObjectAt(index) {
     if (index >= this._end) {
-      this.fetchRange(Math.min(this._dataList.getSize(),
-                               index + this._fetchSize));
+      this.fetchRange(
+        Math.min(this._dataList.getSize(), index + this._fetchSize)
+      );
       return null;
     }
 
@@ -134,11 +134,8 @@ class PendingCell extends React.PureComponent {
  * @param {number} version A number indicating the current version of the displayed data
  */
 const PagedCell = (props, { data, version }) => (
-  <PendingCell
-    data={data}
-    dataVersion={version}
-    {...props}
-  />);
+  <PendingCell data={data} dataVersion={version} {...props} />
+);
 
 PagedCell.contextTypes = {
   data: examplePropTypes.CtxtDataListStore,
@@ -175,11 +172,12 @@ class ContextExample extends React.Component {
       <div>
         <strong>Filter by:</strong>&nbsp;
         <input
-          onChange={e => this._onFilterChange('firstName', e.target.value)}
+          onChange={(e) => this._onFilterChange('firstName', e.target.value)}
           placeholder="First Name"
-        />&nbsp;
+        />
+        &nbsp;
         <input
-          onChange={e => this._onFilterChange('lastName', e.target.value)}
+          onChange={(e) => this._onFilterChange('lastName', e.target.value)}
           placeholder="Last Name"
         />
         <br />

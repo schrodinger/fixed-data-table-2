@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
@@ -13,8 +13,8 @@ class TouchScrollExample extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataList: new FakeObjectDataListStore(2000)
-    }
+      dataList: new FakeObjectDataListStore(2000),
+    };
   }
 
   render() {

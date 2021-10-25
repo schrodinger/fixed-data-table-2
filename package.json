@@ -113,7 +113,7 @@
   "lint-staged": {
     "*.js": [
       "eslint --cache --fix",
-      "prettier --write"
+      "prettier --write {src,site,test,examples}/**/*.js"
     ]
   }
 }

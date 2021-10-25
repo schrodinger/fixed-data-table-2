@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, LinkCell } from './helpers/cells';
@@ -23,8 +23,12 @@ class AutoScrollExample extends React.Component {
     };
 
     this.columns = [];
-    const cellRenderer = ({ columnKey, rowIndex }) =>
-      (<div className='autoScrollCell'> {rowIndex}, {columnKey} </div>);
+    const cellRenderer = ({ columnKey, rowIndex }) => (
+      <div className="autoScrollCell">
+        {' '}
+        {rowIndex}, {columnKey}{' '}
+      </div>
+    );
 
     for (let i = 0; i < 100; i++) {
       this.columns[i] = (
@@ -36,7 +40,7 @@ class AutoScrollExample extends React.Component {
           width={100}
           allowCellsRecycling={true}
         />
-      )
+      );
     }
 
     this.onVerticalScroll = this.onVerticalScroll.bind(this);
@@ -53,14 +57,15 @@ class AutoScrollExample extends React.Component {
       }
       this.setState((prevState) => ({
         scrollTop: prevState.scrollTop + (prevState.verticalScrollDelta || 0),
-        scrollLeft: prevState.scrollLeft + (prevState.horizontalScrollDelta || 0),
+        scrollLeft:
+          prevState.scrollLeft + (prevState.horizontalScrollDelta || 0),
       }));
     }, 16);
   }
 
   render() {
     return (
-      <div className='autoScrollContainer'>
+      <div className="autoScrollContainer">
         {this.renderControls()}
         {this.renderTable()}
       </div>
@@ -69,21 +74,33 @@ class AutoScrollExample extends React.Component {
 
   renderControls() {
     return (
-      <div className='autoScrollControls'>
+      <div className="autoScrollControls">
         <label>
           Auto Scroll Enabled
-          <input type='checkbox' checked={this.state.autoScrollEnabled} onChange={this.toggleAutoScroll} />
+          <input
+            type="checkbox"
+            checked={this.state.autoScrollEnabled}
+            onChange={this.toggleAutoScroll}
+          />
         </label>
         <label>
           Horizontal Scroll Delta
-          <input type='number' value={this.state.horizontalScrollDelta} onChange={this.setHorizontalScrollDelta} />
+          <input
+            type="number"
+            value={this.state.horizontalScrollDelta}
+            onChange={this.setHorizontalScrollDelta}
+          />
         </label>
         <label>
           Vertical Scroll Delta
-          <input type='number' value={this.state.verticalScrollDelta} onChange={this.setVerticalScrollDelta} />
+          <input
+            type="number"
+            value={this.state.verticalScrollDelta}
+            onChange={this.setVerticalScrollDelta}
+          />
         </label>
       </div>
-    )
+    );
   }
 
   renderTable() {

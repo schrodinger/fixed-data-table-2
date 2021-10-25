@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { PagedCell } from './helpers/cells';
@@ -32,12 +32,11 @@ class PagedData {
     }
 
     this._pending = true;
-    return new Promise((resolve) => setTimeout(resolve, 1000))
-    .then(() => {
+    return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
       this._pending = false;
       this._end = end;
       this._dataVersion++;
-      this._callback(end)
+      this._callback(end);
     });
   }
 
@@ -57,19 +56,19 @@ class InfiniteScrollExample extends React.Component {
     this._updateData = this._updateData.bind(this);
     this.state = {
       pagedData: new PagedData(this._updateData),
-      end: 50
+      end: 50,
     };
   }
 
   //Just need to force a refresh
   _updateData(end) {
     this.setState({
-      end: end
+      end: end,
     });
   }
 
   render() {
-    var {pagedData} = this.state;
+    var { pagedData } = this.state;
 
     return (
       <div>
@@ -79,10 +78,11 @@ class InfiniteScrollExample extends React.Component {
           headerHeight={50}
           width={1000}
           height={500}
-          {...this.props}>
+          {...this.props}
+        >
           <Column
             header={<DataCell></DataCell>}
-            cell={({rowIndex}) => (<DataCell>{rowIndex}</DataCell>)}
+            cell={({ rowIndex }) => <DataCell>{rowIndex}</DataCell>}
             fixed={true}
             width={50}
           />

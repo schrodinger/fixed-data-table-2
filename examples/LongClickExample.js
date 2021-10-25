@@ -10,7 +10,6 @@ import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class LongClickExample extends React.Component {
-
   longClickTimer = null;
 
   displayColumns = {
@@ -36,7 +35,7 @@ class LongClickExample extends React.Component {
     this.cancelLongClick();
     this.longClickTimer = setTimeout(() => {
       this.setState({
-        longPressedRowIndex: rowIndex
+        longPressedRowIndex: rowIndex,
       });
     }, 1000);
   }
@@ -55,16 +54,17 @@ class LongClickExample extends React.Component {
   getColumns() {
     let columns = [];
 
-    Object.keys(this.displayColumns).forEach(columnKey => {
+    Object.keys(this.displayColumns).forEach((columnKey) => {
       columns.push(
         <Column
           key={columnKey}
           columnKey={columnKey}
           flexGrow={2}
           header={<DataCell>{columns[columnKey]}</DataCell>}
-          cell={cell => this.getCell(cell.rowIndex, cell.columnKey)}
+          cell={(cell) => this.getCell(cell.rowIndex, cell.columnKey)}
           width={100}
-        />);
+        />
+      );
     });
 
     return columns;
@@ -76,13 +76,17 @@ class LongClickExample extends React.Component {
     let rowStyle = {
       backgroundColor: isCellHighlighted ? 'yellow' : 'transparent',
       width: '100%',
-      height: '100%'
-    }
+      height: '100%',
+    };
 
-    return <TextCell style={rowStyle}
-      data={this.state.dataList}
-      rowIndex={rowIndex}
-      columnKey={columnKey} />;
+    return (
+      <TextCell
+        style={rowStyle}
+        data={this.state.dataList}
+        rowIndex={rowIndex}
+        columnKey={columnKey}
+      />
+    );
   }
 
   render() {
@@ -93,9 +97,14 @@ class LongClickExample extends React.Component {
         rowsCount={this.state.dataList.getSize()}
         width={1000}
         height={500}
-        onRowMouseDown={(event, rowIndex) => { this.handleRowMouseDown(rowIndex); }}
-        onRowMouseUp={(event, rowIndex) => { this.handleRowMouseUp(rowIndex); }}
-        {...this.props}>
+        onRowMouseDown={(event, rowIndex) => {
+          this.handleRowMouseDown(rowIndex);
+        }}
+        onRowMouseUp={(event, rowIndex) => {
+          this.handleRowMouseUp(rowIndex);
+        }}
+        {...this.props}
+      >
         {this.state.columns}
       </Table>
     );
