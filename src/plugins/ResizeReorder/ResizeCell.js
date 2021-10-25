@@ -83,7 +83,6 @@ class ResizeCell extends React.PureComponent {
 ResizeCell.contextType = PluginContext;
 
 ResizeCell.propTypes = {
-
   /**
    * Optional prop that if specified on the `Column` will be passed to the
    * cell. It can be used to uniquely identify which column is the cell is in.

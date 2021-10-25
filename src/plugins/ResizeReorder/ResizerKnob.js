@@ -104,7 +104,7 @@ class ResizerKnob extends React.PureComponent {
       this.onMouseMove,
       this.onMouseUp,
       document.body,
-      this.props.touchEnabled,
+      this.props.touchEnabled
     );
     this.mouseMoveTracker.captureMouseMoves(event);
   };
@@ -114,7 +114,9 @@ class ResizerKnob extends React.PureComponent {
    */
   onMouseDown = (ev) => {
     this.initializeDOMMouseMoveTracker(ev);
-    const initialMouseXCoordinate = FixedDataTableEventHelper.getCoordinatesFromEvent(ev).x;
+    const initialMouseXCoordinate = FixedDataTableEventHelper.getCoordinatesFromEvent(
+      ev
+    ).x;
     this.setState({
       initialMouseXCoordinate,
       isColumnResizing: true,
@@ -127,17 +129,20 @@ class ResizerKnob extends React.PureComponent {
     const { minWidth, maxWidth } = this.getMinMaxWidth();
     const newWidth = clamp(
       this.props.width +
-      this.state.totalDisplacement * (this.props.isRTL ? -1 : 1),
+        this.state.totalDisplacement * (this.props.isRTL ? -1 : 1),
       minWidth,
-      maxWidth,
+      maxWidth
     );
     this.mouseMoveTracker.releaseMouseMoves();
-    this.setState({
-      isColumnResizing: false,
-      totalDisplacement: 0,
-    }, () => {
-      this.props.onColumnResizeEnd(newWidth, this.props.columnKey);
-    });
+    this.setState(
+      {
+        isColumnResizing: false,
+        totalDisplacement: 0,
+      },
+      () => {
+        this.props.onColumnResizeEnd(newWidth, this.props.columnKey);
+      }
+    );
   };
 
   /**
@@ -189,12 +194,12 @@ class ResizerKnob extends React.PureComponent {
 }
 
 ResizerKnob.propTypes = {
-
   /**
    * Optional prop that if specified on the `Column` will be passed to the
    * cell. It can be used to uniquely identify which column is the cell is in.
    */
-  columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
 
   /**
    * The minimum width of the column.

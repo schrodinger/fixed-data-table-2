@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
@@ -27,13 +27,10 @@ var columnWidths = {
   companyName: 100,
   city: 240,
   street: 260,
-  zipCode: 240
+  zipCode: 240,
 };
 
-var fixedColumns = [
-  'firstName',
-  'lastName'
-];
+var fixedColumns = ['firstName', 'lastName'];
 
 class ReorderExample extends React.Component {
   constructor(props) {
@@ -48,7 +45,7 @@ class ReorderExample extends React.Component {
         'street',
         'zipCode',
         'sentence',
-        'companyName'
+        'companyName',
       ],
       isReordering: {},
     };
@@ -71,11 +68,11 @@ class ReorderExample extends React.Component {
     }
     this.setState({
       columnOrder: columnOrder,
-      isReordering: {}
+      isReordering: {},
     });
   };
 
-  onColumnReorderStart  = (columnKey) => {
+  onColumnReorderStart = (columnKey) => {
     this.setState({
       isReordering: {
         [columnKey]: false,
@@ -86,7 +83,7 @@ class ReorderExample extends React.Component {
   render() {
     const { dataList, isReordering } = this.state;
     const onColumnReorderEndCallback = this._onColumnReorderEndCallback;
-    const onColumnReorderStart = this.onColumnReorderStart
+    const onColumnReorderStart = this.onColumnReorderStart;
     return (
       <Table
         rowHeight={30}

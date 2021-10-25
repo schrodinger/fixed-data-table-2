@@ -67,10 +67,7 @@ class FixedDataTableRowImpl extends React.Component {
     /**
      * the row expanded.
      */
-    rowExpanded: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.func,
-    ]),
+    rowExpanded: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
 
     /**
      * The row index.
@@ -434,7 +431,10 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   _renderColumnsRightShadow = (/*number*/ totalWidth) => /*?object*/ {
-    if (Math.ceil(this.props.scrollLeft + this.props.width) < Math.floor(totalWidth)) {
+    if (
+      Math.ceil(this.props.scrollLeft + this.props.width) <
+      Math.floor(totalWidth)
+    ) {
       var className = cx(
         'fixedDataTableRowLayout/columnsShadow',
         'fixedDataTableRowLayout/columnsRightShadow',
@@ -442,7 +442,7 @@ class FixedDataTableRowImpl extends React.Component {
         'public/fixedDataTableRow/columnsRightShadow'
       );
       var style = {
-        height: this.props.height
+        height: this.props.height,
       };
       return <div className={className} style={style} />;
     }
@@ -570,16 +570,19 @@ class FixedDataTableRow extends React.Component {
     var style = {
       width: this.props.width,
       height: this.props.height,
-      zIndex: (zIndex ? zIndex : 0),
-      visibility: (rowProps.visible ? 'visible' : 'hidden'),
+      zIndex: zIndex ? zIndex : 0,
+      visibility: rowProps.visible ? 'visible' : 'hidden',
     };
-    FixedDataTableTranslateDOMPosition(style, 0, offsetTop, this._initialRender, this.props.isRTL);
+    FixedDataTableTranslateDOMPosition(
+      style,
+      0,
+      offsetTop,
+      this._initialRender,
+      this.props.isRTL
+    );
 
     return (
-      <div
-        style={style}
-        className={cx('fixedDataTableRowLayout/rowWrapper')}
-      >
+      <div style={style} className={cx('fixedDataTableRowLayout/rowWrapper')}>
         <FixedDataTableRowImpl {...rowProps} />
       </div>
     );

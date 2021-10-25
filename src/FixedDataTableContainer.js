@@ -26,20 +26,27 @@ import shallowEqualSelector from './helper/shallowEqualSelector';
 import columnWidths from './selectors/columnWidths';
 import { initialize, propChange } from './reducers';
 
-
-const memoizeContext = shallowEqualSelector([
-  state => state.maxScrollX,
-  state => state.scrollX,
-  state => state.tableSize.height,
-  state => columnWidths(state)
-], (/*number*/maxScrollX, /*number*/scrollX, /*number*/tableHeight, { /*number*/availableScrollWidth }) => {
-  return {
-    maxScrollX,
-    scrollX,
-    tableHeight,
-    availableScrollWidth
+const memoizeContext = shallowEqualSelector(
+  [
+    (state) => state.maxScrollX,
+    (state) => state.scrollX,
+    (state) => state.tableSize.height,
+    (state) => columnWidths(state),
+  ],
+  (
+    /*number*/ maxScrollX,
+    /*number*/ scrollX,
+    /*number*/ tableHeight,
+    { /*number*/ availableScrollWidth }
+  ) => {
+    return {
+      maxScrollX,
+      scrollX,
+      tableHeight,
+      availableScrollWidth,
+    };
   }
-});
+);
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
@@ -60,7 +67,7 @@ class FixedDataTableContainer extends React.Component {
       this.reduxStore.dispatch
     );
 
-    this.reduxStore.dispatch(initialize(props))
+    this.reduxStore.dispatch(initialize(props));
 
     this.unsubscribe = this.reduxStore.subscribe(this.update);
     this.state = this.getBoundState();
@@ -72,10 +79,12 @@ class FixedDataTableContainer extends React.Component {
       'You must set either a height or a maxHeight'
     );
 
-    this.reduxStore.dispatch(propChange({
-      newProps: nextProps,
-      oldProps: this.props
-    }))
+    this.reduxStore.dispatch(
+      propChange({
+        newProps: nextProps,
+        oldProps: this.props,
+      })
+    );
   }
 
   componentWillUnmount() {
