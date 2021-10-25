@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.2.0
+ * FixedDataTable v1.2.1
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -822,6 +822,19 @@
         /***/ function (module, exports, __webpack_require__) {
           eval(
             "var Symbol = __webpack_require__(/*! ./_Symbol */ \"./node_modules/lodash/_Symbol.js\"),\n    arrayMap = __webpack_require__(/*! ./_arrayMap */ \"./node_modules/lodash/_arrayMap.js\"),\n    isArray = __webpack_require__(/*! ./isArray */ \"./node_modules/lodash/isArray.js\"),\n    isSymbol = __webpack_require__(/*! ./isSymbol */ \"./node_modules/lodash/isSymbol.js\");\n\n/** Used as references for various `Number` constants. */\nvar INFINITY = 1 / 0;\n\n/** Used to convert symbols to primitives and strings. */\nvar symbolProto = Symbol ? Symbol.prototype : undefined,\n    symbolToString = symbolProto ? symbolProto.toString : undefined;\n\n/**\n * The base implementation of `_.toString` which doesn't convert nullish\n * values to empty strings.\n *\n * @private\n * @param {*} value The value to process.\n * @returns {string} Returns the string.\n */\nfunction baseToString(value) {\n  // Exit early for strings to avoid a performance hit in some environments.\n  if (typeof value == 'string') {\n    return value;\n  }\n  if (isArray(value)) {\n    // Recursively convert values (susceptible to call stack limits).\n    return arrayMap(value, baseToString) + '';\n  }\n  if (isSymbol(value)) {\n    return symbolToString ? symbolToString.call(value) : '';\n  }\n  var result = (value + '');\n  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;\n}\n\nmodule.exports = baseToString;\n\n\n//# sourceURL=webpack://FixedDataTable/./node_modules/lodash/_baseToString.js?"
+          );
+
+          /***/
+        },
+
+      /***/ './node_modules/lodash/_baseTrim.js':
+        /*!******************************************!*\
+  !*** ./node_modules/lodash/_baseTrim.js ***!
+  \******************************************/
+        /*! no static exports found */
+        /***/ function (module, exports, __webpack_require__) {
+          eval(
+            'var trimmedEndIndex = __webpack_require__(/*! ./_trimmedEndIndex */ "./node_modules/lodash/_trimmedEndIndex.js");\n\n/** Used to match leading whitespace. */\nvar reTrimStart = /^\\s+/;\n\n/**\n * The base implementation of `_.trim`.\n *\n * @private\n * @param {string} string The string to trim.\n * @returns {string} Returns the trimmed string.\n */\nfunction baseTrim(string) {\n  return string\n    ? string.slice(0, trimmedEndIndex(string) + 1).replace(reTrimStart, \'\')\n    : string;\n}\n\nmodule.exports = baseTrim;\n\n\n//# sourceURL=webpack://FixedDataTable/./node_modules/lodash/_baseTrim.js?'
           );
 
           /***/
@@ -1698,6 +1711,19 @@
           /***/
         },
 
+      /***/ './node_modules/lodash/_trimmedEndIndex.js':
+        /*!*************************************************!*\
+  !*** ./node_modules/lodash/_trimmedEndIndex.js ***!
+  \*************************************************/
+        /*! no static exports found */
+        /***/ function (module, exports) {
+          eval(
+            '/** Used to match a single whitespace character. */\nvar reWhitespace = /\\s/;\n\n/**\n * Used by `_.trim` and `_.trimEnd` to get the index of the last non-whitespace\n * character of `string`.\n *\n * @private\n * @param {string} string The string to inspect.\n * @returns {number} Returns the index of the last non-whitespace character.\n */\nfunction trimmedEndIndex(string) {\n  var index = string.length;\n\n  while (index-- && reWhitespace.test(string.charAt(index))) {}\n  return index;\n}\n\nmodule.exports = trimmedEndIndex;\n\n\n//# sourceURL=webpack://FixedDataTable/./node_modules/lodash/_trimmedEndIndex.js?'
+          );
+
+          /***/
+        },
+
       /***/ './node_modules/lodash/clamp.js':
         /*!**************************************!*\
   !*** ./node_modules/lodash/clamp.js ***!
@@ -2121,7 +2147,7 @@
         /*! no static exports found */
         /***/ function (module, exports, __webpack_require__) {
           eval(
-            "var isObject = __webpack_require__(/*! ./isObject */ \"./node_modules/lodash/isObject.js\"),\n    isSymbol = __webpack_require__(/*! ./isSymbol */ \"./node_modules/lodash/isSymbol.js\");\n\n/** Used as references for various `Number` constants. */\nvar NAN = 0 / 0;\n\n/** Used to match leading and trailing whitespace. */\nvar reTrim = /^\\s+|\\s+$/g;\n\n/** Used to detect bad signed hexadecimal string values. */\nvar reIsBadHex = /^[-+]0x[0-9a-f]+$/i;\n\n/** Used to detect binary string values. */\nvar reIsBinary = /^0b[01]+$/i;\n\n/** Used to detect octal string values. */\nvar reIsOctal = /^0o[0-7]+$/i;\n\n/** Built-in method references without a dependency on `root`. */\nvar freeParseInt = parseInt;\n\n/**\n * Converts `value` to a number.\n *\n * @static\n * @memberOf _\n * @since 4.0.0\n * @category Lang\n * @param {*} value The value to process.\n * @returns {number} Returns the number.\n * @example\n *\n * _.toNumber(3.2);\n * // => 3.2\n *\n * _.toNumber(Number.MIN_VALUE);\n * // => 5e-324\n *\n * _.toNumber(Infinity);\n * // => Infinity\n *\n * _.toNumber('3.2');\n * // => 3.2\n */\nfunction toNumber(value) {\n  if (typeof value == 'number') {\n    return value;\n  }\n  if (isSymbol(value)) {\n    return NAN;\n  }\n  if (isObject(value)) {\n    var other = typeof value.valueOf == 'function' ? value.valueOf() : value;\n    value = isObject(other) ? (other + '') : other;\n  }\n  if (typeof value != 'string') {\n    return value === 0 ? value : +value;\n  }\n  value = value.replace(reTrim, '');\n  var isBinary = reIsBinary.test(value);\n  return (isBinary || reIsOctal.test(value))\n    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)\n    : (reIsBadHex.test(value) ? NAN : +value);\n}\n\nmodule.exports = toNumber;\n\n\n//# sourceURL=webpack://FixedDataTable/./node_modules/lodash/toNumber.js?"
+            "var baseTrim = __webpack_require__(/*! ./_baseTrim */ \"./node_modules/lodash/_baseTrim.js\"),\n    isObject = __webpack_require__(/*! ./isObject */ \"./node_modules/lodash/isObject.js\"),\n    isSymbol = __webpack_require__(/*! ./isSymbol */ \"./node_modules/lodash/isSymbol.js\");\n\n/** Used as references for various `Number` constants. */\nvar NAN = 0 / 0;\n\n/** Used to detect bad signed hexadecimal string values. */\nvar reIsBadHex = /^[-+]0x[0-9a-f]+$/i;\n\n/** Used to detect binary string values. */\nvar reIsBinary = /^0b[01]+$/i;\n\n/** Used to detect octal string values. */\nvar reIsOctal = /^0o[0-7]+$/i;\n\n/** Built-in method references without a dependency on `root`. */\nvar freeParseInt = parseInt;\n\n/**\n * Converts `value` to a number.\n *\n * @static\n * @memberOf _\n * @since 4.0.0\n * @category Lang\n * @param {*} value The value to process.\n * @returns {number} Returns the number.\n * @example\n *\n * _.toNumber(3.2);\n * // => 3.2\n *\n * _.toNumber(Number.MIN_VALUE);\n * // => 5e-324\n *\n * _.toNumber(Infinity);\n * // => Infinity\n *\n * _.toNumber('3.2');\n * // => 3.2\n */\nfunction toNumber(value) {\n  if (typeof value == 'number') {\n    return value;\n  }\n  if (isSymbol(value)) {\n    return NAN;\n  }\n  if (isObject(value)) {\n    var other = typeof value.valueOf == 'function' ? value.valueOf() : value;\n    value = isObject(other) ? (other + '') : other;\n  }\n  if (typeof value != 'string') {\n    return value === 0 ? value : +value;\n  }\n  value = baseTrim(value);\n  var isBinary = reIsBinary.test(value);\n  return (isBinary || reIsOctal.test(value))\n    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)\n    : (reIsBadHex.test(value) ? NAN : +value);\n}\n\nmodule.exports = toNumber;\n\n\n//# sourceURL=webpack://FixedDataTable/./node_modules/lodash/toNumber.js?"
           );
 
           /***/
@@ -2522,7 +2548,7 @@
         /***/ function (module, __webpack_exports__, __webpack_require__) {
           'use strict';
           eval(
-            '__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "version", function() { return version; });\n/* harmony import */ var _FixedDataTableContainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FixedDataTableContainer */ "./src/FixedDataTableContainer.js");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Table", function() { return _FixedDataTableContainer__WEBPACK_IMPORTED_MODULE_0__["default"]; });\n\n/* harmony import */ var _FixedDataTableCellDefaultDeprecated__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FixedDataTableCellDefaultDeprecated */ "./src/FixedDataTableCellDefaultDeprecated.js");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Cell", function() { return _FixedDataTableCellDefaultDeprecated__WEBPACK_IMPORTED_MODULE_1__["default"]; });\n\n/* harmony import */ var _FixedDataTableCellDefault__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./FixedDataTableCellDefault */ "./src/FixedDataTableCellDefault.js");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DataCell", function() { return _FixedDataTableCellDefault__WEBPACK_IMPORTED_MODULE_2__["default"]; });\n\n/* harmony import */ var _FixedDataTableColumn__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FixedDataTableColumn */ "./src/FixedDataTableColumn.js");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Column", function() { return _FixedDataTableColumn__WEBPACK_IMPORTED_MODULE_3__["default"]; });\n\n/* harmony import */ var _FixedDataTableColumnGroup__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./FixedDataTableColumnGroup */ "./src/FixedDataTableColumnGroup.js");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ColumnGroup", function() { return _FixedDataTableColumnGroup__WEBPACK_IMPORTED_MODULE_4__["default"]; });\n\n/**\n * Copyright Schrodinger, LLC\n * All rights reserved.\n *\n * This source code is licensed under the BSD-style license found in the\n * LICENSE file in the root directory of this source tree. An additional grant\n * of patent rights can be found in the PATENTS file in the same directory.\n *\n * @providesModule FixedDataTableRoot\n */\n\n\n\n\n\n\n\nvar version = \'1.2.0\';\n\n\n//# sourceURL=webpack://FixedDataTable/./src/FixedDataTableRoot.js?'
+            '__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "version", function() { return version; });\n/* harmony import */ var _FixedDataTableContainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FixedDataTableContainer */ "./src/FixedDataTableContainer.js");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Table", function() { return _FixedDataTableContainer__WEBPACK_IMPORTED_MODULE_0__["default"]; });\n\n/* harmony import */ var _FixedDataTableCellDefaultDeprecated__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FixedDataTableCellDefaultDeprecated */ "./src/FixedDataTableCellDefaultDeprecated.js");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Cell", function() { return _FixedDataTableCellDefaultDeprecated__WEBPACK_IMPORTED_MODULE_1__["default"]; });\n\n/* harmony import */ var _FixedDataTableCellDefault__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./FixedDataTableCellDefault */ "./src/FixedDataTableCellDefault.js");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DataCell", function() { return _FixedDataTableCellDefault__WEBPACK_IMPORTED_MODULE_2__["default"]; });\n\n/* harmony import */ var _FixedDataTableColumn__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FixedDataTableColumn */ "./src/FixedDataTableColumn.js");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Column", function() { return _FixedDataTableColumn__WEBPACK_IMPORTED_MODULE_3__["default"]; });\n\n/* harmony import */ var _FixedDataTableColumnGroup__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./FixedDataTableColumnGroup */ "./src/FixedDataTableColumnGroup.js");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ColumnGroup", function() { return _FixedDataTableColumnGroup__WEBPACK_IMPORTED_MODULE_4__["default"]; });\n\n/**\n * Copyright Schrodinger, LLC\n * All rights reserved.\n *\n * This source code is licensed under the BSD-style license found in the\n * LICENSE file in the root directory of this source tree. An additional grant\n * of patent rights can be found in the PATENTS file in the same directory.\n *\n * @providesModule FixedDataTableRoot\n */\n\n\n\n\n\n\n\nvar version = \'1.2.1\';\n\n\n//# sourceURL=webpack://FixedDataTable/./src/FixedDataTableRoot.js?'
           );
 
           /***/
