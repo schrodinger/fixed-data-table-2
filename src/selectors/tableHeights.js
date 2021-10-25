@@ -40,8 +40,15 @@ import scrollbarsVisible from './scrollbarsVisible';
  *   visibleRowsHeight: number,
  * }}
  */
-function tableHeights(elementHeights, ownerHeight, reservedHeight,
-  scrollContentHeight, scrollbarsVisible, useMaxHeight, scrollbarXHeight) {
+function tableHeights(
+  elementHeights,
+  ownerHeight,
+  reservedHeight,
+  scrollContentHeight,
+  scrollbarsVisible,
+  useMaxHeight,
+  scrollbarXHeight
+) {
   const { availableHeight, scrollEnabledX } = scrollbarsVisible;
   let reservedWithScrollbar = reservedHeight;
   if (scrollEnabledX) {
@@ -66,8 +73,9 @@ function tableHeights(elementHeights, ownerHeight, reservedHeight,
 
   // If using max height, virtual row container is scrollContentHeight, otherwise
   // it is the larger of that or the available height.
-  const virtualRowContainerHeight = useMaxHeight ? scrollContentHeight :
-    Math.max(scrollContentHeight, availableHeight);
+  const virtualRowContainerHeight = useMaxHeight
+    ? scrollContentHeight
+    : Math.max(scrollContentHeight, availableHeight);
 
   // contentHeight is the virtual rows height and reserved height,
   // or ownerHeight if that's larger
@@ -95,12 +103,15 @@ function tableHeights(elementHeights, ownerHeight, reservedHeight,
   };
 }
 
-export default shallowEqualSelector([
-  state => state.elementHeights,
-  state => state.tableSize.ownerHeight,
-  state => roughHeights(state).reservedHeight,
-  state => state.scrollContentHeight,
-  scrollbarsVisible,
-  state => state.tableSize.useMaxHeight,
-  state => state.scrollbarXHeight
-], tableHeights);
+export default shallowEqualSelector(
+  [
+    (state) => state.elementHeights,
+    (state) => state.tableSize.ownerHeight,
+    (state) => roughHeights(state).reservedHeight,
+    (state) => state.scrollContentHeight,
+    scrollbarsVisible,
+    (state) => state.tableSize.useMaxHeight,
+    (state) => state.scrollbarXHeight,
+  ],
+  tableHeights
+);

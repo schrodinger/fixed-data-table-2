@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-"use strict";
+'use strict';
 
 require('./examplesPageStyle.less');
 
@@ -24,9 +24,7 @@ class ExamplesWrapper extends React.Component {
               pages={Constants.ExamplePages}
               page={this.props.page}
             />
-            <div className="exampleContents">
-              {this.props.children}
-            </div>
+            <div className="exampleContents">{this.props.children}</div>
           </div>
         </div>
       </div>

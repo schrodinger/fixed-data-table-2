@@ -32,15 +32,19 @@ import updateRowHeight from './updateRowHeight';
  * }}
  */
 export function getScrollAnchor(state, newProps, oldProps) {
-  if (newProps.scrollToRow !== undefined &&
+  if (
+    newProps.scrollToRow !== undefined &&
     newProps.scrollToRow !== null &&
-    (!oldProps || newProps.scrollToRow !== oldProps.scrollToRow)) {
+    (!oldProps || newProps.scrollToRow !== oldProps.scrollToRow)
+  ) {
     return scrollToRow(state, newProps.scrollToRow);
   }
 
-  if (newProps.scrollTop !== undefined &&
+  if (
+    newProps.scrollTop !== undefined &&
     newProps.scrollTop !== null &&
-    (!oldProps || newProps.scrollTop !== oldProps.scrollTop)) {
+    (!oldProps || newProps.scrollTop !== oldProps.scrollTop)
+  ) {
     return scrollTo(state, newProps.scrollTop);
   }
 
@@ -49,7 +53,7 @@ export function getScrollAnchor(state, newProps, oldProps) {
     firstOffset: state.firstRowOffset,
     lastIndex: undefined,
     changed: false,
-  }
+  };
 }
 
 /**

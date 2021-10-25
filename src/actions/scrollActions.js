@@ -12,16 +12,16 @@
  *
  * @param {number} scrollX
  */
-export { scrollToX } from '../reducers'
+export { scrollToX } from '../reducers';
 
 /**
  * Scrolls the table vertically to position
  *
  * @param {number} scrollY
  */
-export { scrollToY } from '../reducers'
+export { scrollToY } from '../reducers';
 
 /**
  * Fire when user starts scrolling
  */
-export { scrollEnd as stopScroll } from '../reducers'
+export { scrollEnd as stopScroll } from '../reducers';

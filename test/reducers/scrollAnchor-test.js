@@ -2,22 +2,25 @@
  * Copyright Schrodinger, LLC
  */
 import { assert } from 'chai';
-import { __RewireAPI__, getScrollAnchor } from '../../src/reducers/scrollAnchor';
+import {
+  __RewireAPI__,
+  getScrollAnchor,
+} from '../../src/reducers/scrollAnchor';
 
-describe('scrollAnchor', function() {
-  beforeEach(function() {
+describe('scrollAnchor', function () {
+  beforeEach(function () {
     __RewireAPI__.__Rewire__('scrollbarsVisibleSelector', () => ({
       availableHeight: 600,
     }));
   });
 
-  afterEach(function() {
+  afterEach(function () {
     __RewireAPI__.__ResetDependency__('scrollbarsVisibleSelector');
   });
 
-  describe('scrollTo', function() {
+  describe('scrollTo', function () {
     let oldState;
-    beforeEach(function() {
+    beforeEach(function () {
       oldState = {
         rowOffsetIntervalTree: {
           greatestLowerBound: (scrollY) => Math.floor(scrollY / 100),
@@ -30,7 +33,7 @@ describe('scrollAnchor', function() {
       };
     });
 
-    it('should scroll to row and offset of scrollY', function() {
+    it('should scroll to row and offset of scrollY', function () {
       const scrollAnchor = getScrollAnchor(oldState, { scrollTop: 2150 }, {});
       assert.deepEqual(scrollAnchor, {
         firstIndex: 21,
@@ -40,7 +43,7 @@ describe('scrollAnchor', function() {
       });
     });
 
-    it('should scroll to first index if scrollY < 0', function() {
+    it('should scroll to first index if scrollY < 0', function () {
       const scrollAnchor = getScrollAnchor(oldState, { scrollTop: -200 }, {});
       assert.deepEqual(scrollAnchor, {
         firstIndex: 0,
@@ -50,7 +53,7 @@ describe('scrollAnchor', function() {
       });
     });
 
-    it('should scroll to last index if scrollY is larger than max scroll', function() {
+    it('should scroll to last index if scrollY is larger than max scroll', function () {
       const scrollAnchor = getScrollAnchor(oldState, { scrollTop: 9500 }, {});
       assert.deepEqual(scrollAnchor, {
         firstIndex: undefined,
@@ -60,7 +63,7 @@ describe('scrollAnchor', function() {
       });
     });
 
-    it('should scroll to first index if rowsCount is 0', function() {
+    it('should scroll to first index if rowsCount is 0', function () {
       oldState.rowSettings.rowsCount = 0;
 
       const scrollAnchor = getScrollAnchor(oldState, { scrollTop: 9500 }, {});
@@ -73,12 +76,12 @@ describe('scrollAnchor', function() {
     });
   });
 
-  describe('scrollToRow', function() {
+  describe('scrollToRow', function () {
     let oldState;
-    beforeEach(function() {
+    beforeEach(function () {
       oldState = {
         rowOffsetIntervalTree: {
-          sumUntil: idx => idx * 100,
+          sumUntil: (idx) => idx * 100,
         },
         rowSettings: {
           rowsCount: 100,
@@ -93,7 +96,7 @@ describe('scrollAnchor', function() {
       };
     });
 
-    it('should scroll forward to row', function() {
+    it('should scroll forward to row', function () {
       oldState.scrollY = 2000;
 
       const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: 40 }, {});
@@ -105,7 +108,7 @@ describe('scrollAnchor', function() {
       });
     });
 
-    it('should scroll backward to row', function() {
+    it('should scroll backward to row', function () {
       oldState.scrollY = 5000;
 
       const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: 40 }, {});
@@ -117,7 +120,7 @@ describe('scrollAnchor', function() {
       });
     });
 
-    it('should not scroll if row already in viewport', function() {
+    it('should not scroll if row already in viewport', function () {
       oldState.scrollY = 3850;
       oldState.firstRowIndex = 38;
       oldState.firstRowOffset = 50;
@@ -131,7 +134,7 @@ describe('scrollAnchor', function() {
       });
     });
 
-    it('should return default anchor if rowsCount is 0', function() {
+    it('should return default anchor if rowsCount is 0', function () {
       oldState.firstRowIndex = 0;
       oldState.firstRowOffset = 50;
       oldState.rowSettings.rowsCount = 0;
@@ -145,7 +148,7 @@ describe('scrollAnchor', function() {
       });
     });
 
-    it('should treat a negative row index as 0', function() {
+    it('should treat a negative row index as 0', function () {
       oldState.scrollY = 2000;
 
       const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: -20 }, {});
@@ -157,7 +160,7 @@ describe('scrollAnchor', function() {
       });
     });
 
-    it('should clamp to the max row', function() {
+    it('should clamp to the max row', function () {
       oldState.scrollY = 2000;
 
       const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: 200 }, {});

@@ -5,7 +5,7 @@
 import faker from 'faker';
 
 class FakeObjectDataListStore {
-  constructor(/*number*/ size){
+  constructor(/*number*/ size) {
     this.size = size || 2000;
     this._cache = [];
   }
@@ -30,7 +30,7 @@ class FakeObjectDataListStore {
   }
 
   getObjectAt(/*number*/ index) /*?object*/ {
-    if (index < 0 || index > this.size){
+    if (index < 0 || index > this.size) {
       return undefined;
     }
     if (this._cache[index] === undefined) {
@@ -40,10 +40,10 @@ class FakeObjectDataListStore {
   }
 
   /**
-  * Populates the entire cache with data.
-  * Use with Caution! Behaves slowly for large sizes
-  * ex. 100,000 rows
-  */
+   * Populates the entire cache with data.
+   * Use with Caution! Behaves slowly for large sizes
+   * ex. 100,000 rows
+   */
   getAll() {
     if (this._cache.length < this.size) {
       for (var i = 0; i < this.size; i++) {

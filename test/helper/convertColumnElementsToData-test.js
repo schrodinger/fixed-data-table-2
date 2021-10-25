@@ -6,23 +6,23 @@ import forEach from 'lodash/forEach';
 
 import convertColumnElementsToData from '../../src/helper/convertColumnElementsToData';
 
-describe('convertColumnElementsToData', function() {
-  before(function() {
+describe('convertColumnElementsToData', function () {
+  before(function () {
     convertColumnElementsToData.__Rewire__('React', {
       Children: {
         forEach: forEach,
-      }
+      },
     });
   });
 
-  after(function() {
+  after(function () {
     convertColumnElementsToData.__ResetDependency__('React');
   });
 
   let column1;
   let column2;
   let column3;
-  beforeEach(function() {
+  beforeEach(function () {
     column1 = {
       props: {
         columnKey: 'bob',
@@ -58,45 +58,52 @@ describe('convertColumnElementsToData', function() {
     };
   });
 
-  it('should return appropriate columnGroupProps, columnProps, and elementTemplates', function() {
+  it('should return appropriate columnGroupProps, columnProps, and elementTemplates', function () {
     const {
       columnGroupProps,
       columnProps,
       elementTemplates,
       useGroupHeader,
-    } = convertColumnElementsToData([{
-      props: {
-        fixed: true,
-        children: [column1, column2],
-        header: { id: 'g1' },
+    } = convertColumnElementsToData([
+      {
+        props: {
+          fixed: true,
+          children: [column1, column2],
+          header: { id: 'g1' },
+        },
+        type: { __TableColumnGroup__: true },
       },
-      type: { __TableColumnGroup__: true },
-    }, {
-      props: {
-        fixed: false,
-        children: [column3],
-        header: { id: 'g2' },
+      {
+        props: {
+          fixed: false,
+          children: [column3],
+          header: { id: 'g2' },
+        },
+        type: { __TableColumnGroup__: true },
       },
-      type: { __TableColumnGroup__: true },
-    }]);
+    ]);
 
     assert.deepEqual(columnGroupProps, [{ fixed: true }, { fixed: false }]);
-    assert.deepEqual(columnProps, [{
-      columnKey: 'bob',
-      fixed: true,
-      width: 100,
-      groupIdx: 0,
-    }, {
-      columnKey: 'sue',
-      fixed: false,
-      width: 50,
-      groupIdx: 0,
-    }, {
-      columnKey: 'bill',
-      fixed: false,
-      width: 200,
-      groupIdx: 1,
-    }]);
+    assert.deepEqual(columnProps, [
+      {
+        columnKey: 'bob',
+        fixed: true,
+        width: 100,
+        groupIdx: 0,
+      },
+      {
+        columnKey: 'sue',
+        fixed: false,
+        width: 50,
+        groupIdx: 0,
+      },
+      {
+        columnKey: 'bill',
+        fixed: false,
+        width: 200,
+        groupIdx: 1,
+      },
+    ]);
     assert.deepEqual(elementTemplates, {
       cell: [{ id: 'c1' }, { id: 'c2' }, { id: 'c3' }],
       footer: [{ id: 'f1' }, { id: 'f2' }, { id: 'f3' }],
@@ -106,7 +113,7 @@ describe('convertColumnElementsToData', function() {
     assert.strictEqual(useGroupHeader, true);
   });
 
-  it('should not specify a groupIdx if none exists', function() {
+  it('should not specify a groupIdx if none exists', function () {
     const {
       columnGroupProps,
       columnProps,
@@ -115,15 +122,18 @@ describe('convertColumnElementsToData', function() {
     } = convertColumnElementsToData([column1, column2]);
 
     assert.deepEqual(columnGroupProps, []);
-    assert.deepEqual(columnProps, [{
-      columnKey: 'bob',
-      fixed: true,
-      width: 100,
-    }, {
-      columnKey: 'sue',
-      fixed: false,
-      width: 50,
-    }]);
+    assert.deepEqual(columnProps, [
+      {
+        columnKey: 'bob',
+        fixed: true,
+        width: 100,
+      },
+      {
+        columnKey: 'sue',
+        fixed: false,
+        width: 50,
+      },
+    ]);
     assert.deepEqual(elementTemplates, {
       cell: [{ id: 'c1' }, { id: 'c2' }],
       footer: [{ id: 'f1' }, { id: 'f2' }],
@@ -133,7 +143,7 @@ describe('convertColumnElementsToData', function() {
     assert.strictEqual(useGroupHeader, false);
   });
 
-  it('should include all necessary props and remove all others', function() {
+  it('should include all necessary props and remove all others', function () {
     const testColumn = {
       props: {
         align: 'center',
@@ -141,7 +151,7 @@ describe('convertColumnElementsToData', function() {
         cellClassName: 'myClass',
         columnKey: 'test',
         extraneousProp: 'hello',
-        extraneousProp2: 'I\'m not useful!',
+        extraneousProp2: "I'm not useful!",
         flexGrow: 10,
         fixed: true,
         isReorderable: true,
@@ -155,39 +165,44 @@ describe('convertColumnElementsToData', function() {
 
     const { columnProps } = convertColumnElementsToData([testColumn]);
 
-    assert.deepEqual(columnProps, [{
-      align: 'center',
-      allowCellsRecycling: true,
-      cellClassName: 'myClass',
-      columnKey: 'test',
-      flexGrow: 10,
-      fixed: true,
-      isReorderable: true,
-      isResizable: true,
-      maxWidth: 200,
-      minWidth: 50,
-      width: 100,
-    }]);
+    assert.deepEqual(columnProps, [
+      {
+        align: 'center',
+        allowCellsRecycling: true,
+        cellClassName: 'myClass',
+        columnKey: 'test',
+        flexGrow: 10,
+        fixed: true,
+        isReorderable: true,
+        isResizable: true,
+        maxWidth: 200,
+        minWidth: 50,
+        width: 100,
+      },
+    ]);
   });
 
-  it('should include undefined placeholders for missing header and footer templates', function() {
+  it('should include undefined placeholders for missing header and footer templates', function () {
     delete column1.props.header;
     delete column1.props.footer;
 
-    const {
-      columnProps,
-      elementTemplates,
-    } = convertColumnElementsToData([column1, column2]);
+    const { columnProps, elementTemplates } = convertColumnElementsToData([
+      column1,
+      column2,
+    ]);
 
-    assert.deepEqual(columnProps, [{
-      columnKey: 'bob',
-      fixed: true,
-      width: 100,
-    }, {
-      columnKey: 'sue',
-      fixed: false,
-      width: 50,
-    }]);
+    assert.deepEqual(columnProps, [
+      {
+        columnKey: 'bob',
+        fixed: true,
+        width: 100,
+      },
+      {
+        columnKey: 'sue',
+        fixed: false,
+        width: 50,
+      },
+    ]);
 
     assert.deepEqual(elementTemplates, {
       cell: [{ id: 'c1' }, { id: 'c2' }],

@@ -57,8 +57,11 @@ function calculateAriaAttributes(rowsCount, useGroupHeader, useFooter) {
   };
 }
 
-export default shallowEqualSelector([
-  state => state.rowsCount,
-  state => state.groupHeaderHeight > 0,
-  state => state.footerHeight > 0,
-], calculateAriaAttributes);
+export default shallowEqualSelector(
+  [
+    (state) => state.rowsCount,
+    (state) => state.groupHeaderHeight > 0,
+    (state) => state.footerHeight > 0,
+  ],
+  calculateAriaAttributes
+);
