@@ -81,7 +81,6 @@ var ARROW_SCROLL_SPEED = 25;
  */
 class FixedDataTable extends React.Component {
   static propTypes = {
-
     // TODO (jordan) Remove propType of width without losing documentation (moved to tableSize)
     /**
      * Pixel width of table. If all columns do not fit,
@@ -245,10 +244,7 @@ class FixedDataTable extends React.Component {
      * If you pass in a function, you will receive the same props object as the
      * first argument.
      */
-    rowExpanded: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.func,
-    ]),
+    rowExpanded: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
 
     /**
      * To get any additional CSS classes that should be added to a row,
@@ -481,6 +477,16 @@ class FixedDataTable extends React.Component {
      * Callback that returns an object of html attributes to add to the grid element
      */
     gridAttributesGetter: PropTypes.func,
+
+    // TODO (pradeep) Remove propType of rowAttributesGetter without losing documentation (moved to rowSettings)
+    /**
+     * Callback that returns an object of html attributes to add to each row element.
+     *
+     * ```
+     * function(rowIndex: number)
+     * ```
+     */
+    rowAttributesGetter: PropTypes.func,
   };
 
   static defaultProps = /*object*/ {
@@ -672,7 +678,12 @@ class FixedDataTable extends React.Component {
       scrollbarXOffsetTop,
       visibleRowsHeight,
     } = tableHeightsSelector(this.props);
-    const { tableSize: { width }, scrollContentHeight, scrollY, scrollX } = this.props;
+    const {
+      tableSize: { width },
+      scrollContentHeight,
+      scrollY,
+      scrollX,
+    } = this.props;
     const newScrollState = {
       viewportHeight: visibleRowsHeight,
       contentHeight: scrollContentHeight,
@@ -1093,6 +1104,7 @@ class FixedDataTable extends React.Component {
       onHorizontalScroll,
       onVerticalScroll,
       tableSize: { ownerHeight },
+      scrolling,
     } = this.props;
 
     const {
@@ -1101,6 +1113,7 @@ class FixedDataTable extends React.Component {
       scrollX: oldScrollX,
       scrollY: oldScrollY,
       tableSize: { ownerHeight: oldOwnerHeight },
+      scrolling: oldScrolling,
     } = prevProps;
 
     // check if scroll values have changed - we have an extra check on NaN because (NaN !== NaN)
@@ -1116,7 +1129,7 @@ class FixedDataTable extends React.Component {
     }
 
     // only call onScrollStart if scrolling wasn't on previously
-    if (!this.props.scrolling && onScrollStart) {
+    if (!oldScrolling && scrolling && onScrollStart) {
       onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex, oldEndRowIndex);
     }
 
