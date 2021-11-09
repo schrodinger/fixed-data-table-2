@@ -47,6 +47,7 @@ function getInitialState() {
       groupHeaderHeight: 0,
       headerHeight: 0,
     },
+    propsReference: null,
     rowSettings: {
       bufferRowCount: undefined,
       rowAttributesGetter: undefined,
@@ -237,7 +238,7 @@ function setStateFromProps(state, props) {
   } = convertColumnElementsToData(props.children);
 
   const newState = Object.assign({}, state,
-    { columnGroupProps, columnProps, elementTemplates });
+    { columnGroupProps, columnProps, elementTemplates, propsReference: props });
 
   newState.elementHeights = Object.assign({}, newState.elementHeights,
     pick(props, ['cellGroupWrapperHeight', 'footerHeight', 'groupHeaderHeight', 'headerHeight']));
