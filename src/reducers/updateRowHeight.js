@@ -15,9 +15,6 @@
  * Update our cached row height for a specific index
  * based on the value from rowHeightGetter
  *
- * NOTE (jordan) This alters state so it shouldn't be called
- * without state having been cloned first.
- *
  * @param {!Object} state
  * @param {number} rowIdx
  * @return {number} The new row height

@@ -34,12 +34,11 @@ import updateRowHeight from './updateRowHeight';
  * @return {!Object} The updated state object
  */
 export default function computeRenderedRows(state, scrollAnchor) {
-  const newState = Object.assign({}, state);
-  let rowRange = calculateRenderedRowRange(newState, scrollAnchor);
+  let rowRange = calculateRenderedRowRange(state, scrollAnchor);
 
-  const { rowSettings, scrollContentHeight } = newState;
+  const { rowSettings, scrollContentHeight } = state;
   const { rowsCount } = rowSettings;
-  const { bodyHeight } = tableHeightsSelector(newState);
+  const { bodyHeight } = tableHeightsSelector(state);
   const maxScrollY = scrollContentHeight - bodyHeight;
   let firstRowOffset;
 
@@ -47,7 +46,7 @@ export default function computeRenderedRows(state, scrollAnchor) {
   // leave only a subset of rows shown, but no scrollbar to scroll up to the first rows.
   if (maxScrollY === 0) {
     if (rowRange.firstViewportIdx > 0) {
-      rowRange = calculateRenderedRowRange(newState, {
+      rowRange = calculateRenderedRowRange(state, {
         firstOffset: 0,
         lastIndex: rowsCount - 1,
       });
@@ -61,15 +60,15 @@ export default function computeRenderedRows(state, scrollAnchor) {
   const firstRowIndex = rowRange.firstViewportIdx;
   const endRowIndex = rowRange.endViewportIdx;
 
-  computeRenderedRowOffsets(newState, rowRange, state.scrolling);
+  computeRenderedRowOffsets(state, rowRange, state.scrolling);
 
   let scrollY = 0;
   if (rowsCount > 0) {
-    scrollY = newState.rowOffsets[rowRange.firstViewportIdx] - firstRowOffset;
+    scrollY = state.rowOffsets[rowRange.firstViewportIdx] - firstRowOffset;
   }
   scrollY = clamp(scrollY, 0, maxScrollY);
 
-  return Object.assign(newState, {
+  Object.assign(state, {
     firstRowIndex,
     firstRowOffset,
     endRowIndex,
@@ -84,9 +83,6 @@ export default function computeRenderedRows(state, scrollAnchor) {
  * while the viewport rows are based on their height and the viewport height
  * We use the scrollAnchor to determine what either the first or last row
  * will be, as well as the offset.
- *
- * NOTE (jordan) This alters state so it shouldn't be called
- * without state having been cloned first.
  *
  * @param {!Object} state
  * @param {{
@@ -211,9 +207,6 @@ function calculateRenderedRowRange(state, scrollAnchor) {
 /**
  * Walk the rows to render and compute the height offsets and
  * positions in the row buffer.
- *
- * NOTE (jordan) This alters state so it shouldn't be called
- * without state having been cloned first.
  *
  * @param {!Object} state
  * @param {{
