@@ -103,11 +103,17 @@ function getInitialState() {
 
 const slice = createSlice({
   name: 'FDT',
-  initialState: getInitialState(),
+  /*
+   * NOTE (pradeep, wcjordan): The initial state will be populated through the `initialize` reducer.
+   * We can't preset the state using the `initialState` field because we need a brand new, independent object
+   * for each table instance, or issues may occur due to multiple tables sharing data (see #369 for an example)
+   */
+  initialState: {},
   reducers: {
     initialize(state, action) {
       const props = action.payload;
 
+      Object.assign(state, getInitialState());
       setStateFromProps(state, props);
       initializeRowHeightsAndOffsets(state);
       const scrollAnchor = getScrollAnchor(state, props);
