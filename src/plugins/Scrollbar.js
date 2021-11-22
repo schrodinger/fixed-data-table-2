@@ -240,7 +240,9 @@ class Scrollbar extends React.PureComponent {
         passive: false,
       });
     this._nextState = null;
-    this._mouseMoveTracker.releaseMouseMoves();
+    if (this._mouseMoveTracker) {
+      this._mouseMoveTracker.releaseMouseMoves();
+    }
     if (_lastScrolledScrollbar === this) {
       _lastScrolledScrollbar = null;
     }

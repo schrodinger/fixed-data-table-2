@@ -110,8 +110,10 @@ class ColumnResizerLine extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    this._mouseMoveTracker.releaseMouseMoves();
-    this._mouseMoveTracker = null;
+    if (this._mouseMoveTracker) {
+      this._mouseMoveTracker.releaseMouseMoves();
+      this._mouseMoveTracker = null;
+    }
   }
 
   render() /*object*/ {
@@ -128,8 +130,8 @@ class ColumnResizerLine extends React.PureComponent {
       <div
         className={cx({
           'fixedDataTableColumnResizerLineLayout/main': true,
-          'fixedDataTableColumnResizerLineLayout/hiddenElem': !this.props
-            .visible,
+          'fixedDataTableColumnResizerLineLayout/hiddenElem':
+            !this.props.visible,
           'public/fixedDataTableColumnResizerLine/main': true,
         })}
         style={style}
@@ -162,7 +164,9 @@ class ColumnResizerLine extends React.PureComponent {
   };
 
   _onColumnResizeEnd = () => {
-    this._mouseMoveTracker.releaseMouseMoves();
+    if (this._mouseMoveTracker) {
+      this._mouseMoveTracker.releaseMouseMoves();
+    }
     this.props.onColumnResizeEnd(this.state.width, this.props.columnKey);
   };
 }

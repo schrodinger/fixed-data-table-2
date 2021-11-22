@@ -126,7 +126,9 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
     this._animating = false;
     cancelAnimationFrame(this.frameId);
     this.frameId = null;
-    this._mouseMoveTracker.releaseMouseMoves();
+    if (this._mouseMoveTracker) {
+      this._mouseMoveTracker.releaseMouseMoves();
+    }
     this.props.columnReorderingData.cancelReorder = cancelReorder;
     this.props.onColumnReorderEnd();
   };
