@@ -23,7 +23,6 @@ const DRAG_SCROLL_BUFFER = 100;
 
 /**
  * Initialize scrollX state
- * TODO (jordan) Audit this method for cases where deep values are not properly cloned
  *
  * @param {!Object} state
  * @param {!Object} props
@@ -53,7 +52,7 @@ function initialize(state, props, oldProps) {
       : isColumnResizing;
   columnResizingData = isColumnResizing ? columnResizingData : {};
 
-  return Object.assign({}, state, {
+  Object.assign(state, {
     columnResizingData,
     isColumnResizing,
     maxScrollX,
