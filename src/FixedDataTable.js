@@ -436,6 +436,16 @@ class FixedDataTable extends React.Component {
      * ```
      */
     onColumnReorderEndCallback: PropTypes.func,
+    /**
+     * Callback that is called when column resizer is doubled clicked
+     *
+     * ```
+     * function(
+     *  columnKey: string,
+     * )
+     * ```
+     */
+    onColumnResizerDoubleClick: PropTypes.func,
 
     /**
      * Whether a column is currently being resized.
@@ -885,6 +895,7 @@ class FixedDataTable extends React.Component {
         scrollableColumns={scrollableColumns.header}
         touchEnabled={touchScrollEnabled}
         onColumnResize={this._onColumnResize}
+        onColumnResizerDoubleClick={this.props.onColumnResizerDoubleClick}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
         onColumnReorderEnd={this._onColumnReorderEnd}

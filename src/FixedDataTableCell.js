@@ -61,6 +61,7 @@ class FixedDataTableCell extends React.Component {
      * @param object event
      */
     onColumnResize: PropTypes.func,
+    onColumnResizerDoubleClick: PropTypes.func,
     onColumnReorder: PropTypes.func,
 
     /**
@@ -253,6 +254,7 @@ class FixedDataTableCell extends React.Component {
           className={cx('fixedDataTableCellLayout/columnResizerContainer')}
           style={columnResizerStyle}
           onMouseDown={this._onColumnResizerMouseDown}
+          onDoubleClick={this._onColumnResizerDoubleClick}
           onTouchStart={
             this.props.touchEnabled ? this._onColumnResizerMouseDown : null
           }
@@ -337,6 +339,10 @@ class FixedDataTableCell extends React.Component {
       event.stopPropagation();
     }
   };
+
+  _onColumnResizerDoubleClick = () => {
+    this.props.onColumnResizerDoubleClick(this.props.columnKey);
+  }
 
   _onColumnReorderMouseDown = (/*object*/ event) => {
     this.props.onColumnReorder(

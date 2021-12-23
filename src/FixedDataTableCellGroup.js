@@ -37,6 +37,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     left: PropTypes.number,
 
     onColumnResize: PropTypes.func,
+    onColumnResizerDoubleClick: PropTypes.func,
 
     onColumnReorder: PropTypes.func,
     onColumnReorderMove: PropTypes.func,
@@ -170,6 +171,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         minWidth={columnProps.minWidth}
         touchEnabled={this.props.touchEnabled}
         onColumnResize={onColumnResize}
+        onColumnResizerDoubleClick={this.props.onColumnResizerDoubleClick}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
