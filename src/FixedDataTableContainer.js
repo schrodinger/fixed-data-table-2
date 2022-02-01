@@ -48,6 +48,7 @@ class FixedDataTableContainer extends React.Component {
     this.state = {
       boundState: FixedDataTableContainer.getBoundState(this.reduxStore), // the state from the redux store
       reduxStore: this.reduxStore, // put store instance in local state so that getDerivedStateFromProps can access it
+      props, // put props in local state so that getDerivedStateFromProps can access it
     };
   }
 
@@ -68,7 +69,7 @@ class FixedDataTableContainer extends React.Component {
     currentState.reduxStore.dispatch({
       type: ActionTypes.PROP_CHANGE,
       newProps: nextProps,
-      oldProps: currentState.boundState.propsReference,
+      oldProps: currentState.props,
     });
 
     // return the new state from the updated redux store
@@ -76,6 +77,7 @@ class FixedDataTableContainer extends React.Component {
       boundState: FixedDataTableContainer.getBoundState(
         currentState.reduxStore
       ),
+      props: nextProps,
     };
   }
 
@@ -122,7 +124,7 @@ class FixedDataTableContainer extends React.Component {
       'isColumnResizing',
       'maxScrollX',
       'maxScrollY',
-      'propsReference',
+      'propsRevision',
       'rows',
       'rowOffsets',
       'rowSettings',
@@ -145,7 +147,7 @@ class FixedDataTableContainer extends React.Component {
 
     // If onStoreUpdate was called through a prop change, then skip updating local state.
     // This is fine because getDerivedStateFromProps already calculates the new state.
-    if (this.state.boundState.propsReference !== newBoundState.propsReference) {
+    if (this.state.boundState.propsRevision !== newBoundState.propsRevision) {
       return;
     }
 
