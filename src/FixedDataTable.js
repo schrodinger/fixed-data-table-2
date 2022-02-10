@@ -1188,7 +1188,9 @@ class FixedDataTable extends React.Component {
   // scroll handling.
   _didScrollStopSync = () => {
     const {
+      endColumnIndex,
       endRowIndex,
+      firstColumnIndex,
       firstRowIndex,
       onScrollEnd,
       scrollActions,
@@ -1204,7 +1206,14 @@ class FixedDataTable extends React.Component {
     scrollActions.stopScroll();
 
     if (onScrollEnd) {
-      onScrollEnd(scrollX, scrollY, firstRowIndex, endRowIndex);
+      onScrollEnd(
+        scrollX,
+        scrollY,
+        firstRowIndex,
+        endRowIndex,
+        firstColumnIndex,
+        endColumnIndex
+      );
     }
   };
 }
