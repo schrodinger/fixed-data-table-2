@@ -185,6 +185,14 @@ const slice = createSlice({
         newState = initializeRowHeightsAndOffsets(newState);
       }
 
+      // reset the scrollable column cache if there's a new scrollable column getter
+      if (
+        state.columnSettings.getScrollableColumn !==
+        newState.columnSettings.getScrollableColumn
+      ) {
+        newState.storedScrollableColumns.object = {};
+      }
+
       if (
         oldProps.fixedColumnsCount !== newProps.fixedColumnsCount ||
         oldProps.fixedRightColumnsCount !== newProps.fixedRightColumnsCount ||
