@@ -8,4 +8,4 @@ rm -rf ./__site_prerender__
 webpack --config "$PWD/site/webpack-client.config.js"
 webpack --config "$PWD/site/webpack-prerender.config.js"
 ./build_helpers/buildSiteIndexPages.sh
-webpack-dev-server --config "$PWD/site/webpack-client.config.js" --no-info --content-base __site__ --port ${1-8080}
+webpack-dev-server --config "$PWD/site/webpack-client.config.js"

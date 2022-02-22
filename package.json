@@ -24,6 +24,7 @@
     "@babel/preset-react": "^7.0.0",
     "@types/chai": "^4.2.10",
     "@types/mocha": "^7.0.2",
+    "@webpack-cli/serve": "^1.6.1",
     "aphrodite": "2.4.0",
     "autoprefixer": "9.6.1",
     "babel-eslint": "10.1.0",
@@ -67,8 +68,8 @@
     "terser-webpack-plugin": "4.2.3",
     "url-loader": "2.1.0",
     "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.8",
-    "webpack-dev-server": "^3.8.0"
+    "webpack-cli": "^4.3.0",
+    "webpack-dev-server": "^4.7.4"
   },
   "scripts": {
     "webpack": "webpack",
