@@ -5,7 +5,7 @@ var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var packageJSON = require('./package.json');
 const TerserPlugin = require('terser-webpack-plugin');
 
-var isDev = JSON.stringify(process.env.NODE_ENV !== 'production');
+var isDev = process.env.NODE_ENV !== 'production';
 
 var banner =
   '/**\n' +
