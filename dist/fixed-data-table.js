@@ -9351,7 +9351,7 @@
         }),
         ei(ti, 'defaultProps', { fixed: !1 });
       var oi = ti,
-        ni = '1.2.3';
+        ni = '1.2.4';
     },
   ]);
 });
