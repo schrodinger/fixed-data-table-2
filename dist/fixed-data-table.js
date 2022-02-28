@@ -2378,19 +2378,19 @@
           return dt;
         }),
         o.d(t, 'Column', function () {
-          return Gr;
+          return Vr;
         }),
         o.d(t, 'ColumnGroup', function () {
-          return oi;
+          return ni;
         }),
         o.d(t, 'DataCell', function () {
-          return zr;
+          return Lr;
         }),
         o.d(t, 'Table', function () {
-          return xr;
+          return Sr;
         }),
         o.d(t, 'version', function () {
-          return ni;
+          return ri;
         });
       var n = {};
       o.r(n),
@@ -4329,7 +4329,71 @@
         }
       }
       function jt(e) {
-        return (jt =
+        var t = e.prototype;
+        if (!t || !t.isReactComponent)
+          throw new Error('Can only polyfill class components');
+        if (
+          'function' != typeof e.getDerivedStateFromProps &&
+          'function' != typeof t.getSnapshotBeforeUpdate
+        )
+          return e;
+        var o = null,
+          n = null,
+          r = null;
+        if (
+          ('function' == typeof t.componentWillMount
+            ? (o = 'componentWillMount')
+            : 'function' == typeof t.UNSAFE_componentWillMount &&
+              (o = 'UNSAFE_componentWillMount'),
+          'function' == typeof t.componentWillReceiveProps
+            ? (n = 'componentWillReceiveProps')
+            : 'function' == typeof t.UNSAFE_componentWillReceiveProps &&
+              (n = 'UNSAFE_componentWillReceiveProps'),
+          'function' == typeof t.componentWillUpdate
+            ? (r = 'componentWillUpdate')
+            : 'function' == typeof t.UNSAFE_componentWillUpdate &&
+              (r = 'UNSAFE_componentWillUpdate'),
+          null !== o || null !== n || null !== r)
+        ) {
+          var i = e.displayName || e.name,
+            a =
+              'function' == typeof e.getDerivedStateFromProps
+                ? 'getDerivedStateFromProps()'
+                : 'getSnapshotBeforeUpdate()';
+          throw Error(
+            'Unsafe legacy lifecycles will not be called for components using new component APIs.\n\n' +
+              i +
+              ' uses ' +
+              a +
+              ' but also contains the following legacy lifecycles:' +
+              (null !== o ? '\n  ' + o : '') +
+              (null !== n ? '\n  ' + n : '') +
+              (null !== r ? '\n  ' + r : '') +
+              '\n\nThe above lifecycles should be removed. Learn more about this warning here:\nhttps://fb.me/react-async-component-lifecycle-hooks'
+          );
+        }
+        if (
+          ('function' == typeof e.getDerivedStateFromProps &&
+            ((t.componentWillMount = Tt), (t.componentWillReceiveProps = Ct)),
+          'function' == typeof t.getSnapshotBeforeUpdate)
+        ) {
+          if ('function' != typeof t.componentDidUpdate)
+            throw new Error(
+              'Cannot polyfill getSnapshotBeforeUpdate() for components that do not define componentDidUpdate() on the prototype'
+            );
+          t.componentWillUpdate = Et;
+          var u = t.componentDidUpdate;
+          t.componentDidUpdate = function (e, t, o) {
+            var n = this.__reactInternalSnapshotFlag
+              ? this.__reactInternalSnapshot
+              : o;
+            u.call(this, e, t, n);
+          };
+        }
+        return e;
+      }
+      function Mt(e) {
+        return (Mt =
           'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
             ? function (e) {
                 return typeof e;
@@ -4343,8 +4407,8 @@
                   : typeof e;
               })(e);
       }
-      function Mt() {
-        return (Mt =
+      function Dt() {
+        return (Dt =
           Object.assign ||
           function (e) {
             for (var t = 1; t < arguments.length; t++) {
@@ -4355,7 +4419,7 @@
             return e;
           }).apply(this, arguments);
       }
-      function Dt(e, t) {
+      function kt(e, t) {
         if (null == e) return {};
         var o,
           n,
@@ -4379,11 +4443,11 @@
         }
         return r;
       }
-      function kt(e, t) {
+      function Pt(e, t) {
         if (!(e instanceof t))
           throw new TypeError('Cannot call a class as a function');
       }
-      function Pt(e, t) {
+      function Ht(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -4392,14 +4456,14 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      function Ht(e, t) {
-        return (Ht =
+      function It(e, t) {
+        return (It =
           Object.setPrototypeOf ||
           function (e, t) {
             return (e.__proto__ = t), e;
           })(e, t);
       }
-      function It(e) {
+      function zt(e) {
         var t = (function () {
           if ('undefined' == typeof Reflect || !Reflect.construct) return !1;
           if (Reflect.construct.sham) return !1;
@@ -4417,32 +4481,32 @@
         })();
         return function () {
           var o,
-            n = At(e);
+            n = Yt(e);
           if (t) {
-            var r = At(this).constructor;
+            var r = Yt(this).constructor;
             o = Reflect.construct(n, arguments, r);
           } else o = n.apply(this, arguments);
-          return zt(this, o);
+          return Lt(this, o);
         };
       }
-      function zt(e, t) {
-        return !t || ('object' !== jt(t) && 'function' != typeof t) ? Lt(e) : t;
+      function Lt(e, t) {
+        return !t || ('object' !== Mt(t) && 'function' != typeof t) ? At(e) : t;
       }
-      function Lt(e) {
+      function At(e) {
         if (void 0 === e)
           throw new ReferenceError(
             "this hasn't been initialised - super() hasn't been called"
           );
         return e;
       }
-      function At(e) {
-        return (At = Object.setPrototypeOf
+      function Yt(e) {
+        return (Yt = Object.setPrototypeOf
           ? Object.getPrototypeOf
           : function (e) {
               return e.__proto__ || Object.getPrototypeOf(e);
             })(e);
       }
-      function Yt(e, t, o) {
+      function Wt(e, t, o) {
         return (
           t in e
             ? Object.defineProperty(e, t, {
@@ -4458,7 +4522,7 @@
       (Tt.__suppressDeprecationWarning = !0),
         (Ct.__suppressDeprecationWarning = !0),
         (Et.__suppressDeprecationWarning = !0);
-      var Wt = (function (e) {
+      var Xt = (function (e) {
         !(function (e, t) {
           if ('function' != typeof t && null !== t)
             throw new TypeError(
@@ -4467,24 +4531,24 @@
           (e.prototype = Object.create(t && t.prototype, {
             constructor: { value: e, writable: !0, configurable: !0 },
           })),
-            t && Ht(e, t);
+            t && It(e, t);
         })(i, e);
         var t,
           o,
           n,
-          r = It(i);
+          r = zt(i);
         function i() {
           var e;
-          kt(this, i);
+          Pt(this, i);
           for (var t = arguments.length, o = new Array(t), n = 0; n < t; n++)
             o[n] = arguments[n];
           return (
-            Yt(Lt((e = r.call.apply(r, [this].concat(o)))), 'state', {
+            Wt(At((e = r.call.apply(r, [this].concat(o)))), 'state', {
               isReorderingThisColumn: !1,
               displacement: 0,
               reorderingDisplacement: 0,
             }),
-            Yt(Lt(e), '_onColumnResizerMouseDown', function (t) {
+            Wt(At(e), '_onColumnResizerMouseDown', function (t) {
               e.props.onColumnResize(
                 e.props.left,
                 e.props.width,
@@ -4496,7 +4560,7 @@
                 e.props.touchEnabled &&
                   (t.preventDefault(), t.stopPropagation());
             }),
-            Yt(Lt(e), '_onColumnReorderMouseDown', function (t) {
+            Wt(At(e), '_onColumnReorderMouseDown', function (t) {
               e.props.onColumnReorder(
                 e.props.columnKey,
                 e.props.width,
@@ -4504,7 +4568,7 @@
                 t
               );
             }),
-            Yt(Lt(e), '_suppressEvent', function (e) {
+            Wt(At(e), '_suppressEvent', function (e) {
               e.preventDefault(), e.stopPropagation();
             }),
             e
@@ -4573,9 +4637,9 @@
                 if (!e.pureRendering) return !0;
                 var t = this.props,
                   o = t.cell,
-                  n = Dt(t, ['cell']),
+                  n = kt(t, ['cell']),
                   r = e.cell,
-                  i = Dt(e, ['cell']);
+                  i = kt(e, ['cell']);
                 return !(
                   J(n, i) &&
                   o &&
@@ -4593,7 +4657,7 @@
                   o = e.width,
                   n = e.columnKey,
                   r = e.isHeaderOrFooter,
-                  i = Dt(e, [
+                  i = kt(e, [
                     'height',
                     'width',
                     'columnKey',
@@ -4663,7 +4727,7 @@
                 i.onColumnReorder &&
                   (c = a.a.createElement(
                     Ot,
-                    Mt(
+                    Dt(
                       {
                         columnKey: this.columnKey,
                         touchEnabled: this.props.touchEnabled,
@@ -4692,12 +4756,12 @@
                 );
               },
             },
-          ]) && Pt(t.prototype, o),
-          n && Pt(t, n),
+          ]) && Ht(t.prototype, o),
+          n && Ht(t, n),
           i
         );
       })(a.a.Component);
-      Yt(Wt, 'propTypes_DISABLED_FOR_PERFORMANCE', {
+      Wt(Xt, 'propTypes_DISABLED_FOR_PERFORMANCE', {
         isScrolling: T.a.bool,
         align: T.a.oneOf(['left', 'center', 'right']),
         className: T.a.string,
@@ -4717,85 +4781,22 @@
         isHeaderOrFooter: T.a.bool,
         isRTL: T.a.bool,
       }),
-        Yt(Wt, 'defaultProps', { align: 'left', highlighted: !1 });
-      var Xt = (function (e) {
-          var t = e.prototype;
-          if (!t || !t.isReactComponent)
-            throw new Error('Can only polyfill class components');
-          if (
-            'function' != typeof e.getDerivedStateFromProps &&
-            'function' != typeof t.getSnapshotBeforeUpdate
-          )
-            return e;
-          var o = null,
-            n = null,
-            r = null;
-          if (
-            ('function' == typeof t.componentWillMount
-              ? (o = 'componentWillMount')
-              : 'function' == typeof t.UNSAFE_componentWillMount &&
-                (o = 'UNSAFE_componentWillMount'),
-            'function' == typeof t.componentWillReceiveProps
-              ? (n = 'componentWillReceiveProps')
-              : 'function' == typeof t.UNSAFE_componentWillReceiveProps &&
-                (n = 'UNSAFE_componentWillReceiveProps'),
-            'function' == typeof t.componentWillUpdate
-              ? (r = 'componentWillUpdate')
-              : 'function' == typeof t.UNSAFE_componentWillUpdate &&
-                (r = 'UNSAFE_componentWillUpdate'),
-            null !== o || null !== n || null !== r)
-          ) {
-            var i = e.displayName || e.name,
-              a =
-                'function' == typeof e.getDerivedStateFromProps
-                  ? 'getDerivedStateFromProps()'
-                  : 'getSnapshotBeforeUpdate()';
-            throw Error(
-              'Unsafe legacy lifecycles will not be called for components using new component APIs.\n\n' +
-                i +
-                ' uses ' +
-                a +
-                ' but also contains the following legacy lifecycles:' +
-                (null !== o ? '\n  ' + o : '') +
-                (null !== n ? '\n  ' + n : '') +
-                (null !== r ? '\n  ' + r : '') +
-                '\n\nThe above lifecycles should be removed. Learn more about this warning here:\nhttps://fb.me/react-async-component-lifecycle-hooks'
-            );
-          }
-          if (
-            ('function' == typeof e.getDerivedStateFromProps &&
-              ((t.componentWillMount = Tt), (t.componentWillReceiveProps = Ct)),
-            'function' == typeof t.getSnapshotBeforeUpdate)
-          ) {
-            if ('function' != typeof t.componentDidUpdate)
-              throw new Error(
-                'Cannot polyfill getSnapshotBeforeUpdate() for components that do not define componentDidUpdate() on the prototype'
-              );
-            t.componentWillUpdate = Et;
-            var u = t.componentDidUpdate;
-            t.componentDidUpdate = function (e, t, o) {
-              var n = this.__reactInternalSnapshotFlag
-                ? this.__reactInternalSnapshot
-                : o;
-              u.call(this, e, t, n);
-            };
-          }
-          return e;
-        })(Wt),
-        Nt = o(19),
-        Ft = o(79);
-      var Ut = function (e, t, o) {
+        Wt(Xt, 'defaultProps', { align: 'left', highlighted: !1 });
+      var Nt = jt(Xt),
+        Ft = o(19),
+        Ut = o(79);
+      var Bt = function (e, t, o) {
         var n = arguments.length > 3 && void 0 !== arguments[3] && arguments[3],
           r = arguments.length > 4 && void 0 !== arguments[4] && arguments[4];
         'none' !== e.display &&
           (n
             ? ((e.left = t + 'px'), (e.top = o + 'px'))
-            : (Nt.a.hasCSSTransforms() && (t *= r ? -1 : 1),
-              Object(Ft.a)(e, t, o)),
+            : (Ft.a.hasCSSTransforms() && (t *= r ? -1 : 1),
+              Object(Ut.a)(e, t, o)),
           r && ((e.right = e.left), (e.left = 'auto')));
       };
-      function Bt(e) {
-        return (Bt =
+      function Gt(e) {
+        return (Gt =
           'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
             ? function (e) {
                 return typeof e;
@@ -4809,8 +4810,8 @@
                   : typeof e;
               })(e);
       }
-      function Gt() {
-        return (Gt =
+      function Vt() {
+        return (Vt =
           Object.assign ||
           function (e) {
             for (var t = 1; t < arguments.length; t++) {
@@ -4821,7 +4822,7 @@
             return e;
           }).apply(this, arguments);
       }
-      function Vt(e, t) {
+      function qt(e, t) {
         if (null == e) return {};
         var o,
           n,
@@ -4845,11 +4846,11 @@
         }
         return r;
       }
-      function qt(e, t) {
+      function Kt(e, t) {
         if (!(e instanceof t))
           throw new TypeError('Cannot call a class as a function');
       }
-      function Kt(e, t) {
+      function Zt(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -4858,10 +4859,10 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      function Zt(e, t, o) {
-        return t && Kt(e.prototype, t), o && Kt(e, o), e;
+      function $t(e, t, o) {
+        return t && Zt(e.prototype, t), o && Zt(e, o), e;
       }
-      function $t(e, t) {
+      function Jt(e, t) {
         if ('function' != typeof t && null !== t)
           throw new TypeError(
             'Super expression must either be null or a function'
@@ -4869,16 +4870,16 @@
         (e.prototype = Object.create(t && t.prototype, {
           constructor: { value: e, writable: !0, configurable: !0 },
         })),
-          t && Jt(e, t);
+          t && Qt(e, t);
       }
-      function Jt(e, t) {
-        return (Jt =
+      function Qt(e, t) {
+        return (Qt =
           Object.setPrototypeOf ||
           function (e, t) {
             return (e.__proto__ = t), e;
           })(e, t);
       }
-      function Qt(e) {
+      function eo(e) {
         var t = (function () {
           if ('undefined' == typeof Reflect || !Reflect.construct) return !1;
           if (Reflect.construct.sham) return !1;
@@ -4896,32 +4897,32 @@
         })();
         return function () {
           var o,
-            n = oo(e);
+            n = no(e);
           if (t) {
-            var r = oo(this).constructor;
+            var r = no(this).constructor;
             o = Reflect.construct(n, arguments, r);
           } else o = n.apply(this, arguments);
-          return eo(this, o);
+          return to(this, o);
         };
       }
-      function eo(e, t) {
-        return !t || ('object' !== Bt(t) && 'function' != typeof t) ? to(e) : t;
+      function to(e, t) {
+        return !t || ('object' !== Gt(t) && 'function' != typeof t) ? oo(e) : t;
       }
-      function to(e) {
+      function oo(e) {
         if (void 0 === e)
           throw new ReferenceError(
             "this hasn't been initialised - super() hasn't been called"
           );
         return e;
       }
-      function oo(e) {
-        return (oo = Object.setPrototypeOf
+      function no(e) {
+        return (no = Object.setPrototypeOf
           ? Object.getPrototypeOf
           : function (e) {
               return e.__proto__ || Object.getPrototypeOf(e);
             })(e);
       }
-      function no(e, t, o) {
+      function ro(e, t, o) {
         return (
           t in e
             ? Object.defineProperty(e, t, {
@@ -4934,14 +4935,14 @@
           e
         );
       }
-      var ro = (function (e) {
-        $t(o, e);
-        var t = Qt(o);
+      var io = (function (e) {
+        Jt(o, e);
+        var t = eo(o);
         function o(e) {
           var n;
           return (
-            qt(this, o),
-            no(to((n = t.call(this, e))), '_renderCell', function (
+            Kt(this, o),
+            ro(oo((n = t.call(this, e))), '_renderCell', function (
               e,
               t,
               o,
@@ -4964,7 +4965,7 @@
                     : null,
                 p = o.cellClassName,
                 h = o.pureRendering || !1;
-              return a.a.createElement(Xt, {
+              return a.a.createElement(Nt, {
                 isScrolling: n.props.isScrolling,
                 isHeaderOrFooter: n.props.isHeaderOrFooter,
                 align: o.align,
@@ -4995,7 +4996,7 @@
           );
         }
         return (
-          Zt(o, [
+          $t(o, [
             {
               key: 'componentDidMount',
               value: function () {
@@ -5051,7 +5052,7 @@
                   zIndex: e.zIndex,
                 };
                 return (
-                  Ut(p, -1 * e.left, 0, this._initialRender, this.props.isRTL),
+                  Bt(p, -1 * e.left, 0, this._initialRender, this.props.isRTL),
                   a.a.createElement(
                     'div',
                     {
@@ -5067,7 +5068,7 @@
           o
         );
       })(a.a.Component);
-      no(ro, 'propTypes_DISABLED_FOR_PERFORMANCE', {
+      ro(io, 'propTypes_DISABLED_FOR_PERFORMANCE', {
         columns: T.a.array.isRequired,
         isScrolling: T.a.bool,
         left: T.a.number,
@@ -5085,17 +5086,17 @@
         isHeaderOrFooter: T.a.bool,
         isRTL: T.a.bool,
       });
-      var io = (function (e) {
-        $t(o, e);
-        var t = Qt(o);
+      var ao = (function (e) {
+        Jt(o, e);
+        var t = eo(o);
         function o() {
           var e;
-          qt(this, o);
+          Kt(this, o);
           for (var n = arguments.length, r = new Array(n), i = 0; i < n; i++)
             r[i] = arguments[i];
           return (
-            no(
-              to((e = t.call.apply(t, [this].concat(r)))),
+            ro(
+              oo((e = t.call.apply(t, [this].concat(r)))),
               '_onColumnResize',
               function (t, o, n, r, i, a) {
                 e.props.onColumnResize &&
@@ -5114,7 +5115,7 @@
           );
         }
         return (
-          Zt(o, [
+          $t(o, [
             {
               key: 'shouldComponentUpdate',
               value: function (e) {
@@ -5131,7 +5132,7 @@
               value: function () {
                 var e = this.props,
                   t = e.offsetLeft,
-                  o = Vt(e, ['offsetLeft']),
+                  o = qt(e, ['offsetLeft']),
                   n = {
                     height: o.cellGroupWrapperHeight || o.height,
                     width: o.width,
@@ -5146,7 +5147,7 @@
                       'fixedDataTableCellGroupLayout/cellGroupWrapper'
                     ),
                   },
-                  a.a.createElement(ro, Gt({}, o, { onColumnResize: r }))
+                  a.a.createElement(io, Vt({}, o, { onColumnResize: r }))
                 );
               },
             },
@@ -5154,17 +5155,17 @@
           o
         );
       })(a.a.Component);
-      no(io, 'propTypes_DISABLED_FOR_PERFORMANCE', {
+      ro(ao, 'propTypes_DISABLED_FOR_PERFORMANCE', {
         isScrolling: T.a.bool,
         height: T.a.number.isRequired,
         offsetLeft: T.a.number,
         left: T.a.number,
         zIndex: T.a.number.isRequired,
       }),
-        no(io, 'defaultProps', { left: 0, offsetLeft: 0 });
-      var ao = io;
-      function uo(e) {
-        return (uo =
+        ro(ao, 'defaultProps', { left: 0, offsetLeft: 0 });
+      var uo = ao;
+      function lo(e) {
+        return (lo =
           'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
             ? function (e) {
                 return typeof e;
@@ -5178,7 +5179,7 @@
                   : typeof e;
               })(e);
       }
-      function lo(e, t) {
+      function so(e, t) {
         if (null == e) return {};
         var o,
           n,
@@ -5202,8 +5203,8 @@
         }
         return r;
       }
-      function so() {
-        return (so =
+      function co() {
+        return (co =
           Object.assign ||
           function (e) {
             for (var t = 1; t < arguments.length; t++) {
@@ -5214,11 +5215,11 @@
             return e;
           }).apply(this, arguments);
       }
-      function co(e, t) {
+      function fo(e, t) {
         if (!(e instanceof t))
           throw new TypeError('Cannot call a class as a function');
       }
-      function fo(e, t) {
+      function po(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -5227,10 +5228,10 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      function po(e, t, o) {
-        return t && fo(e.prototype, t), o && fo(e, o), e;
+      function ho(e, t, o) {
+        return t && po(e.prototype, t), o && po(e, o), e;
       }
-      function ho(e, t) {
+      function vo(e, t) {
         if ('function' != typeof t && null !== t)
           throw new TypeError(
             'Super expression must either be null or a function'
@@ -5238,16 +5239,16 @@
         (e.prototype = Object.create(t && t.prototype, {
           constructor: { value: e, writable: !0, configurable: !0 },
         })),
-          t && vo(e, t);
+          t && bo(e, t);
       }
-      function vo(e, t) {
-        return (vo =
+      function bo(e, t) {
+        return (bo =
           Object.setPrototypeOf ||
           function (e, t) {
             return (e.__proto__ = t), e;
           })(e, t);
       }
-      function bo(e) {
+      function mo(e) {
         var t = (function () {
           if ('undefined' == typeof Reflect || !Reflect.construct) return !1;
           if (Reflect.construct.sham) return !1;
@@ -5265,32 +5266,32 @@
         })();
         return function () {
           var o,
-            n = go(e);
+            n = _o(e);
           if (t) {
-            var r = go(this).constructor;
+            var r = _o(this).constructor;
             o = Reflect.construct(n, arguments, r);
           } else o = n.apply(this, arguments);
-          return mo(this, o);
+          return yo(this, o);
         };
       }
-      function mo(e, t) {
-        return !t || ('object' !== uo(t) && 'function' != typeof t) ? yo(e) : t;
+      function yo(e, t) {
+        return !t || ('object' !== lo(t) && 'function' != typeof t) ? go(e) : t;
       }
-      function yo(e) {
+      function go(e) {
         if (void 0 === e)
           throw new ReferenceError(
             "this hasn't been initialised - super() hasn't been called"
           );
         return e;
       }
-      function go(e) {
-        return (go = Object.setPrototypeOf
+      function _o(e) {
+        return (_o = Object.setPrototypeOf
           ? Object.getPrototypeOf
           : function (e) {
               return e.__proto__ || Object.getPrototypeOf(e);
             })(e);
       }
-      function _o(e, t, o) {
+      function wo(e, t, o) {
         return (
           t in e
             ? Object.defineProperty(e, t, {
@@ -5303,21 +5304,21 @@
           e
         );
       }
-      var wo = (function (e) {
-        ho(o, e);
-        var t = bo(o);
+      var Ro = (function (e) {
+        vo(o, e);
+        var t = mo(o);
         function o() {
           var e;
-          co(this, o);
+          fo(this, o);
           for (var n = arguments.length, r = new Array(n), i = 0; i < n; i++)
             r[i] = arguments[i];
           return (
-            _o(
-              yo((e = t.call.apply(t, [this].concat(r)))),
+            wo(
+              go((e = t.call.apply(t, [this].concat(r)))),
               'mouseLeaveIndex',
               null
             ),
-            _o(yo(e), '_getRowExpanded', function (t) {
+            wo(go(e), '_getRowExpanded', function (t) {
               if (e.props.rowExpanded) {
                 var o,
                   n = {
@@ -5334,7 +5335,7 @@
                 );
               }
             }),
-            _o(yo(e), '_renderColumnsLeftShadow', function (t) {
+            wo(go(e), '_renderColumnsLeftShadow', function (t) {
               var o = P({
                   'fixedDataTableRowLayout/fixedColumnsDivider': t > 0,
                   'fixedDataTableRowLayout/columnsShadow':
@@ -5354,7 +5355,7 @@
                 a.a.createElement('div', { className: o, style: n })
               );
             }),
-            _o(yo(e), '_renderFixedRightColumnsShadow', function (t) {
+            wo(go(e), '_renderFixedRightColumnsShadow', function (t) {
               var o = P(
                   'fixedDataTableRowLayout/columnsShadow',
                   'fixedDataTableRowLayout/columnsRightShadow',
@@ -5369,7 +5370,7 @@
                 a.a.createElement('div', { className: o, style: n })
               );
             }),
-            _o(yo(e), '_renderColumnsRightShadow', function (t) {
+            wo(go(e), '_renderColumnsRightShadow', function (t) {
               if (
                 Math.ceil(e.props.scrollLeft + e.props.width) < Math.floor(t)
               ) {
@@ -5383,44 +5384,44 @@
                 return a.a.createElement('div', { className: o, style: n });
               }
             }),
-            _o(yo(e), '_onClick', function (t) {
+            wo(go(e), '_onClick', function (t) {
               e.props.onClick(t, e.props.index);
             }),
-            _o(yo(e), '_onContextMenu', function (t) {
+            wo(go(e), '_onContextMenu', function (t) {
               e.props.onContextMenu(t, e.props.index);
             }),
-            _o(yo(e), '_onDoubleClick', function (t) {
+            wo(go(e), '_onDoubleClick', function (t) {
               e.props.onDoubleClick(t, e.props.index);
             }),
-            _o(yo(e), '_onMouseUp', function (t) {
+            wo(go(e), '_onMouseUp', function (t) {
               e.props.onMouseUp(t, e.props.index);
             }),
-            _o(yo(e), '_onMouseDown', function (t) {
+            wo(go(e), '_onMouseDown', function (t) {
               e.props.onMouseDown(t, e.props.index);
             }),
-            _o(yo(e), '_onMouseEnter', function (t) {
+            wo(go(e), '_onMouseEnter', function (t) {
               (e.mouseLeaveIndex = e.props.index),
                 e.props.onMouseEnter && e.props.onMouseEnter(t, e.props.index);
             }),
-            _o(yo(e), '_onMouseLeave', function (t) {
+            wo(go(e), '_onMouseLeave', function (t) {
               null === e.mouseLeaveIndex && (e.mouseLeaveIndex = e.props.index),
                 e.props.onMouseLeave(t, e.mouseLeaveIndex),
                 (e.mouseLeaveIndex = null);
             }),
-            _o(yo(e), '_onTouchStart', function (t) {
+            wo(go(e), '_onTouchStart', function (t) {
               e.props.onTouchStart(t, e.props.index);
             }),
-            _o(yo(e), '_onTouchEnd', function (t) {
+            wo(go(e), '_onTouchEnd', function (t) {
               e.props.onTouchEnd(t, e.props.index);
             }),
-            _o(yo(e), '_onTouchMove', function (t) {
+            wo(go(e), '_onTouchMove', function (t) {
               e.props.onTouchMove(t, e.props.index);
             }),
             e
           );
         }
         return (
-          po(o, [
+          ho(o, [
             {
               key: 'shouldComponentUpdate',
               value: function (e) {
@@ -5453,7 +5454,7 @@
                     'public/fixedDataTableRow/even': this.props.index % 2 == 0,
                   }),
                   n = Oe(this.props.fixedColumns),
-                  r = a.a.createElement(ao, {
+                  r = a.a.createElement(uo, {
                     key: 'fixed_cells',
                     isScrolling: this.props.isScrolling,
                     height: this.props.height,
@@ -5479,7 +5480,7 @@
                   l = this.props.showScrollbarY
                     ? this.props.scrollbarYWidth
                     : 0,
-                  s = a.a.createElement(ao, {
+                  s = a.a.createElement(uo, {
                     key: 'fixed_right_cells',
                     isScrolling: this.props.isScrolling,
                     height: this.props.height,
@@ -5505,7 +5506,7 @@
                         this.props.width - u - l - 5
                       )
                     : null,
-                  f = a.a.createElement(ao, {
+                  f = a.a.createElement(uo, {
                     key: 'scrollable_cells',
                     isScrolling: this.props.isScrolling,
                     height: this.props.height,
@@ -5550,7 +5551,7 @@
                 }
                 return a.a.createElement(
                   'div',
-                  so(
+                  co(
                     {
                       className: I(o, this.props.className),
                       role: 'row',
@@ -5615,7 +5616,7 @@
           o
         );
       })(a.a.Component);
-      _o(wo, 'propTypes', {
+      wo(Ro, 'propTypes', {
         isScrolling: T.a.bool,
         fixedColumns: T.a.array.isRequired,
         fixedRightColumns: T.a.array.isRequired,
@@ -5642,15 +5643,15 @@
         isRTL: T.a.bool,
         attributes: T.a.object,
       });
-      var Ro = (function (e) {
-        ho(o, e);
-        var t = bo(o);
+      var xo = (function (e) {
+        vo(o, e);
+        var t = mo(o);
         function o(e) {
           var n;
-          return co(this, o), ((n = t.call(this, e))._initialRender = !0), n;
+          return fo(this, o), ((n = t.call(this, e))._initialRender = !0), n;
         }
         return (
-          po(o, [
+          ho(o, [
             {
               key: 'componentDidMount',
               value: function () {
@@ -5679,7 +5680,7 @@
                 var e = this.props,
                   t = e.offsetTop,
                   o = e.zIndex,
-                  n = lo(e, ['offsetTop', 'zIndex']),
+                  n = so(e, ['offsetTop', 'zIndex']),
                   r = {
                     width: this.props.width,
                     height: this.props.height,
@@ -5687,14 +5688,14 @@
                     visibility: n.visible ? 'visible' : 'hidden',
                   };
                 return (
-                  Ut(r, 0, t, this._initialRender, this.props.isRTL),
+                  Bt(r, 0, t, this._initialRender, this.props.isRTL),
                   a.a.createElement(
                     'div',
                     {
                       style: r,
                       className: P('fixedDataTableRowLayout/rowWrapper'),
                     },
-                    a.a.createElement(wo, n)
+                    a.a.createElement(Ro, n)
                   )
                 );
               },
@@ -5703,7 +5704,7 @@
           o
         );
       })(a.a.Component);
-      _o(Ro, 'propTypes', {
+      wo(xo, 'propTypes', {
         isScrolling: T.a.bool,
         height: T.a.number.isRequired,
         zIndex: T.a.number,
@@ -5711,9 +5712,9 @@
         visible: T.a.bool.isRequired,
         width: T.a.number.isRequired,
       });
-      var xo = Ro;
-      function So(e) {
-        return (So =
+      var So = xo;
+      function Oo(e) {
+        return (Oo =
           'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
             ? function (e) {
                 return typeof e;
@@ -5727,8 +5728,8 @@
                   : typeof e;
               })(e);
       }
-      function Oo() {
-        return (Oo =
+      function To() {
+        return (To =
           Object.assign ||
           function (e) {
             for (var t = 1; t < arguments.length; t++) {
@@ -5739,7 +5740,7 @@
             return e;
           }).apply(this, arguments);
       }
-      function To(e, t) {
+      function Co(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -5748,14 +5749,14 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      function Co(e, t) {
-        return (Co =
+      function Eo(e, t) {
+        return (Eo =
           Object.setPrototypeOf ||
           function (e, t) {
             return (e.__proto__ = t), e;
           })(e, t);
       }
-      function Eo(e) {
+      function jo(e) {
         var t = (function () {
           if ('undefined' == typeof Reflect || !Reflect.construct) return !1;
           if (Reflect.construct.sham) return !1;
@@ -5773,16 +5774,16 @@
         })();
         return function () {
           var o,
-            n = Mo(e);
+            n = Do(e);
           if (t) {
-            var r = Mo(this).constructor;
+            var r = Do(this).constructor;
             o = Reflect.construct(n, arguments, r);
           } else o = n.apply(this, arguments);
-          return jo(this, o);
+          return Mo(this, o);
         };
       }
-      function jo(e, t) {
-        return !t || ('object' !== So(t) && 'function' != typeof t)
+      function Mo(e, t) {
+        return !t || ('object' !== Oo(t) && 'function' != typeof t)
           ? (function (e) {
               if (void 0 === e)
                 throw new ReferenceError(
@@ -5792,17 +5793,17 @@
             })(e)
           : t;
       }
-      function Mo(e) {
-        return (Mo = Object.setPrototypeOf
+      function Do(e) {
+        return (Do = Object.setPrototypeOf
           ? Object.getPrototypeOf
           : function (e) {
               return e.__proto__ || Object.getPrototypeOf(e);
             })(e);
       }
-      var Do,
-        ko,
+      var ko,
         Po,
-        Ho = (function (e) {
+        Ho,
+        Io = (function (e) {
           !(function (e, t) {
             if ('function' != typeof t && null !== t)
               throw new TypeError(
@@ -5811,12 +5812,12 @@
             (e.prototype = Object.create(t && t.prototype, {
               constructor: { value: e, writable: !0, configurable: !0 },
             })),
-              t && Co(e, t);
+              t && Eo(e, t);
           })(i, e);
           var t,
             o,
             n,
-            r = Eo(i);
+            r = jo(i);
           function i(e) {
             var t;
             return (
@@ -5882,7 +5883,7 @@
                   }
                   var f = {};
                   return (
-                    Ut(f, 0, u, !1),
+                    Bt(f, 0, u, !1),
                     a.a.createElement('div', { style: f }, this._staticRowArray)
                   );
                 },
@@ -5924,8 +5925,8 @@
                     this.props.endViewportRowIndex
                   );
                   return a.a.createElement(
-                    xo,
-                    Oo(
+                    So,
+                    To(
                       {
                         key: o,
                         index: t,
@@ -5958,14 +5959,14 @@
                   );
                 },
               },
-            ]) && To(t.prototype, o),
-            n && To(t, n),
+            ]) && Co(t.prototype, o),
+            n && Co(t, n),
             i
           );
         })(a.a.Component);
-      (Do = Ho),
-        (ko = 'propTypes'),
-        (Po = {
+      (ko = Io),
+        (Po = 'propTypes'),
+        (Ho = {
           ariaRowIndexOffset: T.a.number,
           isScrolling: T.a.bool,
           firstViewportRowIndex: T.a.number.isRequired,
@@ -6003,16 +6004,16 @@
           width: T.a.number.isRequired,
           isRTL: T.a.bool,
         }),
-        ko in Do
-          ? Object.defineProperty(Do, ko, {
-              value: Po,
+        Po in ko
+          ? Object.defineProperty(ko, Po, {
+              value: Ho,
               enumerable: !0,
               configurable: !0,
               writable: !0,
             })
-          : (Do[ko] = Po);
-      var Io = Ho;
-      function zo(e, t) {
+          : (ko[Po] = Ho);
+      var zo = Io;
+      function Lo(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -6021,7 +6022,7 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      var Lo = (function () {
+      var Ao = (function () {
         function e(t, o, n, r, i) {
           !(function (e, t) {
             if (!(e instanceof t))
@@ -6175,13 +6176,13 @@
                     Object(se.a)(this._autoScroll));
               },
             },
-          ]) && zo(t.prototype, o),
-          n && zo(t, n),
+          ]) && Lo(t.prototype, o),
+          n && Lo(t, n),
           e
         );
       })();
-      function Ao(e) {
-        return (Ao =
+      function Yo(e) {
+        return (Yo =
           'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
             ? function (e) {
                 return typeof e;
@@ -6195,8 +6196,8 @@
                   : typeof e;
               })(e);
       }
-      function Yo() {
-        return (Yo =
+      function Wo() {
+        return (Wo =
           Object.assign ||
           function (e) {
             for (var t = 1; t < arguments.length; t++) {
@@ -6207,7 +6208,7 @@
             return e;
           }).apply(this, arguments);
       }
-      function Wo(e, t) {
+      function Xo(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -6216,14 +6217,14 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      function Xo(e, t) {
-        return (Xo =
+      function No(e, t) {
+        return (No =
           Object.setPrototypeOf ||
           function (e, t) {
             return (e.__proto__ = t), e;
           })(e, t);
       }
-      function No(e) {
+      function Fo(e) {
         var t = (function () {
           if ('undefined' == typeof Reflect || !Reflect.construct) return !1;
           if (Reflect.construct.sham) return !1;
@@ -6241,32 +6242,32 @@
         })();
         return function () {
           var o,
-            n = Bo(e);
+            n = Go(e);
           if (t) {
-            var r = Bo(this).constructor;
+            var r = Go(this).constructor;
             o = Reflect.construct(n, arguments, r);
           } else o = n.apply(this, arguments);
-          return Fo(this, o);
+          return Uo(this, o);
         };
       }
-      function Fo(e, t) {
-        return !t || ('object' !== Ao(t) && 'function' != typeof t) ? Uo(e) : t;
+      function Uo(e, t) {
+        return !t || ('object' !== Yo(t) && 'function' != typeof t) ? Bo(e) : t;
       }
-      function Uo(e) {
+      function Bo(e) {
         if (void 0 === e)
           throw new ReferenceError(
             "this hasn't been initialised - super() hasn't been called"
           );
         return e;
       }
-      function Bo(e) {
-        return (Bo = Object.setPrototypeOf
+      function Go(e) {
+        return (Go = Object.setPrototypeOf
           ? Object.getPrototypeOf
           : function (e) {
               return e.__proto__ || Object.getPrototypeOf(e);
             })(e);
       }
-      function Go(e, t, o) {
+      function Vo(e, t, o) {
         return (
           t in e
             ? Object.defineProperty(e, t, {
@@ -6279,7 +6280,7 @@
           e
         );
       }
-      var Vo = (function (e) {
+      var qo = (function (e) {
         !(function (e, t) {
           if ('function' != typeof t && null !== t)
             throw new TypeError(
@@ -6288,12 +6289,12 @@
           (e.prototype = Object.create(t && t.prototype, {
             constructor: { value: e, writable: !0, configurable: !0 },
           })),
-            t && Xo(e, t);
+            t && No(e, t);
         })(i, e);
         var t,
           o,
           n,
-          r = No(i);
+          r = Fo(i);
         function i(e) {
           var t;
           return (
@@ -6301,13 +6302,13 @@
               if (!(e instanceof t))
                 throw new TypeError('Cannot call a class as a function');
             })(this, i),
-            Go(Uo((t = r.call(this, e))), '_shouldHandleTouchX', function (e) {
+            Vo(Bo((t = r.call(this, e))), '_shouldHandleTouchX', function (e) {
               return t.props.touchScrollEnabled && t._shouldHandleWheelX(e);
             }),
-            Go(Uo(t), '_shouldHandleTouchY', function (e) {
+            Vo(Bo(t), '_shouldHandleTouchY', function (e) {
               return t.props.touchScrollEnabled && t._shouldHandleWheelY(e);
             }),
-            Go(Uo(t), '_shouldHandleWheelX', function (e) {
+            Vo(Bo(t), '_shouldHandleWheelX', function (e) {
               var o = t.props,
                 n = o.maxScrollX,
                 r = o.scrollFlags,
@@ -6318,7 +6319,7 @@
                 ((e < 0 && i > 0) || (e >= 0 && i < n))
               );
             }),
-            Go(Uo(t), '_shouldHandleWheelY', function (e) {
+            Vo(Bo(t), '_shouldHandleWheelY', function (e) {
               var o = t.props,
                 n = o.maxScrollY,
                 r = o.scrollFlags,
@@ -6330,15 +6331,15 @@
                 ((e < 0 && i > 0) || (e >= 0 && i < n))
               );
             }),
-            Go(Uo(t), '_reportContentHeight', function () {
+            Vo(Bo(t), '_reportContentHeight', function () {
               var e = Le(t.props).contentHeight,
                 o = t.props.onContentHeightChange;
               e !== t._contentHeight && o && o(e), (t._contentHeight = e);
             }),
-            Go(Uo(t), '_renderRows', function (e, o, n, r, i, u) {
+            Vo(Bo(t), '_renderRows', function (e, o, n, r, i, u) {
               var l = Pe(t.props).scrollEnabledY,
                 s = t.props;
-              return a.a.createElement(Io, {
+              return a.a.createElement(zo, {
                 ariaRowIndexOffset: u,
                 isScrolling: s.scrolling,
                 fixedColumns: o,
@@ -6375,11 +6376,11 @@
                 isRTL: s.isRTL,
               });
             }),
-            Go(Uo(t), '_onRef', function (e) {
+            Vo(Bo(t), '_onRef', function (e) {
               (t._divRef = e),
                 t.props.stopReactWheelPropagation && t._wheelHandler.setRoot(e);
             }),
-            Go(Uo(t), '_onColumnResize', function (e, o, n, r, i, a, u) {
+            Vo(Bo(t), '_onColumnResize', function (e, o, n, r, i, a, u) {
               var l = We.getCoordinatesFromEvent(u),
                 s = l.x,
                 c = l.y;
@@ -6394,7 +6395,7 @@
                 leftOffset: o,
               });
             }),
-            Go(Uo(t), '_onColumnReorder', function (e, o, n, r) {
+            Vo(Bo(t), '_onColumnReorder', function (e, o, n, r) {
               t.props.columnActions.startColumnReorder({
                 scrollStart: t.props.scrollX,
                 columnKey: e,
@@ -6402,10 +6403,10 @@
                 left: n,
               });
             }),
-            Go(Uo(t), '_onColumnReorderMove', function (e) {
+            Vo(Bo(t), '_onColumnReorderMove', function (e) {
               t.props.columnActions.moveColumnReorder(e);
             }),
-            Go(Uo(t), '_onColumnReorderEnd', function (e, o) {
+            Vo(Bo(t), '_onColumnReorderEnd', function (e, o) {
               var n = t.props,
                 r = n.columnActions,
                 i = n.columnReorderingData,
@@ -6422,7 +6423,7 @@
                   (f({ columnAfter: u, columnBefore: l, reorderColumn: s }),
                   c !== h && p && p(h));
             }),
-            Go(Uo(t), '_onScroll', function (e, o) {
+            Vo(Bo(t), '_onScroll', function (e, o) {
               var n = t.props,
                 r = n.maxScrollX,
                 i = n.maxScrollY,
@@ -6445,10 +6446,10 @@
                 (a && !a(b)) || l.scrollToX(b);
               }
             }),
-            Go(Uo(t), '_scrollTo', function (e, o) {
+            Vo(Bo(t), '_scrollTo', function (e, o) {
               t._scrollToX(e), t._scrollToY(o);
             }),
-            Go(Uo(t), '_scrollToX', function (e) {
+            Vo(Bo(t), '_scrollToX', function (e) {
               var o = t.props,
                 n = o.onHorizontalScroll,
                 r = o.scrollActions,
@@ -6459,13 +6460,13 @@
                 (n && !n(a)) || r.scrollToX(a);
               }
             }),
-            Go(Uo(t), '_scrollToY', function (e) {
+            Vo(Bo(t), '_scrollToY', function (e) {
               var o = t.props,
                 n = o.onVerticalScroll,
                 r = o.scrollActions;
               e !== o.scrollY && ((n && !n(e)) || r.scrollToY(e));
             }),
-            Go(Uo(t), '_didScroll', function (e) {
+            Vo(Bo(t), '_didScroll', function (e) {
               var o = t.props,
                 n = o.onScrollStart,
                 r = o.scrollX,
@@ -6488,7 +6489,7 @@
                 m && u && u(i),
                 t._didScrollStop());
             }),
-            Go(Uo(t), '_didScrollStopSync', function () {
+            Vo(Bo(t), '_didScrollStopSync', function () {
               var e = t.props,
                 o = e.endRowIndex,
                 n = e.firstRowIndex,
@@ -6498,8 +6499,8 @@
                 u = e.scrollY;
               e.scrolling && (i.stopScroll(), r && r(a, u, n, o));
             }),
-            (t._didScrollStop = H(t._didScrollStopSync, 200, Uo(t))),
-            (t._onKeyDown = t._onKeyDown.bind(Uo(t))),
+            (t._didScrollStop = H(t._didScrollStopSync, 200, Bo(t))),
+            (t._onKeyDown = t._onKeyDown.bind(Bo(t))),
             (t._wheelHandler = new fe(
               t._onScroll,
               t._shouldHandleWheelX,
@@ -6508,7 +6509,7 @@
               t.props.stopScrollDefaultHandling,
               t.props.stopScrollPropagation
             )),
-            (t._touchHandler = new Lo(
+            (t._touchHandler = new Ao(
               t._onScroll,
               t._shouldHandleTouchX,
               t._shouldHandleTouchY,
@@ -6690,7 +6691,7 @@
                   Q = H ? this._onColumnReorder : null,
                   ee = D && D();
                 q > 0 &&
-                  (e = a.a.createElement(xo, {
+                  (e = a.a.createElement(So, {
                     key: 'group_header',
                     ariaRowIndex: r,
                     isHeaderOrFooter: !0,
@@ -6735,7 +6736,7 @@
                   }),
                   oe = null;
                 V &&
-                  (oe = a.a.createElement(xo, {
+                  (oe = a.a.createElement(So, {
                     key: 'footer',
                     ariaRowIndex: u,
                     isHeaderOrFooter: !0,
@@ -6761,7 +6762,7 @@
                 var ne,
                   re,
                   ie = this._renderRows(g, p.cell, d.cell, b.cell, y, s),
-                  ae = a.a.createElement(xo, {
+                  ae = a.a.createElement(So, {
                     key: 'header',
                     ariaRowIndex: i,
                     isHeaderOrFooter: !0,
@@ -6817,7 +6818,7 @@
                   this.props.isRTL && (le = I(le, 'fixedDataTable_isRTL')),
                   a.a.createElement(
                     'div',
-                    Yo(
+                    Wo(
                       {
                         className: I(
                           le,
@@ -6862,12 +6863,12 @@
                 );
               },
             },
-          ]) && Wo(t.prototype, o),
-          n && Wo(t, n),
+          ]) && Xo(t.prototype, o),
+          n && Xo(t, n),
           i
         );
       })(a.a.Component);
-      Go(Vo, 'propTypes', {
+      Vo(qo, 'propTypes', {
         width: T.a.number.isRequired,
         height: T.a.number,
         className: T.a.string,
@@ -6935,7 +6936,7 @@
         gridAttributesGetter: T.a.func,
         rowAttributesGetter: T.a.func,
       }),
-        Go(Vo, 'defaultProps', {
+        Vo(qo, 'defaultProps', {
           elementHeights: {
             cellGroupWrapperHeight: void 0,
             footerHeight: 0,
@@ -6947,8 +6948,8 @@
           touchScrollEnabled: !1,
           stopScrollPropagation: !1,
         });
-      var qo = Vo;
-      function Ko(e, t) {
+      var Ko = qo;
+      function Zo(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -6957,10 +6958,10 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      function Zo(e, t) {
+      function $o(e, t) {
         return e < t;
       }
-      var $o = (function () {
+      var Jo = (function () {
         function e(t, o) {
           !(function (e, t) {
             if (!(e instanceof t))
@@ -6968,7 +6969,7 @@
           })(this, e),
             (this._items = t || []),
             (this._size = this._items.length),
-            (this._comparator = o || Zo),
+            (this._comparator = o || $o),
             this._heapify();
         }
         var t, o, n;
@@ -7055,12 +7056,12 @@
                 }
               },
             },
-          ]) && Ko(t.prototype, o),
-          n && Ko(t, n),
+          ]) && Zo(t.prototype, o),
+          n && Zo(t, n),
           e
         );
       })();
-      function Jo(e, t) {
+      function Qo(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -7069,7 +7070,7 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      var Qo = (function () {
+      var en = (function () {
           function e() {
             !(function (e, t) {
               if (!(e instanceof t))
@@ -7077,8 +7078,8 @@
             })(this, e),
               (this._valueToPositionMap = {}),
               (this._size = 0),
-              (this._smallValues = new $o([], this._smallerComparator)),
-              (this._largeValues = new $o([], this._greaterComparator)),
+              (this._smallValues = new Jo([], this._smallerComparator)),
+              (this._largeValues = new Jo([], this._greaterComparator)),
               (this.getNewPositionForValue = this.getNewPositionForValue.bind(
                 this
               )),
@@ -7178,8 +7179,8 @@
                         this._smallValues.size() < this._largeValues.size()
                           ? this._smallValues
                           : this._largeValues,
-                      t = new $o([], this._smallerComparator),
-                      o = new $o([], this._greaterComparator);
+                      t = new Jo([], this._smallerComparator),
+                      o = new Jo([], this._greaterComparator);
                     !e.empty();
 
                   ) {
@@ -7214,13 +7215,13 @@
                   return e.value > t.value;
                 },
               },
-            ]) && Jo(t.prototype, o),
-            n && Jo(t, n),
+            ]) && Qo(t.prototype, o),
+            n && Qo(t, n),
             e
           );
         })(),
-        en = o(80);
-      function tn(e) {
+        tn = o(80);
+      function on(e) {
         return b()(e.props, [
           'align',
           'allowCellsRecycling',
@@ -7237,12 +7238,12 @@
           'width',
         ]);
       }
-      function on(e, t) {
+      function nn(e, t) {
         e.cell.push(t.props.cell),
           e.footer.push(t.props.footer),
           e.header.push(t.props.header);
       }
-      var nn = function (e) {
+      var rn = function (e) {
         var t = [];
         a.a.Children.forEach(e, function (e, o) {
           null != e &&
@@ -7255,13 +7256,13 @@
         var o = { cell: [], footer: [], groupHeader: [], header: [] },
           n = [];
         if (t.length && t[0].type.__TableColumnGroup__) {
-          var r = Re()(t, tn);
+          var r = Re()(t, on);
           return (
             _e()(t, function (e, t) {
               o.groupHeader.push(e.props.header),
                 a.a.Children.forEach(e.props.children, function (e) {
-                  var r = tn(e);
-                  (r.groupIdx = t), n.push(r), on(o, e);
+                  var r = on(e);
+                  (r.groupIdx = t), n.push(r), nn(o, e);
                 });
             }),
             {
@@ -7274,7 +7275,7 @@
         }
         return (
           _e()(t, function (e) {
-            n.push(tn(e)), on(o, e);
+            n.push(on(e)), nn(o, e);
           }),
           {
             columnGroupProps: [],
@@ -7284,7 +7285,7 @@
           }
         );
       };
-      function rn(e, t) {
+      function an(e, t) {
         var o = e.storedHeights,
           n = e.rowOffsetIntervalTree,
           r = e.rowSettings,
@@ -7298,7 +7299,7 @@
           o[t]
         );
       }
-      function an(e, t, o) {
+      function un(e, t, o) {
         return void 0 === t.scrollToRow ||
           null === t.scrollToRow ||
           (o && t.scrollToRow === o.scrollToRow)
@@ -7311,7 +7312,7 @@
                 lastIndex: void 0,
                 changed: !1,
               }
-            : un(e, t.scrollTop)
+            : ln(e, t.scrollTop)
           : (function (e, t) {
               var o = Pe(e).availableHeight,
                 n = e.rowOffsetIntervalTree,
@@ -7326,7 +7327,7 @@
                   lastIndex: void 0,
                   changed: 0 !== e.firstRowIndex || 0 !== e.firstRowOffset,
                 };
-              (t = Ce(t, 0, Math.max(u - 1, 0))), rn(e, t);
+              (t = Ce(t, 0, Math.max(u - 1, 0))), an(e, t);
               var l = n.sumUntil(t),
                 s = l + i[t],
                 c = t,
@@ -7350,7 +7351,7 @@
               };
             })(e, t.scrollToRow);
       }
-      function un(e, t) {
+      function ln(e, t) {
         var o = Pe(e).availableHeight,
           n = e.rowOffsetIntervalTree,
           r = e.rowSettings,
@@ -7374,12 +7375,12 @@
         }
         return { firstIndex: u, firstOffset: l, lastIndex: s, changed: !0 };
       }
-      var ln = o(81),
-        sn = o.n(ln),
-        cn = o(28),
-        fn = o.n(cn);
-      function pn() {
-        return (pn =
+      var sn = o(81),
+        cn = o.n(sn),
+        fn = o(28),
+        pn = o.n(fn);
+      function hn() {
+        return (hn =
           Object.assign ||
           function (e) {
             for (var t = 1; t < arguments.length; t++) {
@@ -7390,7 +7391,7 @@
             return e;
           }).apply(this, arguments);
       }
-      var hn = {
+      var dn = {
         initialize: function (e, t, o) {
           var n = t.scrollLeft,
             r = (t.scrollToColumn, e.columnResizingData),
@@ -7399,7 +7400,7 @@
           void 0 === n || (o && n === o.scrollLeft) || (a = n),
             (a = (function (e, t, o, n) {
               var r = t.scrollToColumn;
-              if (sn()(r)) return n;
+              if (cn()(r)) return n;
               var i = Ie(e),
                 a = i.availableScrollWidth,
                 u = i.fixedColumns,
@@ -7424,8 +7425,8 @@
             })(e, t, o.scrollToColumn, a));
           var u = Ie(e).maxScrollX;
           return (
-            (a = fn()(a, 0, u)),
-            pn({}, e, {
+            (a = pn()(a, 0, u)),
+            hn({}, e, {
               columnResizingData: (r = (i =
                 void 0 !== t.isColumnResizing ? t.isColumnResizing : i)
                 ? r
@@ -7441,7 +7442,7 @@
             n = t.left,
             r = t.scrollStart,
             i = t.width;
-          return pn({}, e, {
+          return hn({}, e, {
             isColumnReordering: !0,
             columnReorderingData: {
               cancelReorder: !1,
@@ -7472,12 +7473,12 @@
                 ? (u = Math.min(u + 15, a))
                 : l <= 100 && (u = Math.max(u - 15, 0));
           }
-          var s = pn({}, e.columnReorderingData, {
+          var s = hn({}, e.columnReorderingData, {
             dragDistance: t,
             columnBefore: void 0,
             columnAfter: void 0,
           });
-          return pn({}, e, { scrollX: u, columnReorderingData: s });
+          return hn({}, e, { scrollX: u, columnReorderingData: s });
         },
         resizeColumn: function (e, t) {
           var o = t.cellMinWidth,
@@ -7487,7 +7488,7 @@
             a = t.combinedWidth,
             u = t.clientX,
             l = t.clientY;
-          return pn({}, e, {
+          return hn({}, e, {
             isColumnResizing: !0,
             columnResizingData: {
               left: t.leftOffset + a - r,
@@ -7500,8 +7501,8 @@
           });
         },
       };
-      function dn() {
-        return (dn =
+      function vn() {
+        return (vn =
           Object.assign ||
           function (e) {
             for (var t = 1; t < arguments.length; t++) {
@@ -7512,17 +7513,17 @@
             return e;
           }).apply(this, arguments);
       }
-      function vn(e, t) {
+      function bn(e, t) {
         var o,
-          n = dn({}, e),
-          r = bn(n, t),
+          n = vn({}, e),
+          r = mn(n, t),
           i = n.rowSettings,
           a = n.scrollContentHeight,
           u = i.rowsCount,
           l = a - Le(n).bodyHeight;
         0 === l
           ? (r.firstViewportIdx > 0 &&
-              (r = bn(n, { firstOffset: 0, lastIndex: u - 1 })),
+              (r = mn(n, { firstOffset: 0, lastIndex: u - 1 })),
             (o = 0))
           : (o = r.firstOffset);
         var s = r.firstViewportIdx,
@@ -7548,7 +7549,7 @@
             b++
           ) {
             (d[b] = v), (v += i[b]);
-            var m = mn(b, n, f, p, c);
+            var m = yn(b, n, f, p, c);
             h[m] = b;
           }
           (e.rows = h), (e.rowOffsets = d);
@@ -7556,16 +7557,16 @@
         var f = 0;
         return (
           u > 0 && (f = n.rowOffsets[r.firstViewportIdx] - o),
-          dn(n, {
+          vn(n, {
             firstRowIndex: s,
             firstRowOffset: o,
             endRowIndex: c,
             maxScrollY: l,
-            scrollY: (f = fn()(f, 0, l)),
+            scrollY: (f = pn()(f, 0, l)),
           })
         );
       }
-      function bn(e, t) {
+      function mn(e, t) {
         var o = ke(e),
           n = o.bufferRowCount,
           r = o.maxAvailableHeight,
@@ -7587,17 +7588,17 @@
           f = u;
         void 0 !== l && ((s = -1), (c = l), (f = 0));
         for (var p = c, h = p; p < i && p >= 0 && f < r; )
-          (f += rn(e, p)), (h = p), (p += s);
+          (f += an(e, p)), (h = p), (p += s);
         var d = !1;
         if (f < r && p === i && void 0 === l)
           for (d = !0, p = a - 1; p >= 0 && f < r; )
-            (f += rn(e, p)), (c = p), --p;
+            (f += an(e, p)), (c = p), --p;
         var v = Math.min(c, h),
           b = Math.max(v - n, 0);
-        for (p = b; p < v; p++) rn(e, p);
+        for (p = b; p < v; p++) an(e, p);
         var m = Math.max(c, h) + 1,
           y = Math.min(m + n, i);
-        for (p = m; p < y; p++) rn(e, p);
+        for (p = m; p < y; p++) an(e, p);
         var g = Pe(e).availableHeight;
         if (void 0 !== l || d) {
           u += Math.min(g - f, 0);
@@ -7612,7 +7613,7 @@
           firstViewportIdx: v,
         };
       }
-      function mn(e, t, o, n, r) {
+      function yn(e, t, o, n, r) {
         var i = t.getValuePosition(e);
         return (
           null === i &&
@@ -7622,21 +7623,21 @@
           i
         );
       }
-      var yn = o(82),
-        gn = o.n(yn),
-        _n = 9,
-        wn = 32,
-        Rn = 33,
-        xn = 34,
-        Sn = 36,
-        On = 37,
-        Tn = 38,
-        Cn = 39,
-        En = 40,
-        jn = o(30),
-        Mn = o.n(jn);
-      function Dn(e) {
-        return (Dn =
+      var gn = o(82),
+        _n = o.n(gn),
+        wn = 9,
+        Rn = 32,
+        xn = 33,
+        Sn = 34,
+        On = 36,
+        Tn = 37,
+        Cn = 38,
+        En = 39,
+        jn = 40,
+        Mn = o(30),
+        Dn = o.n(Mn);
+      function kn(e) {
+        return (kn =
           'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
             ? function (e) {
                 return typeof e;
@@ -7650,7 +7651,7 @@
                   : typeof e;
               })(e);
       }
-      function kn(e, t) {
+      function Pn(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -7659,14 +7660,14 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      function Pn(e, t) {
-        return (Pn =
+      function Hn(e, t) {
+        return (Hn =
           Object.setPrototypeOf ||
           function (e, t) {
             return (e.__proto__ = t), e;
           })(e, t);
       }
-      function Hn(e) {
+      function In(e) {
         var t = (function () {
           if ('undefined' == typeof Reflect || !Reflect.construct) return !1;
           if (Reflect.construct.sham) return !1;
@@ -7684,32 +7685,32 @@
         })();
         return function () {
           var o,
-            n = Ln(e);
+            n = An(e);
           if (t) {
-            var r = Ln(this).constructor;
+            var r = An(this).constructor;
             o = Reflect.construct(n, arguments, r);
           } else o = n.apply(this, arguments);
-          return In(this, o);
+          return zn(this, o);
         };
       }
-      function In(e, t) {
-        return !t || ('object' !== Dn(t) && 'function' != typeof t) ? zn(e) : t;
+      function zn(e, t) {
+        return !t || ('object' !== kn(t) && 'function' != typeof t) ? Ln(e) : t;
       }
-      function zn(e) {
+      function Ln(e) {
         if (void 0 === e)
           throw new ReferenceError(
             "this hasn't been initialised - super() hasn't been called"
           );
         return e;
       }
-      function Ln(e) {
-        return (Ln = Object.setPrototypeOf
+      function An(e) {
+        return (An = Object.setPrototypeOf
           ? Object.getPrototypeOf
           : function (e) {
               return e.__proto__ || Object.getPrototypeOf(e);
             })(e);
       }
-      function An(e, t, o) {
+      function Yn(e, t, o) {
         return (
           t in e
             ? Object.defineProperty(e, t, {
@@ -7722,11 +7723,11 @@
           e
         );
       }
-      var Yn = { position: 0, scrollable: !1 },
-        Wn = parseInt(Mn()('--scrollbar-face-margin'), 10),
-        Xn = 2 * Wn,
-        Nn = null,
-        Fn = (function (e) {
+      var Wn = { position: 0, scrollable: !1 },
+        Xn = parseInt(Dn()('--scrollbar-face-margin'), 10),
+        Nn = 2 * Xn,
+        Fn = null,
+        Un = (function (e) {
           !(function (e, t) {
             if ('function' != typeof t && null !== t)
               throw new TypeError(
@@ -7735,12 +7736,12 @@
             (e.prototype = Object.create(t && t.prototype, {
               constructor: { value: e, writable: !0, configurable: !0 },
             })),
-              t && Pn(e, t);
+              t && Hn(e, t);
           })(i, e);
           var t,
             o,
             n,
-            r = Hn(i);
+            r = In(i);
           function i(e) {
             var t;
             return (
@@ -7748,28 +7749,28 @@
                 if (!(e instanceof t))
                   throw new TypeError('Cannot call a class as a function');
               })(this, i),
-              An(zn((t = r.call(this, e))), '_onRefFace', function (e) {
+              Yn(Ln((t = r.call(this, e))), '_onRefFace', function (e) {
                 return (t._faceRef = e);
               }),
-              An(zn(t), '_onRefRoot', function (e) {
+              Yn(Ln(t), '_onRefRoot', function (e) {
                 return (t._rootRef = e);
               }),
-              An(zn(t), 'scrollBy', function (e) {
+              Yn(Ln(t), 'scrollBy', function (e) {
                 t._onWheel(e);
               }),
-              An(zn(t), '_shouldHandleX', function (e) {
+              Yn(Ln(t), '_shouldHandleX', function (e) {
                 return (
                   'horizontal' === t.props.orientation &&
                   t._shouldHandleChange(e)
                 );
               }),
-              An(zn(t), '_shouldHandleY', function (e) {
+              Yn(Ln(t), '_shouldHandleY', function (e) {
                 return (
                   'horizontal' !== t.props.orientation &&
                   t._shouldHandleChange(e)
                 );
               }),
-              An(zn(t), '_shouldHandleChange', function (e) {
+              Yn(Ln(t), '_shouldHandleChange', function (e) {
                 return (
                   t._calculateState(
                     t.state.position + e,
@@ -7779,9 +7780,9 @@
                   ).position !== t.state.position
                 );
               }),
-              An(zn(t), '_calculateState', function (e, o, n, r) {
+              Yn(Ln(t), '_calculateState', function (e, o, n, r) {
                 var i = Math.max(1, o);
-                if (n <= i) return Yn;
+                if (n <= i) return Wn;
                 var a = ''
                   .concat(e, '_')
                   .concat(i, '_')
@@ -7805,13 +7806,13 @@
                 };
                 return (t._stateKey = a), (t._stateForKey = f), f;
               }),
-              An(zn(t), '_onWheelY', function (e, o) {
+              Yn(Ln(t), '_onWheelY', function (e, o) {
                 t._onWheel(o);
               }),
-              An(zn(t), '_onWheelX', function (e, o) {
+              Yn(Ln(t), '_onWheelX', function (e, o) {
                 t._onWheel(e);
               }),
-              An(zn(t), '_onWheel', function (e) {
+              Yn(Ln(t), '_onWheel', function (e) {
                 var o = t.props;
                 t._setNextState(
                   t._calculateState(
@@ -7822,7 +7823,7 @@
                   )
                 );
               }),
-              An(zn(t), '_onMouseDown', function (e) {
+              Yn(Ln(t), '_onMouseDown', function (e) {
                 var o;
                 if (e.target !== t._faceRef) {
                   var n = e.nativeEvent,
@@ -7843,19 +7844,19 @@
                   t._mouseMoveTracker.captureMouseMoves(e),
                   t._rootRef.focus();
               }),
-              An(zn(t), '_onTouchCancel', function (e) {
+              Yn(Ln(t), '_onTouchCancel', function (e) {
                 e.stopPropagation();
               }),
-              An(zn(t), '_onTouchEnd', function (e) {
+              Yn(Ln(t), '_onTouchEnd', function (e) {
                 e.stopPropagation();
               }),
-              An(zn(t), '_onTouchMove', function (e) {
+              Yn(Ln(t), '_onTouchMove', function (e) {
                 e.stopPropagation();
               }),
-              An(zn(t), '_onTouchStart', function (e) {
+              Yn(Ln(t), '_onTouchStart', function (e) {
                 e.stopPropagation(), t._onMouseDown(e);
               }),
-              An(zn(t), '_onMouseMove', function (e, o) {
+              Yn(Ln(t), '_onMouseMove', function (e, o) {
                 var n = t.props,
                   r = t.state.isHorizontal ? e * (t.props.isRTL ? -1 : 1) : o;
                 (r /= t.state.scale),
@@ -7868,36 +7869,19 @@
                     )
                   );
               }),
-              An(zn(t), '_onMouseMoveEnd', function () {
+              Yn(Ln(t), '_onMouseMoveEnd', function () {
                 (t._nextState = null),
                   t._mouseMoveTracker.releaseMouseMoves(),
                   t.setState({ isDragging: !1 });
               }),
-              An(zn(t), '_onKeyDown', function (e) {
+              Yn(Ln(t), '_onKeyDown', function (e) {
                 var o = e.keyCode;
-                if (o !== _n) {
+                if (o !== wn) {
                   var n = 40,
                     r = 0;
                   if (t.state.isHorizontal)
                     switch (o) {
-                      case Sn:
-                        (r = -1), (n = t.props.contentSize);
-                        break;
                       case On:
-                        r = -1;
-                        break;
-                      case Cn:
-                        r = 1;
-                        break;
-                      default:
-                        return;
-                    }
-                  if (!t.state.isHorizontal)
-                    switch (o) {
-                      case wn:
-                        r = e.shiftKey ? -1 : 1;
-                        break;
-                      case Sn:
                         (r = -1), (n = t.props.contentSize);
                         break;
                       case Tn:
@@ -7906,10 +7890,27 @@
                       case En:
                         r = 1;
                         break;
+                      default:
+                        return;
+                    }
+                  if (!t.state.isHorizontal)
+                    switch (o) {
                       case Rn:
-                        (r = -1), (n = t.props.size);
+                        r = e.shiftKey ? -1 : 1;
+                        break;
+                      case On:
+                        (r = -1), (n = t.props.contentSize);
+                        break;
+                      case Cn:
+                        r = -1;
+                        break;
+                      case jn:
+                        r = 1;
                         break;
                       case xn:
+                        (r = -1), (n = t.props.size);
+                        break;
+                      case Sn:
                         (r = 1), (n = t.props.size);
                         break;
                       default:
@@ -7927,32 +7928,32 @@
                   );
                 }
               }),
-              An(zn(t), '_onFocus', function () {
+              Yn(Ln(t), '_onFocus', function () {
                 t.setState({ focused: !0 });
               }),
-              An(zn(t), '_onBlur', function () {
+              Yn(Ln(t), '_onBlur', function () {
                 t.setState({ focused: !1 });
               }),
-              An(zn(t), '_blur', function () {
-                var e = gn.a.findDOMNode(zn(t));
+              Yn(Ln(t), '_blur', function () {
+                var e = _n.a.findDOMNode(Ln(t));
                 if (e)
                   try {
                     t._onBlur(), e.blur();
                   } catch (e) {}
               }),
-              An(zn(t), 'getTouchX', function (e) {
+              Yn(Ln(t), 'getTouchX', function (e) {
                 return Math.round(
                   e.targetTouches[0].clientX -
                     e.target.getBoundingClientRect().x
                 );
               }),
-              An(zn(t), 'getTouchY', function (e) {
+              Yn(Ln(t), 'getTouchY', function (e) {
                 return Math.round(
                   e.targetTouches[0].clientY -
                     e.target.getBoundingClientRect().y
                 );
               }),
-              An(zn(t), '_setNextState', function (e, o) {
+              Yn(Ln(t), '_setNextState', function (e, o) {
                 var n = (o = o || t.props).position,
                   r = t.state.position !== e.position;
                 if (void 0 === n) {
@@ -7967,9 +7968,9 @@
                     );
                   t.setState(e);
                 }
-                r && Nn !== zn(t) && (Nn && Nn._blur(), (Nn = zn(t)));
+                r && Fn !== Ln(t) && (Fn && Fn._blur(), (Fn = Ln(t)));
               }),
-              An(zn(t), '_didScroll', function () {
+              Yn(Ln(t), '_didScroll', function () {
                 t.props.onScroll(t.state.position);
               }),
               (t.state = t._calculateState(
@@ -8037,12 +8038,12 @@
                       'public/Scrollbar/faceActive': i,
                       'public/Scrollbar/face': !0,
                     }),
-                    p = this.state.position * this.state.scale + Wn;
+                    p = this.state.position * this.state.scale + Xn;
                   return (
                     n
                       ? ((e = { width: o }),
-                        Ut(
-                          (t = { width: u - Xn, top: 0, bottom: 0 }),
+                        Bt(
+                          (t = { width: u - Nn, top: 0, bottom: 0 }),
                           p,
                           0,
                           this._initialRender,
@@ -8051,8 +8052,8 @@
                       : ((e = { top: s, height: o }),
                         this.props.isRTL &&
                           ((e.left = e.right || 0), (e.right = 'auto')),
-                        Ut(
-                          (t = { height: u - Xn }),
+                        Bt(
+                          (t = { height: u - Nn }),
                           0,
                           p,
                           this._initialRender,
@@ -8063,7 +8064,7 @@
                     (e.touchAction = 'none'),
                     (e.zIndex = this.props.zIndex),
                     'gray' === this.props.trackColor &&
-                      (e.backgroundColor = Mn()(
+                      (e.backgroundColor = Dn()(
                         '--fbui-desktop-background-light'
                       )),
                     a.a.createElement(
@@ -8134,15 +8135,15 @@
                     this._mouseMoveTracker &&
                       (this._mouseMoveTracker.releaseMouseMoves(),
                       (this._mouseMoveTracker = null)),
-                    Nn === this && (Nn = null);
+                    Fn === this && (Fn = null);
                 },
               },
-            ]) && kn(t.prototype, o),
-            n && kn(t, n),
+            ]) && Pn(t.prototype, o),
+            n && Pn(t, n),
             i
           );
         })(a.a.PureComponent);
-      An(Fn, 'propTypes', {
+      Yn(Un, 'propTypes', {
         contentSize: T.a.number.isRequired,
         defaultPosition: T.a.number,
         isOpaque: T.a.bool,
@@ -8156,19 +8157,19 @@
         verticalTop: T.a.number,
         isRTL: T.a.bool,
       }),
-        An(Fn, 'defaultProps', {
+        Yn(Un, 'defaultProps', {
           defaultPosition: 0,
           isOpaque: !1,
           onScroll: Q.a,
           orientation: 'vertical',
           zIndex: 99,
         }),
-        (Fn.KEYBOARD_SCROLL_AMOUNT = 40),
-        (Fn.SIZE = parseInt(Mn()('--scrollbar-size'), 10)),
-        (Fn.OFFSET = 1);
-      var Un = Fn;
-      function Bn() {
-        return (Bn =
+        (Un.KEYBOARD_SCROLL_AMOUNT = 40),
+        (Un.SIZE = parseInt(Dn()('--scrollbar-size'), 10)),
+        (Un.OFFSET = 1);
+      var Bn = Un;
+      function Gn() {
+        return (Gn =
           Object.assign ||
           function (e) {
             for (var t = 1; t < arguments.length; t++) {
@@ -8179,7 +8180,7 @@
             return e;
           }).apply(this, arguments);
       }
-      function Gn() {
+      function Vn() {
         return {
           columnProps: [],
           columnGroupProps: [],
@@ -8194,6 +8195,7 @@
             groupHeaderHeight: 0,
             headerHeight: 0,
           },
+          propsRevision: null,
           rowSettings: {
             bufferRowCount: void 0,
             rowAttributesGetter: void 0,
@@ -8232,22 +8234,22 @@
           rows: [],
           scrollContentHeight: 0,
           scrollX: 0,
-          scrollbarXHeight: Un.SIZE,
+          scrollbarXHeight: Bn.SIZE,
           scrollY: 0,
-          scrollbarYWidth: Un.SIZE,
+          scrollbarYWidth: Bn.SIZE,
           scrolling: !1,
-          rowBufferSet: new Qo(),
+          rowBufferSet: new en(),
           storedHeights: [],
           rowOffsetIntervalTree: null,
         };
       }
-      function Vn(e) {
+      function qn(e) {
         for (
           var t = e.rowSettings,
             o = t.rowHeight,
             n = t.rowsCount,
             r = o + t.subRowHeight,
-            i = en.a.uniform(n, r),
+            i = tn.a.uniform(n, r),
             a = n * r,
             u = new Array(n),
             l = 0;
@@ -8255,24 +8257,25 @@
           l++
         )
           u[l] = r;
-        return Bn({}, e, {
+        return Gn({}, e, {
           rowOffsetIntervalTree: i,
           scrollContentHeight: a,
           storedHeights: u,
         });
       }
-      function qn(e, t) {
-        var o = nn(t.children),
+      function Kn(e, t) {
+        var o = rn(t.children),
           n = o.columnGroupProps,
           r = o.columnProps,
           i = o.elementTemplates,
           a = o.useGroupHeader,
-          u = Bn({}, e, {
+          u = Gn({}, e, {
             columnGroupProps: n,
             columnProps: r,
             elementTemplates: i,
+            propsRevision: e.propsRevision + 1,
           });
-        (u.elementHeights = Bn(
+        (u.elementHeights = Gn(
           {},
           u.elementHeights,
           b()(t, [
@@ -8283,7 +8286,7 @@
           ])
         )),
           a || (u.elementHeights.groupHeaderHeight = 0),
-          (u.rowSettings = Bn(
+          (u.rowSettings = Gn(
             {},
             u.rowSettings,
             b()(t, ['bufferRowCount', 'rowHeight', 'rowsCount', 'subRowHeight'])
@@ -8303,7 +8306,7 @@
               return c || 0;
             }),
           (u.rowSettings.rowAttributesGetter = t.rowAttributesGetter),
-          (u.scrollFlags = Bn(
+          (u.scrollFlags = Gn(
             {},
             u.scrollFlags,
             b()(t, [
@@ -8313,7 +8316,7 @@
               'showScrollbarY',
             ])
           )),
-          (u.tableSize = Bn(
+          (u.tableSize = Gn(
             {},
             u.tableSize,
             b()(t, ['height', 'maxHeight', 'ownerHeight', 'width'])
@@ -8324,76 +8327,76 @@
           u
         );
       }
-      var Kn = function () {
+      var Zn = function () {
           var e =
               arguments.length > 0 && void 0 !== arguments[0]
                 ? arguments[0]
-                : Gn(),
+                : Vn(),
             t = arguments.length > 1 ? arguments[1] : void 0;
           switch (t.type) {
             case 'INITIALIZE':
               var o = t.props,
-                n = qn(e, o),
-                r = an((n = Vn(n)), o);
-              return (n = vn(n, r)), hn.initialize(n, o, {});
+                n = Kn(e, o),
+                r = un((n = qn(n)), o);
+              return (n = bn(n, r)), dn.initialize(n, o, {});
             case 'PROP_CHANGE':
               var i = t.newProps,
                 a = t.oldProps,
-                u = qn(e, i);
+                u = Kn(e, i);
               (a.rowsCount === i.rowsCount &&
                 a.rowHeight === i.rowHeight &&
                 a.subRowHeight === i.subRowHeight) ||
-                (u = Vn(u)),
-                a.rowsCount !== i.rowsCount && (u.rowBufferSet = new Qo());
-              var l = an(u, i, a);
+                (u = qn(u)),
+                a.rowsCount !== i.rowsCount && (u.rowBufferSet = new en());
+              var l = un(u, i, a);
               return (
-                (J(e, u) && !l.changed) || (u = vn(u, l)),
-                ((u = hn.initialize(u, i, a)).scrollX === e.scrollX &&
+                (J(e, u) && !l.changed) || (u = bn(u, l)),
+                ((u = dn.initialize(u, i, a)).scrollX === e.scrollX &&
                   u.scrollY === e.scrollY) ||
                   (u.scrolling = u.scrolling || !0),
                 u
               );
             case 'SCROLL_END':
-              var s = Bn({}, e, { scrolling: !1 }),
+              var s = Gn({}, e, { scrolling: !1 }),
                 c = {
                   firstIndex: e.firstRowIndex,
                   firstOffset: e.firstRowOffset,
                   lastIndex: e.lastIndex,
                 };
-              return vn(s, c);
+              return bn(s, c);
             case 'SCROLL_TO_Y':
               var f = t.scrollY,
-                p = Bn({}, e, { scrolling: !0 }),
-                h = un(p, f);
-              return vn(p, h);
+                p = Gn({}, e, { scrolling: !0 }),
+                h = ln(p, f);
+              return bn(p, h);
             case 'COLUMN_RESIZE':
               var d = t.resizeData;
-              return hn.resizeColumn(e, d);
+              return dn.resizeColumn(e, d);
             case 'COLUMN_REORDER_START':
               var v = t.reorderData;
-              return hn.reorderColumn(e, v);
+              return dn.reorderColumn(e, v);
             case 'COLUMN_REORDER_END':
-              return Bn({}, e, {
+              return Gn({}, e, {
                 isColumnReordering: !1,
                 columnReorderingData: {},
               });
             case 'COLUMN_REORDER_MOVE':
               var b = t.deltaX;
-              return hn.reorderColumnMove(e, b);
+              return dn.reorderColumnMove(e, b);
             case 'SCROLL_TO_X':
               var m = t.scrollX;
-              return Bn({}, e, { scrolling: !0, scrollX: m });
+              return Gn({}, e, { scrolling: !0, scrollX: m });
             default:
               return e;
           }
         },
-        Zn = function () {
-          return f(Kn);
+        $n = function () {
+          return f(Zn);
         },
-        $n = o(58),
-        Jn = o.n($n);
-      function Qn(e) {
-        return (Qn =
+        Jn = o(58),
+        Qn = o.n(Jn);
+      function er(e) {
+        return (er =
           'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
             ? function (e) {
                 return typeof e;
@@ -8407,8 +8410,8 @@
                   : typeof e;
               })(e);
       }
-      function er() {
-        return (er =
+      function tr() {
+        return (tr =
           Object.assign ||
           function (e) {
             for (var t = 1; t < arguments.length; t++) {
@@ -8419,11 +8422,11 @@
             return e;
           }).apply(this, arguments);
       }
-      function tr(e, t) {
+      function or(e, t) {
         if (!(e instanceof t))
           throw new TypeError('Cannot call a class as a function');
       }
-      function or(e, t) {
+      function nr(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -8432,10 +8435,10 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      function nr(e, t, o) {
-        return t && or(e.prototype, t), o && or(e, o), e;
+      function rr(e, t, o) {
+        return t && nr(e.prototype, t), o && nr(e, o), e;
       }
-      function rr(e, t) {
+      function ir(e, t) {
         if ('function' != typeof t && null !== t)
           throw new TypeError(
             'Super expression must either be null or a function'
@@ -8443,16 +8446,16 @@
         (e.prototype = Object.create(t && t.prototype, {
           constructor: { value: e, writable: !0, configurable: !0 },
         })),
-          t && ir(e, t);
+          t && ar(e, t);
       }
-      function ir(e, t) {
-        return (ir =
+      function ar(e, t) {
+        return (ar =
           Object.setPrototypeOf ||
           function (e, t) {
             return (e.__proto__ = t), e;
           })(e, t);
       }
-      function ar(e) {
+      function ur(e) {
         var t = (function () {
           if ('undefined' == typeof Reflect || !Reflect.construct) return !1;
           if (Reflect.construct.sham) return !1;
@@ -8470,32 +8473,32 @@
         })();
         return function () {
           var o,
-            n = sr(e);
+            n = cr(e);
           if (t) {
-            var r = sr(this).constructor;
+            var r = cr(this).constructor;
             o = Reflect.construct(n, arguments, r);
           } else o = n.apply(this, arguments);
-          return ur(this, o);
+          return lr(this, o);
         };
       }
-      function ur(e, t) {
-        return !t || ('object' !== Qn(t) && 'function' != typeof t) ? lr(e) : t;
+      function lr(e, t) {
+        return !t || ('object' !== er(t) && 'function' != typeof t) ? sr(e) : t;
       }
-      function lr(e) {
+      function sr(e) {
         if (void 0 === e)
           throw new ReferenceError(
             "this hasn't been initialised - super() hasn't been called"
           );
         return e;
       }
-      function sr(e) {
-        return (sr = Object.setPrototypeOf
+      function cr(e) {
+        return (cr = Object.setPrototypeOf
           ? Object.getPrototypeOf
           : function (e) {
               return e.__proto__ || Object.getPrototypeOf(e);
             })(e);
       }
-      function cr(e, t, o) {
+      function fr(e, t, o) {
         return (
           t in e
             ? Object.defineProperty(e, t, {
@@ -8508,36 +8511,36 @@
           e
         );
       }
-      var fr = (function (e) {
-          rr(o, e);
-          var t = ar(o);
+      var pr = (function (e) {
+          ir(o, e);
+          var t = ur(o);
           function o() {
             var e;
-            tr(this, o);
+            or(this, o);
             for (var n = arguments.length, r = new Array(n), i = 0; i < n; i++)
               r[i] = arguments[i];
             return (
-              cr(lr((e = t.call.apply(t, [this].concat(r)))), 'state', {}),
-              cr(lr(e), '_onScrollBarsUpdate', function (t) {
+              fr(sr((e = t.call.apply(t, [this].concat(r)))), 'state', {}),
+              fr(sr(e), '_onScrollBarsUpdate', function (t) {
                 e.setState(t);
               }),
-              cr(lr(e), '_onVerticalScroll', function (t) {
+              fr(sr(e), '_onVerticalScroll', function (t) {
                 void 0 !== e.state.scrollToY && e.state.scrollToY(t);
               }),
-              cr(lr(e), '_onHorizontalScroll', function (t) {
+              fr(sr(e), '_onHorizontalScroll', function (t) {
                 void 0 !== e.state.scrollToX && e.state.scrollToX(t);
               }),
               e
             );
           }
           return (
-            nr(o, [
+            rr(o, [
               {
                 key: 'render',
                 value: function () {
                   var e =
-                      !Jn()(this.state) &&
-                      a.a.createElement(Un, {
+                      !Qn()(this.state) &&
+                      a.a.createElement(Bn, {
                         size: this.state.viewportHeight,
                         contentSize: this.state.contentHeight,
                         onScroll: this._onVerticalScroll,
@@ -8547,8 +8550,8 @@
                         isRTL: this.props.isRTL,
                       }),
                     t =
-                      !Jn()(this.state) &&
-                      a.a.createElement(pr, {
+                      !Qn()(this.state) &&
+                      a.a.createElement(hr, {
                         contentSize: this.state.contentWidth,
                         offset: this.state.scrollbarXOffsetTop,
                         onScroll: this._onHorizontalScroll,
@@ -8568,23 +8571,23 @@
             o
           );
         })(a.a.Component),
-        pr = (function (e) {
-          rr(o, e);
-          var t = ar(o);
+        hr = (function (e) {
+          ir(o, e);
+          var t = ur(o);
           function o() {
-            return tr(this, o), t.apply(this, arguments);
+            return or(this, o), t.apply(this, arguments);
           }
           return (
-            nr(o, [
+            rr(o, [
               {
                 key: 'render',
                 value: function () {
                   var e = this.props,
                     t = e.offset,
                     o = e.size,
-                    n = { height: Un.SIZE, width: o },
+                    n = { height: Bn.SIZE, width: o },
                     r = {
-                      height: Un.SIZE,
+                      height: Bn.SIZE,
                       overflow: 'hidden',
                       width: o,
                       top: t,
@@ -8601,8 +8604,8 @@
                       'div',
                       { style: r },
                       a.a.createElement(
-                        Un,
-                        er({}, this.props, {
+                        Bn,
+                        tr({}, this.props, {
                           isOpaque: !0,
                           orientation: 'horizontal',
                           offset: void 0,
@@ -8616,7 +8619,7 @@
             o
           );
         })(a.a.PureComponent);
-      cr(pr, 'propTypes', {
+      fr(hr, 'propTypes', {
         contentSize: T.a.number.isRequired,
         offset: T.a.number.isRequired,
         onScroll: T.a.func.isRequired,
@@ -8624,9 +8627,9 @@
         size: T.a.number.isRequired,
         isRTL: T.a.bool,
       });
-      var hr = fr;
-      function dr(e) {
-        return (dr =
+      var dr = pr;
+      function vr(e) {
+        return (vr =
           'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
             ? function (e) {
                 return typeof e;
@@ -8640,8 +8643,8 @@
                   : typeof e;
               })(e);
       }
-      function vr() {
-        return (vr =
+      function br() {
+        return (br =
           Object.assign ||
           function (e) {
             for (var t = 1; t < arguments.length; t++) {
@@ -8652,7 +8655,7 @@
             return e;
           }).apply(this, arguments);
       }
-      function br(e, t) {
+      function mr(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -8661,14 +8664,14 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      function mr(e, t) {
-        return (mr =
+      function yr(e, t) {
+        return (yr =
           Object.setPrototypeOf ||
           function (e, t) {
             return (e.__proto__ = t), e;
           })(e, t);
       }
-      function yr(e) {
+      function gr(e) {
         var t = (function () {
           if ('undefined' == typeof Reflect || !Reflect.construct) return !1;
           if (Reflect.construct.sham) return !1;
@@ -8686,32 +8689,32 @@
         })();
         return function () {
           var o,
-            n = wr(e);
+            n = Rr(e);
           if (t) {
-            var r = wr(this).constructor;
+            var r = Rr(this).constructor;
             o = Reflect.construct(n, arguments, r);
           } else o = n.apply(this, arguments);
-          return gr(this, o);
+          return _r(this, o);
         };
       }
-      function gr(e, t) {
-        return !t || ('object' !== dr(t) && 'function' != typeof t) ? _r(e) : t;
+      function _r(e, t) {
+        return !t || ('object' !== vr(t) && 'function' != typeof t) ? wr(e) : t;
       }
-      function _r(e) {
+      function wr(e) {
         if (void 0 === e)
           throw new ReferenceError(
             "this hasn't been initialised - super() hasn't been called"
           );
         return e;
       }
-      function wr(e) {
-        return (wr = Object.setPrototypeOf
+      function Rr(e) {
+        return (Rr = Object.setPrototypeOf
           ? Object.getPrototypeOf
           : function (e) {
               return e.__proto__ || Object.getPrototypeOf(e);
             })(e);
       }
-      var Rr = (function (e) {
+      var xr = (function (e) {
         !(function (e, t) {
           if ('function' != typeof t && null !== t)
             throw new TypeError(
@@ -8720,12 +8723,12 @@
           (e.prototype = Object.create(t && t.prototype, {
             constructor: { value: e, writable: !0, configurable: !0 },
           })),
-            t && mr(e, t);
+            t && yr(e, t);
         })(l, e);
         var t,
           o,
           i,
-          u = yr(l);
+          u = gr(l);
         function l(e) {
           var t;
           return (
@@ -8733,61 +8736,48 @@
               if (!(e instanceof t))
                 throw new TypeError('Cannot call a class as a function');
             })(this, l),
-            ((t = u.call(this, e)).update = t.update.bind(_r(t))),
-            (t.reduxStore = Zn()),
+            ((t = u.call(this, e)).reduxStore = $n()),
             (t.scrollActions = h(r, t.reduxStore.dispatch)),
             (t.columnActions = h(n, t.reduxStore.dispatch)),
             t.reduxStore.dispatch({ type: 'INITIALIZE', props: e }),
-            (t.unsubscribe = t.reduxStore.subscribe(t.update)),
-            (t.state = t.getBoundState()),
+            (t.unsubscribe = t.reduxStore.subscribe(
+              t.onStoreUpdate.bind(wr(t))
+            )),
+            (t.state = {
+              boundState: l.getBoundState(t.reduxStore),
+              reduxStore: t.reduxStore,
+              props: e,
+            }),
             t
           );
         }
         return (
           (t = l),
-          (o = [
+          (i = [
             {
-              key: 'componentWillReceiveProps',
-              value: function (e) {
-                Object(d.a)(
-                  void 0 !== e.height || void 0 !== e.maxHeight,
-                  'You must set either a height or a maxHeight'
-                ),
-                  this.reduxStore.dispatch({
-                    type: 'PROP_CHANGE',
-                    newProps: e,
-                    oldProps: this.props,
-                  });
-              },
-            },
-            {
-              key: 'componentWillUnmount',
-              value: function () {
-                this.unsubscribe &&
-                  (this.unsubscribe(), (this.unsubscribe = null)),
-                  (this.reduxStore = null);
-              },
-            },
-            {
-              key: 'render',
-              value: function () {
-                var e = a.a.createElement(
-                  qo,
-                  vr({}, this.props, this.state, {
-                    scrollActions: this.scrollActions,
-                    columnActions: this.columnActions,
-                  })
+              key: 'getDerivedStateFromProps',
+              value: function (e, t) {
+                return (
+                  Object(d.a)(
+                    void 0 !== e.height || void 0 !== e.maxHeight,
+                    'You must set either a height or a maxHeight'
+                  ),
+                  e === t.boundState.propsReference
+                    ? null
+                    : (t.reduxStore.dispatch({
+                        type: 'PROP_CHANGE',
+                        newProps: e,
+                        oldProps: t.props,
+                      }),
+                      { boundState: l.getBoundState(t.reduxStore), props: e })
                 );
-                return this.props.defaultScrollbars
-                  ? a.a.createElement(hr, this.props, e)
-                  : e;
               },
             },
             {
               key: 'getBoundState',
-              value: function () {
-                var e = this.reduxStore.getState();
-                return b()(e, [
+              value: function (e) {
+                var t = e.getState();
+                return b()(t, [
                   'columnGroupProps',
                   'columnProps',
                   'columnReorderingData',
@@ -8800,6 +8790,7 @@
                   'isColumnResizing',
                   'maxScrollX',
                   'maxScrollY',
+                  'propsRevision',
                   'rows',
                   'rowOffsets',
                   'rowSettings',
@@ -8814,14 +8805,41 @@
                 ]);
               },
             },
+          ]),
+          (o = [
             {
-              key: 'update',
+              key: 'componentWillUnmount',
               value: function () {
-                this.setState(this.getBoundState());
+                this.unsubscribe &&
+                  (this.unsubscribe(), (this.unsubscribe = null)),
+                  (this.reduxStore = null);
               },
             },
-          ]) && br(t.prototype, o),
-          i && br(t, i),
+            {
+              key: 'render',
+              value: function () {
+                var e = a.a.createElement(
+                  Ko,
+                  br({}, this.props, this.state.boundState, {
+                    scrollActions: this.scrollActions,
+                    columnActions: this.columnActions,
+                  })
+                );
+                return this.props.defaultScrollbars
+                  ? a.a.createElement(dr, this.props, e)
+                  : e;
+              },
+            },
+            {
+              key: 'onStoreUpdate',
+              value: function () {
+                var e = l.getBoundState(this.reduxStore);
+                this.state.boundState.propsRevision === e.propsRevision &&
+                  this.setState({ boundState: e });
+              },
+            },
+          ]) && mr(t.prototype, o),
+          i && mr(t, i),
           l
         );
       })(a.a.Component);
@@ -8834,14 +8852,14 @@
               writable: !0,
             })
           : (e[t] = o);
-      })(Rr, 'defaultProps', {
+      })(xr, 'defaultProps', {
         defaultScrollbars: !0,
-        scrollbarXHeight: Un.SIZE,
-        scrollbarYWidth: Un.SIZE,
+        scrollbarXHeight: Bn.SIZE,
+        scrollbarYWidth: Bn.SIZE,
       });
-      var xr = Rr;
-      function Sr(e) {
-        return (Sr =
+      var Sr = jt(xr);
+      function Or(e) {
+        return (Or =
           'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
             ? function (e) {
                 return typeof e;
@@ -8855,8 +8873,8 @@
                   : typeof e;
               })(e);
       }
-      function Or() {
-        return (Or =
+      function Tr() {
+        return (Tr =
           Object.assign ||
           function (e) {
             for (var t = 1; t < arguments.length; t++) {
@@ -8867,7 +8885,7 @@
             return e;
           }).apply(this, arguments);
       }
-      function Tr(e, t) {
+      function Cr(e, t) {
         var o = Object.keys(e);
         if (Object.getOwnPropertySymbols) {
           var n = Object.getOwnPropertySymbols(e);
@@ -8879,7 +8897,7 @@
         }
         return o;
       }
-      function Cr(e, t) {
+      function Er(e, t) {
         if (null == e) return {};
         var o,
           n,
@@ -8903,11 +8921,11 @@
         }
         return r;
       }
-      function Er(e, t) {
+      function jr(e, t) {
         if (!(e instanceof t))
           throw new TypeError('Cannot call a class as a function');
       }
-      function jr(e, t) {
+      function Mr(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -8916,14 +8934,14 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      function Mr(e, t) {
-        return (Mr =
+      function Dr(e, t) {
+        return (Dr =
           Object.setPrototypeOf ||
           function (e, t) {
             return (e.__proto__ = t), e;
           })(e, t);
       }
-      function Dr(e) {
+      function kr(e) {
         var t = (function () {
           if ('undefined' == typeof Reflect || !Reflect.construct) return !1;
           if (Reflect.construct.sham) return !1;
@@ -8941,16 +8959,16 @@
         })();
         return function () {
           var o,
-            n = Pr(e);
+            n = Hr(e);
           if (t) {
-            var r = Pr(this).constructor;
+            var r = Hr(this).constructor;
             o = Reflect.construct(n, arguments, r);
           } else o = n.apply(this, arguments);
-          return kr(this, o);
+          return Pr(this, o);
         };
       }
-      function kr(e, t) {
-        return !t || ('object' !== Sr(t) && 'function' != typeof t)
+      function Pr(e, t) {
+        return !t || ('object' !== Or(t) && 'function' != typeof t)
           ? (function (e) {
               if (void 0 === e)
                 throw new ReferenceError(
@@ -8960,14 +8978,14 @@
             })(e)
           : t;
       }
-      function Pr(e) {
-        return (Pr = Object.setPrototypeOf
+      function Hr(e) {
+        return (Hr = Object.setPrototypeOf
           ? Object.getPrototypeOf
           : function (e) {
               return e.__proto__ || Object.getPrototypeOf(e);
             })(e);
       }
-      function Hr(e, t, o) {
+      function Ir(e, t, o) {
         return (
           t in e
             ? Object.defineProperty(e, t, {
@@ -8980,7 +8998,7 @@
           e
         );
       }
-      var Ir = (function (e) {
+      var zr = (function (e) {
         !(function (e, t) {
           if ('function' != typeof t && null !== t)
             throw new TypeError(
@@ -8989,14 +9007,14 @@
           (e.prototype = Object.create(t && t.prototype, {
             constructor: { value: e, writable: !0, configurable: !0 },
           })),
-            t && Mr(e, t);
+            t && Dr(e, t);
         })(i, e);
         var t,
           o,
           n,
-          r = Dr(i);
+          r = kr(i);
         function i() {
-          return Er(this, i), r.apply(this, arguments);
+          return jr(this, i), r.apply(this, arguments);
         }
         return (
           (t = i),
@@ -9013,7 +9031,7 @@
                   u =
                     (e.columnKey,
                     e.rowIndex,
-                    Cr(e, [
+                    Er(e, [
                       'height',
                       'width',
                       'style',
@@ -9026,15 +9044,15 @@
                     for (var t = 1; t < arguments.length; t++) {
                       var o = null != arguments[t] ? arguments[t] : {};
                       t % 2
-                        ? Tr(Object(o), !0).forEach(function (t) {
-                            Hr(e, t, o[t]);
+                        ? Cr(Object(o), !0).forEach(function (t) {
+                            Ir(e, t, o[t]);
                           })
                         : Object.getOwnPropertyDescriptors
                         ? Object.defineProperties(
                             e,
                             Object.getOwnPropertyDescriptors(o)
                           )
-                        : Tr(Object(o)).forEach(function (t) {
+                        : Cr(Object(o)).forEach(function (t) {
                             Object.defineProperty(
                               e,
                               t,
@@ -9046,7 +9064,7 @@
                   })({ height: t, width: o }, n);
                 return a.a.createElement(
                   'div',
-                  Or({}, u, {
+                  Tr({}, u, {
                     className: I(
                       P('fixedDataTableCellLayout/wrap'),
                       P('public/fixedDataTableCell/wrap'),
@@ -9059,20 +9077,20 @@
                 );
               },
             },
-          ]) && jr(t.prototype, o),
-          n && jr(t, n),
+          ]) && Mr(t.prototype, o),
+          n && Mr(t, n),
           i
         );
       })(a.a.Component);
-      Hr(Ir, 'propTypes', {
+      Ir(zr, 'propTypes', {
         height: T.a.number,
         width: T.a.number,
         columnKey: T.a.oneOfType([T.a.string, T.a.number]),
         rowIndex: T.a.number,
       });
-      var zr = Ir;
-      function Lr(e) {
-        return (Lr =
+      var Lr = zr;
+      function Ar(e) {
+        return (Ar =
           'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
             ? function (e) {
                 return typeof e;
@@ -9086,11 +9104,11 @@
                   : typeof e;
               })(e);
       }
-      function Ar(e, t) {
+      function Yr(e, t) {
         if (!(e instanceof t))
           throw new TypeError('Cannot call a class as a function');
       }
-      function Yr(e, t) {
+      function Wr(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -9099,14 +9117,14 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      function Wr(e, t) {
-        return (Wr =
+      function Xr(e, t) {
+        return (Xr =
           Object.setPrototypeOf ||
           function (e, t) {
             return (e.__proto__ = t), e;
           })(e, t);
       }
-      function Xr(e) {
+      function Nr(e) {
         var t = (function () {
           if ('undefined' == typeof Reflect || !Reflect.construct) return !1;
           if (Reflect.construct.sham) return !1;
@@ -9124,16 +9142,16 @@
         })();
         return function () {
           var o,
-            n = Fr(e);
+            n = Ur(e);
           if (t) {
-            var r = Fr(this).constructor;
+            var r = Ur(this).constructor;
             o = Reflect.construct(n, arguments, r);
           } else o = n.apply(this, arguments);
-          return Nr(this, o);
+          return Fr(this, o);
         };
       }
-      function Nr(e, t) {
-        return !t || ('object' !== Lr(t) && 'function' != typeof t)
+      function Fr(e, t) {
+        return !t || ('object' !== Ar(t) && 'function' != typeof t)
           ? (function (e) {
               if (void 0 === e)
                 throw new ReferenceError(
@@ -9143,14 +9161,14 @@
             })(e)
           : t;
       }
-      function Fr(e) {
-        return (Fr = Object.setPrototypeOf
+      function Ur(e) {
+        return (Ur = Object.setPrototypeOf
           ? Object.getPrototypeOf
           : function (e) {
               return e.__proto__ || Object.getPrototypeOf(e);
             })(e);
       }
-      function Ur(e, t, o) {
+      function Br(e, t, o) {
         return (
           t in e
             ? Object.defineProperty(e, t, {
@@ -9163,7 +9181,7 @@
           e
         );
       }
-      var Br = (function (e) {
+      var Gr = (function (e) {
         !(function (e, t) {
           if ('function' != typeof t && null !== t)
             throw new TypeError(
@@ -9172,14 +9190,14 @@
           (e.prototype = Object.create(t && t.prototype, {
             constructor: { value: e, writable: !0, configurable: !0 },
           })),
-            t && Wr(e, t);
+            t && Xr(e, t);
         })(i, e);
         var t,
           o,
           n,
-          r = Xr(i);
+          r = Nr(i);
         function i() {
-          return Ar(this, i), r.apply(this, arguments);
+          return Yr(this, i), r.apply(this, arguments);
         }
         return (
           (t = i),
@@ -9190,13 +9208,13 @@
                 return null;
               },
             },
-          ]) && Yr(t.prototype, o),
-          n && Yr(t, n),
+          ]) && Wr(t.prototype, o),
+          n && Wr(t, n),
           i
         );
       })(a.a.Component);
-      Ur(Br, '__TableColumn__', !0),
-        Ur(Br, 'propTypes', {
+      Br(Gr, '__TableColumn__', !0),
+        Br(Gr, 'propTypes', {
           align: T.a.oneOf(['left', 'center', 'right']),
           fixed: T.a.bool,
           fixedRight: T.a.bool,
@@ -9213,14 +9231,14 @@
           allowCellsRecycling: T.a.bool,
           pureRendering: T.a.bool,
         }),
-        Ur(Br, 'defaultProps', {
+        Br(Gr, 'defaultProps', {
           allowCellsRecycling: !1,
           fixed: !1,
           fixedRight: !1,
         });
-      var Gr = Br;
-      function Vr(e) {
-        return (Vr =
+      var Vr = Gr;
+      function qr(e) {
+        return (qr =
           'function' == typeof Symbol && 'symbol' == typeof Symbol.iterator
             ? function (e) {
                 return typeof e;
@@ -9234,11 +9252,11 @@
                   : typeof e;
               })(e);
       }
-      function qr(e, t) {
+      function Kr(e, t) {
         if (!(e instanceof t))
           throw new TypeError('Cannot call a class as a function');
       }
-      function Kr(e, t) {
+      function Zr(e, t) {
         for (var o = 0; o < t.length; o++) {
           var n = t[o];
           (n.enumerable = n.enumerable || !1),
@@ -9247,14 +9265,14 @@
             Object.defineProperty(e, n.key, n);
         }
       }
-      function Zr(e, t) {
-        return (Zr =
+      function $r(e, t) {
+        return ($r =
           Object.setPrototypeOf ||
           function (e, t) {
             return (e.__proto__ = t), e;
           })(e, t);
       }
-      function $r(e) {
+      function Jr(e) {
         var t = (function () {
           if ('undefined' == typeof Reflect || !Reflect.construct) return !1;
           if (Reflect.construct.sham) return !1;
@@ -9272,16 +9290,16 @@
         })();
         return function () {
           var o,
-            n = Qr(e);
+            n = ei(e);
           if (t) {
-            var r = Qr(this).constructor;
+            var r = ei(this).constructor;
             o = Reflect.construct(n, arguments, r);
           } else o = n.apply(this, arguments);
-          return Jr(this, o);
+          return Qr(this, o);
         };
       }
-      function Jr(e, t) {
-        return !t || ('object' !== Vr(t) && 'function' != typeof t)
+      function Qr(e, t) {
+        return !t || ('object' !== qr(t) && 'function' != typeof t)
           ? (function (e) {
               if (void 0 === e)
                 throw new ReferenceError(
@@ -9291,14 +9309,14 @@
             })(e)
           : t;
       }
-      function Qr(e) {
-        return (Qr = Object.setPrototypeOf
+      function ei(e) {
+        return (ei = Object.setPrototypeOf
           ? Object.getPrototypeOf
           : function (e) {
               return e.__proto__ || Object.getPrototypeOf(e);
             })(e);
       }
-      function ei(e, t, o) {
+      function ti(e, t, o) {
         return (
           t in e
             ? Object.defineProperty(e, t, {
@@ -9311,7 +9329,7 @@
           e
         );
       }
-      var ti = (function (e) {
+      var oi = (function (e) {
         !(function (e, t) {
           if ('function' != typeof t && null !== t)
             throw new TypeError(
@@ -9320,14 +9338,14 @@
           (e.prototype = Object.create(t && t.prototype, {
             constructor: { value: e, writable: !0, configurable: !0 },
           })),
-            t && Zr(e, t);
+            t && $r(e, t);
         })(i, e);
         var t,
           o,
           n,
-          r = $r(i);
+          r = Jr(i);
         function i() {
-          return qr(this, i), r.apply(this, arguments);
+          return Kr(this, i), r.apply(this, arguments);
         }
         return (
           (t = i),
@@ -9338,20 +9356,20 @@
                 return null;
               },
             },
-          ]) && Kr(t.prototype, o),
-          n && Kr(t, n),
+          ]) && Zr(t.prototype, o),
+          n && Zr(t, n),
           i
         );
       })(a.a.Component);
-      ei(ti, '__TableColumnGroup__', !0),
-        ei(ti, 'propTypes', {
+      ti(oi, '__TableColumnGroup__', !0),
+        ti(oi, 'propTypes', {
           align: T.a.oneOf(['left', 'center', 'right']),
           fixed: T.a.bool,
           header: T.a.oneOfType([T.a.node, T.a.func]),
         }),
-        ei(ti, 'defaultProps', { fixed: !1 });
-      var oi = ti,
-        ni = '1.2.4';
+        ti(oi, 'defaultProps', { fixed: !1 });
+      var ni = oi,
+        ri = '1.2.5';
     },
   ]);
 });
