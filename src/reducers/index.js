@@ -49,6 +49,7 @@ function getInitialState() {
       groupHeaderHeight: 0,
       headerHeight: 0,
     },
+    propsRevision: null,
     rowSettings: {
       bufferRowCount: undefined,
       rowAttributesGetter: undefined,
@@ -250,6 +251,7 @@ function setStateFromProps(state, props) {
     columnGroupProps,
     columnProps,
     elementTemplates,
+    propsRevision: state.propsRevision + 1,
   });
 
   newState.elementHeights = Object.assign(

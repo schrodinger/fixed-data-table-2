@@ -23,6 +23,7 @@ import FixedDataTable from './FixedDataTable';
 import FixedDataTableStore from './FixedDataTableStore';
 import Scrollbar from './plugins/Scrollbar';
 import ScrollContainer from './plugins/ScrollContainer';
+import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
@@ -33,8 +34,6 @@ class FixedDataTableContainer extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.update = this.update.bind(this);
 
     this.reduxStore = FixedDataTableStore.get();
 
@@ -52,21 +51,41 @@ class FixedDataTableContainer extends React.Component {
       props,
     });
 
-    this.unsubscribe = this.reduxStore.subscribe(this.update);
-    this.state = this.getBoundState();
+    this.unsubscribe = this.reduxStore.subscribe(this.onStoreUpdate.bind(this));
+    this.state = {
+      boundState: FixedDataTableContainer.getBoundState(this.reduxStore), // the state from the redux store
+      reduxStore: this.reduxStore, // put store instance in local state so that getDerivedStateFromProps can access it
+      props, // put props in local state so that getDerivedStateFromProps can access it
+    };
   }
 
-  componentWillReceiveProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, currentState) {
     invariant(
       nextProps.height !== undefined || nextProps.maxHeight !== undefined,
       'You must set either a height or a maxHeight'
     );
 
-    this.reduxStore.dispatch({
+    // getDerivedStateFromProps is called for both prop and state updates.
+    // If props are unchanged here, then there's no need to recalculate derived state.
+    if (nextProps === currentState.boundState.propsReference) {
+      // return null to indicate that state should be unchanged
+      return null;
+    }
+
+    // Props have changed, so update the redux store with the latest props
+    currentState.reduxStore.dispatch({
       type: ActionTypes.PROP_CHANGE,
       newProps: nextProps,
-      oldProps: this.props,
+      oldProps: currentState.props,
     });
+
+    // return the new state from the updated redux store
+    return {
+      boundState: FixedDataTableContainer.getBoundState(
+        currentState.reduxStore
+      ),
+      props: nextProps,
+    };
   }
 
   componentWillUnmount() {
@@ -81,7 +100,7 @@ class FixedDataTableContainer extends React.Component {
     const fdt = (
       <FixedDataTable
         {...this.props}
-        {...this.state}
+        {...this.state.boundState}
         scrollActions={this.scrollActions}
         columnActions={this.columnActions}
       />
@@ -93,8 +112,8 @@ class FixedDataTableContainer extends React.Component {
     return fdt;
   }
 
-  getBoundState() {
-    const state = this.reduxStore.getState();
+  static getBoundState(reduxStore) {
+    const state = reduxStore.getState();
     const boundState = pick(state, [
       'columnGroupProps',
       'columnProps',
@@ -108,6 +127,7 @@ class FixedDataTableContainer extends React.Component {
       'isColumnResizing',
       'maxScrollX',
       'maxScrollY',
+      'propsRevision',
       'rows',
       'rowOffsets',
       'rowSettings',
@@ -123,9 +143,19 @@ class FixedDataTableContainer extends React.Component {
     return boundState;
   }
 
-  update() {
-    this.setState(this.getBoundState());
+  onStoreUpdate() {
+    const newBoundState = FixedDataTableContainer.getBoundState(
+      this.reduxStore
+    );
+
+    // If onStoreUpdate was called through a prop change, then skip updating local state.
+    // This is fine because getDerivedStateFromProps already calculates the new state.
+    if (this.state.boundState.propsRevision !== newBoundState.propsRevision) {
+      return;
+    }
+
+    this.setState({ boundState: newBoundState });
   }
 }
 
-export default FixedDataTableContainer;
+export default lifecycleCompatibilityPolyfill(FixedDataTableContainer);
