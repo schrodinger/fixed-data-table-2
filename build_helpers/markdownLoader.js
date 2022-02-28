@@ -1,30 +1,30 @@
-"use strict";
+'use strict';
 
-var marked = require('marked');
+const { marked } = require('marked');
 var prism = require('./prism');
 
 // functions come before keywords
 prism.languages.insertBefore('javascript', 'keyword', {
-  'var': /\b(this)\b/g,
+  var: /\b(this)\b/g,
   'block-keyword': /\b(if|else|while|for|function)\b/g,
-  'primitive': /\b(true|false|null|undefined)\b/g,
-  'function': prism.languages.function,
+  primitive: /\b(true|false|null|undefined)\b/g,
+  function: prism.languages.function,
 });
 
 prism.languages.insertBefore('javascript', {
-  'qualifier': /\b[A-Z][a-z0-9_]+/g,
+  qualifier: /\b[A-Z][a-z0-9_]+/g,
 });
 
 marked.setOptions({
   xhtml: true,
-  highlight: function(code) {
+  highlight: function (code) {
     return prism.highlight(code, prism.languages.javascript);
-  }
+  },
 });
 
 var renderer = new marked.Renderer();
 
-renderer.code = function(code, lang, escaped) {
+renderer.code = function (code, lang, escaped) {
   if (this.options.highlight) {
     var out = this.options.highlight(code, lang);
     if (out != null && out !== code) {
@@ -32,9 +32,11 @@ renderer.code = function(code, lang, escaped) {
       code = out;
     }
   }
-  return '<code class="codeBlock">' +
+  return (
+    '<code class="codeBlock">' +
     (escaped ? code : escapeCode(code, true)) +
-  '</code>';
+    '</code>'
+  );
 };
 
 function escapeCode(code) {
@@ -46,6 +48,6 @@ function escapeCode(code) {
     .replace(/'/g, '&#39;');
 }
 
-module.exports = function(markdown) {
+module.exports = function (markdown) {
   return marked(markdown, { renderer: renderer });
 };

@@ -46,7 +46,7 @@
     "less": "3.10.3",
     "less-loader": "5.0.0",
     "lint-staged": "^10.0.8",
-    "marked": "0.7.0",
+    "marked": "4.0.10",
     "mini-css-extract-plugin": "^0.8.0",
     "mocha": "^6.1.4",
     "mocha-loader": "5.1.5",
