@@ -114,9 +114,8 @@ class ResizerKnob extends React.PureComponent {
    */
   onMouseDown = (ev) => {
     this.initializeDOMMouseMoveTracker(ev);
-    const initialMouseXCoordinate = FixedDataTableEventHelper.getCoordinatesFromEvent(
-      ev
-    ).x;
+    const initialMouseXCoordinate =
+      FixedDataTableEventHelper.getCoordinatesFromEvent(ev).x;
     this.setState({
       initialMouseXCoordinate,
       isColumnResizing: true,

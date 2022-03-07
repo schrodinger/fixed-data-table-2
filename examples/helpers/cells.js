@@ -11,14 +11,8 @@ import ReactTooltip from 'react-tooltip';
 
 class CollapseCell extends React.PureComponent {
   render() {
-    const {
-      data,
-      rowIndex,
-      columnKey,
-      collapsedRows,
-      callback,
-      ...props
-    } = this.props;
+    const { data, rowIndex, columnKey, collapsedRows, callback, ...props } =
+      this.props;
     return (
       <DataCell {...props}>
         <a onClick={() => callback(rowIndex)}>
@@ -103,14 +97,8 @@ const PagedCell = ({ data, ...props }) => {
 
 class RemovableHeaderCell extends React.PureComponent {
   render() {
-    const {
-      data,
-      rowIndex,
-      columnKey,
-      callback,
-      children,
-      ...props
-    } = this.props;
+    const { data, rowIndex, columnKey, callback, children, ...props } =
+      this.props;
     return (
       <DataCell {...props}>
         {children}

@@ -97,17 +97,14 @@ describe('columnWidths', function () {
   });
 
   it('should partition columns on fixed flag', function () {
-    const {
-      columnProps,
-      fixedColumns,
-      scrollableColumns,
-    } = columnWidths.resultFunc(
-      columnGroupPropsIn,
-      columnPropsIn,
-      scrollEnabledY,
-      width,
-      Scrollbar.SIZE
-    );
+    const { columnProps, fixedColumns, scrollableColumns } =
+      columnWidths.resultFunc(
+        columnGroupPropsIn,
+        columnPropsIn,
+        scrollEnabledY,
+        width,
+        Scrollbar.SIZE
+      );
     assert.deepEqual(
       columnProps.map((column) => column.id),
       [2, 4, 1, 3, 5, 7, 6]
@@ -123,18 +120,14 @@ describe('columnWidths', function () {
   });
 
   it('should maintain widths when no surplus', function () {
-    const {
-      columnGroupProps,
-      columnProps,
-      fixedColumns,
-      scrollableColumns,
-    } = columnWidths.resultFunc(
-      columnGroupPropsIn,
-      columnPropsIn,
-      scrollEnabledY,
-      width,
-      Scrollbar.SIZE
-    );
+    const { columnGroupProps, columnProps, fixedColumns, scrollableColumns } =
+      columnWidths.resultFunc(
+        columnGroupPropsIn,
+        columnPropsIn,
+        scrollEnabledY,
+        width,
+        Scrollbar.SIZE
+      );
 
     assert.deepEqual(
       columnGroupProps.map((column) => column.width),
@@ -157,18 +150,14 @@ describe('columnWidths', function () {
   it('should distribute flex width', function () {
     width = 640;
 
-    const {
-      columnGroupProps,
-      columnProps,
-      fixedColumns,
-      scrollableColumns,
-    } = columnWidths.resultFunc(
-      columnGroupPropsIn,
-      columnPropsIn,
-      scrollEnabledY,
-      width,
-      Scrollbar.SIZE
-    );
+    const { columnGroupProps, columnProps, fixedColumns, scrollableColumns } =
+      columnWidths.resultFunc(
+        columnGroupPropsIn,
+        columnPropsIn,
+        scrollEnabledY,
+        width,
+        Scrollbar.SIZE
+      );
 
     assert.deepEqual(
       columnGroupProps.map((column) => column.width),
@@ -192,18 +181,14 @@ describe('columnWidths', function () {
     width = 656;
     scrollEnabledY = true;
 
-    const {
-      columnGroupProps,
-      columnProps,
-      fixedColumns,
-      scrollableColumns,
-    } = columnWidths.resultFunc(
-      columnGroupPropsIn,
-      columnPropsIn,
-      scrollEnabledY,
-      width,
-      Scrollbar.SIZE
-    );
+    const { columnGroupProps, columnProps, fixedColumns, scrollableColumns } =
+      columnWidths.resultFunc(
+        columnGroupPropsIn,
+        columnPropsIn,
+        scrollEnabledY,
+        width,
+        Scrollbar.SIZE
+      );
 
     assert.deepEqual(
       columnGroupProps.map((column) => column.width),
