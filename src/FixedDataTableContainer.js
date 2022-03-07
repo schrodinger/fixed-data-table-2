@@ -67,7 +67,7 @@ class FixedDataTableContainer extends React.Component {
 
     // getDerivedStateFromProps is called for both prop and state updates.
     // If props are unchanged here, then there's no need to recalculate derived state.
-    if (nextProps === currentState.boundState.propsReference) {
+    if (nextProps === currentState.props) {
       // return null to indicate that state should be unchanged
       return null;
     }
