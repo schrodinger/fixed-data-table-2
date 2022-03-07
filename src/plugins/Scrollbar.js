@@ -28,7 +28,7 @@ var UNSCROLLABLE_STATE = {
   scrollable: false,
 };
 
-var FACE_MARGIN = parseInt(cssVar('scrollbar-face-margin'), 10);
+var FACE_MARGIN = parseInt(cssVar('--scrollbar-face-margin'), 10);
 var FACE_MARGIN_2 = FACE_MARGIN * 2;
 var FACE_SIZE_MIN = 30;
 var KEYBOARD_SCROLL_AMOUNT = 40;
@@ -177,7 +177,7 @@ class Scrollbar extends React.PureComponent {
     mainStyle.zIndex = this.props.zIndex;
 
     if (this.props.trackColor === 'gray') {
-      mainStyle.backgroundColor = cssVar('fbui-desktop-background-light');
+      mainStyle.backgroundColor = cssVar('--fbui-desktop-background-light');
     }
 
     return (
@@ -240,11 +240,13 @@ class Scrollbar extends React.PureComponent {
         passive: false,
       });
     this._nextState = null;
-    this._mouseMoveTracker.releaseMouseMoves();
+    if (this._mouseMoveTracker) {
+      this._mouseMoveTracker.releaseMouseMoves();
+      this._mouseMoveTracker = null;
+    }
     if (_lastScrolledScrollbar === this) {
       _lastScrolledScrollbar = null;
     }
-    delete this._mouseMoveTracker;
   }
 
   scrollBy = (/*number*/ delta) => {
@@ -586,7 +588,7 @@ class Scrollbar extends React.PureComponent {
 }
 
 Scrollbar.KEYBOARD_SCROLL_AMOUNT = KEYBOARD_SCROLL_AMOUNT;
-Scrollbar.SIZE = parseInt(cssVar('scrollbar-size'), 10);
+Scrollbar.SIZE = parseInt(cssVar('--scrollbar-size'), 10);
 Scrollbar.OFFSET = 1;
 
 export default Scrollbar;

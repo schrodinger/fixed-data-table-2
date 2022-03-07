@@ -1,6 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
-var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 var isDev = process.env.NODE_ENV !== 'production';
 
@@ -57,21 +57,14 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-      __DEV__: JSON.stringify(isDev || true),
+      __DEV__: isDev,
     }),
   ],
 };
 
 if (process.env.NODE_ENV === 'production') {
   module.exports.optimization = {
-    minimizer: [
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          compressor: {
-            warnings: false,
-          },
-        },
-      }),
-    ],
+    minimize: true,
+    minimizer: [new TerserPlugin()],
   };
 }

@@ -1,7 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var MiniCssExtractPlugin = require('mini-css-extract-plugin');
-var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 var isDev = process.env.NODE_ENV !== 'production';
 
@@ -77,8 +77,8 @@ module.exports = {
   },
 
   devServer: {
+    static: path.resolve(__dirname, '../__site__/'),
     host: '0.0.0.0',
-    hot: true,
   },
 
   plugins: [
@@ -88,7 +88,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       // 'process.env.NODE_ENV': JSON.stringify('production'),
-      __DEV__: JSON.stringify(isDev || true),
+      __DEV__: isDev,
     }),
     new webpack.HotModuleReplacementPlugin(),
   ],
@@ -96,14 +96,7 @@ module.exports = {
 
 if (process.env.NODE_ENV === 'production') {
   module.exports.optimization = {
-    minimizer: [
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          compressor: {
-            warnings: false,
-          },
-        },
-      }),
-    ],
+    minimize: true,
+    minimizer: [new TerserPlugin()],
   };
 }
