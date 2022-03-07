@@ -48,7 +48,7 @@ describe('FixedDataTableRoot', function () {
      * @return {!Object}
      */
     getTableState() {
-      return this._tableRef.state;
+      return this._tableRef.state.boundState;
     }
 
     _onRef = (ref) => (this._tableRef = ref);
