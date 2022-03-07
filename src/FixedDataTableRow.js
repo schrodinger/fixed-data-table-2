@@ -86,11 +86,6 @@ class FixedDataTableRowImpl extends React.Component {
     scrollLeft: PropTypes.number.isRequired,
 
     /**
-     * Pass true to not render the row. This is used internally for buffering rows.
-     */
-    fake: PropTypes.bool,
-
-    /**
      * Width of the row.
      */
     width: PropTypes.number.isRequired,
@@ -177,30 +172,26 @@ class FixedDataTableRowImpl extends React.Component {
   };
 
   shouldComponentUpdate(nextProps) {
+    // only skip updates while scrolling
+    if (!nextProps.isScrolling) {
+      return true;
+    }
+
     // if row is not visible then no need to render it
     // change in visibility is handled by the parent
     if (!nextProps.visible) {
       return false;
     }
 
-    // always render if fakeness has changed
-    if (this.props.fake !== nextProps.fake) {
-      return true;
-    }
-
     // Only update the row if scrolling leads to a change in horizontal offsets.
     // The vertical offset is taken care of by the wrapper
     return !(
-      nextProps.isScrolling &&
       this.props.index === nextProps.index &&
       this.props.scrollLeft === nextProps.scrollLeft
     );
   }
 
   render() /*object*/ {
-    if (this.props.fake) {
-      return null;
-    }
     var subRowHeight = this.props.subRowHeight || 0;
     var style = {
       width: this.props.width,
@@ -542,16 +533,18 @@ class FixedDataTableRow extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    // if row's visibility or fakeness has changed, then update it
-    if (
-      this.props.visible !== nextProps.visible ||
-      this.props.fake !== nextProps.fake
-    ) {
+    // only skip updates while scrolling
+    if (!nextProps.isScrolling) {
       return true;
     }
 
-    // if row is still fake or still not visible then no need to update
-    if (nextProps.fake || !nextProps.visible) {
+    // if row's visibility has changed, then update it
+    if (this.props.visible !== nextProps.visible) {
+      return true;
+    }
+
+    // if row is still not visible then no need to update
+    if (!nextProps.visible) {
       return false;
     }
 
