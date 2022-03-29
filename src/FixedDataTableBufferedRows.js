@@ -54,7 +54,7 @@ class FixedDataTableBufferedRows extends React.Component {
     rowsToRender: PropTypes.array.isRequired,
     scrollLeft: PropTypes.number.isRequired,
     scrollTop: PropTypes.number.isRequired,
-    scrollableColumns: PropTypes.array.isRequired,
+    scrollableColumns: PropTypes.object.isRequired,
     showLastRowBorder: PropTypes.bool,
     showScrollbarY: PropTypes.bool,
     width: PropTypes.number.isRequired,
@@ -195,6 +195,7 @@ class FixedDataTableBufferedRows extends React.Component {
         fixedColumns={props.fixedColumns}
         fixedRightColumns={props.fixedRightColumns}
         scrollableColumns={props.scrollableColumns}
+        template={'cell'}
         onClick={props.onRowClick}
         onContextMenu={props.onRowContextMenu}
         onDoubleClick={props.onRowDoubleClick}
@@ -210,6 +211,17 @@ class FixedDataTableBufferedRows extends React.Component {
         isRTL={props.isRTL}
         visible={visible}
         {...rowProps}
+        columnOffsets={props.columnOffsets}
+        fixedColumnOffsets={props.fixedColumnOffsets}
+        fixedRightColumnOffsets={props.fixedRightColumnOffsets}
+        columnsToRender={props.columnsToRender}
+        fixedColumnsToRender={props.fixedColumnsToRender}
+        fixedRightColumnsToRender={props.fixedRightColumnsToRender}
+        scrollableColumnsWidth={this.props.scrollableColumnsWidth}
+        fixedColumnsWidth={this.props.fixedColumnsWidth}
+        fixedRightColumnsWidth={this.props.fixedRightColumnsWidth}
+        firstViewportColumnIndex={this.props.firstViewportColumnIndex}
+        endViewportColumnIndex={this.props.endViewportColumnIndex}
       />
     );
   }

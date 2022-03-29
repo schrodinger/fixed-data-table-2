@@ -8,7 +8,6 @@
  *
  * @providesModule tableHeights
  */
-
 import shallowEqualSelector from '../helper/shallowEqualSelector';
 import roughHeights from './roughHeights';
 import scrollbarsVisible from './scrollbarsVisible';
@@ -24,11 +23,13 @@ import scrollbarsVisible from './scrollbarsVisible';
  * @param {number|undefined} ownerHeight
  * @param {number} reservedHeight
  * @param {number} scrollContentHeight
+ * @param {number} scrollContentWidth
  * @param {{
  *   availableHeight: number,
  *   scrollEnabledX: boolean,
  * }} scrollbarsVisible
  * @param {boolean} useMaxHeight
+ * @param {number} scrollbarXHeight
  * @return {{
  *   bodyHeight: number,
  *   bodyOffsetTop: number,
@@ -45,11 +46,13 @@ function tableHeights(
   ownerHeight,
   reservedHeight,
   scrollContentHeight,
+  scrollContentWidth,
   scrollbarsVisible,
   useMaxHeight,
   scrollbarXHeight
 ) {
-  const { availableHeight, scrollEnabledX } = scrollbarsVisible;
+  const { availableHeight, scrollEnabledX, scrollEnabledY, availableWidth } =
+    scrollbarsVisible;
   let reservedWithScrollbar = reservedHeight;
   if (scrollEnabledX) {
     reservedWithScrollbar += scrollbarXHeight;
@@ -58,7 +61,7 @@ function tableHeights(
   // If less content than space for rows (bodyHeight), then
   // we should shrink the space for rows to fit our row content (scrollContentHeight).
   const bodyHeight = Math.min(availableHeight, scrollContentHeight);
-
+  const bodyWidth = Math.min(availableWidth, scrollContentWidth);
   // If using max height, component should only be sized to content.
   // Otherwise use all available height.
   const rowContainerHeight = useMaxHeight ? bodyHeight : availableHeight;
@@ -93,6 +96,7 @@ function tableHeights(
 
   return {
     bodyHeight,
+    bodyWidth,
     bodyOffsetTop,
     componentHeight,
     contentHeight,
@@ -109,6 +113,7 @@ export default shallowEqualSelector(
     (state) => state.tableSize.ownerHeight,
     (state) => roughHeights(state).reservedHeight,
     (state) => state.scrollContentHeight,
+    (state) => state.scrollContentWidth,
     scrollbarsVisible,
     (state) => state.tableSize.useMaxHeight,
     (state) => state.scrollbarXHeight,

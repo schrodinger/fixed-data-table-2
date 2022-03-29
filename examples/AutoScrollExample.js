@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, LinkCell } from './helpers/cells';
-import { Table, Column, DataCell } from 'fixed-data-table-2';
+import { Table, Column, DataCell, Plugins } from 'fixed-data-table-2';
 import React from 'react';
 
 class AutoScrollExample extends React.Component {
@@ -14,33 +14,36 @@ class AutoScrollExample extends React.Component {
     super(props);
 
     this.state = {
-      dataList: new FakeObjectDataListStore(1000000),
+      dataList: new FakeObjectDataListStore(10000),
       scrollTop: 0,
       scrollLeft: 0,
       autoScrollEnabled: true,
       horizontalScrollDelta: 0,
       verticalScrollDelta: 0,
+      columns: [],
+      fixedColumnsCount: 2,
+      fixedRightColumnsCount: 2,
+      scrollableColumnsCount: 10000 - 2 - 2,
+      columnGroups: [],
     };
 
-    this.columns = [];
-    const cellRenderer = ({ columnKey, rowIndex }) => (
-      <div className="autoScrollCell">
-        {' '}
-        {rowIndex}, {columnKey}{' '}
-      </div>
-    );
+    const cellRenderer = (props) => `${props.columnKey}, ${props.rowIndex}`;
+    const headerCellRenderer = (props) => props.columnKey;
 
-    for (let i = 0; i < 100; i++) {
-      this.columns[i] = (
-        <Column
-          key={i}
-          columnKey={i}
-          header={<div> {i} </div>}
-          cell={cellRenderer}
-          width={100}
-          allowCellsRecycling={true}
-        />
-      );
+    for (let i = 0; i < 10000; i++) {
+      const columnGroupIndex = Math.floor(i / 2);
+      this.state.columns[i] = {
+        columnKey: 'Column ' + i,
+        columnGroupIndex,
+        header: headerCellRenderer,
+        cell: cellRenderer,
+        width: 100,
+        allowCellsRecycling: true,
+      };
+      this.state.columnGroups[columnGroupIndex] = {
+        columnKey: 'Column Group ' + columnGroupIndex,
+        header: headerCellRenderer,
+      };
     }
 
     this.onVerticalScroll = this.onVerticalScroll.bind(this);
@@ -107,6 +110,7 @@ class AutoScrollExample extends React.Component {
     var { dataList, scrollLeft, scrollTop } = this.state;
     return (
       <Table
+        groupHeaderHeight={50}
         rowHeight={50}
         headerHeight={50}
         rowsCount={dataList.getSize()}
@@ -116,23 +120,21 @@ class AutoScrollExample extends React.Component {
         scrollTop={scrollTop}
         onVerticalScroll={this.onVerticalScroll}
         onHorizontalScroll={this.onHorizontalScroll}
+        scrollableColumnsCount={this.state.scrollableColumnsCount}
+        getScrollableColumn={(i) =>
+          this.state.columns[this.state.fixedColumnsCount + i]
+        }
+        getFixedColumn={(i) => this.state.columns[i]}
+        fixedColumnsCount={this.state.fixedColumnsCount}
+        fixedRightColumnsCount={this.state.fixedRightColumnsCount}
+        getFixedRightColumn={(i) =>
+          this.state.columns[
+            this.state.fixedColumnsCount + this.state.scrollableColumnsCount + i
+          ]
+        }
+        getColumnGroup={(i) => this.state.columnGroups[i]}
         {...this.props}
-      >
-        <Column
-          columnKey="avatar"
-          cell={<ImageCell data={dataList} />}
-          fixed={true}
-          width={50}
-        />
-        <Column
-          columnKey="firstName"
-          header={<DataCell>First Name</DataCell>}
-          cell={<LinkCell data={dataList} />}
-          fixed={true}
-          width={100}
-        />
-        {this.columns}
-      </Table>
+      />
     );
   }
 

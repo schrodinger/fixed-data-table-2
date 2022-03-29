@@ -17,12 +17,13 @@ import invariant from '../stubs/invariant';
 import map from 'lodash/map';
 import pick from 'lodash/pick';
 
-function _extractProps(column) {
-  return pick(column.props, [
+export function extractProps(columnProps) {
+  return pick(columnProps, [
     'align',
     'allowCellsRecycling',
     'cellClassName',
     'columnKey',
+    'columnGroupIndex',
     'flexGrow',
     'fixed',
     'fixedRight',
@@ -35,71 +36,41 @@ function _extractProps(column) {
   ]);
 }
 
-function _extractTemplates(elementTemplates, columnElement) {
-  elementTemplates.cell.push(columnElement.props.cell);
-  elementTemplates.footer.push(columnElement.props.footer);
-  elementTemplates.header.push(columnElement.props.header);
+/**
+ * @param {Object} columnProps
+ * @returns {CellTemplates}
+ */
+export function extractTemplates(columnProps) {
+  return pick(columnProps, ['cell', 'footer', 'header']);
 }
 
 /**
- * Converts React column / column group elements into props and cell rendering templates
+ * @typedef {{
+ *   props: !Object,
+ *   templates: CellTemplates,
+ * }}
  */
-function convertColumnElementsToData(childComponents) {
-  const children = [];
-  React.Children.forEach(childComponents, (child, index) => {
-    if (child == null) {
-      return;
-    }
-    invariant(
-      child.type.__TableColumnGroup__ || child.type.__TableColumn__,
-      'child type should be <FixedDataTableColumn /> or <FixedDataTableColumnGroup />'
-    );
+let ColumnDetails;
 
-    children.push(child);
-  });
+/**
+ * @typedef {{
+ *   cell: React.ReactElement,
+ *   footer: React.ReactElement,
+ *   header: React.ReactElement,
+ * }}
+ */
+let CellTemplates;
 
-  const elementTemplates = {
-    cell: [],
-    footer: [],
-    groupHeader: [],
-    header: [],
-  };
-
-  const columnProps = [];
-  const hasGroupHeader =
-    children.length && children[0].type.__TableColumnGroup__;
-  if (hasGroupHeader) {
-    const columnGroupProps = map(children, _extractProps);
-    forEach(children, (columnGroupElement, index) => {
-      elementTemplates.groupHeader.push(columnGroupElement.props.header);
-
-      React.Children.forEach(columnGroupElement.props.children, (child) => {
-        const column = _extractProps(child);
-        column.groupIdx = index;
-        columnProps.push(column);
-        _extractTemplates(elementTemplates, child);
-      });
-    });
-
-    return {
-      columnGroupProps,
-      columnProps,
-      elementTemplates,
-      useGroupHeader: true,
-    };
-  }
-
-  // Use a default column group
-  forEach(children, (child) => {
-    columnProps.push(_extractProps(child));
-    _extractTemplates(elementTemplates, child);
-  });
+/**
+ * Converts React column / column group elements into props and cell rendering templates
+ * @param {!Object} columnProps
+ * @returns {!ColumnDetails}
+ */
+const convertColumnElementsToData = (columnProps) => {
   return {
-    columnGroupProps: [],
-    columnProps,
-    elementTemplates,
-    useGroupHeader: false,
+    props: extractProps(columnProps),
+    templates: extractTemplates(columnProps),
   };
-}
+};
 
 export default convertColumnElementsToData;

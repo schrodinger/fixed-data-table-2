@@ -23,7 +23,6 @@ import Scrollbar from './plugins/Scrollbar';
 import ScrollContainer from './plugins/ScrollContainer';
 import { PluginContext } from './Context';
 import shallowEqualSelector from './helper/shallowEqualSelector';
-import columnWidths from './selectors/columnWidths';
 import { initialize, propChange } from './reducers';
 import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
 
@@ -32,13 +31,13 @@ const memoizeContext = shallowEqualSelector(
     (state) => state.maxScrollX,
     (state) => state.scrollX,
     (state) => state.tableSize.height,
-    (state) => columnWidths(state),
+    (state) => state.bodyWidth, // TODO (pradeep): This is wrongly named
   ],
   (
     /*number*/ maxScrollX,
     /*number*/ scrollX,
     /*number*/ tableHeight,
-    { /*number*/ availableScrollWidth }
+    /*number*/ availableScrollWidth
   ) => {
     return {
       maxScrollX,
@@ -146,30 +145,58 @@ class FixedDataTableContainer extends React.Component {
     const state = reduxStore.getState();
     const boundState = pick(state, [
       'columnGroupProps',
+      'columnGroupOffsets',
+      'columnOffsets',
       'columnProps',
       'columnReorderingData',
       'columnResizingData',
+      'columnSettings',
+      'columnsToRender',
+      'columnGroupsToRender',
       'elementHeights',
       'elementTemplates',
-      'firstRowIndex',
+      'endColumnIndex',
+      'endViewportColumnGroupIndex',
       'endRowIndex',
+      'firstColumnIndex',
+      'firstViewportColumnGroupIndex',
+      'firstRowIndex',
+      'fixedColumnGroups',
+      'fixedColumnGroupsToRender',
+      'fixedColumnGroupOffsets',
+      'fixedColumnOffsets',
+      'fixedColumns',
+      'fixedColumnsToRender',
+      'fixedColumnsWidth',
+      'fixedContentWidth',
+      'fixedRightColumnGroups',
+      'fixedRightColumnGroupsToRender',
+      'fixedRightColumnGroupOffsets',
+      'fixedRightColumnOffsets',
+      'fixedRightColumns',
+      'fixedRightColumnsToRender',
+      'fixedRightColumnsWidth',
       'isColumnReordering',
       'isColumnResizing',
       'maxScrollX',
       'maxScrollY',
       'propsRevision',
-      'rows',
       'rowOffsets',
       'rowSettings',
+      'rows',
       'scrollContentHeight',
+      'scrollContentWidth',
       'scrollFlags',
-      'scrollX',
-      'scrollY',
-      'scrolling',
       'scrollJumpedX',
       'scrollJumpedY',
+      'scrollX',
+      'scrollY',
+      'scrollableColumnGroups',
+      'scrollableColumns',
+      'scrolling',
       'tableSize',
     ]);
+
     return boundState;
   }
 
