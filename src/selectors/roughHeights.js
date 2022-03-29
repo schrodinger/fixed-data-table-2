@@ -16,8 +16,8 @@ import shallowEqualSelector from '../helper/shallowEqualSelector';
 const BORDER_HEIGHT = 1;
 const MIN_BUFFER_ROWS = 3;
 const MAX_BUFFER_ROWS = 6;
-const MIN_BUFFER_COLS = 3;
-const MAX_BUFFER_COLS = 6;
+const MIN_BUFFER_COLS = 1;
+const MAX_BUFFER_COLS = 2;
 export const ScrollbarState = {
   HIDDEN: 'hidden',
   JOINT_SCROLLBARS: 'JOINT_SCROLLBARS',
