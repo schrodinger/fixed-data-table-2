@@ -17,7 +17,7 @@ import clamp from 'lodash/clamp';
 import roughHeightsSelector from '../selectors/roughHeights';
 import scrollbarsVisibleSelector from '../selectors/scrollbarsVisible';
 import tableHeightsSelector from '../selectors/tableHeights';
-import { getColWidth } from './updateColWidth';
+import { getColumn, getColWidth } from './updateColWidth';
 import convertColumnElementsToData from '../helper/convertColumnElementsToData';
 
 /**
@@ -97,8 +97,10 @@ export default function computeRenderedCols(state, scrollAnchor) {
 
   let scrollX = 0;
   if (scrollableColumnsCount > 0) {
-    scrollX =
-      state.columnOffsets[colRange.firstViewportIdx] - firstColumnOffset;
+    scrollX = scrollAnchor.lastIndex
+      ? state.maxScrollX
+      : state.colOffsetIntervalTree.sumUntil(colRange.firstViewportIdx) -
+        colRange.firstOffset;
   }
 
   scrollX = clamp(scrollX, 0, maxScrollX);
@@ -200,14 +202,14 @@ function computeRenderedFixedColumnsAndGroups(
  * }} colRange
  */
 function calculateRenderedColumnGroupRange(state, colRange) {
-  const { firstViewportIdx, endViewportIdx } = colRange;
+  const { firstViewportIdx, endViewportIdx, firstBufferIdx, endBufferIdx } =
+    colRange;
 
-  state.columnGroupRange = {
-    firstViewportColumnGroupIndex: 0,
-    endViewportColumnGroupIndex: 0,
-  };
+  state.firstViewportColumnGroupIndex = 0;
+  state.endViewportColumnGroupIndex = 0;
 
-  if (state.columnSettings.scrollableColumnsCount === 0) {
+  const renderedColsCount = endBufferIdx - firstBufferIdx;
+  if (renderedColsCount === 0) {
     return;
   }
 
@@ -325,6 +327,9 @@ function calculateRenderedColRange(state, scrollAnchor) {
   let step = 1;
   let startIdx = firstIndex;
   let totalWidth = firstOffset;
+  const isSpaceUnavailable = maxAvailableWidth === 0;
+  const maxAvailableBufferColumns = isSpaceUnavailable ? 0 : bufferColCount;
+
   if (lastIndex !== undefined) {
     step = -1;
     startIdx = lastIndex;
@@ -367,15 +372,20 @@ function calculateRenderedColRange(state, scrollAnchor) {
 
   // Loop to walk the leading buffer
   let firstViewportIdx = Math.min(startIdx, endIdx);
-  const firstBufferIdx = Math.max(firstViewportIdx - bufferColCount, 0);
+  const firstBufferIdx = Math.max(
+    firstViewportIdx - maxAvailableBufferColumns,
+    0
+  );
   for (colIdx = firstBufferIdx; colIdx < firstViewportIdx; colIdx++) {
     getColWidth(state, colIdx);
   }
 
   // Loop to walk the trailing buffer
-  const endViewportIdx = Math.max(startIdx, endIdx) + 1;
+  const endViewportIdx = isSpaceUnavailable
+    ? startIdx
+    : Math.max(startIdx, endIdx) + 1;
   const endBufferIdx = Math.min(
-    endViewportIdx + bufferColCount,
+    endViewportIdx + maxAvailableBufferColumns,
     scrollableColumnsCount
   );
   for (colIdx = endViewportIdx; colIdx < endBufferIdx; colIdx++) {
@@ -489,8 +499,8 @@ function getVirtualizedColumns(state) {
   );
   const scrollableColumns = {};
   for (let colIdx of cachedColumnsToRender) {
-    if (colIdx !== undefined) {
-      scrollableColumns[colIdx] = state.storedScrollableColumns.object[colIdx];
+    if (colIdx < state.columnSettings.scrollableColumnsCount) {
+      scrollableColumns[colIdx] = getColumn(state, colIdx);
     }
   }
   state.cachedColumnsToRender.array = cachedColumnsToRender;

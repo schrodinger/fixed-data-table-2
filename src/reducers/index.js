@@ -399,6 +399,7 @@ function setStateFromProps(state, props) {
 
   // NOTE (pradeep): Since props changed, we expect the user might pass in a different set of columns. So we reset the scrollable column cache
   state.storedScrollableColumns.object = {};
+  state.storedScrollableColumnGroups.object = {};
 }
 
 const { reducer, actions } = slice;
