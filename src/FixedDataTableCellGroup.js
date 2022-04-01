@@ -221,12 +221,17 @@ class FixedDataTableCellGroupImpl extends React.Component {
       this.props.isRTL
     );
 
+    // NOTE (pradeep): Sort the cells by column index so that they appear with the right order in the DOM (see #221)
+    const sortedCells = _.sortBy(this._staticCells, (cell) =>
+      _.get(cell, 'props.columnIndex', Infinity)
+    );
+
     return (
       <div
         className={cx('fixedDataTableCellGroupLayout/cellGroup')}
         style={style}
       >
-        {this._staticCells}
+        {sortedCells}
       </div>
     );
   }
