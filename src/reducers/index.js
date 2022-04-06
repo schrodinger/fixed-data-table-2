@@ -170,7 +170,8 @@ const slice = createSlice({
       Object.assign(state, getInitialState());
       setStateFromProps(state, props);
       initializeRowHeightsAndOffsets(state);
-      initializeColWidthsAndOffsets(state);
+      initializeFixedColumnWidthsAndOffsets(state);
+      initializeScrollableColumnWidthsAndOffsets(state);
       initializeFlexColumnWidths(state);
       const scrollAnchor = getScrollAnchor(state, props);
       const columnAnchor = getColumnAnchor(state, props);
@@ -190,7 +191,10 @@ const slice = createSlice({
         initializeRowHeightsAndOffsets(state);
       }
 
-      initializeColWidthsAndOffsets(state);
+      initializeFixedColumnWidthsAndOffsets(state);
+      if (oldProps.scrollableColumnsCount !== newProps.scrollableColumnsCount) {
+        initializeScrollableColumnWidthsAndOffsets(state);
+      }
       initializeFlexColumnWidths(state);
 
       if (oldProps.rowsCount !== newProps.rowsCount) {
@@ -276,7 +280,7 @@ function initializeRowHeightsAndOffsets(state) {
   });
 }
 
-function initializeColWidthsAndOffsets(state) {
+function initializeFixedColumnWidthsAndOffsets(state) {
   let { columnSettings } = state;
   let fixedColumnsWidth = 0;
   let fixedRightColumnsWidth = 0;
@@ -300,6 +304,19 @@ function initializeColWidthsAndOffsets(state) {
   }
   const fixedContentWidth = fixedRightColumnsWidth + fixedColumnsWidth;
 
+  Object.assign(state, {
+    fixedColumnsWidth,
+    fixedRightColumnsWidth,
+    fixedContentWidth,
+    fixedColumns,
+    fixedRightColumns,
+    fixedColumnGroups,
+    fixedRightColumnGroups,
+  });
+}
+
+function initializeScrollableColumnWidthsAndOffsets(state) {
+  let { columnSettings } = state;
   const scrollContentWidth =
     columnSettings.scrollableColumnsCount * columnSettings.defaultColumnWidth;
   const colOffsetIntervalTree = PrefixIntervalTree.uniform(
@@ -309,19 +326,13 @@ function initializeColWidthsAndOffsets(state) {
   const storedScrollableColumns = new ObjectWrapper();
   const storedWidths = new ArrayWrapper(columnSettings.scrollableColumnsCount);
   storedWidths.array.fill(columnSettings.defaultColumnWidth);
+
   Object.assign(state, {
     colOffsetIntervalTree,
     scrollContentWidth,
-    fixedColumnsWidth,
-    fixedRightColumnsWidth,
     storedWidths,
-    fixedContentWidth,
-    fixedColumns,
-    fixedRightColumns,
     scrollableColumns: {},
     storedScrollableColumns,
-    fixedColumnGroups,
-    fixedRightColumnGroups,
     scrollableColumnGroups: [],
   });
 }
