@@ -20,7 +20,7 @@ import { PluginContext } from './Context';
 import ResizeCell from './plugins/ResizeReorder/ResizeCell';
 import ReorderCell from './plugins/ResizeReorder/ReorderCell';
 
-const version = '0.0.2-experimental-column-virtualization';
+const version = '0.0.3-experimental-column-virtualization';
 
 const Plugins = {
   PluginContext,
