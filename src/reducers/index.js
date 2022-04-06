@@ -190,14 +190,8 @@ const slice = createSlice({
         initializeRowHeightsAndOffsets(state);
       }
 
-      if (
-        oldProps.fixedColumnsCount !== newProps.fixedColumnsCount ||
-        oldProps.fixedRightColumnsCount !== newProps.fixedRightColumnsCount ||
-        oldProps.scrollableColumnsCount !== newProps.scrollableColumnsCount
-      ) {
-        initializeColWidthsAndOffsets(state);
-        initializeFlexColumnWidths(state);
-      }
+      initializeColWidthsAndOffsets(state);
+      initializeFlexColumnWidths(state);
 
       if (oldProps.rowsCount !== newProps.rowsCount) {
         state.rowBufferSet = new IntegerBufferSet();
