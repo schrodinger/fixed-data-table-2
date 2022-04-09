@@ -39,12 +39,12 @@
 function debounce(func, wait, context, setTimeoutFunc, clearTimeoutFunc) {
   setTimeoutFunc = setTimeoutFunc || setTimeout;
   clearTimeoutFunc = clearTimeoutFunc || clearTimeout;
-  var timeout;
+  let timeout;
 
   function debouncer(...args) {
     debouncer.reset();
 
-    var callback = function () {
+    const callback = function () {
       func.apply(context, args);
     };
     callback.__SMmeta = func.__SMmeta;

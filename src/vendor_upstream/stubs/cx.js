@@ -9,8 +9,8 @@
  * @providesModule cx
  */
 
-var slashReplaceRegex = /\//g;
-var cache = {};
+const slashReplaceRegex = /\//g;
+const cache = {};
 
 function getClassName(className) {
   if (cache[className]) {
@@ -37,7 +37,7 @@ function getClassName(className) {
  * @return string       Renderable space-separated CSS className.
  */
 function cx(classNames) {
-  var classNamesArray;
+  let classNamesArray;
   if (typeof classNames == 'object') {
     classNamesArray = Object.keys(classNames).filter(function (className) {
       return classNames[className];

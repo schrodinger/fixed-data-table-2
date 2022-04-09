@@ -16,9 +16,9 @@ import UserAgent_DEPRECATED from '../../stubs/UserAgent_DEPRECATED';
 import isEventSupported from '../react/renderers/dom/client/utils/isEventSupported';
 
 // Reasonable defaults
-var PIXEL_STEP = 10;
-var LINE_HEIGHT = 40;
-var PAGE_HEIGHT = 800;
+const PIXEL_STEP = 10;
+const LINE_HEIGHT = 40;
+const PAGE_HEIGHT = 800;
 
 /**
  * Mouse wheel (and 2-finger trackpad) support on the web sucks.  It is
@@ -121,8 +121,9 @@ var PAGE_HEIGHT = 800;
  *
  */
 function normalizeWheel(/*object*/ event) /*object*/ {
-  var sX = 0,
-    sY = 0, // spinX, spinY
+  let sX = 0,
+    // spinX, spinY
+    sY = 0,
     pX = 0,
     pY = 0; // pixelX, pixelY
 

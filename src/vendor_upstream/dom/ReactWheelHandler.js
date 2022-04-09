@@ -67,7 +67,7 @@ class ReactWheelHandler {
       event.preventDefault();
     }
 
-    var normalizedEvent = normalizeWheel(event);
+    let normalizedEvent = normalizeWheel(event);
 
     // if shift is held, swap the axis of scrolling.
     if (event.shiftKey && ReactWheelHandler._allowInternalAxesSwap()) {
@@ -77,10 +77,10 @@ class ReactWheelHandler {
       normalizedEvent.pixelX *= this._isRTL ? -1 : 1;
     }
 
-    var deltaX = this._deltaX + normalizedEvent.pixelX;
-    var deltaY = this._deltaY + normalizedEvent.pixelY;
-    var handleScrollX = this._handleScrollX(deltaX, deltaY);
-    var handleScrollY = this._handleScrollY(deltaY, deltaX);
+    const deltaX = this._deltaX + normalizedEvent.pixelX;
+    const deltaY = this._deltaY + normalizedEvent.pixelY;
+    const handleScrollX = this._handleScrollX(deltaX, deltaY);
+    const handleScrollY = this._handleScrollY(deltaY, deltaX);
     if (!handleScrollX && !handleScrollY) {
       return;
     }
@@ -97,7 +97,7 @@ class ReactWheelHandler {
       event.preventDefault();
     }
 
-    var changed;
+    let changed;
     if (this._deltaX !== 0 || this._deltaY !== 0) {
       if (this._stopPropagation) {
         event.stopPropagation();
@@ -122,7 +122,7 @@ class ReactWheelHandler {
   }
 
   _contains(target) {
-    var parent = target;
+    let parent = target;
     while (parent != document.body) {
       if (parent === this._rootRef) {
         return true;

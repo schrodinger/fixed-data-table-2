@@ -12,17 +12,17 @@
 import emptyFunction from './emptyFunction';
 import nativeRequestAnimationFrame from './nativeRequestAnimationFrame';
 
-var lastTime = 0;
+let lastTime = 0;
 
 /**
  * Here is the native and polyfill version of requestAnimationFrame.
  * Please don't use it directly and use requestAnimationFrame module instead.
  */
-var requestAnimationFrame =
+const requestAnimationFrame =
   nativeRequestAnimationFrame ||
   function (callback) {
-    var currTime = Date.now();
-    var timeDelay = Math.max(0, 16 - (currTime - lastTime));
+    const currTime = Date.now();
+    const timeDelay = Math.max(0, 16 - (currTime - lastTime));
     lastTime = currTime + timeDelay;
     return global.setTimeout(function () {
       callback(Date.now());

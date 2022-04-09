@@ -73,7 +73,7 @@ class FixedDataTableCellDefault extends React.Component {
 
   render() {
     //Remove some props like columnKey and rowIndex so we don't pass it into the div
-    var {
+    const {
       height,
       width,
       style,
@@ -91,7 +91,7 @@ class FixedDataTableCellDefault extends React.Component {
       ...props
     } = this.props;
 
-    var innerStyle = {
+    const innerStyle = {
       height,
       width,
       ...style,

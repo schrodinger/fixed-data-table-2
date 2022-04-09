@@ -170,9 +170,9 @@ class FixedDataTableCell extends React.Component {
   };
 
   render() /*object*/ {
-    var { height, width, columnKey, isHeaderOrFooter, ...props } = this.props;
+    const { height, width, columnKey, isHeaderOrFooter, ...props } = this.props;
 
-    var style = {
+    const style = {
       height,
       width,
     };
@@ -183,7 +183,7 @@ class FixedDataTableCell extends React.Component {
       style.left = props.left;
     }
 
-    var className = joinClasses(
+    const className = joinClasses(
       cx({
         'fixedDataTableCellLayout/main': true,
         'fixedDataTableCellLayout/lastChild': props.lastChild,
@@ -196,7 +196,7 @@ class FixedDataTableCell extends React.Component {
       props.className
     );
 
-    var cellProps = {
+    let cellProps = {
       columnKey,
       height,
       width,
@@ -216,7 +216,7 @@ class FixedDataTableCell extends React.Component {
       cellProps.rowIndex = props.rowIndex;
     }
 
-    var content;
+    let content;
     if (
       this.props.isHeader &&
       (this.props.onColumnResizeEnd || this.props.onColumnReorderEnd)

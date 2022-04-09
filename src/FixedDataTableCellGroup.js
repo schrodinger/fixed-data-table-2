@@ -146,17 +146,17 @@ class FixedDataTableCellGroupImpl extends React.Component {
   };
 
   render() /*object*/ {
-    var props = this.props;
-    var columns = props.columns;
-    var cells = new Array(columns.length);
-    var contentWidth = sumPropWidths(columns);
+    const props = this.props;
+    const columns = props.columns;
+    const cells = new Array(columns.length);
+    const contentWidth = sumPropWidths(columns);
 
-    var currentPosition = 0;
-    for (var i = 0, j = columns.length; i < j; i++) {
-      var columnProps = columns[i].props;
-      var cellTemplate = columns[i].template;
+    let currentPosition = 0;
+    for (let i = 0, j = columns.length; i < j; i++) {
+      const columnProps = columns[i].props;
+      const cellTemplate = columns[i].template;
 
-      var recyclable = get(
+      const recyclable = get(
         this.state.isCellRecyclableByColumnId,
         [columnProps.columnKey],
         columnProps.allowCellsRecycling
@@ -166,7 +166,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         (currentPosition - props.left <= props.width &&
           currentPosition - props.left + columnProps.width >= 0)
       ) {
-        var key = columnProps.columnKey || 'cell_' + i;
+        const key = columnProps.columnKey || 'cell_' + i;
         cells[i] = this._renderCell(
           props.rowIndex,
           props.rowHeight,
@@ -179,7 +179,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       }
       currentPosition += columnProps.width;
     }
-    var style = {
+    const style = {
       height: props.height,
       position: 'absolute',
       width: contentWidth,
@@ -212,8 +212,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
     /*string*/ key,
     /*number*/ columnGroupWidth
   ) /*object*/ => {
-    var className = columnProps.cellClassName;
-    var pureRendering = columnProps.pureRendering || false;
+    const className = columnProps.cellClassName;
+    const pureRendering = columnProps.pureRendering || false;
 
     const onColumnReorderEndCallback = columnProps.isReorderable
       ? this.props.onColumnReorderEndCallback
@@ -313,9 +313,9 @@ class FixedDataTableCellGroup extends React.Component {
   };
 
   render() /*object*/ {
-    var { offsetLeft, ...props } = this.props;
+    const { offsetLeft, ...props } = this.props;
 
-    var style = {
+    const style = {
       height: props.cellGroupWrapperHeight || props.height,
       width: props.width,
     };

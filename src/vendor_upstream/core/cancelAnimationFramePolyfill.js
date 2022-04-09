@@ -13,7 +13,7 @@
  * Here is the native and polyfill version of cancelAnimationFrame.
  * Please don't use it directly and use cancelAnimationFrame module instead.
  */
-var cancelAnimationFrame =
+const cancelAnimationFrame =
   global.cancelAnimationFrame ||
   global.webkitCancelAnimationFrame ||
   global.mozCancelAnimationFrame ||

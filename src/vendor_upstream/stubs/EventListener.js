@@ -16,7 +16,7 @@ import emptyFunction from '../core/emptyFunction';
  * Upstream version of event listener. Does not take into account specific
  * nature of platform.
  */
-var EventListener = {
+const EventListener = {
   /**
    * Listen to DOM events during the bubble phase.
    *

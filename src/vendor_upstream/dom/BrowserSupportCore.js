@@ -11,7 +11,7 @@
 
 import getVendorPrefixedName from '../core/getVendorPrefixedName';
 
-var BrowserSupportCore = {
+const BrowserSupportCore = {
   /**
    * @return {bool} True if browser supports css animations.
    */

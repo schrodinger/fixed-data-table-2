@@ -16,12 +16,12 @@
  * Gets the horizontal and vertical coordinates from a mouse or touch event.
  */
 function getCoordinatesFromEvent(/*object*/ event) /*object*/ {
-  var x = 0;
-  var y = 0;
+  let x = 0;
+  let y = 0;
 
   if (!event.clientX || !event.clientY) {
     if (event.touches && event.touches.length > 0) {
-      var touch = event.touches[0];
+      const touch = event.touches[0];
       x = touch.clientX;
       y = touch.clientY;
     }
@@ -33,7 +33,7 @@ function getCoordinatesFromEvent(/*object*/ event) /*object*/ {
   return { x, y };
 }
 
-var FixedDataTableEventHelper = {
+const FixedDataTableEventHelper = {
   getCoordinatesFromEvent,
 };
 
