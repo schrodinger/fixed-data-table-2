@@ -19,7 +19,7 @@ import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 import FixedDataTableCell from './FixedDataTableCell';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
-import _ from 'lodash';
+import get from 'lodash/get';
 
 class FixedDataTableCellGroupImpl extends React.Component {
   /**
@@ -156,7 +156,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       var columnProps = columns[i].props;
       var cellTemplate = columns[i].template;
 
-      var recyclable = _.get(
+      var recyclable = get(
         this.state.isCellRecyclableByColumnId,
         [columnProps.columnKey],
         columnProps.allowCellsRecycling

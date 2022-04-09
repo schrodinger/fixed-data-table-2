@@ -12,6 +12,7 @@
 'use strict';
 
 import pick from 'lodash/pick';
+import clone from 'lodash/clone';
 
 import IntegerBufferSet from '../vendor_upstream/struct/IntegerBufferSet';
 import PrefixIntervalTree from '../vendor_upstream/struct/PrefixIntervalTree';
@@ -123,7 +124,7 @@ const slice = createSlice({
     },
     propChange(state, action) {
       const { newProps, oldProps } = action.payload;
-      const oldState = _.clone(state);
+      const oldState = clone(state);
       setStateFromProps(state, newProps);
 
       if (

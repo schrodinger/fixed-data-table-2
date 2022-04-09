@@ -16,7 +16,7 @@ import cx from '../../vendor_upstream/stubs/cx';
 import FixedDataTableCellDefault from '../../FixedDataTableCellDefault';
 import { PluginContext } from '../../Context';
 import ReorderHandle from './ReorderHandle';
-import _ from 'lodash';
+import noop from 'lodash/noop';
 import ResizeCell from './ResizeCell';
 import PropTypes from 'prop-types';
 
@@ -142,7 +142,7 @@ class ReorderCell extends React.PureComponent {
 ReorderCell.contextType = PluginContext;
 
 ReorderCell.defaultProps = {
-  onColumnReorderStart: _.noop,
+  onColumnReorderStart: noop,
 };
 
 ReorderCell.propTypes = {

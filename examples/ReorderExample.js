@@ -8,7 +8,7 @@ import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
 import { Table, Column, Plugins } from 'fixed-data-table-2';
 import React from 'react';
-import _ from 'lodash';
+import get from 'lodash/get';
 
 var columnTitles = {
   firstName: 'First Name',
@@ -97,7 +97,7 @@ class ReorderExample extends React.Component {
         {this.state.columnOrder.map(function (columnKey, i) {
           return (
             <Column
-              allowCellsisReordering={_.get(isReordering, columnKey, true)}
+              allowCellsisReordering={get(isReordering, columnKey, true)}
               columnKey={columnKey}
               key={i}
               header={

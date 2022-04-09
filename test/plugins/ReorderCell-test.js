@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'lodash';
+import get from 'lodash/get';
+import noop from 'lodash/noop';
 import { assert, expect } from 'chai';
 import { createRenderer } from 'react-test-renderer/shallow';
 import {
@@ -111,7 +112,7 @@ class ReorderCellTest extends React.Component {
         {this.state.columnOrder.map(function (columnKey, i) {
           return (
             <Column
-              allowCellsRecycling={_.get(recycling, columnKey, true)}
+              allowCellsRecycling={get(recycling, columnKey, true)}
               columnKey={columnKey}
               key={i}
               header={
@@ -136,7 +137,7 @@ class ReorderCellTest extends React.Component {
 describe('ReorderCell', () => {
   describe('render', () => {
     it('should not crash and burn', () => {
-      const reorderCell = <ReorderCell onColumnReorderEnd={_.noop} />;
+      const reorderCell = <ReorderCell onColumnReorderEnd={noop} />;
       const renderer = createRenderer();
       renderer.render(reorderCell);
       const reorderCellRender = renderer.getRenderOutput();
