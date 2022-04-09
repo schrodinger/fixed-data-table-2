@@ -391,7 +391,7 @@ class FixedDataTableRowImpl extends React.Component {
       ? this.props.cellGroupWrapperHeight - HEADER_BORDER_BOTTOM_WIDTH
       : this.props.height;
     var style = {
-      left: left,
+      left,
       height: dividerHeight,
     };
     if (this.props.isRTL) {
@@ -412,7 +412,7 @@ class FixedDataTableRowImpl extends React.Component {
     );
     var style = {
       height: this.props.height,
-      left: left,
+      left,
     };
     if (this.props.isRTL) {
       style.right = left;

@@ -152,7 +152,7 @@ var UserAgent_DEPRECATED = {
    *
    *  @return float|NaN Version number (if match) or NaN.
    */
-  ie: function () {
+  ie() {
     return _populate() || _ie;
   },
 
@@ -162,7 +162,7 @@ var UserAgent_DEPRECATED = {
    * @return bool true if in compatibility mode, false if
    * not compatibility mode or not ie
    */
-  ieCompatibilityMode: function () {
+  ieCompatibilityMode() {
     return _populate() || _ie_real_version > _ie;
   },
 
@@ -171,7 +171,7 @@ var UserAgent_DEPRECATED = {
    * only need this because Skype can't handle 64-bit IE yet.  We need to remove
    * this when we don't need it -- tracked by #601957.
    */
-  ie64: function () {
+  ie64() {
     return UserAgent_DEPRECATED.ie() && _win64;
   },
 
@@ -181,7 +181,7 @@ var UserAgent_DEPRECATED = {
    *
    *  @return float|NaN Version number (if match) or NaN.
    */
-  firefox: function () {
+  firefox() {
     return _populate() || _firefox;
   },
 
@@ -191,7 +191,7 @@ var UserAgent_DEPRECATED = {
    *
    *  @return float|NaN Version number (if match) or NaN.
    */
-  opera: function () {
+  opera() {
     return _populate() || _opera;
   },
 
@@ -201,7 +201,7 @@ var UserAgent_DEPRECATED = {
    *
    *  @return float|NaN Version number (if match) or NaN.
    */
-  webkit: function () {
+  webkit() {
     return _populate() || _webkit;
   },
 
@@ -209,7 +209,7 @@ var UserAgent_DEPRECATED = {
    *  For Push
    *  WILL BE REMOVED VERY SOON. Use UserAgent_DEPRECATED.webkit
    */
-  safari: function () {
+  safari() {
     return UserAgent_DEPRECATED.webkit();
   },
 
@@ -219,7 +219,7 @@ var UserAgent_DEPRECATED = {
    *
    *  @return float|NaN Version number (if match) or NaN.
    */
-  chrome: function () {
+  chrome() {
     return _populate() || _chrome;
   },
 
@@ -228,7 +228,7 @@ var UserAgent_DEPRECATED = {
    *
    *  @return bool `true' if the user's OS is Windows.
    */
-  windows: function () {
+  windows() {
     return _populate() || _windows;
   },
 
@@ -238,7 +238,7 @@ var UserAgent_DEPRECATED = {
    *  @return float|bool   Returns a float if a version number is detected,
    *                       otherwise true/false.
    */
-  osx: function () {
+  osx() {
     return _populate() || _osx;
   },
 
@@ -247,7 +247,7 @@ var UserAgent_DEPRECATED = {
    *
    * @return bool `true' if the user's OS is some flavor of Linux.
    */
-  linux: function () {
+  linux() {
     return _populate() || _linux;
   },
 
@@ -257,24 +257,24 @@ var UserAgent_DEPRECATED = {
    * @return bool `true' if the user is running some flavor of the
    *    iPhone OS.
    */
-  iphone: function () {
+  iphone() {
     return _populate() || _iphone;
   },
 
-  mobile: function () {
+  mobile() {
     return _populate() || _iphone || _ipad || _android || _mobile;
   },
 
-  nativeApp: function () {
+  nativeApp() {
     // webviews inside of the native apps
     return _populate() || _native;
   },
 
-  android: function () {
+  android() {
     return _populate() || _android;
   },
 
-  ipad: function () {
+  ipad() {
     return _populate() || _ipad;
   },
 };
