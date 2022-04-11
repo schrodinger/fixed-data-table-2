@@ -51,7 +51,6 @@ rm src/*.js.DELETEME
 echo "Updated version to ${next_version}"
 
 npm run build-dist
-npm run build-npm
 
 git add -A
 git add -f dist/fixed-data-table-base.css

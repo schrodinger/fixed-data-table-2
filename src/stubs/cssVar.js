@@ -41,4 +41,4 @@ function cssVar(name) {
 
 cssVar.CSS_VARS = CSS_VARS;
 
-module.exports = cssVar;
+export default cssVar;

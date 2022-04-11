@@ -12,7 +12,7 @@ import {
   isElement,
 } from 'react-dom/test-utils';
 
-import { Table, Column } from '../src/FixedDataTableRoot';
+import { Table, Column } from '../src/index';
 import Scrollbar from '../src/plugins/Scrollbar';
 
 describe('FixedDataTableRoot', function () {

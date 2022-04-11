@@ -1,10 +1,12 @@
 'use strict';
 
+// NOTE (pradeep): babel's register is required for this loader to import es6 modules like `cssVar`
+require('@babel/register');
+
 var postcss = require('postcss');
 var autoPrefixer = require('autoprefixer');
 var customProperties = require('postcss-custom-properties');
-var cssVars = require('../src/stubs/cssVar');
-const cssVar = require('../src/stubs/cssVar');
+const cssVars = require('../src/stubs/cssVar').default;
 
 function escapeSlash(match) {
   return match.replace(/\//g, '_');
