@@ -20,7 +20,8 @@
  * @return {number} The new row height
  */
 export default function updateRowHeight(state, rowIdx) {
-  const { storedHeights, rowOffsetIntervalTree, rowSettings } = state;
+  const { rowSettings } = state;
+  const { storedHeights, rowOffsetIntervalTree } = state.getInternal();
   const { rowHeightGetter, subRowHeightGetter } = rowSettings;
 
   const newHeight = rowHeightGetter(rowIdx) + subRowHeightGetter(rowIdx);
