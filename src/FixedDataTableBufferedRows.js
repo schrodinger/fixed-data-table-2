@@ -131,6 +131,7 @@ class FixedDataTableBufferedRows extends React.Component {
           this._staticRowArray[i] && this._staticRowArray[i].props.index;
         if (rowIndex === undefined) {
           this._staticRowArray[i] = null;
+          continue;
         }
       }
       const rowOffsetTop =
