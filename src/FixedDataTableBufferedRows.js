@@ -129,6 +129,10 @@ class FixedDataTableBufferedRows extends React.Component {
       if (rowIndex === undefined) {
         rowIndex =
           this._staticRowArray[i] && this._staticRowArray[i].props.index;
+        if (rowIndex === undefined) {
+          this._staticRowArray[i] = null;
+          continue;
+        }
       }
       const rowOffsetTop =
         rowOffsets[rowIndex] -
@@ -159,32 +163,25 @@ class FixedDataTableBufferedRows extends React.Component {
   renderRow({ rowIndex, key, rowOffsetTop }) /*object*/ {
     const props = this.props;
     const rowClassNameGetter = props.rowClassNameGetter || emptyFunction;
-    const fake = rowIndex === undefined;
     let rowProps = {};
+    rowProps.height = this.props.rowSettings.rowHeightGetter(rowIndex);
+    rowProps.subRowHeight = this.props.rowSettings.subRowHeightGetter(rowIndex);
+    rowProps.offsetTop = rowOffsetTop;
+    rowProps.key = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : key;
+    rowProps.attributes =
+      props.rowSettings.rowAttributesGetter &&
+      props.rowSettings.rowAttributesGetter(rowIndex);
 
-    // if row exists, then calculate row specific props
-    if (!fake) {
-      rowProps.height = this.props.rowSettings.rowHeightGetter(rowIndex);
-      rowProps.subRowHeight = this.props.rowSettings.subRowHeightGetter(
-        rowIndex
-      );
-      rowProps.offsetTop = rowOffsetTop;
-      rowProps.key = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : key;
-      rowProps.attributes =
-        props.rowSettings.rowAttributesGetter &&
-        props.rowSettings.rowAttributesGetter(rowIndex);
-
-      const hasBottomBorder =
-        rowIndex === props.rowSettings.rowsCount - 1 && props.showLastRowBorder;
-      rowProps.className = joinClasses(
-        rowClassNameGetter(rowIndex),
-        cx('public/fixedDataTable/bodyRow'),
-        cx({
-          'fixedDataTableLayout/hasBottomBorder': hasBottomBorder,
-          'public/fixedDataTable/hasBottomBorder': hasBottomBorder,
-        })
-      );
-    }
+    const hasBottomBorder =
+      rowIndex === props.rowSettings.rowsCount - 1 && props.showLastRowBorder;
+    rowProps.className = joinClasses(
+      rowClassNameGetter(rowIndex),
+      cx('public/fixedDataTable/bodyRow'),
+      cx({
+        'fixedDataTableLayout/hasBottomBorder': hasBottomBorder,
+        'public/fixedDataTable/hasBottomBorder': hasBottomBorder,
+      })
+    );
 
     const visible = inRange(
       rowIndex,
@@ -218,7 +215,6 @@ class FixedDataTableBufferedRows extends React.Component {
         scrollbarYWidth={props.scrollbarYWidth}
         isRTL={props.isRTL}
         visible={visible}
-        fake={fake}
         {...rowProps}
       />
     );
