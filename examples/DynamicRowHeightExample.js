@@ -13,7 +13,7 @@ class DynamicRowHeightExample extends React.Component {
   constructor(props) {
     super(props);
 
-    const rowCount = 100;
+    const rowCount = 100000;
     this.state = {
       dataList: new FakeObjectDataListStore(rowCount),
       rowHeights: new Array(rowCount),
