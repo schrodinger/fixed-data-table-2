@@ -15,9 +15,10 @@ import React from 'react';
 import cx from '../../vendor_upstream/stubs/cx';
 import PropTypes from 'prop-types';
 import DOMMouseMoveTracker from '../../vendor_upstream/dom/DOMMouseMoveTracker';
-import { PluginContext } from '../../Context';
+import { FixedDataTableContext } from '../../FixedDataTableContext';
 import requestAnimationFramePolyfill from '../../vendor_upstream/core/requestAnimationFramePolyfill';
 import cancelAnimationFramePolyfill from '../../vendor_upstream/core/cancelAnimationFramePolyfill';
+import _ from 'lodash';
 
 const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
@@ -58,6 +59,19 @@ class ReorderHandle extends React.PureComponent {
    */
   originalLeft = 0;
 
+  componentDidMount() {
+    if (this.props.isDragProxy) {
+      this.startReordering();
+    }
+  }
+
+  componentWillUnmount() {
+    cancelAnimationFramePolyfill(this.frameId);
+    if (this.mouseMoveTracker) {
+      this.mouseMoveTracker.releaseMouseMoves();
+    }
+  }
+
   render() {
     const style = {
       height: this.props.height,
@@ -75,6 +89,17 @@ class ReorderHandle extends React.PureComponent {
         onTouchMove={this.onTouchMove}
         style={style}
       />
+    );
+  }
+
+  startReordering() {
+    this.cursorDeltaX = 0;
+    this.scrollStart = this.context.scrollX;
+    this.originalLeft = this.props.left;
+    this.initializeDOMMouseMoveTracker(this.props.reorderStartEvent);
+    this.setState({ displacement: 0, isReordering: true });
+    this.frameId = requestAnimationFramePolyfill(
+      this.updateDisplacementPeriodically
     );
   }
 
@@ -98,15 +123,7 @@ class ReorderHandle extends React.PureComponent {
    * @param {MouseEvent} event
    */
   onMouseDown = (event) => {
-    this.props.onColumnReorderStart(this.props.columnKey);
-    this.cursorDeltaX = 0;
-    this.scrollStart = this.context.scrollX;
-    this.originalLeft = this.props.left;
-    this.initializeDOMMouseMoveTracker(event);
-    this.setState({ displacement: 0, isReordering: true });
-    this.frameId = requestAnimationFramePolyfill(
-      this.updateDisplacementPeriodically
-    );
+    this.props.onColumnReorderStart(this.props.columnKey, event);
   };
 
   /**
@@ -153,18 +170,26 @@ class ReorderHandle extends React.PureComponent {
    * @return {number} deltaX bounded between cell group
    */
   getBoundedDeltaX = (deltaX) => {
-    // Column should not be moved beyond left of cell group
-    if (this.originalLeft + deltaX < 0) {
-      deltaX = -this.originalLeft;
+    let groupWidth = 0;
+    let groupStart = 0;
+
+    if (this.context.groupHeaderExists && !this.props.isGroupHeader) {
+      const group = this.context.getColumnGroupByChild(this.props.columnIndex);
+      groupWidth = group.width;
+
+      if (this.context.groupHeaderExists) {
+        groupStart = group.offset;
+      }
+    } else {
+      groupWidth = this.context.getCellGroupWidth();
     }
-    // Column should not be moved beyond right of cell group
-    const cellGroupColumnWidths = this.props.getCellGroupWidth();
-    const cellGroupWidth = cellGroupColumnWidths.widths.reduce((a, b) => a + b);
-    const maxReachableDisplacement = cellGroupWidth - this.props.width;
-    if (this.originalLeft + deltaX > maxReachableDisplacement) {
-      deltaX = maxReachableDisplacement - this.originalLeft;
-    }
-    return deltaX;
+
+    const maxReachableDisplacement = groupWidth - this.props.width;
+    return _.clamp(
+      deltaX,
+      -this.originalLeft + groupStart,
+      maxReachableDisplacement - this.originalLeft + groupStart
+    );
   };
 
   updateDisplacementWithScroll = () => {
@@ -183,11 +208,11 @@ class ReorderHandle extends React.PureComponent {
       } else if (dragX <= DRAG_SCROLL_BUFFER) {
         scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
       }
-      this.props.scrollToX(scrollX);
+      this.context.scrollToX(scrollX);
     }
     deltaX = this.getBoundedDeltaX(deltaX);
     this.setState({ displacement: deltaX });
-    this.props.translateCell(deltaX);
+    this.props.onTranslateCell(deltaX);
   };
 
   /**
@@ -205,68 +230,81 @@ class ReorderHandle extends React.PureComponent {
   isColumnMovedToLeft = (deltaX) => deltaX < 0;
 
   updateColumnOrder = () => {
-    const { getCellGroupWidth, columnKey } = this.props;
-    const cellGroupColumnWidths = getCellGroupWidth();
-    const columnIndex = cellGroupColumnWidths.keys.indexOf(columnKey);
-    let columnBefore = cellGroupColumnWidths.keys[columnIndex - 1];
-    let columnAfter = cellGroupColumnWidths.keys[columnIndex + 1];
-
-    let localDisplacement = this.getBoundedDeltaX(
+    const localOffset = this.getBoundedDeltaX(
       this.cursorDeltaX + this.context.scrollX - this.scrollStart
     );
-    if (this.isColumnMovedToRight(localDisplacement)) {
-      for (
-        let i = columnIndex + 1, j = cellGroupColumnWidths.widths.length;
-        i < j;
-        i++
-      ) {
-        let curWidth = cellGroupColumnWidths.widths[i];
-        if (localDisplacement > curWidth) {
-          localDisplacement -= curWidth;
-        } else {
-          if (localDisplacement > curWidth / 2) {
-            columnAfter = cellGroupColumnWidths.keys[i + 1];
-            columnBefore = cellGroupColumnWidths.keys[i];
-          } else {
-            columnAfter = cellGroupColumnWidths.keys[i];
-            columnBefore =
-              i - 1 !== columnIndex
-                ? cellGroupColumnWidths.keys[i - 1]
-                : cellGroupColumnWidths.keys[i - 2];
-          }
-          break;
-        }
+    const offset =
+      localOffset >= 0
+        ? this.props.width + localOffset + this.props.left
+        : localOffset + this.props.left;
+
+    let target;
+    let targetColumnOffset;
+    if (this.props.isGroupHeader) {
+      const { columnGroup, distanceFromOffset: columnGroupOffset } =
+        this.context.getColumnGroupAtOffset(offset);
+      target = columnGroup;
+      targetColumnOffset = columnGroupOffset;
+    } else {
+      const { column, distanceFromOffset: columnOffset } =
+        this.context.getColumnAtOffset(offset);
+      target = column;
+      targetColumnOffset = columnOffset;
+    }
+
+    let columnBeforeIndex = null;
+    let columnAfterIndex = null;
+
+    if (target.index < this.props.columnIndex) {
+      if (targetColumnOffset <= target.width / 2) {
+        columnBeforeIndex = target.index - 1;
+        columnAfterIndex = target.index;
+      } else {
+        columnBeforeIndex = target.index;
+        columnAfterIndex = target.index + 1;
       }
-    } else if (this.isColumnMovedToLeft(localDisplacement)) {
-      localDisplacement = -localDisplacement;
-      for (let i = columnIndex - 1; i >= 0; i--) {
-        let curWidth = cellGroupColumnWidths.widths[i];
-        if (localDisplacement > curWidth) {
-          localDisplacement -= curWidth;
-        } else {
-          if (localDisplacement > curWidth / 2) {
-            columnAfter = cellGroupColumnWidths.keys[i];
-            columnBefore = cellGroupColumnWidths.keys[i - 1];
-          } else {
-            columnBefore = cellGroupColumnWidths.keys[i];
-            columnAfter =
-              i + 1 !== columnIndex
-                ? cellGroupColumnWidths.keys[i + 1]
-                : cellGroupColumnWidths.keys[i + 2];
-          }
-          break;
-        }
+    } else {
+      if (targetColumnOffset >= target.width / 2) {
+        columnBeforeIndex = target.index;
+        columnAfterIndex = target.index + 1;
+      } else {
+        columnBeforeIndex = target.index - 1;
+        columnAfterIndex = target.index;
       }
     }
-    this.props.onColumnReorderEndCallback({
-      columnBefore,
-      columnAfter,
+
+    if (columnBeforeIndex === this.props.columnIndex) {
+      --columnBeforeIndex;
+    }
+    if (columnAfterIndex === this.props.columnIndex) {
+      ++columnAfterIndex;
+    }
+
+    const columnCount = this.props.isGroupHeader
+      ? this.context.getColumnGroupCount()
+      : this.context.getColumnCount();
+    let columnBefore;
+    let columnAfter;
+    if (_.inRange(columnBeforeIndex, 0, columnCount)) {
+      columnBefore = this.props.isGroupHeader
+        ? this.context.getColumnGroup(columnBeforeIndex)
+        : this.context.getColumn(columnBeforeIndex);
+    }
+    if (_.inRange(columnAfterIndex, 0, columnCount)) {
+      columnAfter = this.props.isGroupHeader
+        ? this.context.getColumnGroup(columnAfterIndex)
+        : this.context.getColumn(columnAfterIndex);
+    }
+
+    this.props.onColumnReorderEnd({
+      columnBefore: _.get(columnBefore, 'columnKey'),
+      columnAfter: _.get(columnAfter, 'columnKey'),
       reorderColumn: this.props.columnKey,
     });
   };
 }
 
-ReorderHandle.contextType = PluginContext;
+ReorderHandle.contextType = FixedDataTableContext;
 
 ReorderHandle.propTypes = {
   width: PropTypes.number.isRequired,
@@ -275,13 +313,13 @@ ReorderHandle.propTypes = {
   isRTL: PropTypes.bool,
   left: PropTypes.number.isRequired,
   isFixed: PropTypes.bool,
-  scrollToX: PropTypes.func,
-  onColumnReorderEndCallback: PropTypes.func.isRequired,
-  getCellGroupWidth: PropTypes.func.isRequired,
+  isDragProxy: PropTypes.bool,
+  onColumnReorderEnd: PropTypes.func.isRequired,
   columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
   onColumnReorderStart: PropTypes.func.isRequired,
-  translateCell: PropTypes.func.isRequired,
+  reorderStartEvent: PropTypes.object,
+  onTranslateCell: PropTypes.func.isRequired,
 };
 
 export default ReorderHandle;

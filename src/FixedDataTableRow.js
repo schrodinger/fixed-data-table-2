@@ -161,9 +161,14 @@ class FixedDataTableRowImpl extends React.Component {
     onColumnResizeEndCallback: PropTypes.func,
 
     /**
-     * Whether these cells belong to the header/group-header
+     * Whether these cells belong to the header
      */
     isHeader: PropTypes.bool,
+
+    /**
+     * Whether these cells belong to the group-header
+     */
+    isGroupHeader: PropTypes.bool,
 
     /**
      * Function to change the scroll position by interacting with the store.
@@ -222,6 +227,7 @@ class FixedDataTableRowImpl extends React.Component {
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
         isHeader={this.props.isHeader}
+        isGroupHeader={this.props.isGroupHeader}
         isRTL={this.props.isRTL}
         scrollX={this.props.scrollLeft}
         isFixed={true}
@@ -249,6 +255,7 @@ class FixedDataTableRowImpl extends React.Component {
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
         isHeader={this.props.isHeader}
+        isGroupHeader={this.props.isGroupHeader}
         isRTL={this.props.isRTL}
         scrollX={this.props.scrollLeft}
       />
@@ -282,6 +289,7 @@ class FixedDataTableRowImpl extends React.Component {
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
         isHeader={this.props.isHeader}
+        isGroupHeader={this.props.isGroupHeader}
         scrollX={this.props.scrollLeft}
         isRTL={this.props.isRTL}
         scrollToX={this.props.scrollToX}

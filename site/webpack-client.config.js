@@ -79,6 +79,7 @@ module.exports = {
   devServer: {
     static: path.resolve(__dirname, '../__site__/'),
     host: '0.0.0.0',
+    port: 8090,
   },
 
   plugins: [
