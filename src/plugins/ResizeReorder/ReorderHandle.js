@@ -172,24 +172,37 @@ class ReorderHandle extends React.PureComponent {
   getBoundedDeltaX = (deltaX) => {
     let groupWidth = 0;
     let groupStart = 0;
+    let cellGroupType = this.getCellGroupType();
 
     if (this.context.groupHeaderExists && !this.props.isGroupHeader) {
-      const group = this.context.getColumnGroupByChild(this.props.columnIndex);
+      const group = this.context.getColumnGroupByChild(
+        this.props.columnIndex,
+        cellGroupType
+      );
       groupWidth = group.width;
 
       if (this.context.groupHeaderExists) {
         groupStart = group.offset;
       }
     } else {
-      groupWidth = this.context.getCellGroupWidth();
+      groupWidth = this.context.getCellGroupWidth(cellGroupType);
     }
 
     const maxReachableDisplacement = groupWidth - this.props.width;
     return _.clamp(
       deltaX,
       -this.originalLeft + groupStart,
-      maxReachableDisplacement - this.originalLeft + groupStart
+      -this.originalLeft + maxReachableDisplacement + groupStart
     );
+  };
+
+  getCellGroupType = () => {
+    if (this.props.isFixed) {
+      return 'fixed';
+    } else if (this.props.isFixedRight) {
+      return 'fixedRight';
+    }
+    return 'scrollable';
   };
 
   updateDisplacementWithScroll = () => {
@@ -230,6 +243,7 @@ class ReorderHandle extends React.PureComponent {
   isColumnMovedToLeft = (deltaX) => deltaX < 0;
 
   updateColumnOrder = () => {
+    const cellGroupType = this.getCellGroupType();
     const localOffset = this.getBoundedDeltaX(
       this.cursorDeltaX + this.context.scrollX - this.scrollStart
     );
@@ -242,12 +256,12 @@ class ReorderHandle extends React.PureComponent {
     let targetColumnOffset;
     if (this.props.isGroupHeader) {
       const { columnGroup, distanceFromOffset: columnGroupOffset } =
-        this.context.getColumnGroupAtOffset(offset);
+        this.context.getColumnGroupAtOffset(offset, cellGroupType);
       target = columnGroup;
       targetColumnOffset = columnGroupOffset;
     } else {
       const { column, distanceFromOffset: columnOffset } =
-        this.context.getColumnAtOffset(offset);
+        this.context.getColumnAtOffset(offset, cellGroupType);
       target = column;
       targetColumnOffset = columnOffset;
     }
@@ -281,19 +295,19 @@ class ReorderHandle extends React.PureComponent {
     }
 
     const columnCount = this.props.isGroupHeader
-      ? this.context.getColumnGroupCount()
-      : this.context.getColumnCount();
+      ? this.context.getColumnGroupCount(cellGroupType)
+      : this.context.getColumnCount(cellGroupType);
     let columnBefore;
     let columnAfter;
     if (_.inRange(columnBeforeIndex, 0, columnCount)) {
       columnBefore = this.props.isGroupHeader
-        ? this.context.getColumnGroup(columnBeforeIndex)
-        : this.context.getColumn(columnBeforeIndex);
+        ? this.context.getColumnGroup(columnBeforeIndex, cellGroupType)
+        : this.context.getColumn(columnBeforeIndex, cellGroupType);
     }
     if (_.inRange(columnAfterIndex, 0, columnCount)) {
       columnAfter = this.props.isGroupHeader
-        ? this.context.getColumnGroup(columnAfterIndex)
-        : this.context.getColumn(columnAfterIndex);
+        ? this.context.getColumnGroup(columnAfterIndex, cellGroupType)
+        : this.context.getColumn(columnAfterIndex, cellGroupType);
     }
 
     this.props.onColumnReorderEnd({

@@ -44,6 +44,7 @@ const getFixedDataTableApi = function (state, actions) {
     fixedColumnGroups,
     fixedRightColumnGroups,
     scrollableColumnGroups,
+    columnGroupProps,
   } = columnWidths(state);
 
   const getCellGroupWidth = (cellGroupType = 'scrollable') => {
@@ -73,10 +74,8 @@ const getFixedDataTableApi = function (state, actions) {
 
   const getColumnGroupByChild = (columnIndex, cellGroupType = 'scrollable') => {
     const container = _getColumnContainerByCellGroupType(cellGroupType);
-    const groupContainer =
-      _getColumnGroupContainerByCellGroupType(cellGroupType);
     const groupIndex = _.get(container, [columnIndex, 'groupIdx']);
-    return _getMinimalColumnGroup(groupContainer[groupIndex]);
+    return _getMinimalColumnGroup(columnGroupProps[groupIndex]);
   };
 
   const _getColumnContainerByCellGroupType = (cellGroupType = 'scrollable') => {
