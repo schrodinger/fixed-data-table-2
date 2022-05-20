@@ -170,11 +170,14 @@ function groupElements(elements) {
     }
 
     // add offset and index of element within group
-    element.offset = container.offset;
-    element.index = container.elements.length;
+    const newElement = {
+      ...element,
+      offset: container.offset,
+      index: container.elements.length,
+    };
 
-    container.offset += element.width;
-    container.elements.push(element);
+    container.offset += newElement.width;
+    container.elements.push(newElement);
   });
 
   return {
