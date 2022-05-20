@@ -120,12 +120,6 @@ class FixedDataTableCell extends React.Component {
      * Whether the cells belongs to the fixed group
      */
     isFixed: PropTypes.bool,
-
-    /**
-     * @deprecated
-     * Functions which toggles cells recycling for a cell
-     */
-    toggleCellsRecycling: PropTypes.func,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -215,13 +209,7 @@ class FixedDataTableCell extends React.Component {
         content = (
           <ReorderCell
             {...cellProps}
-            onColumnReorderStart={(/*string*/ columnKey) => {
-              this.props.toggleCellsRecycling(false, columnKey);
-            }}
-            onColumnReorderEnd={(/*object*/ val) => {
-              this.props.toggleCellsRecycling(true);
-              this.props.onColumnReorderEnd(val);
-            }}
+            onColumnReorderEnd={this.props.onColumnReorderEnd}
           >
             <ResizeCell onColumnResizeEnd={this.props.onColumnResizeEnd}>
               {props.cell}
@@ -232,13 +220,7 @@ class FixedDataTableCell extends React.Component {
         content = (
           <ReorderCell
             {...cellProps}
-            onColumnReorderStart={(/*string*/ columnKey) => {
-              this.props.toggleCellsRecycling(false, columnKey);
-            }}
-            onColumnReorderEnd={(/*object*/ val) => {
-              this.props.toggleCellsRecycling(true);
-              this.props.onColumnReorderEnd(val);
-            }}
+            onColumnReorderEnd={this.props.onColumnReorderEnd}
           >
             {props.cell}
           </ReorderCell>
