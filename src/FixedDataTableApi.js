@@ -7,6 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  */
+import _ from 'lodash';
 import columnWidths from './selectors/columnWidths';
 
 /**
@@ -75,7 +76,8 @@ const getFixedDataTableApi = function (state, actions) {
   const getColumnGroupByChild = (columnIndex, cellGroupType = 'scrollable') => {
     const container = _getColumnContainerByCellGroupType(cellGroupType);
     const groupIndex = _.get(container, [columnIndex, 'groupIdx']);
-    return _getMinimalColumnGroup(columnGroupProps[groupIndex]);
+    const columnGroup = _getColumnGroupByAbsoluteIndex(groupIndex);
+    return _getMinimalColumnGroup(columnGroup);
   };
 
   const _getColumnContainerByCellGroupType = (cellGroupType = 'scrollable') => {
@@ -101,6 +103,31 @@ const getFixedDataTableApi = function (state, actions) {
       return scrollableColumnGroups;
     } else {
       throw 'Invalid cell group type';
+    }
+  };
+
+  const _getColumnGroupByAbsoluteIndex = (absoluteIndex) => {
+    let fixedCount = _.size(fixedColumnGroups);
+    let scrollableCount = _.size(scrollableColumnGroups);
+    let fixedRightCount = _.size(fixedRightColumnGroups);
+    if (_.inRange(absoluteIndex, 0, fixedCount)) {
+      return fixedColumnGroups[absoluteIndex];
+    } else if (
+      _.inRange(absoluteIndex, fixedCount, fixedCount + scrollableCount)
+    ) {
+      return scrollableColumnGroups[absoluteIndex - fixedCount];
+    } else if (
+      _.inRange(
+        absoluteIndex,
+        fixedCount + scrollableCount,
+        fixedCount + scrollableCount + fixedRightCount
+      )
+    ) {
+      return fixedRightColumnGroups[
+        absoluteIndex - fixedCount - scrollableCount
+      ];
+    } else {
+      throw 'Invalid absolute column group index';
     }
   };
 
