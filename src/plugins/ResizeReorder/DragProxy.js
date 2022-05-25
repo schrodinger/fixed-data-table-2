@@ -23,76 +23,40 @@ import _ from 'lodash';
 const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
 
-class ReorderHandle extends React.PureComponent {
+class DragProxy extends React.PureComponent {
   state = {
     displacement: 0,
-    isReordering: false,
   };
 
-  /**
-   * Instance of DOMMouseMoveTracker to capture mouse events
-   * @type {DOMMouseMoveTracker}
-   */
-  mouseMoveTracker = null;
-
-  /**
-   * Displacement of reorder cell while reordering
-   * @type {number}
-   */
-  cursorDeltaX = 0;
-
-  /**
-   * Frame Id of requested animation frame
-   * @type {number | null}
-   */
-  frameId = null;
-
-  /**
-   * Initial position of scroll
-   * @type {number}
-   */
-  scrollStart = 0;
-
-  /**
-   * Left of column
-   * @type {number}
-   */
-  originalLeft = 0;
+  containerRef = React.createRef();
 
   componentDidMount() {
-    if (this.props.isDragProxy) {
-      this.startReordering();
-    }
-  }
+    const draggedContents = this.props.contents.parentNode.cloneNode(true); // pass `true` to indicate a deep clone
+    draggedContents.firstChild.classList.add(
+      'public/fixedDataTableCell/reordering'
+    );
 
-  componentWillUnmount() {
-    cancelAnimationFramePolyfill(this.frameId);
-    if (this.mouseMoveTracker) {
-      this.mouseMoveTracker.releaseMouseMoves();
-    }
+    this.containerRef.current.appendChild(draggedContents);
+
+    this.startDrag();
   }
 
   render() {
+    const DIR_SIGN = this.context.isRTL ? -1 : 1;
+
     const style = {
-      height: this.props.height,
+      position: 'absolute',
+      zIndex: 2,
+      transform: `translateX(${
+        this.state.displacement * DIR_SIGN
+      }px) translateZ(0)`,
     };
 
-    return (
-      <div
-        className={cx({
-          'fixedDataTableCellLayout/columnReorderContainer': true,
-          'fixedDataTableCellLayout/columnReorderContainer/active': false,
-        })}
-        onMouseDown={this.onMouseDown}
-        onTouchStart={this.onTouchStart}
-        onTouchEnd={this.onTouchEnd}
-        onTouchMove={this.onTouchMove}
-        style={style}
-      />
-    );
+    // render an empty placeholder which later gets injected with the dragged contents
+    return <div style={style} ref={this.containerRef} />;
   }
 
-  startReordering() {
+  startDrag() {
     this.cursorDeltaX = 0;
     this.scrollStart = this.context.scrollX;
     this.originalLeft = this.props.left;
@@ -103,27 +67,12 @@ class ReorderHandle extends React.PureComponent {
     );
   }
 
-  onTouchStart = (ev) => {
-    if (!this.props.touchEnabled) {
-      return;
-    }
-    this.onMouseDown(ev);
-  };
-
   onTouchEnd = (ev) => {
     if (this.props.touchEnabled) ev.stopPropagation();
   };
 
   onTouchMove = (ev) => {
     if (this.props.touchEnabled) ev.stopPropagation();
-  };
-
-  /**
-   *
-   * @param {MouseEvent} event
-   */
-  onMouseDown = (event) => {
-    this.props.onColumnReorderStart(this.props.columnKey, event);
   };
 
   /**
@@ -225,7 +174,6 @@ class ReorderHandle extends React.PureComponent {
     }
     deltaX = this.getBoundedDeltaX(deltaX);
     this.setState({ displacement: deltaX });
-    this.props.onTranslateCell(deltaX);
   };
 
   /**
@@ -318,22 +266,21 @@ class ReorderHandle extends React.PureComponent {
   };
 }
 
-ReorderHandle.contextType = FixedDataTableContext;
+DragProxy.contextType = FixedDataTableContext;
 
-ReorderHandle.propTypes = {
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  touchEnabled: PropTypes.bool,
+DragProxy.propTypes = {
+  columnIndex: PropTypes.number.isRequired,
+  columnKey: PropTypes.string.isRequired,
+  contents: PropTypes.instanceOf(Element),
+  isFixed: PropTypes.bool,
+  isFixedRight: PropTypes.bool,
+  isGroupHeader: PropTypes.bool,
   isRTL: PropTypes.bool,
   left: PropTypes.number.isRequired,
-  isFixed: PropTypes.bool,
-  isDragProxy: PropTypes.bool,
-  onColumnReorderEnd: PropTypes.func.isRequired,
-  columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-    .isRequired,
   onColumnReorderStart: PropTypes.func.isRequired,
-  reorderStartEvent: PropTypes.object,
-  onTranslateCell: PropTypes.func.isRequired,
+  reorderStartEvent: PropTypes.object.isRequired,
+  touchEnabled: PropTypes.bool,
+  width: PropTypes.number.isRequired,
 };
 
-export default ReorderHandle;
+export default DragProxy;
