@@ -23,14 +23,14 @@ var columnTitles = {
 var columnWidths = {
   firstName: 150,
   lastName: 150,
-  sentence: 240,
-  companyName: 100,
-  city: 240,
-  street: 260,
-  zipCode: 240,
+  sentence: 140,
+  companyName: 140,
+  city: 140,
+  street: 160,
+  zipCode: 140,
 };
 
-var fixedColumns = ['firstName', 'lastName'];
+var fixedColumns = [];
 
 class ReorderExample extends React.Component {
   constructor(props) {
@@ -49,6 +49,9 @@ class ReorderExample extends React.Component {
       ],
       isReordering: {},
     };
+    setInterval(() => {
+      this.forceUpdate();
+    });
   }
 
   _onColumnReorderEndCallback = (event) => {
@@ -56,7 +59,7 @@ class ReorderExample extends React.Component {
       return columnKey !== event.reorderColumn;
     });
 
-    if (event.columnAfter) {
+    if (!_.isNil(event.columnAfter)) {
       var index = columnOrder.indexOf(event.columnAfter);
       columnOrder.splice(index, 0, event.reorderColumn);
     } else {
@@ -66,6 +69,7 @@ class ReorderExample extends React.Component {
         columnOrder.push(event.reorderColumn);
       }
     }
+
     this.setState({
       columnOrder: columnOrder,
       isReordering: {},
@@ -92,16 +96,17 @@ class ReorderExample extends React.Component {
         isColumnReordering={false}
         width={1000}
         height={500}
+        touchEnabled={true}
         {...this.props}
       >
         {this.state.columnOrder.map(function (columnKey, i) {
           return (
             <Column
-              allowCellsRecycling={_.get(isReordering, columnKey, true)}
               columnKey={columnKey}
               key={i}
               header={
                 <Plugins.ReorderCell
+                  touchEnabled={true}
                   onColumnReorderStart={onColumnReorderStart}
                   onColumnReorderEnd={onColumnReorderEndCallback}
                 >
@@ -109,7 +114,6 @@ class ReorderExample extends React.Component {
                 </Plugins.ReorderCell>
               }
               cell={<TextCell data={dataList} />}
-              fixed={fixedColumns.indexOf(columnKey) !== -1}
               width={columnWidths[columnKey]}
             />
           );

@@ -6,45 +6,104 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, LinkCell } from './helpers/cells';
-import { Table, Column, DataCell, Plugins } from 'fixed-data-table-2';
+import {
+  Table,
+  Column,
+  ColumnGroup,
+  DataCell,
+  Plugins,
+} from 'fixed-data-table-2';
 import React from 'react';
+import _ from 'lodash';
+
+var fixedColumnGroups = [0];
+var fixedColumns = [0, 1, 2, 3];
 
 class AutoScrollExample extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      dataList: new FakeObjectDataListStore(10000),
+      dataList: new FakeObjectDataListStore(100),
       scrollTop: 0,
       scrollLeft: 0,
-      autoScrollEnabled: true,
+      autoScrollEnabled: false,
       horizontalScrollDelta: 0,
       verticalScrollDelta: 0,
       columns: [],
-      fixedColumnsCount: 2,
-      fixedRightColumnsCount: 2,
-      scrollableColumnsCount: 10000 - 2 - 2,
+      fixedColumnsCount: 4,
+      fixedRightColumnsCount: 4,
+      scrollableColumnsCount: 1000 - 4 - 4,
       columnGroups: [],
+      columnGroupOrder: [],
+      columnOrder: {},
+      columnWidths: [],
     };
 
     const cellRenderer = (props) => `${props.columnKey}, ${props.rowIndex}`;
-    const headerCellRenderer = (props) => props.columnKey;
+    const groupHeaderRenderer = ({
+      columnIndex,
+      columnKey,
+      rowIndex,
+      ...props
+    }) => (
+      <Plugins.ReorderCell
+        columnKey={columnKey}
+        columnIndex={columnIndex}
+        rowIndex={rowIndex}
+        touchEnabled={true}
+        onColumnReorderEnd={this._onColumnGroupReorderEndCallback}
+        {...props}
+      >
+        <Plugins.ResizeCell
+          onColumnResizeEnd={this._onColumnGroupResizeEndCallback}
+        >
+          <div className="autoScrollCell">{columnKey}</div>
+        </Plugins.ResizeCell>
+      </Plugins.ReorderCell>
+    );
+    const headerCellRenderer = (props) => (
+      <Plugins.ReorderCell
+        onColumnReorderEnd={this._onColumnReorderEndCallback}
+        {...props}
+      >
+        <Plugins.ResizeCell onColumnResizeEnd={this._onColumnResizeEndCallback}>
+          {props.columnKey}
+        </Plugins.ResizeCell>
+      </Plugins.ReorderCell>
+    );
 
-    for (let i = 0; i < 10000; i++) {
-      const columnGroupIndex = Math.floor(i / 2);
-      this.state.columns[i] = {
-        columnKey: 'Column ' + i,
-        columnGroupIndex,
+    for (let i = 0; i < 1000 / 4; i++) {
+      this.state.columnGroupOrder[i] = i;
+      this.state.columnOrder[i] = [i * 4, i * 4 + 1, i * 4 + 2, i * 4 + 3];
+    }
+
+    for (let i = 0; i < 1000; i++) {
+      this.state.columnWidths[i] = 75;
+    }
+
+    this.getColumn = (index) => {
+      const columnGroupIndex =
+        this.state.columnGroupOrder[Math.floor(index / 4)];
+      const sortedIndex = this.state.columnOrder[columnGroupIndex][index % 4];
+      return {
+        fixed: fixedColumns.indexOf(index) !== -1,
+        columnKey: sortedIndex,
         header: headerCellRenderer,
+        columnGroupIndex: Math.floor(index / 4),
         cell: cellRenderer,
-        width: 100,
+        width: this.state.columnWidths[sortedIndex],
         allowCellsRecycling: true,
       };
-      this.state.columnGroups[columnGroupIndex] = {
-        columnKey: 'Column Group ' + columnGroupIndex,
-        header: headerCellRenderer,
+    };
+
+    this.getColumnGroup = (index) => {
+      index = this.state.columnGroupOrder[index];
+      return {
+        columnKey: index,
+        header: groupHeaderRenderer,
       };
-    }
+    };
 
     this.onVerticalScroll = this.onVerticalScroll.bind(this);
     this.onHorizontalScroll = this.onHorizontalScroll.bind(this);
@@ -52,6 +111,103 @@ class AutoScrollExample extends React.Component {
     this.setHorizontalScrollDelta = this.setHorizontalScrollDelta.bind(this);
     this.setVerticalScrollDelta = this.setVerticalScrollDelta.bind(this);
   }
+
+  _onColumnGroupResizeEndCallback = (newColumnGroupWidth, columnGroupKey) => {
+    var columnWidths = { ...this.state.columnWidths };
+    var currentColumns = this.state.columnOrder[columnGroupKey];
+    var totalWidth = 0;
+    for (var key of currentColumns) {
+      totalWidth += columnWidths[key];
+    }
+
+    const widthChange = newColumnGroupWidth - totalWidth;
+    const perColumnChange = Math.floor(widthChange / currentColumns.length);
+    const remainderWidth = Math.abs(widthChange) % currentColumns.length;
+
+    for (var key of currentColumns) {
+      columnWidths[key] += perColumnChange;
+    }
+    columnWidths[Object.keys(currentColumns)[0]] += remainderWidth;
+
+    this.setState({
+      columnWidths,
+    });
+  };
+
+  _onColumnResizeEndCallback = (newColumnWidth, columnKey) => {
+    var columnWidths = { ...this.state.columnWidths };
+    columnWidths[columnKey] = newColumnWidth;
+
+    this.setState({
+      columnWidths,
+    });
+  };
+
+  _onColumnGroupReorderEndCallback = (event) => {
+    var columnGroupOrder = this.state.columnGroupOrder.filter((columnKey) => {
+      return columnKey !== event.reorderColumn;
+    });
+
+    if (event.columnAfter !== undefined) {
+      var index = columnGroupOrder.indexOf(event.columnAfter);
+      columnGroupOrder.splice(index, 0, event.reorderColumn);
+    } else {
+      if (fixedColumnGroups.indexOf(event.reorderColumn) !== -1) {
+        columnGroupOrder.splice(
+          fixedColumnGroups.length - 1,
+          0,
+          event.reorderColumn
+        );
+      } else {
+        columnGroupOrder.push(event.reorderColumn);
+      }
+    }
+    this.setState({
+      columnGroupOrder: columnGroupOrder,
+    });
+  };
+
+  findColumnGroup = (columnKey) => {
+    for (var groupKey in this.state.columnOrder) {
+      for (const cKey of this.state.columnOrder[groupKey]) {
+        if (cKey == columnKey) {
+          return groupKey;
+        }
+      }
+    }
+    return null;
+  };
+
+  _onColumnReorderEndCallback = (event) => {
+    var columnGroup = this.findColumnGroup(event.reorderColumn);
+    var columnOrder = this.state.columnOrder[columnGroup].filter(
+      (columnKey) => {
+        return columnKey !== event.reorderColumn;
+      }
+    );
+
+    var columnBeforeIndex = columnOrder.indexOf(event.columnBefore);
+    var columnAfterIndex = columnOrder.indexOf(event.columnAfter);
+
+    if (columnBeforeIndex == -1 && columnAfterIndex == -1) {
+      return;
+    } else if (columnAfterIndex != -1) {
+      columnOrder.splice(columnAfterIndex, 0, event.reorderColumn);
+    } else {
+      if (fixedColumns.indexOf(event.reorderColumn) !== -1) {
+        columnOrder.splice(fixedColumns.length - 1, 0, event.reorderColumn);
+      } else {
+        columnOrder.push(event.reorderColumn);
+      }
+    }
+    var newColumnOrder = { ...this.state.columnOrder };
+    newColumnOrder[columnGroup] = columnOrder;
+    this.setState({
+      columnOrder: newColumnOrder,
+    });
+  };
+
+  tableRef = React.createRef();
 
   componentDidMount() {
     setInterval(() => {
@@ -108,10 +264,13 @@ class AutoScrollExample extends React.Component {
 
   renderTable() {
     var { dataList, scrollLeft, scrollTop } = this.state;
+    const columns = this.state.columnGroupOrder.map((index) => {
+      return this.getColumnGroup(index);
+    });
     return (
       <Table
-        groupHeaderHeight={50}
-        rowHeight={50}
+        groupHeaderHeight={100}
+        rowHeight={100}
         headerHeight={50}
         rowsCount={dataList.getSize()}
         width={1000}
@@ -122,19 +281,35 @@ class AutoScrollExample extends React.Component {
         onHorizontalScroll={this.onHorizontalScroll}
         scrollableColumnsCount={this.state.scrollableColumnsCount}
         getScrollableColumn={(i) =>
-          this.state.columns[this.state.fixedColumnsCount + i]
+          this.getColumn(i + this.state.fixedColumnsCount)
         }
-        getFixedColumn={(i) => this.state.columns[i]}
+        getFixedColumn={this.getColumn}
         fixedColumnsCount={this.state.fixedColumnsCount}
         fixedRightColumnsCount={this.state.fixedRightColumnsCount}
         getFixedRightColumn={(i) =>
-          this.state.columns[
+          this.getColumn(
             this.state.fixedColumnsCount + this.state.scrollableColumnsCount + i
-          ]
+          )
         }
-        getColumnGroup={(i) => this.state.columnGroups[i]}
+        getScrollableColumnGroup={(i) =>
+          this.getColumnGroup(i + Math.floor(this.state.fixedColumnsCount / 4))
+        }
+        getFixedColumnGroup={(i) => this.getColumnGroup(i)}
+        getFixedRightColumnGroup={(i) =>
+          this.getColumnGroup(
+            i +
+              Math.floor(
+                (this.state.fixedColumnsCount +
+                  this.state.scrollableColumnsCount) /
+                  4
+              )
+          )
+        }
         {...this.props}
-      />
+        ref={this.tableRef}
+      >
+        {columns}
+      </Table>
     );
   }
 

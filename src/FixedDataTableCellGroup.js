@@ -100,12 +100,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
     isHeader: PropTypes.bool,
 
     /**
-     * Function to change the scroll position by interacting
-     * with the store.
-     */
-    scrollToX: PropTypes.func,
-
-    /**
      * Whether the cells belongs to the fixed group
      */
     isFixed: PropTypes.bool.isRequired,
@@ -114,14 +108,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
      * Type of the cell renderer to be used for each column in the cell group
      */
     template: PropTypes.oneOf(['cell', 'footer', 'header']).isRequired,
-  };
-
-  state = {
-    /**
-     * @deprecated
-     * @type {Object<string, boolean>}
-     */
-    isCellRecyclableByColumnId: {},
   };
 
   constructor(props) {
@@ -195,15 +181,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
       let columnProps = columns[columnIndex].props;
 
-      // TODO (pradeep): Why check for columnProps ?
-      let recyclable =
-        columnProps &&
-        _.get(
-          this.state.isCellRecyclableByColumnId,
-          [columnProps.columnKey],
-          columnProps.allowCellsRecycling
-        );
-
       this._staticCells[i] = this._renderCell(i, columnIndex);
     }
 
@@ -258,14 +235,15 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     return (
       <FixedDataTableCell
+        columnIndex={columnProps.index}
         isScrolling={this.props.isScrolling}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
         isHeader={this.props.isHeader}
+        isGroupHeader={this.props.isGroupHeader}
         align={columnProps.align}
         className={className}
         height={this.props.rowHeight}
         key={key}
-        columnIndex={columnIndex}
         maxWidth={columnProps.maxWidth}
         minWidth={columnProps.minWidth}
         touchEnabled={this.props.touchEnabled}
@@ -281,31 +259,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
         isRTL={this.props.isRTL}
         visible={visible}
         isFixed={this.props.isFixed}
-        scrollToX={this.props.scrollToX}
-        toggleCellsRecycling={this.toggleCellsRecycling}
-        getCellGroupWidth={this.getCellGroupWidth}
       />
     );
-  };
-
-  /**
-   * @deprecated Added to have backward compatibility. This will be removed in future release.
-   * @description If column reordering is happening and recycling is enabled,
-   * when column moves out of the view, column gets destroyed while reordering.
-   * Thus, we need to disabled cells recycling during reordering.
-   *
-   * @param {boolean} value
-   * @param {string} columnKey
-   */
-  toggleCellsRecycling = (value, columnKey) => {
-    // Only set in state, when value is false, means reordering has started
-    if (!value) {
-      this.setState({ isCellRecyclableByColumnId: { [columnKey]: value } });
-    } else {
-      this.setState({
-        isCellRecyclableByColumnId: {},
-      });
-    }
   };
 }
 

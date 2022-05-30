@@ -80,7 +80,9 @@ function getInitialState() {
       fixedColumnsCount: 0,
       fixedRightColumnsCount: 0,
       scrollableColumnsCount: 0,
-      getColumnGroup: () => {},
+      getFixedColumnGroup: () => {},
+      getFixedRightColumnGroup: () => {},
+      getScrollableColumnGroup: () => {},
       getFixedColumn: () => {},
       getFixedRightColumn: () => {},
       getScrollableColumn: () => {},
@@ -293,6 +295,7 @@ function initializeFixedColumnWidthsAndOffsets(state) {
     fixedColumns[idx] = convertColumnElementsToData(
       columnSettings.getFixedColumn(idx)
     );
+    fixedColumns[idx].props.index = idx;
     fixedColumnsWidth += fixedColumns[idx].props.width;
   }
 
@@ -300,6 +303,7 @@ function initializeFixedColumnWidthsAndOffsets(state) {
     fixedRightColumns[idx] = convertColumnElementsToData(
       columnSettings.getFixedRightColumn(idx)
     );
+    fixedRightColumns[idx].props.index = idx;
     fixedRightColumnsWidth += fixedRightColumns[idx].props.width;
   }
   const fixedContentWidth = fixedRightColumnsWidth + fixedColumnsWidth;
@@ -382,7 +386,9 @@ function setStateFromProps(state, props) {
       'getScrollableColumn',
       'getFixedColumn',
       'getFixedRightColumn',
-      'getColumnGroup',
+      'getScrollableColumnGroup',
+      'getFixedColumnGroup',
+      'getFixedRightColumnGroup',
     ])
   );
 

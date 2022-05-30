@@ -51,7 +51,8 @@ export default function computeRenderedCols(state, scrollAnchor) {
   } = computeRenderedFixedColumnsAndGroups(
     state,
     state.fixedColumns,
-    state.fixedColumnGroups
+    state.fixedColumnGroups,
+    state.columnSettings.getFixedColumnGroup
   );
 
   const {
@@ -62,7 +63,8 @@ export default function computeRenderedCols(state, scrollAnchor) {
   } = computeRenderedFixedColumnsAndGroups(
     state,
     state.fixedRightColumns,
-    state.fixedRightColumnGroups
+    state.fixedRightColumnGroups,
+    state.columnSettings.getFixedRightColumnGroup
   );
 
   const maxScrollX = scrollContentWidth - bodyWidth;
@@ -138,7 +140,8 @@ export default function computeRenderedCols(state, scrollAnchor) {
 function computeRenderedFixedColumnsAndGroups(
   state,
   columnsContainer,
-  columnsGroupsContainer
+  columnsGroupsContainer,
+  columnGroupGetter
 ) {
   const tableWidth = state.tableSize.width;
 
@@ -174,7 +177,7 @@ function computeRenderedFixedColumnsAndGroups(
 
       if (_.isNil(columnsGroupsContainer[columnGroupIndex])) {
         columnsGroupsContainer[columnGroupIndex] = convertColumnElementsToData(
-          state.columnSettings.getColumnGroup(columnGroupIndex)
+          columnGroupGetter(columnGroupIndex)
         );
       }
       columnsGroupsContainer[columnGroupIndex].props.width =

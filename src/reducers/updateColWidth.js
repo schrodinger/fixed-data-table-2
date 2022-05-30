@@ -34,12 +34,13 @@ export function getColumn(state, colIdx) {
   // if column doesn't exist in cache, then get the column from the user
   const columnProps = state.columnSettings.getScrollableColumn(colIdx);
   const column = convertColumnElementsToData(columnProps);
+  column.props.index = colIdx;
 
   // update column groups associated with the current column
   const { columnGroupIndex } = column.props;
   if (!isNil(columnGroupIndex)) {
     const columnGroupProps =
-      state.columnSettings.getColumnGroup(columnGroupIndex);
+      state.columnSettings.getScrollableColumnGroup(columnGroupIndex);
     const columnGroup = convertColumnElementsToData(columnGroupProps);
     const storedColumnGroup =
       state.storedScrollableColumnGroups.object[columnGroupIndex];
@@ -53,6 +54,8 @@ export function getColumn(state, colIdx) {
       colIdx,
       _.get(storedColumnGroup, 'props.lastChildIdx'),
     ]);
+
+    columnGroup.props.index = columnGroupIndex;
 
     // cache the column group
     state.storedScrollableColumnGroups.object[columnGroupIndex] = columnGroup;
@@ -87,5 +90,6 @@ export function updateColWidth(state, colIdx, newWidth) {
   state.colOffsetIntervalTree.set(colIdx, newWidth);
   state.scrollContentWidth += newWidth - state.storedWidths.array[colIdx];
   state.storedWidths.array[colIdx] = newWidth;
+
   return newWidth;
 }

@@ -12,41 +12,20 @@
  */
 
 import React from 'react';
-import { bindActionCreators } from 'redux';
 import invariant from './stubs/invariant';
 import pick from 'lodash/pick';
 
-import * as scrollActions from './actions/scrollActions';
+import { getScrollActions } from './actions/scrollActions';
 import FixedDataTable from './FixedDataTable';
 import FixedDataTableStore from './FixedDataTableStore';
 import Scrollbar from './plugins/Scrollbar';
 import ScrollContainer from './plugins/ScrollContainer';
-import { PluginContext } from './Context';
-import shallowEqualSelector from './helper/shallowEqualSelector';
 import { initialize, propChange } from './reducers';
 import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
-
-const memoizeContext = shallowEqualSelector(
-  [
-    (state) => state.maxScrollX,
-    (state) => state.scrollX,
-    (state) => state.tableSize.height,
-    (state) => state.bodyWidth, // TODO (pradeep): This is wrongly named
-  ],
-  (
-    /*number*/ maxScrollX,
-    /*number*/ scrollX,
-    /*number*/ tableHeight,
-    /*number*/ availableScrollWidth
-  ) => {
-    return {
-      maxScrollX,
-      scrollX,
-      tableHeight,
-      availableScrollWidth,
-    };
-  }
-);
+import {
+  FixedDataTableContext,
+  FixedDataTableContextFactory,
+} from './FixedDataTableContext';
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
@@ -60,10 +39,7 @@ class FixedDataTableContainer extends React.Component {
 
     this.reduxStore = FixedDataTableStore.get();
 
-    this.scrollActions = bindActionCreators(
-      scrollActions,
-      this.reduxStore.dispatch
-    );
+    this.scrollActions = getScrollActions(this.reduxStore);
 
     this.reduxStore.dispatch(initialize(props));
 
@@ -73,6 +49,9 @@ class FixedDataTableContainer extends React.Component {
       reduxStore: this.reduxStore, // put store instance in local state so that getDerivedStateFromProps can access it
       props, // put props in local state so that getDerivedStateFromProps can access it
     };
+
+    this.fixedDataTableContext = FixedDataTableContextFactory();
+    this.previousFixedDataTableContextValue = null;
   }
 
   static getDerivedStateFromProps(nextProps, currentState) {
@@ -113,12 +92,34 @@ class FixedDataTableContainer extends React.Component {
     this.reduxStore = null;
   }
 
+  componentDidUpdate() {
+    this.notifyFixedDataTableContextValueChanges();
+  }
+
+  getFixedDataTablContextValue() {
+    return this.fixedDataTableContext.getValue(
+      {
+        ...this.props,
+        ...this.reduxStore.getState(),
+      },
+      this.scrollActions
+    );
+  }
+
+  notifyFixedDataTableContextValueChanges() {
+    const fixedDataTableContextValue = this.getFixedDataTablContextValue();
+
+    if (
+      this.previousFixedDataTableContextValue !== fixedDataTableContextValue
+    ) {
+      this.fixedDataTableContext.notify();
+      this.previousFixedDataTableContextValue = fixedDataTableContextValue;
+    }
+  }
+
   render() {
-    const contextValue = {
-      ...memoizeContext({ ...this.state.boundState, ...this.props }),
-      isRTL: this.props.isRTL,
-      touchEnabled: this.props.touchEnabled,
-    };
+    const fixedDataTableContextValue = this.getFixedDataTablContextValue();
+
     const fdt = (
       <FixedDataTable
         {...this.props}
@@ -129,15 +130,15 @@ class FixedDataTableContainer extends React.Component {
     // For backward compatibility, by default we render FDT-2 scrollbars
     if (this.props.defaultScrollbars) {
       return (
-        <PluginContext.Provider value={contextValue}>
+        <FixedDataTableContext.Provider value={fixedDataTableContextValue}>
           <ScrollContainer {...this.props}>{fdt}</ScrollContainer>
-        </PluginContext.Provider>
+        </FixedDataTableContext.Provider>
       );
     }
     return (
-      <PluginContext.Provider value={contextValue}>
+      <FixedDataTableContext.Provider value={fixedDataTableContextValue}>
         {fdt}
-      </PluginContext.Provider>
+      </FixedDataTableContext.Provider>
     );
   }
 
