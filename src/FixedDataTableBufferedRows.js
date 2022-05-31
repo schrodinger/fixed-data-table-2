@@ -142,7 +142,13 @@ class FixedDataTableBufferedRows extends React.Component {
     // We translate all the rows together with a parent div. This saves a lot of renders.
     const style = {};
     FixedDataTableTranslateDOMPosition(style, 0, containerOffsetTop, false);
-    return <div style={style}>{this._staticRowArray}</div>;
+
+    // NOTE (pradeep): Sort the rows by row index so that they appear with the right order in the DOM (see #221)
+    const sortedRows = _.sortBy(this._staticRowArray, (row) =>
+      _.get(row, 'props.ariaRowIndex', Infinity)
+    );
+
+    return <div style={style}>{sortedRows}</div>;
   }
 
   /**
