@@ -271,7 +271,7 @@ DragProxy.contextType = FixedDataTableContext;
 DragProxy.propTypes = {
   columnIndex: PropTypes.number.isRequired,
   columnKey: PropTypes.string.isRequired,
-  contents: PropTypes.instanceOf(Element),
+  contents: PropTypes.object.isRequired,
   isFixed: PropTypes.bool,
   isFixedRight: PropTypes.bool,
   isGroupHeader: PropTypes.bool,

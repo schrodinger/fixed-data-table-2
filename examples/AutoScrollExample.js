@@ -78,13 +78,9 @@ class AutoScrollExample extends React.Component {
                 fixed={fixedColumns.indexOf(y) !== -1}
                 key={y}
                 columnKey={y}
-                header={({ columnIndex, columnKey, rowIndex, ...props }) => (
+                header={({ columnKey, ...props }) => (
                   <Plugins.ReorderCell
                     columnKey={columnKey}
-                    columnIndex={columnIndex}
-                    rowIndex={rowIndex}
-                    touchEnabled={true}
-                    onColumnReorderStart={this.onColumnReorderStart}
                     onColumnReorderEnd={this._onColumnReorderEndCallback}
                     {...props}
                   >
