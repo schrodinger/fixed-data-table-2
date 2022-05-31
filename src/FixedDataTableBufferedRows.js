@@ -13,6 +13,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import inRange from 'lodash/inRange';
+import get from 'lodash/get';
+import sortBy from 'lodash/sortBy';
 
 import cx from './vendor_upstream/stubs/cx';
 import emptyFunction from './vendor_upstream/core/emptyFunction';
@@ -148,7 +150,13 @@ class FixedDataTableBufferedRows extends React.Component {
     // We translate all the rows together with a parent div. This saves a lot of renders.
     const style = {};
     FixedDataTableTranslateDOMPosition(style, 0, containerOffsetTop, false);
-    return <div style={style}>{this._staticRowArray}</div>;
+
+    // NOTE (pradeep): Sort the rows by row index so that they appear with the right order in the DOM (see #221)
+    const sortedRows = sortBy(this._staticRowArray, (row) =>
+      get(row, 'props.ariaRowIndex', Infinity)
+    );
+
+    return <div style={style}>{sortedRows}</div>;
   }
 
   /**
