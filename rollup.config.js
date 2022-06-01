@@ -73,7 +73,7 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      file: 'dist/fixed-data-table-2.js',
+      file: 'dist/umd/fixed-data-table-2.js',
       name: 'FixedDataTable',
       format: 'umd',
       globals: {
@@ -100,7 +100,6 @@ export default [
         'process.env.NODE_ENV': JSON.stringify('development'),
         __DEV__: true,
       }),
-      terser(),
     ],
     external: peerDependencies, // don't include peer dependencies in our bundle
   },
@@ -109,7 +108,7 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      file: 'dist/fixed-data-table-2.min.js',
+      file: 'dist/umd/fixed-data-table-2.min.js',
       name: 'FixedDataTable',
       format: 'umd',
       globals: {
