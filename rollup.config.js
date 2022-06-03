@@ -22,6 +22,10 @@ export default [
       sourcemap: true,
     },
     plugins: [
+      replace({
+        preventAssignment: true,
+        __DEV__: 'process.env.NODE_ENV !== "production"',
+      }),
       nodeResolve(),
       commonjs({
         include: 'node_modules/**', // allow importing of common JS modules
@@ -31,12 +35,6 @@ export default [
         plugins: ['@babel/plugin-transform-runtime'],
         exclude: 'node_modules/**', // no need to include node_modules because libraries only distribute transpiled code
       }),
-      replace({
-        preventAssignment: true,
-        'process.env.NODE_ENV': JSON.stringify('production'),
-        __DEV__: false,
-      }),
-      terser(),
     ],
     external: peerDependencies, // don't include peer dependencies in our bundle
   },
@@ -50,6 +48,10 @@ export default [
       sourcemap: true,
     },
     plugins: [
+      replace({
+        preventAssignment: true,
+        __DEV__: 'process.env.NODE_ENV !== "production"',
+      }),
       nodeResolve(),
       commonjs({
         include: 'node_modules/**', // allow importing of common JS modules
@@ -59,12 +61,6 @@ export default [
         plugins: ['@babel/plugin-transform-runtime'],
         exclude: 'node_modules/**', // no need to include node_modules because libraries only distribute transpiled code
       }),
-      replace({
-        preventAssignment: true,
-        'process.env.NODE_ENV': JSON.stringify('production'),
-        __DEV__: false,
-      }),
-      terser(),
     ],
     external: peerDependencies, // don't include peer dependencies in our bundle
   },
@@ -83,6 +79,11 @@ export default [
       sourcemap: true,
     },
     plugins: [
+      replace({
+        preventAssignment: true,
+        'process.env.NODE_ENV': JSON.stringify('development'),
+        __DEV__: true,
+      }),
       nodeResolve(),
       commonjs({
         include: 'node_modules/**', // allow importing of common JS modules
@@ -94,11 +95,6 @@ export default [
       }),
       inject({
         global: 'global',
-      }),
-      replace({
-        preventAssignment: true,
-        'process.env.NODE_ENV': JSON.stringify('development'),
-        __DEV__: true,
       }),
     ],
     external: peerDependencies, // don't include peer dependencies in our bundle
@@ -118,6 +114,11 @@ export default [
       sourcemap: true,
     },
     plugins: [
+      replace({
+        preventAssignment: true,
+        'process.env.NODE_ENV': JSON.stringify('production'),
+        __DEV__: false,
+      }),
       nodeResolve(),
       commonjs({
         include: 'node_modules/**', // allow importing of common JS modules
@@ -130,12 +131,7 @@ export default [
       inject({
         global: 'global',
       }),
-      replace({
-        preventAssignment: true,
-        'process.env.NODE_ENV': JSON.stringify('production'),
-        __DEV__: false,
-      }),
-      terser(),
+      terser(), // minify because this bundle is for production usage
     ],
     external: peerDependencies, // don't include peer dependencies in our bundle
   },

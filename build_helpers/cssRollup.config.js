@@ -69,7 +69,7 @@ export default [
   makeCSSRollupConfig(false, allCSSGlob, 'dist/css/fixed-data-table.css'),
   makeCSSRollupConfig(true, allCSSGlob, 'dist/css/fixed-data-table.min.css'),
 
-  // base layout
+  // layout
   makeCSSRollupConfig(
     false,
     layoutCSSGlob,
@@ -81,7 +81,7 @@ export default [
     'dist/css/fixed-data-table-base.min.css'
   ),
 
-  // basic styling
+  // styling
   makeCSSRollupConfig(
     false,
     styleCSSGlob,
