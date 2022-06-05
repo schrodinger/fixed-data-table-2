@@ -69,7 +69,7 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      file: 'dist/umd/fixed-data-table-2.js',
+      file: 'dist/fixed-data-table-2.js',
       name: 'FixedDataTable',
       format: 'umd',
       globals: {
@@ -104,7 +104,7 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      file: 'dist/umd/fixed-data-table-2.min.js',
+      file: 'dist/fixed-data-table-2.min.js',
       name: 'FixedDataTable',
       format: 'umd',
       globals: {

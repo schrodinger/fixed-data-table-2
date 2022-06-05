@@ -66,30 +66,22 @@ const styleCSSGlob = './src/css/style/**/*.css';
 
 export default [
   // layout + styling
-  makeCSSRollupConfig(false, allCSSGlob, 'dist/css/fixed-data-table.css'),
-  makeCSSRollupConfig(true, allCSSGlob, 'dist/css/fixed-data-table.min.css'),
+  makeCSSRollupConfig(false, allCSSGlob, 'dist/fixed-data-table.css'),
+  makeCSSRollupConfig(true, allCSSGlob, 'dist/fixed-data-table.min.css'),
 
   // layout
-  makeCSSRollupConfig(
-    false,
-    layoutCSSGlob,
-    'dist/css/fixed-data-table-base.css'
-  ),
+  makeCSSRollupConfig(false, layoutCSSGlob, 'dist/fixed-data-table-base.css'),
   makeCSSRollupConfig(
     true,
     layoutCSSGlob,
-    'dist/css/fixed-data-table-base.min.css'
+    'dist/fixed-data-table-base.min.css'
   ),
 
   // styling
-  makeCSSRollupConfig(
-    false,
-    styleCSSGlob,
-    'dist/css/fixed-data-table-style.css'
-  ),
+  makeCSSRollupConfig(false, styleCSSGlob, 'dist/fixed-data-table-style.css'),
   makeCSSRollupConfig(
     true,
     styleCSSGlob,
-    'dist/css/fixed-data-table-style.min.css'
+    'dist/fixed-data-table-style.min.css'
   ),
 ];

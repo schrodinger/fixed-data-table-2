@@ -48,19 +48,9 @@ fi
 echo "$(node -p "p=require('./package.json');p.version='${next_version}';JSON.stringify(p,null,2)")" > 'package.json'
 sed -i.DELETEME -e "s/version = '$current_version';/version = '$next_version';/g" src/*.js
 rm src/*.js.DELETEME
-echo "Updated version to ${next_version}"
 
-npm run build-dist
-
-git add -A
-git add -f dist/fixed-data-table-base.css
-git add -f dist/fixed-data-table-style.css
-git add -f dist/fixed-data-table.css
-git add -f dist/fixed-data-table.js
-git add -f dist/fixed-data-table-base.min.css
-git add -f dist/fixed-data-table-style.min.css
-git add -f dist/fixed-data-table.min.css
-git add -f dist/fixed-data-table.min.js
+# build our package
+npm run build
 
 read -p "Are you ready to publish? [Y/n] " -r
 echo
@@ -71,6 +61,7 @@ then
 fi
 
 git commit -m "Version $next_version"
+echo "Updated version to ${next_version}"
 
 next_ref="v$next_version"
 

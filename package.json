@@ -5,8 +5,7 @@
   "main": "dist/cjs/fixed-data-table-2.js",
   "module": "dist/es/fixed-data-table-2.js",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "peerDependencies": {
     "react": ">=17.0.1",
@@ -93,7 +92,7 @@
     "webpack": "webpack",
     "site-dev-server": "./build_helpers/startSiteDevServer.sh",
     "site-build": "./build_helpers/buildStaticSite.sh",
-    "build": "rollup --config",
+    "build": "rimraf dist && rollup --config",
     "build-docs": "./build_helpers/buildAPIDocs.sh",
     "publish-site": "./build_helpers/publishStaticSite.sh",
     "publish-package": "./build_helpers/publishPackage.sh",
