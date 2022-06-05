@@ -33,11 +33,16 @@ function cssSlashTransformPlugin() {
   };
 }
 
+// NOTE (pradeep): I prefer CSS to be at "dist/css", but this breaks backward compatibility
+// because previously we always bundled CSS in "dist/"
+const cssOutputDirectory = 'dist/';
+
 const makeCSSRollupConfig = function (minimize, inputGlob, outputBundleName) {
   return {
     input: [inputGlob],
     output: {
-      // NOTE (pradeep): This is gonna create a JS bundle that simply includes the actual CSS bundle
+      // NOTE (pradeep): I wasn't able to figure out a way to have roll-up generate just the CSS.
+      // So for now, we have a bare JS file that simply includes the actual CSS, but is ignored.
       // TODO: Figure out a way to generate the CSS without creating a JS bundle.
       file: 'dist/placeholder.css.js',
       format: 'es',
@@ -45,7 +50,7 @@ const makeCSSRollupConfig = function (minimize, inputGlob, outputBundleName) {
     plugins: [
       cssSlashTransformPlugin(),
       postcss({
-        extract: path.resolve(outputBundleName), // extract CSS to the same location where the JS file is generated but with a .css extension
+        extract: path.resolve(cssOutputDirectory + outputBundleName), // extract CSS out to the specified location
         minimize,
         plugins: [
           postcssCustomProperties({
@@ -66,22 +71,14 @@ const styleCSSGlob = './src/css/style/**/*.css';
 
 export default [
   // layout + styling
-  makeCSSRollupConfig(false, allCSSGlob, 'dist/fixed-data-table.css'),
-  makeCSSRollupConfig(true, allCSSGlob, 'dist/fixed-data-table.min.css'),
+  makeCSSRollupConfig(false, allCSSGlob, 'fixed-data-table.css'),
+  makeCSSRollupConfig(true, allCSSGlob, 'fixed-data-table.min.css'),
 
   // layout
-  makeCSSRollupConfig(false, layoutCSSGlob, 'dist/fixed-data-table-base.css'),
-  makeCSSRollupConfig(
-    true,
-    layoutCSSGlob,
-    'dist/fixed-data-table-base.min.css'
-  ),
+  makeCSSRollupConfig(false, layoutCSSGlob, 'fixed-data-table-base.css'),
+  makeCSSRollupConfig(true, layoutCSSGlob, 'fixed-data-table-base.min.css'),
 
   // styling
-  makeCSSRollupConfig(false, styleCSSGlob, 'dist/fixed-data-table-style.css'),
-  makeCSSRollupConfig(
-    true,
-    styleCSSGlob,
-    'dist/fixed-data-table-style.min.css'
-  ),
+  makeCSSRollupConfig(false, styleCSSGlob, 'fixed-data-table-style.css'),
+  makeCSSRollupConfig(true, styleCSSGlob, 'fixed-data-table-style.min.css'),
 ];

@@ -7,6 +7,7 @@ import { terser } from 'rollup-plugin-terser';
 import cssRollupConfigs from './build_helpers/cssRollup.config.js';
 import pkg from './package.json';
 
+// extract out the list of peer dependencies from package.json
 const peerDependencies = Object.keys(pkg.peerDependencies || {});
 
 export default [
@@ -69,7 +70,7 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      file: 'dist/fixed-data-table-2.js',
+      file: 'dist/fixed-data-table-2.js', // NOTE (pradeep): I prefer this to be in dist/umd, but that'll break backward compatibility
       name: 'FixedDataTable',
       format: 'umd',
       globals: {
@@ -81,7 +82,7 @@ export default [
     plugins: [
       replace({
         preventAssignment: true,
-        'process.env.NODE_ENV': JSON.stringify('development'),
+        'process.env.NODE_ENV': JSON.stringify('development'), // this bundle is always used in development mode
         __DEV__: true,
       }),
       nodeResolve(),
@@ -94,7 +95,7 @@ export default [
         exclude: 'node_modules/**', // no need to include node_modules because libraries only distribute transpiled code
       }),
       inject({
-        global: 'global',
+        global: 'global', // `global` is not defined in browsers, so we use a polyfill
       }),
     ],
     external: peerDependencies, // don't include peer dependencies in our bundle
@@ -104,7 +105,7 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      file: 'dist/fixed-data-table-2.min.js',
+      file: 'dist/fixed-data-table-2.min.js', // NOTE (pradeep): I prefer this to be in dist/umd, but that'll break backward compatibility
       name: 'FixedDataTable',
       format: 'umd',
       globals: {
@@ -116,7 +117,7 @@ export default [
     plugins: [
       replace({
         preventAssignment: true,
-        'process.env.NODE_ENV': JSON.stringify('production'),
+        'process.env.NODE_ENV': JSON.stringify('production'), // this bundle is always used in production mode
         __DEV__: false,
       }),
       nodeResolve(),
@@ -129,7 +130,7 @@ export default [
         exclude: 'node_modules/**', // no need to include node_modules because libraries only distribute transpiled code
       }),
       inject({
-        global: 'global',
+        global: 'global', // `global` is not defined in browsers, so we use a polyfill
       }),
       terser(), // minify because this bundle is for production usage
     ],
