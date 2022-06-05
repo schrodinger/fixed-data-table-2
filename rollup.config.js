@@ -14,53 +14,34 @@ export default [
   // for CSS
   ...cssRollupConfigs,
 
-  // for CommonJS
+  // for CommonJS and ES6
   {
     input: 'src/index.js',
-    output: {
-      file: 'dist/cjs/fixed-data-table-2.js',
-      format: 'cjs',
-      sourcemap: true,
-    },
-    plugins: [
-      replace({
-        preventAssignment: true,
-        __DEV__: 'process.env.NODE_ENV !== "production"',
-      }),
-      nodeResolve(),
-      commonjs({
-        include: 'node_modules/**', // allow importing of common JS modules
-      }),
-      babel({
-        babelHelpers: 'runtime',
-        plugins: ['@babel/plugin-transform-runtime'],
-        exclude: 'node_modules/**', // no need to include node_modules because libraries only distribute transpiled code
-      }),
+    output: [
+      {
+        file: 'dist/cjs/fixed-data-table-2.js',
+        format: 'cjs',
+        sourcemap: true,
+      },
+      {
+        file: 'dist/es/fixed-data-table-2.js',
+        format: 'es',
+        sourcemap: true,
+      },
     ],
-    external: peerDependencies, // don't include peer dependencies in our bundle
-  },
-
-  // for ES6
-  {
-    input: 'src/index.js',
-    output: {
-      file: 'dist/es/fixed-data-table-2.js',
-      format: 'es',
-      sourcemap: true,
-    },
     plugins: [
       replace({
         preventAssignment: true,
         __DEV__: 'process.env.NODE_ENV !== "production"',
       }),
-      nodeResolve(),
-      commonjs({
-        include: 'node_modules/**', // allow importing of common JS modules
-      }),
+      nodeResolve(), // allow importing external modules (node modules)
       babel({
         babelHelpers: 'runtime',
         plugins: ['@babel/plugin-transform-runtime'],
         exclude: 'node_modules/**', // no need to include node_modules because libraries only distribute transpiled code
+      }),
+      commonjs({
+        include: 'node_modules/**', // allow importing common JS modules
       }),
     ],
     external: peerDependencies, // don't include peer dependencies in our bundle
@@ -74,8 +55,8 @@ export default [
       name: 'FixedDataTable',
       format: 'umd',
       globals: {
-        react: 'React',
-        'react-dom': 'ReactDOM',
+        react: 'React', // react's UMD export name is 'React'
+        'react-dom': 'ReactDOM', // react-dom's UMD export name is 'ReactDOM'
       },
       sourcemap: true,
     },
@@ -85,14 +66,14 @@ export default [
         'process.env.NODE_ENV': JSON.stringify('development'), // this bundle is always used in development mode
         __DEV__: true,
       }),
-      nodeResolve(),
-      commonjs({
-        include: 'node_modules/**', // allow importing of common JS modules
-      }),
+      nodeResolve(), // allow importing external modules (node modules)
       babel({
         babelHelpers: 'runtime',
         plugins: ['@babel/plugin-transform-runtime'],
         exclude: 'node_modules/**', // no need to include node_modules because libraries only distribute transpiled code
+      }),
+      commonjs({
+        include: 'node_modules/**', // allow importing common JS modules
       }),
       inject({
         global: 'global', // `global` is not defined in browsers, so we use a polyfill
@@ -109,8 +90,8 @@ export default [
       name: 'FixedDataTable',
       format: 'umd',
       globals: {
-        react: 'React',
-        'react-dom': 'ReactDOM',
+        react: 'React', // react's UMD export name is 'React'
+        'react-dom': 'ReactDOM', // react-dom's UMD export name is 'ReactDOM'
       },
       sourcemap: true,
     },
@@ -121,13 +102,13 @@ export default [
         __DEV__: false,
       }),
       nodeResolve(),
-      commonjs({
-        include: 'node_modules/**', // allow importing of common JS modules
-      }),
       babel({
         babelHelpers: 'runtime',
         plugins: ['@babel/plugin-transform-runtime'],
         exclude: 'node_modules/**', // no need to include node_modules because libraries only distribute transpiled code
+      }),
+      commonjs({
+        include: 'node_modules/**', // allow importing of common JS modules
       }),
       inject({
         global: 'global', // `global` is not defined in browsers, so we use a polyfill
