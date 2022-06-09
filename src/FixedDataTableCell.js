@@ -75,6 +75,8 @@ class FixedDataTableCell extends React.Component {
     isRTL: PropTypes.bool,
 
     /**
+     * @deprecated
+     *
      * Callback that is called when resizer has been released
      * and column needs to be updated.
      *
@@ -92,6 +94,8 @@ class FixedDataTableCell extends React.Component {
     onColumnResizeEnd: PropTypes.func,
 
     /**
+     * @deprecated
+     *
      * Callback that is called when reordering has been completed
      * and columns need to be updated.
      *
@@ -113,27 +117,9 @@ class FixedDataTableCell extends React.Component {
     isHeader: PropTypes.bool,
 
     /**
-     * Function to change the scroll position by interacting
-     * with the store.
-     */
-    scrollToX: PropTypes.func,
-
-    /**
      * Whether the cells belongs to the fixed group
      */
     isFixed: PropTypes.bool,
-
-    /**
-     * Function which returns object consisting of keys and widths of the columns
-     * in the current cell group.
-     */
-    getCellGroupWidth: PropTypes.func.isRequired,
-
-    /**
-     * @deprecated
-     * Functions which toggles cells recycling for a cell
-     */
-    toggleCellsRecycling: PropTypes.func,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -170,7 +156,8 @@ class FixedDataTableCell extends React.Component {
   };
 
   render() /*object*/ {
-    var { height, width, columnKey, isHeaderOrFooter, ...props } = this.props;
+    var { height, width, columnIndex, columnKey, isHeaderOrFooter, ...props } =
+      this.props;
 
     var style = {
       height,
@@ -197,20 +184,16 @@ class FixedDataTableCell extends React.Component {
     );
 
     var cellProps = {
-      columnKey,
-      height,
-      width,
+      isHeader: this.props.isHeader,
+      isGroupHeader: this.props.isGroupHeader,
+      isFixed: this.props.isFixed,
+      isFixedRight: this.props.isFixedRight,
+      columnIndex: this.props.columnIndex,
+      columnKey: this.props.columnKey,
+      height: this.props.height,
+      width: this.props.width,
+      left: this.props.left,
     };
-    if (this.props.isHeader) {
-      cellProps = {
-        ...cellProps,
-        left: this.props.left,
-        isFixed: this.props.isFixed,
-        scrollToX: this.props.scrollToX,
-        getCellGroupWidth: this.props.getCellGroupWidth,
-        columnGroupWidth: this.props.columnGroupWidth,
-      };
-    }
 
     if (props.rowIndex >= 0) {
       cellProps.rowIndex = props.rowIndex;
@@ -223,16 +206,15 @@ class FixedDataTableCell extends React.Component {
     ) {
       // NOTE: Use plugins manually for backward compatibility. Will be removed in future release.
       if (this.props.onColumnResizeEnd && this.props.onColumnReorderEnd) {
+        cellProps = {
+          ...cellProps,
+          minWidth: this.props.minWidth,
+          maxWidth: this.props.maxWidth,
+        };
         content = (
           <ReorderCell
             {...cellProps}
-            onColumnReorderStart={(/*string*/ columnKey) => {
-              this.props.toggleCellsRecycling(false, columnKey);
-            }}
-            onColumnReorderEnd={(/*object*/ val) => {
-              this.props.toggleCellsRecycling(true);
-              this.props.onColumnReorderEnd(val);
-            }}
+            onColumnReorderEnd={this.props.onColumnReorderEnd}
           >
             <ResizeCell onColumnResizeEnd={this.props.onColumnResizeEnd}>
               {props.cell}
@@ -243,13 +225,7 @@ class FixedDataTableCell extends React.Component {
         content = (
           <ReorderCell
             {...cellProps}
-            onColumnReorderStart={(/*string*/ columnKey) => {
-              this.props.toggleCellsRecycling(false, columnKey);
-            }}
-            onColumnReorderEnd={(/*object*/ val) => {
-              this.props.toggleCellsRecycling(true);
-              this.props.onColumnReorderEnd(val);
-            }}
+            onColumnReorderEnd={this.props.onColumnReorderEnd}
           >
             {props.cell}
           </ReorderCell>

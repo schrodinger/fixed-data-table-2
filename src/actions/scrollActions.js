@@ -7,21 +7,62 @@
 
 'use strict';
 
-/**
- * Scrolls the table horizontally to position
- *
- * @param {number} scrollX
- */
-export { scrollToX } from '../reducers';
+import { bindActionCreators } from 'redux';
+import { scrollToX, scrollToY, scrollEnd } from '../reducers';
 
-/**
- * Scrolls the table vertically to position
- *
- * @param {number} scrollY
- */
-export { scrollToY } from '../reducers';
+const getScrollActions = (store) => {
+  const scrollActions = bindActionCreators(
+    {
+      scrollToX,
+      scrollToY,
+      scrollEnd,
+    },
+    store.dispatch
+  );
 
-/**
- * Fire when user starts scrolling
- */
-export { scrollEnd as stopScroll } from '../reducers';
+  /**
+   * Scrolls the table horizontally to position
+   *
+   * @param {number} scrollX
+   */
+  const smartScrollToX = (scrollPos) => {
+    const { onHorizontalScroll, scrollX, scrolling } = store.getState();
+
+    if (scrollPos === scrollX) {
+      return;
+    }
+
+    // This is a workaround to prevent content blurring. This happens when translate3d
+    // is applied with non-rounded values to elements having text.
+    var roundedScrollPos = Math.round(scrollPos);
+
+    if (onHorizontalScroll ? onHorizontalScroll(roundedScrollPos) : true) {
+      scrollActions.scrollToX(roundedScrollPos);
+    }
+  };
+
+  /**
+   * Scrolls the table vertically to position
+   *
+   * @param {number} scrollY
+   */
+  const smartScrollToY = (scrollPos) => {
+    const { onVerticalScroll, scrollY } = store.getState();
+
+    if (scrollPos === scrollY) {
+      return;
+    }
+
+    if (onVerticalScroll ? onVerticalScroll(scrollPos) : true) {
+      scrollActions.scrollToY(scrollPos);
+    }
+  };
+
+  return {
+    scrollToX: smartScrollToX,
+    scrollToY: smartScrollToY,
+    stopScroll: scrollActions.scrollEnd,
+  };
+};
+
+export { getScrollActions };
