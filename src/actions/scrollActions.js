@@ -10,7 +10,7 @@
 import { bindActionCreators } from 'redux';
 import { scrollToX, scrollToY, scrollEnd } from '../reducers';
 
-const getScrollActions = (store) => {
+const getScrollActions = (store, getProps) => {
   const scrollActions = bindActionCreators(
     {
       scrollToX,
@@ -26,7 +26,7 @@ const getScrollActions = (store) => {
    * @param {number} scrollX
    */
   const smartScrollToX = (scrollPos) => {
-    const { onHorizontalScroll, scrollX, scrolling } = store.getState();
+    const { scrollX, scrolling } = store.getState();
 
     if (scrollPos === scrollX) {
       return;
@@ -36,6 +36,7 @@ const getScrollActions = (store) => {
     // is applied with non-rounded values to elements having text.
     var roundedScrollPos = Math.round(scrollPos);
 
+    const { onHorizontalScroll } = getProps();
     if (onHorizontalScroll ? onHorizontalScroll(roundedScrollPos) : true) {
       scrollActions.scrollToX(roundedScrollPos);
     }
@@ -47,12 +48,13 @@ const getScrollActions = (store) => {
    * @param {number} scrollY
    */
   const smartScrollToY = (scrollPos) => {
-    const { onVerticalScroll, scrollY } = store.getState();
+    const { scrollY } = store.getState();
 
     if (scrollPos === scrollY) {
       return;
     }
 
+    const { onVerticalScroll } = getProps();
     if (onVerticalScroll ? onVerticalScroll(scrollPos) : true) {
       scrollActions.scrollToY(scrollPos);
     }

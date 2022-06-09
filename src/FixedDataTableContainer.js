@@ -37,7 +37,7 @@ class FixedDataTableContainer extends React.Component {
 
     this.reduxStore = FixedDataTableStore.get();
 
-    this.scrollActions = getScrollActions(this.reduxStore);
+    this.scrollActions = getScrollActions(this.reduxStore, () => this.props);
 
     this.reduxStore.dispatch(initialize(props));
 
@@ -95,7 +95,7 @@ class FixedDataTableContainer extends React.Component {
   }
 
   /**
-   * Return FDT's public API.
+   * Returns FDT's public API.
    *
    * @public
    * @returns
