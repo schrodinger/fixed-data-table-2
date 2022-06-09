@@ -31,7 +31,8 @@ class DragProxy extends React.PureComponent {
   containerRef = React.createRef();
 
   componentDidMount() {
-    const draggedContents = this.props.contents.parentNode.cloneNode(true); // pass `true` to indicate a deep clone
+    // the first param to cloneNode is `true` to indicate a deep clone
+    const draggedContents = this.props.contents.parentNode.cloneNode(true);
     draggedContents.firstChild.classList.add(
       cx('public/fixedDataTableCell/reordering')
     );
@@ -91,7 +92,6 @@ class DragProxy extends React.PureComponent {
   };
 
   /**
-   *
    * @param {MouseEvent} event
    */
   initializeDOMMouseMoveTracker = (event) => {
@@ -105,8 +105,12 @@ class DragProxy extends React.PureComponent {
   };
 
   updateDisplacementPeriodically = () => {
-    /* NOTE: We need to use requestAnimationFrame because whenever column reaches the end of table (scroll width is left),
-     we want to update the scrollX which can't be updated if we uer onMouseMove*/
+    /**
+     * NOTE (pradeep): We use requestAnimationFrame to update the dragged displacement periodically.
+     * This occurs when the user drags the cell near the edges of the viewport.
+     * We cannot rely on just `onMouseMove` alone because the user might simply keep the cursor
+     * stationary at the edges of the table, which doesn't trigger an `onMouseMove` event.
+     */
     this.frameId = requestAnimationFramePolyfill(
       this.updateDisplacementPeriodically
     );
@@ -114,6 +118,10 @@ class DragProxy extends React.PureComponent {
   };
 
   /**
+   * This returns the displacement bounded between the cell group, preventing the dragged contents
+   * to not go past the cell group.
+   * If the dragged cell is a normal header inside a column group, then the bounds will also be within the column group.
+   *
    * @param {number} deltaX
    * @return {number} deltaX bounded between cell group
    */
@@ -123,20 +131,21 @@ class DragProxy extends React.PureComponent {
     let cellGroupType = this.getCellGroupType();
     const groupHeaderExists = this.context.groupHeaderHeight > 0;
 
-    if (groupHeaderExists > 0 && !this.props.isGroupHeader) {
+    if (groupHeaderExists && !this.props.isGroupHeader) {
+      // this is a normal header cell within a column group
       const group = this.context.getColumnGroupByChild(
         this.props.columnIndex,
         cellGroupType
       );
       groupWidth = group.width;
-
-      if (groupHeaderExists > 0) {
-        groupStart = group.offset;
-      }
+      groupStart = group.offset;
     } else {
+      // This is either a normal header cell that's not within a column group, or this is a column group header cell.
+      // In either case, the bounds will be within the cell group.
       groupWidth = this.context.getCellGroupWidth(cellGroupType);
     }
 
+    // subtract current cell width to make sure the right edge doesn't go past the bounds
     const maxReachableDisplacement = groupWidth - this.props.width;
     return _.clamp(
       deltaX,
@@ -195,6 +204,9 @@ class DragProxy extends React.PureComponent {
     const localOffset = this.getBoundedDeltaX(
       this.cursorDeltaX + this.context.scrollX - this.scrollStart
     );
+
+    // if we're reordering to the right, then the target point is at the right edge of the cell
+    // otherwise the target point is at the left edge of the cell
     const offset =
       localOffset >= 0
         ? this.props.width + localOffset + this.props.left
@@ -217,6 +229,8 @@ class DragProxy extends React.PureComponent {
     let columnBeforeIndex = null;
     let columnAfterIndex = null;
 
+    // If we're reordering to the left, the dragged cell will be dropped to the left side of the target
+    // only if it goes behind the center of the target column.
     if (target.index < this.props.columnIndex) {
       if (targetColumnOffset <= target.width / 2) {
         columnBeforeIndex = target.index - 1;
@@ -226,6 +240,8 @@ class DragProxy extends React.PureComponent {
         columnAfterIndex = target.index + 1;
       }
     } else {
+      // If we're reordering to the right, the dragged cell will be dropped to the right side of the target
+      // only if it goes beyond the center of the target column.
       if (targetColumnOffset >= target.width / 2) {
         columnBeforeIndex = target.index;
         columnAfterIndex = target.index + 1;
@@ -235,6 +251,7 @@ class DragProxy extends React.PureComponent {
       }
     }
 
+    // increase/decrease offset to get the column after/before the dragged cell
     if (columnBeforeIndex === this.props.columnIndex) {
       --columnBeforeIndex;
     }
@@ -247,6 +264,8 @@ class DragProxy extends React.PureComponent {
       : this.context.getColumnCount(cellGroupType);
     let columnBefore;
     let columnAfter;
+
+    // figure out what column lies at columnBeforeIndex and columnAfterIndex
     if (_.inRange(columnBeforeIndex, 0, columnCount)) {
       columnBefore = this.props.isGroupHeader
         ? this.context.getColumnGroup(columnBeforeIndex, cellGroupType)
@@ -258,6 +277,7 @@ class DragProxy extends React.PureComponent {
         : this.context.getColumn(columnAfterIndex, cellGroupType);
     }
 
+    // let the user know that reordering has ended and supply the column before/after keys
     this.props.onColumnReorderEnd({
       columnBefore: _.get(columnBefore, 'columnKey'),
       columnAfter: _.get(columnAfter, 'columnKey'),
