@@ -61,7 +61,7 @@ function tableHeights(
   // If less content than space for rows (bodyHeight), then
   // we should shrink the space for rows to fit our row content (scrollContentHeight).
   const bodyHeight = Math.min(availableHeight, scrollContentHeight);
-  const bodyWidth = Math.min(availableWidth, scrollContentWidth);
+  const availableScrollWidth = Math.min(availableWidth, scrollContentWidth);
   // If using max height, component should only be sized to content.
   // Otherwise use all available height.
   const rowContainerHeight = useMaxHeight ? bodyHeight : availableHeight;
@@ -95,8 +95,8 @@ function tableHeights(
   const scrollbarYHeight = Math.max(0, footOffsetTop - bodyOffsetTop);
 
   return {
+    availableScrollWidth,
     bodyHeight,
-    bodyWidth,
     bodyOffsetTop,
     componentHeight,
     contentHeight,

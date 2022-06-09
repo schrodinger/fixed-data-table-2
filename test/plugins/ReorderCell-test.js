@@ -6,6 +6,7 @@ import { createRenderer } from 'react-test-renderer/shallow';
 import {
   act,
   findRenderedComponentWithType,
+  findRenderedDOMComponentWithClass,
   findRenderedDOMComponentWithTag,
   isElement,
   scryRenderedComponentsWithType,
@@ -13,7 +14,8 @@ import {
 import FakeObjectDataListStore from '../../examples/helpers/FakeObjectDataListStore';
 import { Column, Table, Plugins, DataCell } from '../../src/FixedDataTableRoot';
 import ReorderCell from '../../src/plugins/ResizeReorder/ReorderCell';
-import ReorderHandle from '../../src/plugins/ResizeReorder/ReorderHandle';
+import cx from '../../src/vendor_upstream/stubs/cx';
+import sinon from 'sinon';
 
 const columnTitles = {
   firstName: 'First Name',
@@ -180,8 +182,10 @@ describe('ReorderCell', () => {
     it('should be equal to new order after reordering', function () {
       const reorderCells = renderTable();
       const cell = reorderCells[0];
-      const reorderHandle = findRenderedComponentWithType(cell, ReorderHandle);
-      const reorderDiv = findRenderedDOMComponentWithTag(reorderHandle, 'div');
+      const reorderDiv = findRenderedDOMComponentWithClass(
+        cell,
+        cx('fixedDataTableCellLayout/columnReorderContainer')
+      );
       const clickEvent = new window.MouseEvent('mousedown', {
         bubbles: true,
         cancelable: false,

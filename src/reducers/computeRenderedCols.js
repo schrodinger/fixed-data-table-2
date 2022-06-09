@@ -41,7 +41,7 @@ export default function computeRenderedCols(state, scrollAnchor) {
   const { scrollContentWidth } = state;
   const { fixedColumnsCount, fixedRightColumnsCount, scrollableColumnsCount } =
     state.columnSettings;
-  const { bodyWidth } = tableHeightsSelector(state);
+  const { availableScrollWidth } = tableHeightsSelector(state);
 
   const {
     columnsToRender: fixedColumnsToRender,
@@ -51,7 +51,8 @@ export default function computeRenderedCols(state, scrollAnchor) {
   } = computeRenderedFixedColumnsAndGroups(
     state,
     state.fixedColumns,
-    state.fixedColumnGroups
+    state.fixedColumnGroups,
+    state.columnSettings.getFixedColumnGroup
   );
 
   const {
@@ -62,10 +63,11 @@ export default function computeRenderedCols(state, scrollAnchor) {
   } = computeRenderedFixedColumnsAndGroups(
     state,
     state.fixedRightColumns,
-    state.fixedRightColumnGroups
+    state.fixedRightColumnGroups,
+    state.columnSettings.getFixedRightColumnGroup
   );
 
-  const maxScrollX = scrollContentWidth - bodyWidth;
+  const maxScrollX = scrollContentWidth - availableScrollWidth;
   let firstColumnOffset;
 
   // NOTE (jordan) This handles #115 where resizing the viewport may
@@ -138,7 +140,8 @@ export default function computeRenderedCols(state, scrollAnchor) {
 function computeRenderedFixedColumnsAndGroups(
   state,
   columnsContainer,
-  columnsGroupsContainer
+  columnsGroupsContainer,
+  columnGroupGetter
 ) {
   const tableWidth = state.tableSize.width;
 
@@ -174,7 +177,7 @@ function computeRenderedFixedColumnsAndGroups(
 
       if (_.isNil(columnsGroupsContainer[columnGroupIndex])) {
         columnsGroupsContainer[columnGroupIndex] = convertColumnElementsToData(
-          state.columnSettings.getColumnGroup(columnGroupIndex)
+          columnGroupGetter(columnGroupIndex)
         );
       }
       columnsGroupsContainer[columnGroupIndex].props.width =
