@@ -1,12 +1,16 @@
-'use strict'
+'use strict';
 
 var jsdom = require('jsdom');
 
 // setup the simplest document possible
-var doc = jsdom.jsdom('<!doctype html><html><body></body></html>');
+const { JSDOM } = jsdom;
+const dom = new JSDOM('<!doctype html><html><body></body></html>', {
+  url: 'https://localhost',
+});
 
 // get the window object out of the document
-var win = doc.defaultView;
+var win = dom.window;
+var doc = dom.window.document;
 
 // set globals for mocha that make access to document and window feel
 // natural in the test environment
@@ -18,7 +22,7 @@ global.window = win;
 propagateToGlobal(win);
 
 // from mocha-jsdom https://github.com/rstacruz/mocha-jsdom/blob/master/index.js#L80
-function propagateToGlobal (window) {
+function propagateToGlobal(window) {
   for (let key in window) {
     if (!window.hasOwnProperty(key) || key in global) {
       continue;

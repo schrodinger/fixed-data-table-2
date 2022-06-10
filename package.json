@@ -44,7 +44,7 @@
     "glob": "7.1.4",
     "html-loader": "0.5.5",
     "husky": "^4.2.3",
-    "jsdom": "9.12.0",
+    "jsdom": "^19.0.0",
     "less": "3.10.3",
     "less-loader": "5.0.0",
     "lint-staged": "^10.0.8",
@@ -82,7 +82,7 @@
     "publish-site": "./build_helpers/publishStaticSite.sh",
     "publish-package": "./build_helpers/publishPackage.sh",
     "publish-beta": "./build_helpers/publishPackage.sh --beta",
-    "test": "mocha-webpack --webpack-config webpack.config-test.js \"test/**/ReorderCell-test.js\" --require build_helpers/test-globals.js",
+    "test": "mocha-webpack --webpack-config webpack.config-test.js \"test/**/*-test.js\" --require build_helpers/test-globals.js",
     "test:watch": "mocha-webpack --webpack-config webpack.config-test.js --watch \"test/**/*-test.js\" --require build_helpers/test-globals.js",
     "test:server": "webpack-dev-server --config webpack.config-test.js --hot"
   },
