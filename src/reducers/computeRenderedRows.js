@@ -152,7 +152,8 @@ function calculateRenderedRowRange(state, scrollAnchor) {
   if (
     totalHeight < maxAvailableHeight &&
     rowIdx === rowsCount &&
-    lastIndex === undefined
+    lastIndex === undefined &&
+    firstIndex !== 0
   ) {
     forceScrollToLastRow = true;
     rowIdx = firstIndex - 1;
@@ -189,9 +190,9 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     // Handle a case where the offset puts the first row fully offscreen
     // This can happen if availableHeight & maxAvailableHeight are different
     const { storedHeights } = state;
-    if (-1 * firstOffset >= storedHeights.array[firstViewportIdx]) {
-      firstViewportIdx += 1;
+    while (-1 * firstOffset >= storedHeights.array[firstViewportIdx]) {
       firstOffset += storedHeights.array[firstViewportIdx];
+      firstViewportIdx += 1;
     }
   }
 
