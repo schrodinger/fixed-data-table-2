@@ -361,7 +361,8 @@ function calculateRenderedColRange(state, scrollAnchor) {
   if (
     totalWidth < maxAvailableWidth &&
     colIdx === scrollableColumnsCount &&
-    lastIndex === undefined
+    lastIndex === undefined &&
+    firstIndex !== 0
   ) {
     forceScrollToLastCol = true;
     colIdx = firstIndex - 1;
@@ -406,9 +407,9 @@ function calculateRenderedColRange(state, scrollAnchor) {
     // Handle a case where the offset puts the first col fully offscreen
     // This can happen if availableWidth & maxAvailableWidth are different
     const { storedWidths } = state;
-    if (-1 * firstOffset >= storedWidths.array[firstViewportIdx]) {
-      firstViewportIdx += 1;
+    while (-1 * firstOffset >= storedWidths.array[firstViewportIdx]) {
       firstOffset += storedWidths.array[firstViewportIdx];
+      firstViewportIdx += 1;
     }
   }
 
