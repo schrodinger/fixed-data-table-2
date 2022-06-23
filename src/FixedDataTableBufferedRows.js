@@ -129,8 +129,9 @@ class FixedDataTableBufferedRows extends React.Component {
       let rowIndex = rowsToRender[i];
       // if the row doesn't exist in the buffer set, then take the previous one
       if (rowIndex === undefined) {
-        rowIndex =
-          this._staticRowArray[i] && this._staticRowArray[i].props.index;
+        rowIndex = this._staticRowArray[i]
+          ? this._staticRowArray[i].props.index
+          : undefined;
         if (rowIndex === undefined) {
           this._staticRowArray[i] = null;
           continue;
