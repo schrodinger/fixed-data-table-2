@@ -318,13 +318,37 @@ class FixedDataTable extends React.Component {
 
     /**
      * Callback that is called when scrolling starts. The current horizontal and vertical scroll values,
-     * and the current first and last row indexes will be provided to the callback.
+     * the current first and last row indexes, and the current first and last column indexes
+     * will be provided to the callback.
+     *
+     * ```
+     * function(
+     *   scrollX, // the current horizontal scroll value
+     *   scrollY, // the current vertical scroll value
+     *   firstRowIndex: string, // the first visible row in the viewport
+     *   endRowIndex: string, // the last visible row in the viewport
+     *   firstColumnIndex: string, // the first visible column in the viewport
+     *   endColumnIndex: string: string, // the last visible column in the viewport
+     * )
+     * ```
      */
     onScrollStart: PropTypes.func,
 
     /**
      * Callback that is called when scrolling ends. The new horizontal and vertical scroll values,
-     * and the new first and last row indexes will be provided to the callback.
+     * the new first and last row indexes, and the new first and last column indexes
+     * will be provided to the callback.
+     *
+     * ```
+     * function(
+     *   scrollX, // the new horizontal scroll value
+     *   scrollY, // the new vertical scroll value
+     *   firstRowIndex: string, // the first visible row in the viewport
+     *   endRowIndex: string, // the last visible row in the viewport
+     *   firstColumnIndex: string, // the first visible column in the viewport
+     *   endColumnIndex: string: string, // the last visible column in the viewport
+     * )
+     * ```
      */
     onScrollEnd: PropTypes.func,
 
@@ -1187,7 +1211,7 @@ class FixedDataTable extends React.Component {
   };
 
   /**
-   * Calls the user specified scroll callbacks -- onScrollStart, onScrollEnd, onHorizontalScroll, onVerticalScroll, and onViewportChange.
+   * Calls the user specified scroll callbacks -- onScrollStart, onScrollEnd, onHorizontalScroll, onVerticalScroll.
    */
   _didScroll = (/* !object */ prevProps) => {
     const {
@@ -1202,7 +1226,9 @@ class FixedDataTable extends React.Component {
 
     const {
       firstRowIndex: oldFirstRowIndex,
+      firstColumnIndex: oldFirstColumnIndex,
       endRowIndex: oldLastRowIndex,
+      endColumnIndex: oldLastColumnIndex,
       scrollX: oldScrollX,
       scrollY: oldScrollY,
       tableSize: { ownerHeight: oldOwnerHeight },
@@ -1223,7 +1249,14 @@ class FixedDataTable extends React.Component {
 
     // only call onScrollStart if scrolling wasn't on previously
     if (!oldScrolling && scrolling && onScrollStart) {
-      onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex, oldLastRowIndex);
+      onScrollStart(
+        oldScrollX,
+        oldScrollY,
+        oldFirstRowIndex,
+        oldLastRowIndex,
+        oldFirstColumnIndex,
+        oldLastColumnIndex
+      );
     }
 
     if (scrollXChanged && onHorizontalScroll) {
