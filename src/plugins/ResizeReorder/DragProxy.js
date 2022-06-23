@@ -16,9 +16,11 @@ import cx from '../../vendor_upstream/stubs/cx';
 import PropTypes from 'prop-types';
 import DOMMouseMoveTracker from '../../vendor_upstream/dom/DOMMouseMoveTracker';
 import { FixedDataTableContext } from '../../FixedDataTableContext';
+import FixedDataTableTranslateDOMPosition from '../../FixedDataTableTranslateDOMPosition';
 import requestAnimationFramePolyfill from '../../vendor_upstream/core/requestAnimationFramePolyfill';
 import cancelAnimationFramePolyfill from '../../vendor_upstream/core/cancelAnimationFramePolyfill';
 import _ from 'lodash';
+import { CellGroupType } from '../../enums/cellGroup';
 
 const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;
@@ -47,10 +49,15 @@ class DragProxy extends React.PureComponent {
 
     const style = {
       position: 'absolute',
-      transform: `translateX(${
-        this.state.displacement * DIR_SIGN
-      }px) translateZ(0)`,
     };
+
+    FixedDataTableTranslateDOMPosition(
+      style,
+      this.state.displacement,
+      0,
+      true,
+      this.context.isRTL
+    );
 
     // render an empty placeholder which later gets injected with the dragged contents
     return <div style={style} ref={this.containerRef} />;
@@ -79,7 +86,7 @@ class DragProxy extends React.PureComponent {
    * @param {number} deltaX
    */
   onMouseMove = (deltaX) => {
-    this.cursorDeltaX += deltaX * (this.props.isRTL ? -1 : 1);
+    this.cursorDeltaX += deltaX * (this.context.isRTL ? -1 : 1);
   };
 
   onMouseUp = () => {
@@ -128,7 +135,7 @@ class DragProxy extends React.PureComponent {
   getBoundedDeltaX = (deltaX) => {
     let groupWidth = 0;
     let groupStart = 0;
-    let cellGroupType = this.getCellGroupType();
+    let { cellGroupType } = this.props;
     const groupHeaderExists = this.context.groupHeaderHeight > 0;
 
     if (groupHeaderExists && !this.props.isGroupHeader) {
@@ -157,21 +164,14 @@ class DragProxy extends React.PureComponent {
     );
   };
 
-  getCellGroupType = () => {
-    if (this.props.isFixed) {
-      return 'fixed';
-    } else if (this.props.isFixedRight) {
-      return 'fixedRight';
-    }
-    return 'scrollable';
-  };
-
   updateDisplacementWithScroll = () => {
     const scrollStart = this.scrollStart;
-    let { isFixed, isFixedRight } = this.props;
+    let { cellGroupType } = this.props;
     let { scrollX, maxScrollX, availableScrollWidth } = this.context;
     let deltaX = this.cursorDeltaX;
-    if (!isFixed && !isFixedRight) {
+
+    // we scroll the table if the dragged cell is part of a scrollable column and is dragged near the edges of the viewport
+    if (cellGroupType === CellGroupType.SCROLLABLE) {
       // Relative dragX position on scroll
       const dragX = this.originalLeft - scrollStart + deltaX;
       deltaX += scrollX - scrollStart;
@@ -184,6 +184,7 @@ class DragProxy extends React.PureComponent {
       }
       this.context.scrollToX(scrollX);
     }
+
     deltaX = this.getBoundedDeltaX(deltaX);
     this.setState({ displacement: deltaX });
   };
@@ -203,7 +204,7 @@ class DragProxy extends React.PureComponent {
   isColumnMovedToLeft = (deltaX) => deltaX < 0;
 
   updateColumnOrder = () => {
-    const cellGroupType = this.getCellGroupType();
+    const { cellGroupType } = this.props;
     const localOffset = this.getBoundedDeltaX(
       this.cursorDeltaX + this.context.scrollX - this.scrollStart
     );
@@ -295,8 +296,7 @@ DragProxy.propTypes = {
   columnIndex: PropTypes.number.isRequired,
   columnKey: PropTypes.string.isRequired,
   contents: PropTypes.object.isRequired,
-  isFixed: PropTypes.bool,
-  isFixedRight: PropTypes.bool,
+  cellGroupType: PropTypes.string,
   isGroupHeader: PropTypes.bool,
   isRTL: PropTypes.bool,
   left: PropTypes.number.isRequired,

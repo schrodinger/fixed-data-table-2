@@ -100,11 +100,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
     isHeader: PropTypes.bool,
 
     /**
-     * Whether the cells belongs to the fixed group
-     */
-    isFixed: PropTypes.bool.isRequired,
-
-    /**
      * Type of the cell renderer to be used for each column in the cell group
      */
     template: PropTypes.oneOf(['cell', 'footer', 'header']).isRequired,
@@ -226,8 +221,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         pureRendering={pureRendering}
         isRTL={this.props.isRTL}
         visible={visible}
-        isFixed={this.props.isFixed}
-        isFixedRight={this.props.isFixedRight}
+        cellGroupType={this.props.cellGroupType}
       />
     );
   };

@@ -19,6 +19,7 @@ import FixedDataTableCellDefaultDeprecated from './FixedDataTableCellDefaultDepr
 import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
 import ReorderCell from './plugins/ResizeReorder/ReorderCell';
 import ResizeCell from './plugins/ResizeReorder/ResizeCell';
+import { CellGroupType } from './enums/cellGroup';
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -121,7 +122,11 @@ class FixedDataTableCell extends React.Component {
     /**
      * Whether the cells belongs to the fixed group
      */
-    isFixed: PropTypes.bool,
+    cellGroupType: PropTypes.oneOf([
+      CellGroupType.FIXED,
+      CellGroupType.FIXED_RIGHT,
+      CellGroupType.SCROLLABLE,
+    ]),
   };
 
   shouldComponentUpdate(nextProps) {
@@ -212,8 +217,7 @@ class FixedDataTableCell extends React.Component {
     var cellProps = {
       isHeader: this.props.isHeader,
       isGroupHeader: this.props.isGroupHeader,
-      isFixed: this.props.isFixed,
-      isFixedRight: this.props.isFixedRight,
+      cellGroupType: this.props.cellGroupType,
       columnIndex: this.props.columnIndex,
       columnKey: this.props.columnKey,
       height: this.props.height,

@@ -18,13 +18,15 @@ const getApiDataSelector = () =>
       (state) => state.scrollX,
       (state) => state.maxScrollX,
       (state) => tableHeights(state).availableScrollWidth,
+      (state) => state.isRTL,
     ],
     (
       /*number*/ tableHeight,
       /*number*/ groupHeaderHeight,
       /*number*/ scrollX,
       /*number*/ maxScrollX,
-      /*number*/ availableScrollWidth
+      /*number*/ availableScrollWidth,
+      /*boolean*/ isRTL
     ) => {
       return {
         tableHeight,
@@ -32,6 +34,7 @@ const getApiDataSelector = () =>
         scrollX,
         maxScrollX,
         availableScrollWidth,
+        isRTL,
       };
     }
   );

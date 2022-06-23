@@ -29,7 +29,7 @@ class ResizeCell extends React.PureComponent {
       rowIndex,
       left,
       touchEnabled,
-      isFixed,
+      cellGroupType,
       onColumnReorderStart,
       ...props
     } = this.props;
