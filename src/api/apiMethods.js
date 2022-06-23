@@ -10,6 +10,7 @@
 import _ from 'lodash';
 import columnWidths from '../selectors/columnWidths';
 import shallowEqualSelector from '../helper/shallowEqualSelector';
+import { CellGroupType } from '../enums/cellGroup';
 
 /**
  * Minimal data of a column that we expose through our APIs
@@ -51,22 +52,27 @@ const getApiMethodsSelector = () =>
         scrollableColumnGroups,
       } = columnWidths;
 
-      const getCellGroupWidth = (cellGroupType = 'scrollable') => {
+      const getCellGroupWidth = (cellGroupType = CellGroupType.SCROLLABLE) => {
         const container = _getColumnContainerByCellGroupType(cellGroupType);
         return container.reduce((sum, column) => sum + column.width, 0);
       };
 
-      const getColumn = (columnIndex, cellGroupType = 'scrollable') => {
+      const getColumn = (
+        columnIndex,
+        cellGroupType = CellGroupType.SCROLLABLE
+      ) => {
         const container = _getColumnContainerByCellGroupType(cellGroupType);
         return _getMinimalColumn(container[columnIndex]);
       };
 
-      const getColumnCount = (cellGroupType = 'scrollable') => {
+      const getColumnCount = (cellGroupType = CellGroupType.SCROLLABLE) => {
         const container = _getColumnContainerByCellGroupType(cellGroupType);
         return container.length;
       };
 
-      const getColumnGroupCount = (cellGroupType = 'scrollable') => {
+      const getColumnGroupCount = (
+        cellGroupType = CellGroupType.SCROLLABLE
+      ) => {
         const container =
           _getColumnGroupContainerByCellGroupType(cellGroupType);
         return container.length;
@@ -74,7 +80,7 @@ const getApiMethodsSelector = () =>
 
       const getColumnGroup = (
         columnGroupIndex,
-        cellGroupType = 'scrollable'
+        cellGroupType = CellGroupType.SCROLLABLE
       ) => {
         const container =
           _getColumnGroupContainerByCellGroupType(cellGroupType);
@@ -83,7 +89,7 @@ const getApiMethodsSelector = () =>
 
       const getColumnGroupByChild = (
         columnIndex,
-        cellGroupType = 'scrollable'
+        cellGroupType = CellGroupType.SCROLLABLE
       ) => {
         const container = _getColumnContainerByCellGroupType(cellGroupType);
         const groupIndex = _.get(container, [columnIndex, 'groupIdx']);
@@ -92,13 +98,13 @@ const getApiMethodsSelector = () =>
       };
 
       const _getColumnContainerByCellGroupType = (
-        cellGroupType = 'scrollable'
+        cellGroupType = CellGroupType.SCROLLABLE
       ) => {
-        if (cellGroupType === 'fixed') {
+        if (cellGroupType === CellGroupType.FIXED) {
           return fixedColumns;
-        } else if (cellGroupType === 'fixedRight') {
+        } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
           return fixedRightColumns;
-        } else if (cellGroupType === 'scrollable') {
+        } else if (cellGroupType === CellGroupType.SCROLLABLE) {
           return scrollableColumns;
         } else {
           throw 'Invalid cell group type';
@@ -106,13 +112,13 @@ const getApiMethodsSelector = () =>
       };
 
       const _getColumnGroupContainerByCellGroupType = (
-        cellGroupType = 'scrollable'
+        cellGroupType = CellGroupType.SCROLLABLE
       ) => {
-        if (cellGroupType === 'fixed') {
+        if (cellGroupType === CellGroupType.FIXED) {
           return fixedColumnGroups;
-        } else if (cellGroupType === 'fixedRight') {
+        } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
           return fixedRightColumnGroups;
-        } else if (cellGroupType === 'scrollable') {
+        } else if (cellGroupType === CellGroupType.SCROLLABLE) {
           return scrollableColumnGroups;
         } else {
           throw 'Invalid cell group type';
@@ -170,7 +176,10 @@ const getApiMethodsSelector = () =>
         };
       };
 
-      const getColumnAtOffset = (offset, cellGroupType = 'scrollable') => {
+      const getColumnAtOffset = (
+        offset,
+        cellGroupType = CellGroupType.SCROLLABLE
+      ) => {
         const container = _getColumnContainerByCellGroupType(cellGroupType);
 
         let { element, distanceFromOffset } = _getElementAtOffset(
@@ -188,7 +197,10 @@ const getApiMethodsSelector = () =>
         };
       };
 
-      const getColumnGroupAtOffset = (offset, cellGroupType = 'scrollable') => {
+      const getColumnGroupAtOffset = (
+        offset,
+        cellGroupType = CellGroupType.SCROLLABLE
+      ) => {
         const container =
           _getColumnGroupContainerByCellGroupType(cellGroupType);
 
