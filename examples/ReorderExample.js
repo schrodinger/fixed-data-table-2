@@ -92,7 +92,6 @@ class ReorderExample extends React.Component {
         isColumnReordering={false}
         width={1000}
         height={500}
-        isRTL={true}
         {...this.props}
       >
         {this.state.columnOrder.map(function (columnKey, i) {
