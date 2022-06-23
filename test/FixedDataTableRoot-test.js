@@ -345,14 +345,9 @@ describe('FixedDataTableRoot', function () {
           let scrollableCellGroup = cellGroupElements[1]; // The scrollable columns group (the middle index of [fixed left, scrollable, fixed right])
 
           assert.equal(
-            scrollableCellGroup.style.right,
-            `${scroll}px`,
-            "should translate the cell's right value when in RTL"
-          );
-          assert.equal(
-            scrollableCellGroup.style.left,
-            '',
-            "should negate the cell's left value when in RTL"
+            scrollableCellGroup.style.transform,
+            `translate(${-scroll}px,0px)`,
+            'should translate the cell horizontally value when in RTL'
           );
 
           done();
@@ -461,14 +456,9 @@ describe('FixedDataTableRoot', function () {
           let scrollableCellGroup = cellGroupElements[1]; // The scrollable columns group (the middle index of [fixed left, scrollable, fixed right])
 
           assert.equal(
-            scrollableCellGroup.style.left,
-            `${-scroll}px`,
-            "should translate the cell's left value when in LTR"
-          );
-          assert.equal(
-            scrollableCellGroup.style.right,
-            '',
-            "should negate the cell's right value when in LTR"
+            scrollableCellGroup.style.transform,
+            `translate(-${scroll}px,0px)`,
+            'should translate the cell horizontally when in LTR'
           );
 
           done();

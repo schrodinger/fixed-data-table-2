@@ -19,7 +19,6 @@ import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 import FixedDataTableCell from './FixedDataTableCell';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
-import _ from 'lodash';
 
 class FixedDataTableCellGroupImpl extends React.Component {
   /**
@@ -95,11 +94,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
      * Whether these cells belong to the header/group-header
      */
     isHeader: PropTypes.bool,
-
-    /**
-     * Whether the cells belongs to the fixed group
-     */
-    isFixed: PropTypes.bool.isRequired,
   };
 
   constructor(props) {
@@ -207,8 +201,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         cell={cellTemplate}
         pureRendering={pureRendering}
         isRTL={this.props.isRTL}
-        isFixed={this.props.isFixed}
-        isFixedRight={this.props.isFixedRight}
+        cellGroupType={this.props.cellGroupType}
       />
     );
   };

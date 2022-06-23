@@ -109,12 +109,6 @@ class ReorderCell extends React.PureComponent {
       width: props.width - BORDER_WIDTH,
     };
 
-    if (this.context.isRTL) {
-      style.right = left;
-    } else {
-      style.left = left;
-    }
-
     let content;
     if (React.isValidElement(children)) {
       content = React.cloneElement(children, props);
@@ -304,17 +298,6 @@ ReorderCell.propTypes = {
    * Whether touch is enabled or not.
    */
   touchEnabled: PropTypes.bool,
-
-  /**
-   * Function to change the scroll position by interacting
-   * with the store.
-   */
-  scrollToX: PropTypes.func,
-
-  /**
-   * Whether the cells belongs to the fixed group
-   */
-  isFixed: PropTypes.bool,
 
   /**
    * The minimum width of the column.
