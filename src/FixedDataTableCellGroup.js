@@ -19,7 +19,6 @@ import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 import FixedDataTableCell from './FixedDataTableCell';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
-import _ from 'lodash';
 
 class FixedDataTableCellGroupImpl extends React.Component {
   /**
@@ -95,25 +94,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
      * Whether these cells belong to the header/group-header
      */
     isHeader: PropTypes.bool,
-
-    /**
-     * Function to change the scroll position by interacting
-     * with the store.
-     */
-    scrollToX: PropTypes.func,
-
-    /**
-     * Whether the cells belongs to the fixed group
-     */
-    isFixed: PropTypes.bool.isRequired,
-  };
-
-  state = {
-    /**
-     * @deprecated
-     * @type {Object<string, boolean>}
-     */
-    isCellRecyclableByColumnId: {},
   };
 
   constructor(props) {
@@ -124,26 +104,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
   componentDidMount() {
     this._initialRender = false;
   }
-
-  /**
-   * Returns Object consisting of keys and widths of the columns in the current cell group.
-   * @returns {{keys: [], widths: []}}
-   */
-  getCellGroupWidth = () => {
-    const { columns } = this.props;
-    const cellGroupColumnWidths = {
-      keys: [],
-      widths: [],
-    };
-    if (this.props.isHeader) {
-      for (let i = 0, j = columns.length; i < j; i++) {
-        const key = columns[i].props.columnKey || 'cell_' + i;
-        cellGroupColumnWidths.keys.push(key);
-        cellGroupColumnWidths.widths.push(columns[i].props.width);
-      }
-    }
-    return cellGroupColumnWidths;
-  };
 
   render() /*object*/ {
     var props = this.props;
@@ -156,11 +116,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       var columnProps = columns[i].props;
       var cellTemplate = columns[i].template;
 
-      var recyclable = _.get(
-        this.state.isCellRecyclableByColumnId,
-        [columnProps.columnKey],
-        columnProps.allowCellsRecycling
-      );
+      const recyclable = columnProps.allowCellsRecycling;
       if (
         !recyclable ||
         (currentPosition - props.left <= props.width &&
@@ -168,13 +124,13 @@ class FixedDataTableCellGroupImpl extends React.Component {
       ) {
         var key = columnProps.columnKey || 'cell_' + i;
         cells[i] = this._renderCell(
+          i,
           props.rowIndex,
           props.rowHeight,
           columnProps,
           cellTemplate,
           currentPosition,
-          key,
-          contentWidth
+          key
         );
       }
       currentPosition += columnProps.width;
@@ -204,13 +160,13 @@ class FixedDataTableCellGroupImpl extends React.Component {
   }
 
   _renderCell = (
+    /*number*/ columnIndex,
     /*number*/ rowIndex,
     /*number*/ height,
     /*object*/ columnProps,
     /*object*/ cellTemplate,
     /*number*/ left,
-    /*string*/ key,
-    /*number*/ columnGroupWidth
+    /*string*/ key
   ) /*object*/ => {
     var className = columnProps.cellClassName;
     var pureRendering = columnProps.pureRendering || false;
@@ -224,9 +180,11 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     return (
       <FixedDataTableCell
+        columnIndex={columnIndex}
         isScrolling={this.props.isScrolling}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
         isHeader={this.props.isHeader}
+        isGroupHeader={this.props.isGroupHeader}
         align={columnProps.align}
         className={className}
         height={height}
@@ -241,36 +199,11 @@ class FixedDataTableCellGroupImpl extends React.Component {
         width={columnProps.width}
         left={left}
         cell={cellTemplate}
-        columnGroupWidth={columnGroupWidth}
         pureRendering={pureRendering}
         isRTL={this.props.isRTL}
-        scrollX={this.props.scrollX}
-        isFixed={this.props.isFixed}
-        scrollToX={this.props.scrollToX}
-        toggleCellsRecycling={this.toggleCellsRecycling}
-        getCellGroupWidth={this.getCellGroupWidth}
+        cellGroupType={this.props.cellGroupType}
       />
     );
-  };
-
-  /**
-   * @deprecated Added to have backward compatibility. This will be removed in future release.
-   * @description If column reordering is happening and recycling is enabled,
-   * when column moves out of the view, column gets destroyed while reordering.
-   * Thus, we need to disabled cells recycling during reordering.
-   *
-   * @param {boolean} value
-   * @param {string} columnKey
-   */
-  toggleCellsRecycling = (value, columnKey) => {
-    // Only set in state, when value is false, means reordering has started
-    if (!value) {
-      this.setState({ isCellRecyclableByColumnId: { [columnKey]: value } });
-    } else {
-      this.setState({
-        isCellRecyclableByColumnId: {},
-      });
-    }
   };
 }
 

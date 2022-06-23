@@ -11,65 +11,84 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import joinClasses from '../../vendor_upstream/core/joinClasses';
 import cx from '../../vendor_upstream/stubs/cx';
 import FixedDataTableCellDefault from '../../FixedDataTableCellDefault';
-import { PluginContext } from '../../Context';
-import ReorderHandle from './ReorderHandle';
+import { FixedDataTableContext } from '../../FixedDataTableContext';
+import DragProxy from './DragProxy';
+import ExternalContextProvider from '../ExternalContextProvider';
 import _ from 'lodash';
 import ResizeCell from './ResizeCell';
 import PropTypes from 'prop-types';
 
 const BORDER_WIDTH = 1;
 
+/**
+ * HOC that enables reordering functionality by rendering a handle, which can be used to drag the cell around.
+ *
+ * While dragging takes place, this components rerenders a proxy component into a seperate React root, referred here as the "Drag Proxy".
+ * ReorderCell then hides itself, while the Drag Proxy becomes visible and is what the user actually sees and drags around.
+ *
+ * This ensures that even if ReorderCell unmounts (which can happen when the table scrolls far away), the Drag Proxy
+ * which is rendered in a separate React root is still alive, and hence doesn't break dragging functionality.
+ *
+ * Once dragging ends, the proxy is destroyed, and the original ReorderCell becomes visible again.
+ */
 class ReorderCell extends React.PureComponent {
   state = {
     isReordering: false,
-    displacement: 0,
   };
 
-  /**
-   * @param {string} columnKey
-   */
-  onColumnReorderStart = (columnKey) => {
-    this.setState({ isReordering: true });
-    this.props.onColumnReorderStart(columnKey);
-  };
+  dragContainer = null;
+  cellRef = React.createRef();
+  isMounted = false;
 
-  /**
-   * @param {number} displacement
-   */
-  translateCell = (displacement) => {
-    this.setState({ displacement });
-  };
+  componentDidMount() {
+    this.isMounted = true;
 
-  /**
-   * @param ev
-   * @param {string} ev.columnBefore
-   * @param {string} ev.columnAfter
-   * @param {string} ev.reorderColumn
-   */
-  onColumnReorderEnd = (ev) => {
-    this.setState({ isReordering: false, displacement: 0 });
-    this.props.onColumnReorderEnd(ev);
-  };
+    /**
+     * NOTE (pradeep): Important! Check if this cell was "already" being dragged by the user.
+     * This is a slightly rare case, and happens under the following steps:
+     *   1. User starts reordering on cell "A", which creates the draggable proxy cell "B".
+     *   2. If cell B is dragged far away such that the column associated with the cell goes outside the viewport, this effectively unmounts all cells in that column, including cell "A".
+     *   2. Now if the user drags cell "B" back such that the column associated with the cell becomes visible, then another instance of cell "A" will be mounted.
+     *   3. The new instance of cell "A" now needs to figure out that the dragged proxy cell "B" already exists, and if so it should be in a reordering state.
+     */
+    const draggedCellColumnKey = _.get(
+      this.getDragContainer(),
+      'dataset.columnKey'
+    );
+    const isReordering =
+      _.toString(this.props.columnKey) === draggedCellColumnKey;
+
+    if (isReordering) {
+      // NOTE (pradeep): rerender the drag proxy to alert it that this instance is the new parent
+      this.renderDragProxy({});
+
+      this.setState({ isReordering: true });
+    }
+  }
+
+  componentWillUnmount() {
+    this.isMounted = false;
+  }
 
   render() {
+    if (this.state.isReordering) {
+      // If we're in the middle of reordering then return null here.
+      // The rendering responsibility will instead be taken care of by the drag proxy instead.
+      return null;
+    }
+
     const {
-      children,
-      minWidth,
-      maxWidth,
-      onColumnReorderEnd,
-      rowIndex,
-      left,
-      touchEnabled,
-      isFixed,
-      scrollToX,
-      getCellGroupWidth,
       onColumnReorderStart,
-      columnGroupWidth,
+      onColumnReorderEnd,
+      reorderStartEvent,
       ...props
     } = this.props;
+
+    const { children, left } = props;
 
     let className = joinClasses(
       cx({
@@ -82,34 +101,17 @@ class ReorderCell extends React.PureComponent {
       className,
       cx({
         'public/fixedDataTableCell/hasReorderHandle': true,
-        'public/fixedDataTableCell/reordering': this.state.isReordering,
       })
     );
-
-    const DIR_SIGN = this.context.isRTL ? -1 : 1;
 
     let style = {
       height: props.height,
       width: props.width - BORDER_WIDTH,
-      transform: `translateX(${
-        this.state.displacement * DIR_SIGN
-      }px) translateZ(0)`,
     };
-
-    if (this.context.isRTL) {
-      style.right = left;
-    } else {
-      style.left = left;
-    }
 
     let content;
     if (React.isValidElement(children)) {
-      if (children.type === ResizeCell) {
-        content = React.cloneElement(children, {
-          ...children.props,
-          ...this.props,
-        });
-      } else content = React.cloneElement(children, props);
+      content = React.cloneElement(children, props);
     } else if (typeof children === 'function') {
       content = children(props);
     } else {
@@ -121,25 +123,139 @@ class ReorderCell extends React.PureComponent {
     }
 
     return (
-      <div className={reorderClasses} style={style}>
-        <ReorderHandle
-          {...this.props}
-          translateCell={this.translateCell}
-          onColumnReorderStart={this.onColumnReorderStart}
-          touchEnabled={this.props.touchEnabled}
-          height={this.props.height}
-          isRTL={this.context.isRTL}
-          columnKey={this.props.columnKey}
-          left={this.props.left}
-          onColumnReorderEndCallback={this.onColumnReorderEnd}
-        />
+      <div className={reorderClasses} style={style} ref={this.cellRef}>
+        {this.renderReorderHandle()}
         {content}
       </div>
     );
   }
+
+  renderReorderHandle() {
+    const style = {
+      height: this.props.height,
+    };
+
+    return (
+      <div
+        className={cx({
+          'fixedDataTableCellLayout/columnReorderContainer': true,
+          'fixedDataTableCellLayout/columnReorderContainer/active': false,
+        })}
+        onMouseDown={this.onMouseDown}
+        onTouchStart={this.onTouchStart}
+        style={style}
+      />
+    );
+  }
+
+  onTouchStart = (ev) => {
+    if (!this.props.touchEnabled) {
+      return;
+    }
+
+    this.onMouseDown(ev);
+  };
+
+  /**
+   *
+   * @param {MouseEvent} event
+   */
+  onMouseDown = (event) => {
+    this.onDragStart(event);
+  };
+
+  /**
+   * @param {string} columnKey
+   */
+  onDragStart = (event) => {
+    this.createDragContainer();
+    this.renderDragProxy(event);
+    this.props.onColumnReorderStart(this.props.columnKey);
+  };
+
+  /**
+   * @param ev
+   * @param {string} ev.columnBefore
+   * @param {string} ev.columnAfter
+   * @param {string} ev.reorderColumn
+   */
+  onColumnReorderEnd = (ev) => {
+    if (this.isMounted) {
+      this.setState({
+        isReordering: false,
+      });
+    }
+
+    this.removeDragContainer();
+    this.props.onColumnReorderEnd(ev);
+  };
+
+  /**
+   * Render a proxy version of our cell that can be dragged around without repercussions to component unmounts.
+   */
+  renderDragProxy(reorderStartEvent) {
+    const additionalProps = {
+      isDragProxy: true,
+      reorderStartEvent: reorderStartEvent,
+      onColumnReorderEnd: this.onColumnReorderEnd,
+      contents: this.cellRef.current,
+    };
+
+    ReactDOM.render(
+      // Since we're effectively rendering the proxy in a separate VDOM root, we cannot directly pass in our context.
+      // To solve this, we use ExternalContextProvider to pass down the context value.
+      // ExternalContextProvider also ensures that even if our cell gets unmounted, the dragged cell still receives updates from context.
+      <ExternalContextProvider value={this.context}>
+        <DragProxy {...this.props} {...additionalProps} />
+      </ExternalContextProvider>,
+      this.getDragContainer(),
+      // we consider our cell in a reordering state as soon as the drag proxy gets mounted
+      () => this.setState({ isReordering: true })
+    );
+  }
+
+  createDragContainer = () => {
+    // create a container for the drag proxy
+    this.dragContainer = document.createElement('div');
+
+    // store the column key in the DOM to easily identify what column is being dragged around
+    this.dragContainer.dataset.columnKey = this.props.columnKey;
+
+    // Place the container inside the parent cell group so that our dragged cell ends up in the correct heirarchy.
+    // This is important for correct styling and layout calculations.
+    const cellGroup = this.cellRef.current.closest(
+      '.fixedDataTableCellGroupLayout_cellGroup'
+    );
+    cellGroup.appendChild(this.dragContainer);
+  };
+
+  getDragContainer = () => {
+    if (this.dragContainer) {
+      return this.dragContainer;
+    }
+
+    // get the cell group containing our cell
+    const cellGroup = this.cellRef.current.closest(
+      '.fixedDataTableCellGroupLayout_cellGroup'
+    );
+
+    // find the drag container within the cell group
+    this.dragContainer = cellGroup.querySelector(
+      `[data-column-key="${this.props.columnKey}"]`
+    );
+    return this.dragContainer;
+  };
+
+  removeDragContainer = () => {
+    // since the drag container is going to be removed, also unmount the drag proxy
+    ReactDOM.unmountComponentAtNode(this.dragContainer);
+
+    this.dragContainer.remove();
+    this.dragContainer = null;
+  };
 }
 
-ReorderCell.contextType = PluginContext;
+ReorderCell.contextType = FixedDataTableContext;
 
 ReorderCell.defaultProps = {
   onColumnReorderStart: _.noop,
@@ -184,17 +300,6 @@ ReorderCell.propTypes = {
   touchEnabled: PropTypes.bool,
 
   /**
-   * Function to change the scroll position by interacting
-   * with the store.
-   */
-  scrollToX: PropTypes.func,
-
-  /**
-   * Whether the cells belongs to the fixed group
-   */
-  isFixed: PropTypes.bool,
-
-  /**
    * The minimum width of the column.
    */
   minWidth: PropTypes.number,
@@ -211,11 +316,6 @@ ReorderCell.propTypes = {
    * ```
    */
   onColumnReorderStart: PropTypes.func,
-
-  /**
-   * Function to return cell group widths
-   */
-  getCellGroupWidth: PropTypes.func,
 
   /**
    * Callback function which is called when reordering ends

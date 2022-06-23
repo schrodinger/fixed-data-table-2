@@ -55,14 +55,23 @@ function columnWidths(
     columnProps,
     viewportWidth
   );
-  const { fixedColumns, fixedRightColumns, scrollableColumns } =
-    groupColumns(newColumnProps);
+  const {
+    fixed: fixedColumns,
+    fixedRight: fixedRightColumns,
+    scrollable: scrollableColumns,
+  } = groupElements(newColumnProps);
+  const {
+    fixed: fixedColumnGroups,
+    fixedRight: fixedRightColumnGroups,
+    scrollable: scrollableColumnGroups,
+  } = groupElements(newColumnGroupProps);
 
   const availableScrollWidth =
     viewportWidth -
     getTotalWidth(fixedColumns) -
     getTotalWidth(fixedRightColumns);
   const maxScrollX = Math.max(0, getTotalWidth(newColumnProps) - viewportWidth);
+
   return {
     columnGroupProps: newColumnGroupProps,
     columnProps: newColumnProps,
@@ -70,6 +79,9 @@ function columnWidths(
     fixedColumns,
     fixedRightColumns,
     scrollableColumns,
+    fixedColumnGroups,
+    fixedRightColumnGroups,
+    scrollableColumnGroups,
     maxScrollX,
   };
 }
@@ -135,32 +147,41 @@ function flexWidths(columnGroupProps, columnProps, viewportWidth) {
 }
 
 /**
- * @param {!Array.<columnDefinition>} columnProps
+ * @param {!Array.<columnDefinition>} elements
  * @return {{
  *   fixedColumns: !Array.<columnDefinition>,
  *   fixedRightColumns: !Array.<columnDefinition>,
  *   scrollableColumns: !Array.<columnDefinition>
  * }}
  */
-function groupColumns(columnProps) {
-  const fixedColumns = [];
-  const fixedRightColumns = [];
-  const scrollableColumns = [];
+function groupElements(elements) {
+  const fixed = { offset: 0, elements: [] };
+  const fixedRight = { offset: 0, elements: [] };
+  const scrollable = { offset: 0, elements: [] };
 
-  forEach(columnProps, (columnProp) => {
-    let container = scrollableColumns;
-    if (columnProp.fixed) {
-      container = fixedColumns;
-    } else if (columnProp.fixedRight) {
-      container = fixedRightColumns;
+  forEach(elements, (element) => {
+    let container = scrollable;
+    if (element.fixed) {
+      container = fixed;
+    } else if (element.fixedRight) {
+      container = fixedRight;
     }
-    container.push(columnProp);
+
+    // add offset and index of element within group
+    const newElement = {
+      ...element,
+      offset: container.offset,
+      index: container.elements.length,
+    };
+
+    container.offset += newElement.width;
+    container.elements.push(newElement);
   });
 
   return {
-    fixedColumns,
-    fixedRightColumns,
-    scrollableColumns,
+    fixed: fixed.elements,
+    fixedRight: fixedRight.elements,
+    scrollable: scrollable.elements,
   };
 }
 
