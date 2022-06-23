@@ -325,10 +325,10 @@ class FixedDataTable extends React.Component {
      * function(
      *   scrollX, // the current horizontal scroll value
      *   scrollY, // the current vertical scroll value
-     *   firstRowIndex: string, // the first visible row in the viewport
-     *   endRowIndex: string, // the last visible row in the viewport
-     *   firstColumnIndex: string, // the first visible column in the viewport
-     *   endColumnIndex: string: string, // the last visible column in the viewport
+     *   firstRowIndex: number, // the first visible row in the viewport
+     *   lastRowIndex: number, // the last visible row in the viewport
+     *   firstColumnIndex: number, // the first visible column in the viewport
+     *   lastColumnIndex: number, // the last visible column in the viewport
      * )
      * ```
      */
@@ -343,10 +343,10 @@ class FixedDataTable extends React.Component {
      * function(
      *   scrollX, // the new horizontal scroll value
      *   scrollY, // the new vertical scroll value
-     *   firstRowIndex: string, // the first visible row in the viewport
-     *   endRowIndex: string, // the last visible row in the viewport
-     *   firstColumnIndex: string, // the first visible column in the viewport
-     *   endColumnIndex: string: string, // the last visible column in the viewport
+     *   firstRowIndex: number, // the first visible row in the viewport
+     *   lastRowIndex: number, // the last visible row in the viewport
+     *   firstColumnIndex: number, // the first visible column in the viewport
+     *   lastColumnIndex: number, // the last visible column in the viewport
      * )
      * ```
      */
@@ -357,10 +357,10 @@ class FixedDataTable extends React.Component {
      *
      * ```
      * function({
-     *   firstRowIndex: string, // the first visible row in the viewport
-     *   lastRowIndex: string, // the last visible row in the viewport
-     *   firstColumnIndex: string, // the first visible column in the viewport
-     *   lastColumnIndex: string, // the last visible column in the viewport
+     *   firstRowIndex: number, // the first visible row in the viewport
+     *   lastRowIndex: number, // the last visible row in the viewport
+     *   firstColumnIndex: number, // the first visible column in the viewport
+     *   lastColumnIndex: number, // the last visible column in the viewport
      * })
      * ```
      */
