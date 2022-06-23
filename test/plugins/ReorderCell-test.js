@@ -64,7 +64,6 @@ class ReorderCellTest extends React.Component {
         'sentence',
         'companyName',
       ],
-      recycling: {},
     };
   }
 
@@ -89,18 +88,9 @@ class ReorderCellTest extends React.Component {
     });
   };
 
-  onColumnReorderStart = (columnKey) => {
-    this.setState({
-      recycling: {
-        [columnKey]: false,
-      },
-    });
-  };
-
   render() {
-    const { dataList, recycling } = this.state;
+    const { dataList } = this.state;
     const onColumnReorderEndCallback = this._onColumnReorderEndCallback;
-    const onColumnReorderStart = this.onColumnReorderStart;
     return (
       <Table
         rowHeight={30}
@@ -114,12 +104,11 @@ class ReorderCellTest extends React.Component {
         {this.state.columnOrder.map(function (columnKey, i) {
           return (
             <Column
-              allowCellsRecycling={_.get(recycling, columnKey, true)}
+              allowCellsRecycling={true}
               columnKey={columnKey}
               key={i}
               header={
                 <Plugins.ReorderCell
-                  onColumnReorderStart={onColumnReorderStart}
                   onColumnReorderEnd={onColumnReorderEndCallback}
                 >
                   {columnTitles[columnKey]}
