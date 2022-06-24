@@ -10,6 +10,7 @@
 import _ from 'lodash';
 import convertColumnElementsToData from '../helper/convertColumnElementsToData';
 import shallowEqualSelector from '../helper/shallowEqualSelector';
+import { CellGroupType } from '../enums/cellGroup';
 
 /**
  * Minimal data of a column that we expose through our APIs
@@ -65,29 +66,32 @@ const getApiMethodsSelector = () =>
       } = state;
 
       const getColumnOffset = (index, cellGroupType) => {
-        if (cellGroupType === 'fixed') {
+        if (cellGroupType === CellGroupType.FIXED) {
           fixedColumnOffsets[index];
-        } else if (cellGroupType === 'fixedRight') {
+        } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
           fixedRightColumnOffsets[index];
         } else {
           return colOffsetIntervalTree.sumTo(index);
         }
       };
 
-      const getCellGroupWidth = (cellGroupType = 'scrollable') => {
-        if (cellGroupType === 'fixed') {
+      const getCellGroupWidth = (cellGroupType = CellGroupType.SCROLLABLE) => {
+        if (cellGroupType === CellGroupType.FIXED) {
           return fixedColumnsWidth;
-        } else if (cellGroupType === 'fixedRight') {
+        } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
           return fixedRightColumnsWidth;
         } else {
           return scrollContentWidth;
         }
       };
 
-      const _getColumn = (columnIndex, cellGroupType = 'scrollable') => {
-        if (cellGroupType === 'fixed') {
+      const _getColumn = (
+        columnIndex,
+        cellGroupType = CellGroupType.SCROLLABLE
+      ) => {
+        if (cellGroupType === CellGroupType.FIXED) {
           return fixedColumns[columnIndex];
-        } else if (cellGroupType === 'fixedRight') {
+        } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
           return fixedRightColumns[columnIndex];
         } else {
           return _getScrollableColumn(columnIndex);
@@ -145,26 +149,31 @@ const getApiMethodsSelector = () =>
         return columnGroup;
       };
 
-      const getColumn = (columnIndex, cellGroupType = 'scrollable') => {
+      const getColumn = (
+        columnIndex,
+        cellGroupType = CellGroupType.SCROLLABLE
+      ) => {
         const column = _getColumn(columnIndex, cellGroupType);
         const offset = getColumnOffset(columnIndex, cellGroupType);
         return _getMinimalColumn(column, offset);
       };
 
-      const getColumnCount = (cellGroupType = 'scrollable') => {
-        if (cellGroupType === 'fixed') {
+      const getColumnCount = (cellGroupType = CellGroupType.SCROLLABLE) => {
+        if (cellGroupType === CellGroupType.FIXED) {
           return columnSettings.fixedColumnsCount;
-        } else if (cellGroupType === 'fixedRight') {
+        } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
           return columnSettings.fixedRightColumnsCount;
         } else {
           return columnSettings.scrollableColumnsCount;
         }
       };
 
-      const getColumnGroupCount = (cellGroupType = 'scrollable') => {
-        if (cellGroupType === 'fixed') {
+      const getColumnGroupCount = (
+        cellGroupType = CellGroupType.SCROLLABLE
+      ) => {
+        if (cellGroupType === CellGroupType.FIXED) {
           return fixedColumnGroups.length;
-        } else if (cellGroupType === 'fixedRight') {
+        } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
           return fixedRightColumnGroups.length;
         } else {
           // the parent column group of the last scrollable column will also be the last scrollable column group
@@ -182,15 +191,15 @@ const getApiMethodsSelector = () =>
 
       const getColumnGroup = (
         columnGroupIndex,
-        cellGroupType = 'scrollable'
+        cellGroupType = CellGroupType.SCROLLABLE
       ) => {
         let columnGroup;
         let offset = 0;
 
-        if (cellGroupType === 'fixed') {
+        if (cellGroupType === CellGroupType.FIXED) {
           columnGroup = fixedColumnGroups[columnGroupIndex];
           offset = fixedColumnGroupOffsets[columnGroupIndex];
-        } else if (cellGroupType === 'fixedRight') {
+        } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
           columnGroup = fixedRightColumnGroups[columnGroupIndex];
           offset = fixedRightColumnGroupOffsets[columnGroupIndex];
         } else {
@@ -203,7 +212,7 @@ const getApiMethodsSelector = () =>
 
       const getColumnGroupByChild = (
         columnIndex,
-        cellGroupType = 'scrollable'
+        cellGroupType = CellGroupType.SCROLLABLE
       ) => {
         const column = _getColumn(columnIndex, cellGroupType);
         const columnGroupIndex = column.props.columnGroupIndex;
@@ -237,13 +246,16 @@ const getApiMethodsSelector = () =>
         };
       };
 
-      const getColumnAtOffset = (offset, cellGroupType = 'scrollable') => {
+      const getColumnAtOffset = (
+        offset,
+        cellGroupType = CellGroupType.SCROLLABLE
+      ) => {
         let column, columnOffset;
-        if (cellGroupType === 'fixed') {
+        if (cellGroupType === CellGroupType.FIXED) {
           const { element } = _getElementAtOffset(fixedColumns, offset);
           columnOffset = fixedColumnOffsets[element.props.index];
           column = element;
-        } else if (cellGroupType === 'fixedRight') {
+        } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
           const { element } = _getElementAtOffset(fixedRightColumns, offset);
           columnOffset = fixedRightColumnOffsets[element.props.index];
           column = element;
@@ -264,13 +276,16 @@ const getApiMethodsSelector = () =>
         };
       };
 
-      const getColumnGroupAtOffset = (offset, cellGroupType = 'scrollable') => {
+      const getColumnGroupAtOffset = (
+        offset,
+        cellGroupType = CellGroupType.SCROLLABLE
+      ) => {
         let columnGroup, distanceFromOffset, columnGroupOffset;
-        if (cellGroupType === 'fixed') {
+        if (cellGroupType === CellGroupType.FIXED) {
           const { element } = _getElementAtOffset(fixedColumns, offset);
           columnGroupOffset = fixedColumnOffsets[element.props.index];
           columnGroup = element;
-        } else if (cellGroupType === 'fixedRight') {
+        } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
           const { element } = _getElementAtOffset(fixedRightColumns, offset);
           columnGroupOffset = fixedRightColumnOffsets[element.props.index];
           columnGroup = element;
