@@ -690,8 +690,8 @@ class FixedDataTable extends React.Component {
       scrollbarXOffsetTop,
       scrollX,
       scrollTo: this._scrollTo,
-      scrollToX: this._scrollToX,
-      scrollToY: this._scrollToY,
+      scrollToX: this.props.scrollActions.scrollToX,
+      scrollToY: this.props.scrollActions.scrollToY,
     };
     if (!shallowEqual(this.previousScrollState, newScrollState)) {
       this.props.onScrollBarsUpdate(newScrollState);
@@ -795,7 +795,7 @@ class FixedDataTable extends React.Component {
           endViewportColumnIndex={this.props.endViewportColumnGroupIndex}
           fixedColumnsWidth={this.props.fixedColumnsWidth}
           fixedRightColumnsWidth={this.props.fixedRightColumnsWidth}
-          scrollToX={this._scrollToX}
+          isGroupHeader={true}
         />
       );
     }
@@ -889,7 +889,6 @@ class FixedDataTable extends React.Component {
         scrollbarYWidth={scrollbarYWidth}
         isRTL={this.props.isRTL}
         isHeader={true}
-        scrollToX={this._scrollToX}
         columnsToRender={this.props.columnsToRender}
         fixedColumnsToRender={this.props.fixedColumnsToRender}
         fixedRightColumnsToRender={this.props.fixedRightColumnsToRender}
@@ -1101,37 +1100,8 @@ class FixedDataTable extends React.Component {
   };
 
   _scrollTo = (/*number*/ scrollX, /*number*/ scrollY) => {
-    this._scrollToX(scrollX);
-    this._scrollToY(scrollY);
-  };
-
-  _scrollToX = (/*number*/ scrollPos) => {
-    const { onHorizontalScroll, scrollActions, scrollX, scrolling } =
-      this.props;
-
-    if (scrollPos === scrollX) {
-      return;
-    }
-
-    // This is a workaround to prevent content blurring. This happens when translate3d
-    // is applied with non-rounded values to elements having text.
-    var roundedScrollPos = Math.round(scrollPos);
-
-    if (onHorizontalScroll ? onHorizontalScroll(roundedScrollPos) : true) {
-      scrollActions.scrollToX(roundedScrollPos);
-    }
-  };
-
-  _scrollToY = (/*number*/ scrollPos) => {
-    const { onVerticalScroll, scrollActions, scrollY } = this.props;
-
-    if (scrollPos === scrollY) {
-      return;
-    }
-
-    if (onVerticalScroll ? onVerticalScroll(scrollPos) : true) {
-      scrollActions.scrollToY(scrollPos);
-    }
+    this.props.scrollActions.scrollToX(scrollX);
+    this.props.scrollActions.scrollToY(scrollY);
   };
 
   /**

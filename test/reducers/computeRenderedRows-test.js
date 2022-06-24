@@ -5,6 +5,7 @@ import IntegerBufferSet from '../../src/vendor_upstream/struct/IntegerBufferSet'
 import PrefixIntervalTree from '../../src/vendor_upstream/struct/PrefixIntervalTree';
 import { assert } from 'chai';
 import sinon from 'sinon';
+import clone from 'lodash/clone';
 
 import computeRenderedRows from '../../src/reducers/computeRenderedRows';
 
@@ -30,6 +31,7 @@ describe('computeRenderedRows', function () {
 
   describe('computeRenderedRows', function () {
     let oldState;
+    let newState;
     beforeEach(function () {
       const initialStoredHeights = {};
       for (let rowIdx = 0; rowIdx < 80; rowIdx++) {
@@ -47,6 +49,7 @@ describe('computeRenderedRows', function () {
         storedHeights: initialStoredHeights,
         scrollContentHeight: 10000,
       };
+      newState = clone(oldState);
     });
 
     afterEach(function () {
@@ -60,7 +63,7 @@ describe('computeRenderedRows', function () {
         lastIndex: undefined,
       };
 
-      const newState = computeRenderedRows(oldState, scrollAnchor);
+      computeRenderedRows(newState, scrollAnchor);
 
       const expectedRowOffsets = {};
       const expectedRows = [];
@@ -110,7 +113,7 @@ describe('computeRenderedRows', function () {
         lastIndex: 30,
       };
 
-      const newState = computeRenderedRows(oldState, scrollAnchor);
+      computeRenderedRows(newState, scrollAnchor);
 
       const expectedRowOffsets = {};
       const expectedRows = [];
@@ -161,7 +164,7 @@ describe('computeRenderedRows', function () {
       };
       oldState.rowSettings.rowsCount = 0;
 
-      const newState = computeRenderedRows(oldState, scrollAnchor);
+      computeRenderedRows(newState, scrollAnchor);
 
       assert.deepEqual(
         newState,
@@ -184,7 +187,7 @@ describe('computeRenderedRows', function () {
         lastIndex: undefined,
       };
 
-      const newState = computeRenderedRows(oldState, scrollAnchor);
+      computeRenderedRows(newState, scrollAnchor);
 
       const expectedRowOffsets = {};
       const expectedRows = [];
@@ -243,7 +246,7 @@ describe('computeRenderedRows', function () {
         rowOffsetIntervalTreeMock.expects('set').once().withArgs(rowIdx, 200);
       }
 
-      const newState = computeRenderedRows(oldState, scrollAnchor);
+      computeRenderedRows(newState, scrollAnchor);
       rowOffsetIntervalTreeMock.verify();
 
       let priorHeight = 1625;

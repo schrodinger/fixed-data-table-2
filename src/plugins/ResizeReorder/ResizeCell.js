@@ -13,7 +13,7 @@
 import React from 'react';
 import ResizerKnob from './ResizerKnob';
 import FixedDataTableCellDefault from '../../FixedDataTableCellDefault';
-import { PluginContext } from '../../Context';
+import { FixedDataTableContext } from '../../FixedDataTableContext';
 import PropTypes from 'prop-types';
 
 const BORDER_WIDTH = 1;
@@ -29,11 +29,8 @@ class ResizeCell extends React.PureComponent {
       rowIndex,
       left,
       touchEnabled,
-      isFixed,
-      scrollToX,
-      getCellGroupWidth,
+      cellGroupType,
       onColumnReorderStart,
-      columnGroupWidth,
       ...props
     } = this.props;
 
@@ -80,7 +77,7 @@ class ResizeCell extends React.PureComponent {
   }
 }
 
-ResizeCell.contextType = PluginContext;
+ResizeCell.contextType = FixedDataTableContext;
 
 ResizeCell.propTypes = {
   /**
