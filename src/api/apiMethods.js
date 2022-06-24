@@ -10,7 +10,7 @@
 import _ from 'lodash';
 import columnWidths from '../selectors/columnWidths';
 import shallowEqualSelector from '../helper/shallowEqualSelector';
-import { CellGroupType } from '../enums/cellGroup';
+import { CellGroupType } from '../enums/CellGroup';
 
 /**
  * Minimal data of a column that we expose through our APIs

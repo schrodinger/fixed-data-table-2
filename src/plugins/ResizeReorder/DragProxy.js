@@ -20,7 +20,7 @@ import FixedDataTableTranslateDOMPosition from '../../FixedDataTableTranslateDOM
 import requestAnimationFramePolyfill from '../../vendor_upstream/core/requestAnimationFramePolyfill';
 import cancelAnimationFramePolyfill from '../../vendor_upstream/core/cancelAnimationFramePolyfill';
 import _ from 'lodash';
-import { CellGroupType } from '../../enums/cellGroup';
+import { CellGroupType } from '../../enums/CellGroup';
 
 const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 100;

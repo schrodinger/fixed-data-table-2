@@ -19,7 +19,7 @@ import FixedDataTableCellDefaultDeprecated from './FixedDataTableCellDefaultDepr
 import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
 import ReorderCell from './plugins/ResizeReorder/ReorderCell';
 import ResizeCell from './plugins/ResizeReorder/ResizeCell';
-import { CellGroupType } from './enums/cellGroup';
+import { CellGroupType } from './enums/CellGroup';
 
 class FixedDataTableCell extends React.Component {
   /**
