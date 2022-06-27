@@ -1,0 +1,81 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and site, and run the deploy script.
+# The deploy script will publish the build to gh-pages.
+# This workflow will be run whenever a new release is published.
+
+# NOTE (pradeep): I'm having this workflow bail out if the release doesn't target v1.2.x. 
+# This is because we don't have a way (yet) to support multiple FDT versions/docs  be deployed at the same time,
+# and hence we choose to deploy only the most stable release.
+
+# Guide: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Deploy to gh-pages
+
+on:
+  release:
+    types: [published]
+
+jobs:
+
+  check-release:
+    name: Check if release is stable
+    runs-on: ubuntu-latest
+
+    # map step output to job output
+    outputs: 
+      is_stable: ${{ steps.check-release-stable.outputs.is_stable }}
+
+    steps:
+    - name: Check if release is stable
+      id: check-release-stable
+      env:
+        # Store the tag name of the release in `RELEASE_TAG` (eg: v1.0.10)
+        RELEASE_TAG: ${{ github.event.release.tag_name }}
+
+      # Check if the release tag name is a stable candidate for deployment
+      # NOTE (pradeep): Only allow 1.2.x versions to be deployed right now
+      run: |
+        echo "RELEASE_TAG is: " $RELEASE_TAG
+        if [[ $RELEASE_TAG =~ ^v1\.2\.[0-9]+$ ]]; 
+        then
+          echo "This is a stable release!"
+          echo "::set-output name=is_stable::true"
+        else
+          echo "This is not a stable release!"
+          echo "::set-output name=is_stable::false"
+        fi
+
+  
+  deploy:
+    name: Deploy website via gh-pages!
+    needs: check-release
+    runs-on: ubuntu-latest
+    
+    # skip deploying to gh-pages if release is not "stable"
+    if: ${{ needs.check-release.outputs.is_stable == 'true' }}
+
+    steps:
+
+    # checkout our repo for the current commit
+    - name: Check out repo
+      uses: actions/checkout@v3
+
+    # setup node version 16 which is not old but still stable
+    - name: Use Node.js 16
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: 'yarn'
+
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile # do a clean install of all of our dependencies
+
+    # build our static contents
+    - name: Build static site!
+      run: yarn run site-build
+
+    # publish our site to gh-pages
+    - name: Deploy to gh-pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }} # authenticate the action to our workflow
+        publish_dir: ./__site__ # this directory will be copied over to gh-pages
