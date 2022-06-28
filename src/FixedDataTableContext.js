@@ -7,7 +7,8 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-
 import React from 'react';
 
-export const PluginContext = React.createContext({});
+const FixedDataTableContext = React.createContext({});
+
+export { FixedDataTableContext };

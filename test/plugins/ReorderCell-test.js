@@ -6,6 +6,7 @@ import { createRenderer } from 'react-test-renderer/shallow';
 import {
   act,
   findRenderedComponentWithType,
+  findRenderedDOMComponentWithClass,
   findRenderedDOMComponentWithTag,
   isElement,
   scryRenderedComponentsWithType,
@@ -13,7 +14,9 @@ import {
 import FakeObjectDataListStore from '../../examples/helpers/FakeObjectDataListStore';
 import { Column, Table, Plugins, DataCell } from '../../src/FixedDataTableRoot';
 import ReorderCell from '../../src/plugins/ResizeReorder/ReorderCell';
-import ReorderHandle from '../../src/plugins/ResizeReorder/ReorderHandle';
+import cx from '../../src/vendor_upstream/stubs/cx';
+import sinon from 'sinon';
+import DOMMouseMoveTracker from '../../src/vendor_upstream/dom/DOMMouseMoveTracker';
 
 const columnTitles = {
   firstName: 'First Name',
@@ -61,7 +64,6 @@ class ReorderCellTest extends React.Component {
         'sentence',
         'companyName',
       ],
-      recycling: {},
     };
   }
 
@@ -86,18 +88,9 @@ class ReorderCellTest extends React.Component {
     });
   };
 
-  onColumnReorderStart = (columnKey) => {
-    this.setState({
-      recycling: {
-        [columnKey]: false,
-      },
-    });
-  };
-
   render() {
-    const { dataList, recycling } = this.state;
+    const { dataList } = this.state;
     const onColumnReorderEndCallback = this._onColumnReorderEndCallback;
-    const onColumnReorderStart = this.onColumnReorderStart;
     return (
       <Table
         rowHeight={30}
@@ -111,12 +104,11 @@ class ReorderCellTest extends React.Component {
         {this.state.columnOrder.map(function (columnKey, i) {
           return (
             <Column
-              allowCellsRecycling={_.get(recycling, columnKey, true)}
+              allowCellsRecycling={true}
               columnKey={columnKey}
               key={i}
               header={
                 <Plugins.ReorderCell
-                  onColumnReorderStart={onColumnReorderStart}
                   onColumnReorderEnd={onColumnReorderEndCallback}
                 >
                   {columnTitles[columnKey]}
@@ -180,17 +172,45 @@ describe('ReorderCell', () => {
     it('should be equal to new order after reordering', function () {
       const reorderCells = renderTable();
       const cell = reorderCells[0];
-      const reorderHandle = findRenderedComponentWithType(cell, ReorderHandle);
-      const reorderDiv = findRenderedDOMComponentWithTag(reorderHandle, 'div');
+      const reorderDiv = findRenderedDOMComponentWithClass(
+        cell,
+        cx('fixedDataTableCellLayout/columnReorderContainer')
+      );
+
+      // start dragging
       const clickEvent = new window.MouseEvent('mousedown', {
         bubbles: true,
         cancelable: false,
       });
       reorderDiv.dispatchEvent(clickEvent);
-      const nextCellWidth = 150;
+
       // Reordering cell should cross more than half of the next cell for swapping order
-      reorderHandle.onMouseMove(nextCellWidth / 2 + 1);
-      reorderHandle.onMouseUp();
+      const nextCellWidth = 150;
+      const targetMouseOffset = nextCellWidth / 2 + 1;
+
+      // drag until required position
+      const mouseMoveEvent = new window.MouseEvent('mousemove', {
+        bubbles: true,
+        cancelable: true,
+        clientX: targetMouseOffset,
+      });
+
+      // NOTE (pradeep): JSDOM doesn't seem to pass in clientX for `mousemove` events,
+      // which is crucial for DOMMouseMoveTracker to figure out the mouse position.
+      // I'm fixing this by rewiring DOMMouseMoveTracker.
+      DOMMouseMoveTracker.__Rewire__('FixedDataTableEventHelper', {
+        getCoordinatesFromEvent: () => ({ x: targetMouseOffset, y: 0 }),
+      });
+      document.body.dispatchEvent(mouseMoveEvent);
+      DOMMouseMoveTracker.__Rewire__.reset;
+
+      // finish dragging
+      let mouseUpEvent = new window.MouseEvent('mouseup', {
+        bubbles: true,
+        cancelable: true,
+      });
+      document.body.dispatchEvent(mouseUpEvent);
+
       const newOrderCells = scryRenderedComponentsWithType(
         renderedTree,
         ReorderCell

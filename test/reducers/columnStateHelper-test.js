@@ -6,11 +6,14 @@ import emptyFunction from '../../src/vendor_upstream/core/emptyFunction';
 import { assert } from 'chai';
 
 import columnStateHelper from '../../src/reducers/columnStateHelper';
+import cloneDeep from 'lodash/cloneDeep';
 
 describe('columnStateHelper', function () {
   describe('initialize', function () {
     let availableWidth;
     let oldState;
+    let newState;
+
     beforeEach(function () {
       oldState = {
         columnResizingData: {
@@ -19,6 +22,7 @@ describe('columnStateHelper', function () {
         isColumnResizing: true,
         scrollX: 300,
       };
+      newState = cloneDeep(oldState);
       availableWidth = 200;
 
       columnStateHelper.__Rewire__('columnWidths', () => ({
@@ -38,10 +42,10 @@ describe('columnStateHelper', function () {
     });
 
     it('should initialize column state as expected', function () {
-      const result = columnStateHelper.initialize(oldState, {}, {});
+      columnStateHelper.initialize(newState, {}, {});
 
       assert.deepEqual(
-        result,
+        newState,
         Object.assign(
           {
             maxScrollX: 400,
@@ -52,11 +56,11 @@ describe('columnStateHelper', function () {
     });
 
     it('should clamp scrollX to maxScrollX', function () {
-      oldState.scrollX = 700;
-      const result = columnStateHelper.initialize(oldState, {}, {});
+      newState.scrollX = 700;
+      columnStateHelper.initialize(newState, {}, {});
 
       assert.deepEqual(
-        result,
+        newState,
         Object.assign({}, oldState, {
           maxScrollX: 400,
           scrollX: 400,
@@ -65,16 +69,10 @@ describe('columnStateHelper', function () {
     });
 
     it('should use scrollLeft when specified', function () {
-      const result = columnStateHelper.initialize(
-        oldState,
-        {
-          scrollLeft: 100,
-        },
-        {}
-      );
+      columnStateHelper.initialize(newState, { scrollLeft: 100 }, {});
 
       assert.deepEqual(
-        result,
+        newState,
         Object.assign({}, oldState, {
           maxScrollX: 400,
           scrollX: 100,
@@ -83,16 +81,11 @@ describe('columnStateHelper', function () {
     });
 
     it('should overwrite column resizing from props', function () {
-      const result = columnStateHelper.initialize(
-        oldState,
-        {
-          isColumnResizing: false,
-        },
-        {}
-      );
+      newState.isColumnResizing = false;
+      columnStateHelper.initialize(newState, {}, {});
 
       assert.deepEqual(
-        result,
+        newState,
         Object.assign({}, oldState, {
           columnResizingData: {},
           isColumnResizing: false,
@@ -102,18 +95,12 @@ describe('columnStateHelper', function () {
     });
 
     it('should scroll to column when specified via prop', function () {
-      oldState.scrollX = 0;
+      newState.scrollX = 0;
       availableWidth = 350;
-      const result = columnStateHelper.initialize(
-        oldState,
-        {
-          scrollToColumn: 2,
-        },
-        {}
-      );
+      columnStateHelper.initialize(newState, { scrollToColumn: 2 }, {});
 
       assert.deepEqual(
-        result,
+        newState,
         Object.assign({}, oldState, {
           maxScrollX: 250,
           scrollX: 100,
@@ -122,10 +109,10 @@ describe('columnStateHelper', function () {
     });
 
     it('should scroll to column when behind existing scroll', function () {
-      oldState.scrollX = 250;
+      newState.scrollX = 250;
       availableWidth = 350;
-      const result = columnStateHelper.initialize(
-        oldState,
+      columnStateHelper.initialize(
+        newState,
         {
           scrollToColumn: 2,
         },
@@ -133,7 +120,7 @@ describe('columnStateHelper', function () {
       );
 
       assert.deepEqual(
-        result,
+        newState,
         Object.assign({}, oldState, {
           maxScrollX: 250,
           scrollX: 150,
@@ -142,10 +129,10 @@ describe('columnStateHelper', function () {
     });
 
     it('should not change scroll when column already on screen', function () {
-      oldState.scrollX = 125;
+      newState.scrollX = 125;
       availableWidth = 350;
-      const result = columnStateHelper.initialize(
-        oldState,
+      columnStateHelper.initialize(
+        newState,
         {
           scrollToColumn: 2,
         },
@@ -153,7 +140,7 @@ describe('columnStateHelper', function () {
       );
 
       assert.deepEqual(
-        result,
+        newState,
         Object.assign({}, oldState, {
           maxScrollX: 250,
           scrollX: 125,
@@ -162,10 +149,10 @@ describe('columnStateHelper', function () {
     });
 
     it('should not change scroll when column is fixed', function () {
-      oldState.scrollX = 250;
+      newState.scrollX = 250;
       availableWidth = 350;
-      const result = columnStateHelper.initialize(
-        oldState,
+      columnStateHelper.initialize(
+        newState,
         {
           scrollToColumn: 0,
         },
@@ -173,7 +160,7 @@ describe('columnStateHelper', function () {
       );
 
       assert.deepEqual(
-        result,
+        newState,
         Object.assign({}, oldState, {
           maxScrollX: 250,
           scrollX: 250,
@@ -182,10 +169,10 @@ describe('columnStateHelper', function () {
     });
 
     it('should not change scroll when column is unchanged', function () {
-      oldState.scrollX = 250;
+      newState.scrollX = 250;
       availableWidth = 350;
-      const result = columnStateHelper.initialize(
-        oldState,
+      columnStateHelper.initialize(
+        newState,
         {
           scrollToColumn: 2,
         },
@@ -195,7 +182,7 @@ describe('columnStateHelper', function () {
       );
 
       assert.deepEqual(
-        result,
+        newState,
         Object.assign({}, oldState, {
           maxScrollX: 250,
           scrollX: 250,

@@ -31,6 +31,7 @@ function FixedDataTableTranslateDOMPosition(
       x *= isRTL ? -1 : 1;
     }
 
+    style.left = 0;
     translateDOMPositionXY(style, x, y);
   }
 

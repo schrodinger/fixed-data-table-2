@@ -1,6 +1,6 @@
 {
   "name": "fixed-data-table-2",
-  "version": "0.0.4-experimental-column-virtualization",
+  "version": "0.0.7-experimental-column-virtualization",
   "description": "A React table component designed to allow presenting thousands of rows of data.",
   "main": "main.js",
   "peerDependencies": {
@@ -44,7 +44,7 @@
     "glob": "7.1.4",
     "html-loader": "0.5.5",
     "husky": "^4.2.3",
-    "jsdom": "9.12.0",
+    "jsdom": "^19.0.0",
     "less": "3.10.3",
     "less-loader": "5.0.0",
     "lint-staged": "^10.0.8",
