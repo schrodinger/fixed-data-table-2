@@ -318,15 +318,53 @@ class FixedDataTable extends React.Component {
 
     /**
      * Callback that is called when scrolling starts. The current horizontal and vertical scroll values,
-     * and the current first and last row indexes will be provided to the callback.
+     * the current first and last row indexes, and the current first and last column indexes
+     * will be provided to the callback.
+     *
+     * ```
+     * function(
+     *   scrollX, // the current horizontal scroll value
+     *   scrollY, // the current vertical scroll value
+     *   firstRowIndex: number, // the first visible row in the viewport
+     *   lastRowIndex: number, // the last visible row in the viewport
+     *   firstColumnIndex: number, // the first visible column in the viewport
+     *   lastColumnIndex: number, // the last visible column in the viewport
+     * )
+     * ```
      */
     onScrollStart: PropTypes.func,
 
     /**
      * Callback that is called when scrolling ends. The new horizontal and vertical scroll values,
-     * and the new first and last row indexes will be provided to the callback.
+     * the new first and last row indexes, and the new first and last column indexes
+     * will be provided to the callback.
+     *
+     * ```
+     * function(
+     *   scrollX, // the new horizontal scroll value
+     *   scrollY, // the new vertical scroll value
+     *   firstRowIndex: number, // the first visible row in the viewport
+     *   lastRowIndex: number, // the last visible row in the viewport
+     *   firstColumnIndex: number, // the first visible column in the viewport
+     *   lastColumnIndex: number, // the last visible column in the viewport
+     * )
+     * ```
      */
     onScrollEnd: PropTypes.func,
+
+    /**
+     * Callback that is called when the set of visible columns/rows inside the viewport changes.
+     *
+     * ```
+     * function({
+     *   firstRowIndex: number, // the first visible row in the viewport
+     *   lastRowIndex: number, // the last visible row in the viewport
+     *   firstColumnIndex: number, // the first visible column in the viewport
+     *   lastColumnIndex: number, // the last visible column in the viewport
+     * })
+     * ```
+     */
+    onViewportChange: PropTypes.func,
 
     /**
      * If enabled scroll events will not be propagated outside of the table.
@@ -630,6 +668,42 @@ class FixedDataTable extends React.Component {
     }
   }
 
+  _reportViewportInfo = (prevProps) => {
+    const {
+      firstColumnIndex,
+      firstRowIndex,
+      endColumnIndex: lastColumnIndex,
+      endRowIndex: lastRowIndex,
+      onViewportChange,
+    } = this.props;
+
+    const {
+      firstColumnIndex: oldFirstColumnIndex,
+      firstRowIndex: oldFirstRowIndex,
+      endColumnIndex: oldLastColumnIndex,
+      endRowIndex: oldLastRowIndex,
+    } = prevProps;
+
+    if (!onViewportChange) {
+      return;
+    }
+
+    // check if any of the visible set of columns/rows have changed
+    if (
+      firstColumnIndex !== oldFirstColumnIndex ||
+      firstRowIndex !== oldFirstRowIndex ||
+      lastColumnIndex !== oldLastColumnIndex ||
+      lastRowIndex !== oldLastRowIndex
+    ) {
+      onViewportChange({
+        firstRowIndex,
+        lastRowIndex,
+        firstColumnIndex,
+        lastColumnIndex,
+      });
+    }
+  };
+
   _reportContentHeight = () => {
     const { contentHeight } = tableHeightsSelector(this.props);
     const { onContentHeightChange } = this.props;
@@ -657,12 +731,14 @@ class FixedDataTable extends React.Component {
           { passive: false }
         );
     }
+    this._reportViewportInfo({});
     this._reportContentHeight();
     this._reportScrollBarsUpdates();
   }
 
   componentDidUpdate(/*object*/ prevProps) {
     this._didScroll(prevProps);
+    this._reportViewportInfo(prevProps);
     this._reportContentHeight();
     this._reportScrollBarsUpdates();
   }
@@ -1105,7 +1181,7 @@ class FixedDataTable extends React.Component {
   };
 
   /**
-   * Calls the user specified scroll callbacks -- onScrollStart, onScrollEnd, onHorizontalScroll, and onVerticalScroll.
+   * Calls the user specified scroll callbacks -- onScrollStart, onScrollEnd, onHorizontalScroll, onVerticalScroll.
    */
   _didScroll = (/* !object */ prevProps) => {
     const {
@@ -1119,8 +1195,10 @@ class FixedDataTable extends React.Component {
     } = this.props;
 
     const {
-      endRowIndex: oldEndRowIndex,
       firstRowIndex: oldFirstRowIndex,
+      firstColumnIndex: oldFirstColumnIndex,
+      endRowIndex: oldLastRowIndex,
+      endColumnIndex: oldLastColumnIndex,
       scrollX: oldScrollX,
       scrollY: oldScrollY,
       tableSize: { ownerHeight: oldOwnerHeight },
@@ -1141,7 +1219,14 @@ class FixedDataTable extends React.Component {
 
     // only call onScrollStart if scrolling wasn't on previously
     if (!oldScrolling && scrolling && onScrollStart) {
-      onScrollStart(oldScrollX, oldScrollY, oldFirstRowIndex, oldEndRowIndex);
+      onScrollStart(
+        oldScrollX,
+        oldScrollY,
+        oldFirstRowIndex,
+        oldLastRowIndex,
+        oldFirstColumnIndex,
+        oldLastColumnIndex
+      );
     }
 
     if (scrollXChanged && onHorizontalScroll) {
