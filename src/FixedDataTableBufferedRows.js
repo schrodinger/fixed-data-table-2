@@ -13,6 +13,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import inRange from 'lodash/inRange';
+import get from 'lodash/get';
+import sortBy from 'lodash/sortBy';
 
 import cx from './vendor_upstream/stubs/cx';
 import emptyFunction from './vendor_upstream/core/emptyFunction';
@@ -122,10 +124,12 @@ class FixedDataTableBufferedRows extends React.Component {
       let rowIndex = rowsToRender[i];
       // if the row doesn't exist in the buffer set, then take the previous one
       if (rowIndex === undefined) {
-        rowIndex =
-          this._staticRowArray[i] && this._staticRowArray[i].props.index;
+        rowIndex = this._staticRowArray[i]
+          ? this._staticRowArray[i].props.index
+          : undefined;
         if (rowIndex === undefined) {
           this._staticRowArray[i] = null;
+          continue;
         }
       }
       const rowOffsetTop =
@@ -144,8 +148,8 @@ class FixedDataTableBufferedRows extends React.Component {
     FixedDataTableTranslateDOMPosition(style, 0, containerOffsetTop, false);
 
     // NOTE (pradeep): Sort the rows by row index so that they appear with the right order in the DOM (see #221)
-    const sortedRows = _.sortBy(this._staticRowArray, (row) =>
-      _.get(row, 'props.ariaRowIndex', Infinity)
+    const sortedRows = sortBy(this._staticRowArray, (row) =>
+      get(row, 'props.ariaRowIndex', Infinity)
     );
 
     return <div style={style}>{sortedRows}</div>;
