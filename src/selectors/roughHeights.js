@@ -120,19 +120,16 @@ function roughHeights(
    */
   let minAvailableHeight = roughAvailableHeight;
   let maxAvailableHeight = roughAvailableHeight;
-  let minAvailableWidth = roughAvailableWidth;
+  const minAvailableWidth = roughAvailableWidth - scrollbarYWidth;
   let maxAvailableWidth = roughAvailableWidth;
   switch (scrollStateX) {
     case ScrollbarState.VISIBLE: {
       minAvailableHeight -= scrollbarXHeight;
       maxAvailableHeight -= scrollbarXHeight;
-      minAvailableWidth -= scrollbarYWidth;
-      maxAvailableWidth -= scrollbarYWidth;
       break;
     }
     case ScrollbarState.JOINT_SCROLLBARS: {
       minAvailableHeight -= scrollbarXHeight;
-      minAvailableWidth -= scrollbarYWidth;
       break;
     }
   }
