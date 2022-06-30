@@ -119,12 +119,19 @@ exports.ExamplePages = {
     title: 'Column Groups',
     description: 'Table with column groupings.',
   },
+  PAGINATION_EXAMPLE: {
+    location: 'example-pagination.html',
+    fileName: 'PaginationExample.js',
+    title: 'Pagination',
+    description:
+      'A table example that pages in data as the user scrolls. We fake this by having a promise that resolves after a few milliseconds',
+  },
   INFINITE_SCROLL_EXAMPLE: {
     location: 'example-infinite-scroll.html',
     fileName: 'InfiniteScrollExample.js',
     title: 'Infinite Scroll',
     description:
-      'A table example that pages in data as the user scrolls. We fake this by having a promise that resolves after a few milliseconds',
+      'A table example where we add more data as the user scrolls near the end of the table, thus simulating an Infinite Scroll.',
   },
   FILTER_EXAMPLE: {
     location: 'example-filter.html',

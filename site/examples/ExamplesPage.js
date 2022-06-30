@@ -48,6 +48,8 @@ var EXAMPLE_COMPONENTS = {
     .location]: require('../../examples/FlexGrowExample'),
   [ExamplePages.COLUMN_GROUPS_EXAMPLE
     .location]: require('../../examples/ColumnGroupsExample'),
+  [ExamplePages.PAGINATION_EXAMPLE
+    .location]: require('../../examples/PaginationExample'),
   [ExamplePages.INFINITE_SCROLL_EXAMPLE
     .location]: require('../../examples/InfiniteScrollExample'),
   [ExamplePages.FILTER_EXAMPLE
