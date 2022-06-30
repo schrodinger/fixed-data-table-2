@@ -94,7 +94,7 @@
   "bugs": {
     "url": "https://github.com/schrodinger/fixed-data-table-2/issues"
   },
-  "homepage": "http://schrodinger.github.io/fixed-data-table-2",
+  "homepage": "https://schrodinger.github.io/fixed-data-table-2",
   "tags": [
     "react",
     "table"
