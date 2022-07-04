@@ -1,0 +1,43 @@
+@import 'variables.less';
+
+.page-api-reference .docContents {
+  h1 {
+    margin-bottom: 0;
+  }
+
+  h2 {
+    color: #79c;
+    // border-top: 1px dashed black;
+
+    margin-top: 5px;
+    margin-bottom: 0;
+  }
+
+  // add a dotted and spaced border between each header section
+  h2:not(:first-of-type) {
+    background-image: linear-gradient(to right, #333 50%, rgba(255, 255, 255, 0) 0%);
+    background-position: top;
+    background-size: 15px 2px;
+    background-repeat: repeat-x;
+    padding-top: 15px;
+    margin-top: 40px;
+  }
+
+  h4 {
+    margin-bottom: 0px;
+    color: #666;
+  }
+
+  p {
+    margin-top: 0.25em;
+    color: black;
+  }
+
+  code {
+    overflow: auto;
+    border: 1px solid #004369;
+    border-radius: 10px;
+    background: #e0e0e06e;
+    font-size: 0.8em;
+  }
+}

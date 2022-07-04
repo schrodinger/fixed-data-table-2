@@ -20,8 +20,8 @@ exports.DocsPages = {
       title: 'Codebase Overview',
     },
   },
-  API: {
-    groupTitle: 'API',
+  COMPONENTS: {
+    groupTitle: 'COMPONENTS',
     TABLE_API: { location: 'api-table.html', title: 'Table' },
     COLUMN_API: { location: 'api-column.html', title: 'Column' },
     COLUMNGROUP_API: {
@@ -30,10 +30,23 @@ exports.DocsPages = {
     },
     CELL_API: { location: 'api-cell.html', title: 'Cell' },
   },
-  PLUGIN_API: {
-    groupTitle: 'Plugins API',
+  PLUGINS: {
+    groupTitle: 'Plugins',
     REORDERCELL_API: { location: 'api-reordercell.html', title: 'ReorderCell' },
     RESIZECELL_API: { location: 'api-resizecell.html', title: 'ResizeCell' },
+  },
+  PUBLIC_API: {
+    groupTitle: 'Public API',
+    OVERVIEW: { location: 'public-api-overview.html', title: 'Overview' },
+    GETTING_STARTED: {
+      location: 'public-api-getting-started.html',
+      title: 'Getting Started',
+    },
+    API_REFERENCE: {
+      location: 'public-api-api-reference.html',
+      title: 'API Reference',
+      pageClassname: 'page-api-reference',
+    },
   },
 };
 

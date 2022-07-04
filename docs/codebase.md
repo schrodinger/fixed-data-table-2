@@ -5,9 +5,11 @@ Please ask questions or encourage us to add more detail where you think it would
 
 File Descriptions
 ---------------
-### Public API
+
 * FixedDataTableRoot.js
   * Provides public exports
+
+### Components
 * FixedDataTableContainer.js
   * Top level of component tree
   * Wraps Actual Table component with the Redux store
@@ -44,19 +46,29 @@ File Descriptions
   * Handles column reordering display logic
   * Also renders column resize and reorder handles
 
-### Additional Components
+### Plugins
+Plugins are reusable components/logic that can be plugged into FDT to extend functionality.
+
 * Scrollbar.js
   * Renders the horizontal and vertical scrollbars for the table
-  * Used by FixedDataTable.js
-* ResizeReorderCell.js
-  * Renders ReorderHandle and ResizerKnob which can be used in resizing/reordering the columns
-  * Used by FixedDataTableCell.js
+  * Used as the default scrollbar component by FixedDataTable.js
+<br>
+<br>
+* ReorderCell.js
+  * A cell HOC that enables reordering functionality.
 * ReorderHandle.js
-  * Contains reordering logic
+  * The knob that appears on edge of the cell. Drag this to reorder the cell.
+* DragProxy.js
+  * Component that takes care of reordering/drag logic.
+  * This is rendered when reordering starts and is destroyed when reordering ends.
+<br>
+<br>
+* ResizeCell.js
+  * A cell HOC that enables resizing functionality.
 * ResizerKnob.js
-  * Renders blue thick line when hover on column separation area
+  * A blue thick line shown when hovered on edge of the cell. Drag this to resize the cell.
 * ResizerLine.js
-  * Renders blue line during reordering
+  * A blue vertical line that shows the target width.
 
 ### State Management
 * scrollAnchor.js
@@ -107,10 +119,15 @@ File Descriptions
   * Creates a selector that gets recomputed only if a shallow equal check over the arguments fail
   * Used to create most of our selectors
 
-Public API Index
+Public Exports
 ---------------
 * Table (FixedDataTableContainer.js)
-* Cell (FixedDataTableCellDefault.js)
+* DataCell (FixedDataTableCellDefault.js)
+* Cell (FixedDataTableCellDefaultDeprecated.js)
 * Column (FixedDataTableColumn.js)
 * ColumnGroup (FixedDataTableColumnGroup.js)
-* Plugins.ResizeReorderCell (ResizeReorderCell.js)
+* Context (FixedDataTableContext.js)
+* Plugins
+  * ResizeCell (Plugins/ResizeCell.js)
+  * ReorderCell (Plugins/ReorderCell.js)
+* version (eg: v2.9.13)

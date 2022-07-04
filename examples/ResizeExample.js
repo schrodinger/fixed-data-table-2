@@ -16,7 +16,7 @@ class ResizeExample extends React.Component {
     this.state = {
       dataList: new FakeObjectDataListStore(1000000),
       columnWidths: {
-        firstName: 240,
+        firstName: 150,
         lastName: 150,
         sentence: 140,
         companyName: 60,
@@ -50,6 +50,8 @@ class ResizeExample extends React.Component {
           header={
             <Plugins.ResizeCell
               onColumnResizeEnd={this._onColumnResizeEndCallback}
+              minWidth={150}
+              maxWidth={300}
             >
               First Name{' '}
             </Plugins.ResizeCell>
@@ -66,7 +68,7 @@ class ResizeExample extends React.Component {
               maxWidth={170}
               onColumnResizeEnd={this._onColumnResizeEndCallback}
             >
-              Last Name (min/max constrained)
+              Last Name
             </Plugins.ResizeCell>
           }
           cell={<TextCell data={dataList} />}

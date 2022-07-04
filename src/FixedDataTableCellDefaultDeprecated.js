@@ -41,6 +41,8 @@ import joinClasses from './vendor_upstream/core/joinClasses';
  *   />
  * );
  * ```
+ *
+ * @deprecated
  */
 class FixedDataTableCellDefault extends React.Component {
   static propTypes = {
