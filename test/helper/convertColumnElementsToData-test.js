@@ -10,7 +10,7 @@ describe('convertColumnElementsToData', function () {
   before(function () {
     convertColumnElementsToData.__Rewire__('React', {
       Children: {
-        forEach: forEach,
+        forEach,
       },
     });
   });

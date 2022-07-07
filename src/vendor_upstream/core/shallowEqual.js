@@ -32,16 +32,16 @@ function shallowEqual(objA: mixed, objB: mixed): boolean {
     return false;
   }
 
-  var keysA = Object.keys(objA);
-  var keysB = Object.keys(objB);
+  let keysA = Object.keys(objA);
+  let keysB = Object.keys(objB);
 
   if (keysA.length !== keysB.length) {
     return false;
   }
 
   // Test for A's keys different from B.
-  var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
-  for (var i = 0; i < keysA.length; i++) {
+  let bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
+  for (let i = 0; i < keysA.length; i++) {
     if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
       return false;
     }

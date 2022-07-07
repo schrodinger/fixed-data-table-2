@@ -205,7 +205,7 @@ class FixedDataTableRowImpl extends React.Component {
       'public/fixedDataTableRow/even': this.props.index % 2 === 0,
     });
     const fixedColumnsWidth = sumPropWidths(this.props.fixedColumns);
-    var fixedColumns = (
+    let fixedColumns = (
       <FixedDataTableCellGroup
         key="fixed_cells"
         isScrolling={this.props.isScrolling}
@@ -232,7 +232,7 @@ class FixedDataTableRowImpl extends React.Component {
     const scrollbarOffset = this.props.showScrollbarY
       ? this.props.scrollbarYWidth
       : 0;
-    var fixedRightColumns = (
+    let fixedRightColumns = (
       <FixedDataTableCellGroup
         key="fixed_right_cells"
         isScrolling={this.props.isScrolling}
@@ -366,7 +366,7 @@ class FixedDataTableRowImpl extends React.Component {
         width: this.props.width,
       };
 
-      var rowExpanded;
+      let rowExpanded;
       if (React.isValidElement(this.props.rowExpanded)) {
         rowExpanded = React.cloneElement(
           this.props.rowExpanded,

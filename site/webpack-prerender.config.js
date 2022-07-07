@@ -1,8 +1,8 @@
-var path = require('path');
-var webpack = require('webpack');
+let path = require('path');
+let webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 
-var isDev = process.env.NODE_ENV !== 'production';
+let isDev = process.env.NODE_ENV !== 'production';
 
 module.exports = {
   mode: isDev ? 'development' : 'production',

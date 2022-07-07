@@ -1,8 +1,8 @@
 'use strict';
 
-var React = require('react');
+let React = require('react');
 
-var PropTypes = require('prop-types');
+let PropTypes = require('prop-types');
 
 class StaticHTMLBlock extends React.Component {
   static propType = {
@@ -14,7 +14,7 @@ class StaticHTMLBlock extends React.Component {
   }
 
   render() {
-    var { html, ...props } = this.props;
+    let { html, ...props } = this.props;
     return <div dangerouslySetInnerHTML={{ __html: html }} {...props} />;
   }
 }

@@ -67,12 +67,12 @@ class ReorderCellTest extends React.Component {
   }
 
   _onColumnReorderEndCallback = (event) => {
-    var columnOrder = this.state.columnOrder.filter((columnKey) => {
+    let columnOrder = this.state.columnOrder.filter((columnKey) => {
       return columnKey !== event.reorderColumn;
     });
 
     if (event.columnAfter) {
-      var index = columnOrder.indexOf(event.columnAfter);
+      let index = columnOrder.indexOf(event.columnAfter);
       columnOrder.splice(index, 0, event.reorderColumn);
     } else {
       if (fixedColumns.indexOf(event.reorderColumn) !== -1) {
@@ -82,7 +82,7 @@ class ReorderCellTest extends React.Component {
       }
     }
     this.setState({
-      columnOrder: columnOrder,
+      columnOrder,
       recycling: {},
     });
   };

@@ -19,7 +19,7 @@ class FlexGrowExample extends React.Component {
   }
 
   render() {
-    var { dataList } = this.state;
+    let { dataList } = this.state;
     return (
       <Table
         rowHeight={50}

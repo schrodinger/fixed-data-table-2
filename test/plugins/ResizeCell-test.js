@@ -49,7 +49,7 @@ class ResizeCellTest extends React.Component {
   };
 
   render() {
-    var { dataList, columnWidths } = this.state;
+    let { dataList, columnWidths } = this.state;
     return (
       <Table
         rowHeight={30}

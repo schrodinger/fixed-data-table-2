@@ -63,12 +63,12 @@ class InfiniteScrollExample extends React.Component {
   //Just need to force a refresh
   _updateData(end) {
     this.setState({
-      end: end,
+      end,
     });
   }
 
   render() {
-    var { pagedData } = this.state;
+    let { pagedData } = this.state;
 
     return (
       <div>

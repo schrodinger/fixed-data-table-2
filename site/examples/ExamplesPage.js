@@ -17,15 +17,14 @@ require('fixed-data-table-2/css/style/fixedDataTableColumnResizerLine.css');
 require('fixed-data-table-2/css/style/fixedDataTableColumnReorder.css');
 require('fixed-data-table-2/css/style/fixedDataTableRow.css');
 require('fixed-data-table-2/css/style/Scrollbar.css');
+let ExampleHeader = require('./ExampleHeader');
+let ExamplesWrapper = require('./ExamplesWrapper');
+let React = require('react');
+let Constants = require('../Constants');
 
-var ExampleHeader = require('./ExampleHeader');
-var ExamplesWrapper = require('./ExamplesWrapper');
-var React = require('react');
-var Constants = require('../Constants');
+let ExamplePages = Constants.ExamplePages;
 
-var ExamplePages = Constants.ExamplePages;
-
-var EXAMPLE_COMPONENTS = {
+let EXAMPLE_COMPONENTS = {
   [ExamplePages.OBJECT_DATA_EXAMPLE
     .location]: require('../../examples/ObjectDataExample'),
   [ExamplePages.RESIZE_EXAMPLE
@@ -96,7 +95,7 @@ class ExamplesPage extends React.Component {
   }
 
   _renderPage() {
-    var Example = EXAMPLE_COMPONENTS[this.props.page.location].default;
+    let Example = EXAMPLE_COMPONENTS[this.props.page.location].default;
 
     return (
       <Example height={this.state.tableHeight} width={this.state.tableWidth} />
@@ -105,7 +104,7 @@ class ExamplesPage extends React.Component {
 
   componentDidMount() {
     this._update();
-    var win = window;
+    let win = window;
     if (win.addEventListener) {
       win.addEventListener('resize', this._onResize, false);
     } else if (win.attachEvent) {
@@ -121,9 +120,9 @@ class ExamplesPage extends React.Component {
   }
 
   _update() {
-    var win = window;
+    let win = window;
 
-    var widthOffset = win.innerWidth < 680 ? 0 : 240;
+    let widthOffset = win.innerWidth < 680 ? 0 : 240;
 
     this.setState({
       renderPage: true,

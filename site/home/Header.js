@@ -1,16 +1,16 @@
 'use strict';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Constants = require('../Constants');
+let React = require('react');
+let ReactDOM = require('react-dom');
+let Constants = require('../Constants');
 
-var FIXED_THRESHOLD = 680;
-var MAX_HEIGHT = 800;
-var HEADER_HEIGHT = 50;
-var EMPTY_OBJECT = {};
-var GITHUB_URL = 'https://github.com/schrodinger/fixed-data-table-2';
-var DOCS_DEFAULT_LOCATION = Constants.DOCS_DEFAULT.location;
-var EXAMPLES_DEFAULT_LOCATION = Constants.EXAMPLES_DEFAULT.location;
+let FIXED_THRESHOLD = 680;
+let MAX_HEIGHT = 800;
+let HEADER_HEIGHT = 50;
+let EMPTY_OBJECT = {};
+let GITHUB_URL = 'https://github.com/schrodinger/fixed-data-table-2';
+let DOCS_DEFAULT_LOCATION = Constants.DOCS_DEFAULT.location;
+let EXAMPLES_DEFAULT_LOCATION = Constants.EXAMPLES_DEFAULT.location;
 
 class Header extends React.Component {
   constructor(props) {
@@ -50,7 +50,7 @@ class Header extends React.Component {
   };
 
   handleScroll = (event) => {
-    var scrollPos = window.scrollY;
+    let scrollPos = window.scrollY;
     scrollPos = scrollPos < this.offsetHeight ? scrollPos : this.offsetHeight;
     this.setState({ scroll: Math.max(scrollPos, 0) });
   };
@@ -63,7 +63,7 @@ class Header extends React.Component {
   }
 
   _renderHero() {
-    var HeroTable = require('./HeroTable');
+    let HeroTable = require('./HeroTable');
 
     return (
       <div className="heroContainer">
@@ -78,15 +78,15 @@ class Header extends React.Component {
   }
 
   render() {
-    var coverHeight = this.offsetHeight - this.state.scroll;
-    var topClip = coverHeight < 0 ? 0 : coverHeight;
+    let coverHeight = this.offsetHeight - this.state.scroll;
+    let topClip = coverHeight < 0 ? 0 : coverHeight;
     topClip = coverHeight > HEADER_HEIGHT ? HEADER_HEIGHT : coverHeight;
 
-    var clipStyles = {
+    let clipStyles = {
       clip: 'rect(' + topClip + 'px, 5000px, ' + HEADER_HEIGHT + 'px, 0)',
     };
 
-    var miniHeaderClasses = 'miniHeader';
+    let miniHeaderClasses = 'miniHeader';
     if (!this.state.renderHero) {
       miniHeaderClasses += ' notLoaded';
     }

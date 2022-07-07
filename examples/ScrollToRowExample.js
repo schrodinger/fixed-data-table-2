@@ -14,7 +14,7 @@ class ScrollToRowExample extends React.Component {
     super(props);
 
     this._dataList = new FakeObjectDataListStore(2000);
-    var data = this._dataList.getAll();
+    let data = this._dataList.getAll();
 
     this.state = {
       filteredDataList: this._dataList,
@@ -36,11 +36,11 @@ class ScrollToRowExample extends React.Component {
       });
     }
 
-    var filterBy = e.target.value.toLowerCase();
-    var size = this._dataList.getSize();
-    var filteredIndexes = [];
-    for (var index = 0; index < size; index++) {
-      var { firstName } = this._dataList.getObjectAt(index);
+    let filterBy = e.target.value.toLowerCase();
+    let size = this._dataList.getSize();
+    let filteredIndexes = [];
+    for (let index = 0; index < size; index++) {
+      let { firstName } = this._dataList.getObjectAt(index);
       if (firstName.toLowerCase().indexOf(filterBy) !== -1) {
         filteredIndexes.push(index);
       }
@@ -74,9 +74,9 @@ class ScrollToRowExample extends React.Component {
   }
 
   render() {
-    var { filteredDataList, currentIndex, matchedRows } = this.state;
+    let { filteredDataList, currentIndex, matchedRows } = this.state;
 
-    var search = matchedRows.length ? (
+    let search = matchedRows.length ? (
       <span>
         <button disabled={currentIndex === 0} onClick={this._prevSearch}>
           {'<'}

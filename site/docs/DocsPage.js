@@ -2,15 +2,15 @@
 
 require('./docsPageStyle.less');
 
-var MiniHeader = require('../MiniHeader');
-var SideBar = require('../SideBar');
-var StaticHTMLBlock = require('../StaticHTMLBlock');
-var React = require('react');
-var Constants = require('../Constants');
+let MiniHeader = require('../MiniHeader');
+let SideBar = require('../SideBar');
+let StaticHTMLBlock = require('../StaticHTMLBlock');
+let React = require('react');
+let Constants = require('../Constants');
 
-var DocsPages = Constants.DocsPages;
+let DocsPages = Constants.DocsPages;
 
-var DOCS_MARKDOWN_FILES = {
+let DOCS_MARKDOWN_FILES = {
   [DocsPages.DOCS.GETTING_STARTED.location]: require('../../docs/README.md'),
   [DocsPages.DOCS.ROADMAP.location]: require('../../docs/roadmap.md'),
   [DocsPages.DOCS.CODEBASE_OVERVIEW
@@ -32,7 +32,7 @@ var DOCS_MARKDOWN_FILES = {
 
 class DocsPage extends React.Component {
   render() {
-    var HTML = DOCS_MARKDOWN_FILES[this.props.page.location];
+    let HTML = DOCS_MARKDOWN_FILES[this.props.page.location];
 
     return (
       <div className="docsPage">

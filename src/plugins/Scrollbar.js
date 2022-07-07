@@ -506,7 +506,7 @@ class Scrollbar extends React.PureComponent {
 
     event.preventDefault();
 
-    var props = this.props;
+    let props = this.props;
     this._setNextState(
       this._calculateState(
         this.state.position + distance * direction,

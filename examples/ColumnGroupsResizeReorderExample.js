@@ -9,21 +9,21 @@ import { TextCell } from './helpers/cells';
 import { Table, Column, ColumnGroup, Plugins } from 'fixed-data-table-2';
 import React from 'react';
 
-var columnGroupTitles = {
+let columnGroupTitles = {
   name: 'Name',
   about: 'About',
 };
 
-var columnTitles = {
+let columnTitles = {
   firstName: 'First Name',
   lastName: 'Last Name',
   sentence: 'Sentence',
   companyName: 'Company',
 };
 
-var fixedColumnGroups = [];
+let fixedColumnGroups = [];
 
-var fixedColumns = [];
+let fixedColumns = [];
 
 class ColumnGroupsExample extends React.Component {
   constructor(props) {
@@ -46,12 +46,12 @@ class ColumnGroupsExample extends React.Component {
   }
 
   _onColumnGroupReorderEndCallback = (event) => {
-    var columnGroupOrder = this.state.columnGroupOrder.filter((columnKey) => {
+    let columnGroupOrder = this.state.columnGroupOrder.filter((columnKey) => {
       return columnKey !== event.reorderColumn;
     });
 
     if (event.columnAfter) {
-      var index = columnGroupOrder.indexOf(event.columnAfter);
+      let index = columnGroupOrder.indexOf(event.columnAfter);
       columnGroupOrder.splice(index, 0, event.reorderColumn);
     } else {
       if (fixedColumnGroups.indexOf(event.reorderColumn) !== -1) {
@@ -65,12 +65,12 @@ class ColumnGroupsExample extends React.Component {
       }
     }
     this.setState({
-      columnGroupOrder: columnGroupOrder,
+      columnGroupOrder,
     });
   };
 
   findColumnGroup = (columnKey) => {
-    for (var groupKey in this.state.columnOrder) {
+    for (let groupKey in this.state.columnOrder) {
       for (const cKey of this.state.columnOrder[groupKey]) {
         if (cKey == columnKey) {
           return groupKey;
@@ -81,15 +81,15 @@ class ColumnGroupsExample extends React.Component {
   };
 
   _onColumnReorderEndCallback = (event) => {
-    var columnGroup = this.findColumnGroup(event.reorderColumn);
-    var columnOrder = this.state.columnOrder[columnGroup].filter(
+    let columnGroup = this.findColumnGroup(event.reorderColumn);
+    let columnOrder = this.state.columnOrder[columnGroup].filter(
       (columnKey) => {
         return columnKey !== event.reorderColumn;
       }
     );
 
-    var columnBeforeIndex = columnOrder.indexOf(event.columnBefore);
-    var columnAfterIndex = columnOrder.indexOf(event.columnAfter);
+    let columnBeforeIndex = columnOrder.indexOf(event.columnBefore);
+    let columnAfterIndex = columnOrder.indexOf(event.columnAfter);
 
     if (columnBeforeIndex == -1 && columnAfterIndex == -1) {
       return;
@@ -102,7 +102,7 @@ class ColumnGroupsExample extends React.Component {
         columnOrder.push(event.reorderColumn);
       }
     }
-    var newColumnOrder = { ...this.state.columnOrder };
+    let newColumnOrder = { ...this.state.columnOrder };
     newColumnOrder[columnGroup] = columnOrder;
     this.setState({
       columnOrder: newColumnOrder,
@@ -110,10 +110,10 @@ class ColumnGroupsExample extends React.Component {
   };
 
   _onColumnGroupResizeEndCallback = (newColumnGroupWidth, columnGroupKey) => {
-    var columnWidths = { ...this.state.columnWidths };
-    var currentColumns = this.state.columnOrder[columnGroupKey];
-    var totalWidth = 0;
-    for (var key of currentColumns) {
+    let columnWidths = { ...this.state.columnWidths };
+    let currentColumns = this.state.columnOrder[columnGroupKey];
+    let totalWidth = 0;
+    for (let key of currentColumns) {
       totalWidth += columnWidths[key];
     }
 
@@ -121,7 +121,7 @@ class ColumnGroupsExample extends React.Component {
     const perColumnChange = Math.floor(widthChange / currentColumns.length);
     const remainderWidth = Math.abs(widthChange) % currentColumns.length;
 
-    for (var key of currentColumns) {
+    for (let key of currentColumns) {
       columnWidths[key] += perColumnChange;
     }
     columnWidths[Object.keys(currentColumns)[0]] += remainderWidth;
@@ -141,11 +141,11 @@ class ColumnGroupsExample extends React.Component {
   };
 
   render() {
-    var { dataList, columnWidths, columnOrder } = this.state;
-    var onColumnGroupReorderEndCallback = this._onColumnGroupReorderEndCallback;
-    var onColumnReorderEndCallback = this._onColumnReorderEndCallback;
-    var onColumnGroupResizeEndCallback = this._onColumnGroupResizeEndCallback;
-    var onColumnResizeEndCallback = this._onColumnResizeEndCallback;
+    let { dataList, columnWidths, columnOrder } = this.state;
+    let onColumnGroupReorderEndCallback = this._onColumnGroupReorderEndCallback;
+    let onColumnReorderEndCallback = this._onColumnReorderEndCallback;
+    let onColumnGroupResizeEndCallback = this._onColumnGroupResizeEndCallback;
+    let onColumnResizeEndCallback = this._onColumnResizeEndCallback;
 
     return (
       <Table

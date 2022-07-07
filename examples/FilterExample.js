@@ -44,11 +44,11 @@ class FilterExample extends React.Component {
       });
     }
 
-    var filterBy = e.target.value.toLowerCase();
-    var size = this._dataList.getSize();
-    var filteredIndexes = [];
-    for (var index = 0; index < size; index++) {
-      var { firstName } = this._dataList.getObjectAt(index);
+    let filterBy = e.target.value.toLowerCase();
+    let size = this._dataList.getSize();
+    let filteredIndexes = [];
+    for (let index = 0; index < size; index++) {
+      let { firstName } = this._dataList.getObjectAt(index);
       if (firstName.toLowerCase().indexOf(filterBy) !== -1) {
         filteredIndexes.push(index);
       }
@@ -60,7 +60,7 @@ class FilterExample extends React.Component {
   }
 
   render() {
-    var { filteredDataList } = this.state;
+    let { filteredDataList } = this.state;
     return (
       <div>
         <input
