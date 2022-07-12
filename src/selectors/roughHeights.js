@@ -137,12 +137,21 @@ function roughHeights(
 
   const scrollStateY = getScrollStateY(
     scrollFlags,
-    maxAvailableHeight,
+    roughAvailableHeight,
+    scrollbarXHeight,
     scrollContentHeight
   );
 
-  if (scrollStateY === ScrollbarState.VISIBLE) {
-    minAvailableWidth -= scrollbarYWidth;
+  switch (scrollStateY) {
+    case ScrollbarState.VISIBLE: {
+      minAvailableWidth -= scrollbarYWidth;
+      maxAvailableWidth -= scrollbarYWidth;
+      break;
+    }
+    case ScrollbarState.JOINT_SCROLLBARS: {
+      minAvailableWidth -= scrollbarYWidth;
+      break;
+    }
   }
 
   return {
@@ -197,16 +206,26 @@ function getScrollStateX(
  *   showScrollbarX: boolean,
  * }} scrollFlags
  * @param {number} height
+ * @param {number} scrollbarXHeight
  * @param {number} scrollContentHeight
  * @return {ScrollbarState}
  */
-function getScrollStateY(scrollFlags, height, scrollContentHeight) {
+function getScrollStateY(
+  scrollFlags,
+  height,
+  scrollbarXHeight,
+  scrollContentHeight
+) {
   const { overflowY, showScrollbarY } = scrollFlags;
 
   if (overflowY === 'hidden' || showScrollbarY === false) {
     return ScrollbarState.HIDDEN;
   } else if (scrollContentHeight > height) {
     return ScrollbarState.VISIBLE;
+  }
+
+  if (scrollContentHeight > height - scrollbarXHeight) {
+    return ScrollbarState.JOINT_SCROLLBARS;
   }
 
   return ScrollbarState.HIDDEN;
