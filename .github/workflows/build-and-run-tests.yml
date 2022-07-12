@@ -38,7 +38,7 @@ jobs:
 
     # build our library to catch any build errors
     - name: Build!
-      run: yarn run build-dist
+      run: yarn run build
 
     # run all of our tests
     - name: Test!
