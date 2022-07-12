@@ -21,8 +21,6 @@ We actively welcome your pull requests - however, before you begin a pull reques
 
 4. Make sure your code lints (coming soon).
 
-5.  Do not commit anything to the `dist` folder.
-
 ## Issues
 We use GitHub issues to track public bugs. Please ensure your description is clear and has sufficient instructions to be able to reproduce the issue.
 

@@ -12,7 +12,7 @@ import {
   scryRenderedComponentsWithType,
 } from 'react-dom/test-utils';
 import FakeObjectDataListStore from '../../examples/helpers/FakeObjectDataListStore';
-import { Column, Table, Plugins, DataCell } from '../../src/FixedDataTableRoot';
+import { Column, Table, Plugins, DataCell } from '../../src/index';
 import ReorderCell from '../../src/plugins/ResizeReorder/ReorderCell';
 import cx from '../../src/vendor_upstream/stubs/cx';
 import sinon from 'sinon';

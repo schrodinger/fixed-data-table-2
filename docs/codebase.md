@@ -6,7 +6,7 @@ Please ask questions or encourage us to add more detail where you think it would
 File Descriptions
 ---------------
 ### Public API
-* FixedDataTableRoot.js
+* index.js
   * Provides public exports
 * FixedDataTableContainer.js
   * Top level of component tree

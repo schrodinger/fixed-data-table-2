@@ -12,7 +12,7 @@ import {
 } from 'react-dom/test-utils';
 import ResizeCell from '../../src/plugins/ResizeReorder/ResizeCell';
 import FakeObjectDataListStore from '../../examples/helpers/FakeObjectDataListStore';
-import { Column, Table, Plugins, DataCell } from '../../src/FixedDataTableRoot';
+import { Column, Table, Plugins, DataCell } from '../../src/index';
 import ResizerKnob from '../../src/plugins/ResizeReorder/ResizerKnob';
 
 class TextCell extends React.PureComponent {
