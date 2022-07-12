@@ -1,6 +1,6 @@
 'use strict';
 
-var EXAMPLES_LOCATION_BASE =
+const EXAMPLES_LOCATION_BASE =
   'https://github.com/schrodinger/fixed-data-table-2/blob/master/examples/';
 
 exports.OtherPages = {

@@ -26,14 +26,14 @@ import shallowEqualSelector from '../helper/shallowEqualSelector';
  */
 function calculateAriaAttributes(rowsCount, useGroupHeader, useFooter) {
   // first we calculate the default attribute values (without assuming group header or footer exists)
-  var ariaGroupHeaderIndex = 1;
-  var ariaHeaderIndex = 1;
-  var ariaFooterIndex = rowsCount + 2;
-  var ariaRowCount = rowsCount + 1;
+  const ariaGroupHeaderIndex = 1;
+  let ariaHeaderIndex = 1;
+  let ariaFooterIndex = rowsCount + 2;
+  let ariaRowCount = rowsCount + 1;
 
   // offset to add to aria-rowindex (note that aria-rowindex is 1-indexed based, and since
   // we also need to add 1 for the header, the base offset will be 2)
-  var ariaRowIndexOffset = 2;
+  let ariaRowIndexOffset = 2;
 
   // if group header exists, then increase the indices and offsets by 1
   if (useGroupHeader) {

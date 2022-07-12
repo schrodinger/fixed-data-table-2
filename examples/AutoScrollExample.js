@@ -104,7 +104,7 @@ class AutoScrollExample extends React.Component {
   }
 
   renderTable() {
-    var { dataList, scrollLeft, scrollTop } = this.state;
+    const { dataList, scrollLeft, scrollTop } = this.state;
     return (
       <Table
         rowHeight={50}

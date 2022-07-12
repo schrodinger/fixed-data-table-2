@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import { assert } from 'chai';
 
 describe('ReactTouchHandler', function () {
-  var requestAnimationFramePolyfillSpy;
+  let requestAnimationFramePolyfillSpy;
 
   beforeEach(function () {
     requestAnimationFramePolyfillSpy = sinon.spy();
@@ -22,7 +22,7 @@ describe('ReactTouchHandler', function () {
   });
 
   describe('onTouchStart', function () {
-    var fakeEvent;
+    let fakeEvent;
     beforeEach(function () {
       ReactTouchHandler.prototype._track = sinon.spy();
       fakeEvent = {
@@ -39,7 +39,7 @@ describe('ReactTouchHandler', function () {
 
     it('should stop event propagation if flag is true', function () {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(
+      const reactTouchHandler = new ReactTouchHandler(
         () => {},
         () => {},
         () => {},
@@ -54,7 +54,7 @@ describe('ReactTouchHandler', function () {
 
     it('should not stop event propagation if flag is false', function () {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(
+      const reactTouchHandler = new ReactTouchHandler(
         () => {},
         () => {},
         () => {},
@@ -69,7 +69,7 @@ describe('ReactTouchHandler', function () {
 
     it('should prevent default if flag is true', function () {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(
+      const reactTouchHandler = new ReactTouchHandler(
         () => {},
         () => {},
         () => {},
@@ -86,7 +86,7 @@ describe('ReactTouchHandler', function () {
       const clock = sinon.useFakeTimers();
 
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(
+      const reactTouchHandler = new ReactTouchHandler(
         () => {},
         () => {},
         () => {},
@@ -102,7 +102,7 @@ describe('ReactTouchHandler', function () {
   });
 
   describe('onTouchEnd', function () {
-    var fakeEvent, clearIntervalSpy;
+    let fakeEvent, clearIntervalSpy;
 
     beforeEach(function () {
       clearIntervalSpy = sinon.spy(global || window, 'clearInterval');
@@ -120,7 +120,7 @@ describe('ReactTouchHandler', function () {
 
     it('should stop event propagation if flag is true', function () {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(
+      const reactTouchHandler = new ReactTouchHandler(
         () => {},
         () => {},
         () => {},
@@ -135,7 +135,7 @@ describe('ReactTouchHandler', function () {
 
     it('should not stop event propagation if flag is false', function () {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(
+      const reactTouchHandler = new ReactTouchHandler(
         () => {},
         () => {},
         () => {},
@@ -150,7 +150,7 @@ describe('ReactTouchHandler', function () {
 
     it('should prevent default if flag is true', function () {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(
+      const reactTouchHandler = new ReactTouchHandler(
         () => {},
         () => {},
         () => {},
@@ -165,7 +165,7 @@ describe('ReactTouchHandler', function () {
 
     it('should clear last interval', function () {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(
+      const reactTouchHandler = new ReactTouchHandler(
         () => {},
         () => {},
         () => {},
@@ -180,7 +180,7 @@ describe('ReactTouchHandler', function () {
 
     it('Should start deceleration', function () {
       // --- Run Test ---
-      var reactTouchHandler = new ReactTouchHandler(
+      const reactTouchHandler = new ReactTouchHandler(
         () => {},
         () => {},
         () => {},

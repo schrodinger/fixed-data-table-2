@@ -6,9 +6,9 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
-var PendingPool = {};
-var ReadyPool = {};
-var imageIdCounter = 0;
+const PendingPool = {};
+const ReadyPool = {};
+let imageIdCounter = 0;
 
 class ExampleImage extends React.Component {
   static propTypes = {
@@ -32,14 +32,14 @@ class ExampleImage extends React.Component {
   }
 
   componentWillUnmount() {
-    var loadingPool = PendingPool[this.props.src];
+    const loadingPool = PendingPool[this.props.src];
     if (loadingPool) {
       delete loadingPool[this.componentId];
     }
   }
 
   render() {
-    var style = this.state.src
+    const style = this.state.src
       ? { backgroundImage: 'url(' + this.state.src + ')' }
       : undefined;
 
@@ -48,7 +48,7 @@ class ExampleImage extends React.Component {
 
   _load = (/*string*/ src) => {
     if (ReadyPool[src]) {
-      this.setState({ src: src });
+      this.setState({ src });
       return;
     }
 
@@ -57,11 +57,11 @@ class ExampleImage extends React.Component {
       return;
     }
 
-    var callbackPool = {};
+    const callbackPool = {};
     PendingPool[src] = callbackPool;
     callbackPool[this.componentId] = this._onLoad;
 
-    var img = new Image();
+    const img = new Image();
     img.onload = () => {
       Object.keys(callbackPool).forEach((componentId) => {
         callbackPool[componentId](src);
@@ -77,7 +77,7 @@ class ExampleImage extends React.Component {
     ReadyPool[src] = true;
     if (src === this.props.src) {
       this.setState({
-        src: src,
+        src,
       });
     }
   };

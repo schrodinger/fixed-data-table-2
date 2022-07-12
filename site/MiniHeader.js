@@ -1,13 +1,13 @@
 'use strict';
 
-var React = require('react');
-var Constants = require('./Constants');
+const React = require('react');
+const Constants = require('./Constants');
 
 require('./miniHeader.less');
 
-var GITHUB_URL = 'https://github.com/schrodinger/fixed-data-table-2';
-var DOCS_DEFAULT_LOCATION = Constants.DOCS_DEFAULT.location;
-var EXAMPLES_DEFAULT_LOCATION = Constants.EXAMPLES_DEFAULT.location;
+const GITHUB_URL = 'https://github.com/schrodinger/fixed-data-table-2';
+const DOCS_DEFAULT_LOCATION = Constants.DOCS_DEFAULT.location;
+const EXAMPLES_DEFAULT_LOCATION = Constants.EXAMPLES_DEFAULT.location;
 
 class MiniHeader extends React.Component {
   render() {

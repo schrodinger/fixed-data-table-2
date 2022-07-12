@@ -19,10 +19,10 @@
 import emptyFunction from './vendor_upstream/core/emptyFunction';
 import requestAnimationFramePolyfill from './vendor_upstream/core/requestAnimationFramePolyfill';
 
-var MOVE_AMPLITUDE = 1.6;
-var DECELERATION_AMPLITUDE = 1.6;
-var DECELERATION_FACTOR = 325;
-var TRACKER_TIMEOUT = 100;
+const MOVE_AMPLITUDE = 1.6;
+const DECELERATION_AMPLITUDE = 1.6;
+const DECELERATION_FACTOR = 325;
+const TRACKER_TIMEOUT = 100;
 
 class ReactTouchHandler {
   /**
@@ -151,16 +151,16 @@ class ReactTouchHandler {
       event.preventDefault();
     }
 
-    var moveX = event.touches[0].pageX;
-    var moveY = event.touches[0].pageY;
+    const moveX = event.touches[0].pageX;
+    const moveY = event.touches[0].pageY;
 
     // Compute delta scrolled since last drag
     // Mobile, scrolling is inverted
     this._deltaX = MOVE_AMPLITUDE * (this._lastTouchX - moveX);
     this._deltaY = MOVE_AMPLITUDE * (this._lastTouchY - moveY);
 
-    var handleScrollX = this._handleScrollX(this._deltaX, this._deltaY);
-    var handleScrollY = this._handleScrollY(this._deltaY, this._deltaX);
+    const handleScrollX = this._handleScrollX(this._deltaX, this._deltaY);
+    const handleScrollY = this._handleScrollY(this._deltaY, this._deltaX);
     if (!handleScrollX && !handleScrollY) {
       return;
     }
@@ -183,7 +183,7 @@ class ReactTouchHandler {
     }
 
     // Ensure minimum delta magnitude is met to avoid jitter
-    var changed = false;
+    let changed = false;
     if (Math.abs(this._deltaX) > 2 || Math.abs(this._deltaY) > 2) {
       if (this._stopPropagation) {
         event.stopPropagation();
@@ -216,14 +216,14 @@ class ReactTouchHandler {
    * previous velocity.  Combining into a moving average results in a smoother scroll.
    */
   _track() {
-    var now = Date.now();
-    var elapsed = now - this._lastFrameTimestamp;
-    var oldVelocityX = this._velocityX;
-    var oldVelocityY = this._velocityY;
+    const now = Date.now();
+    const elapsed = now - this._lastFrameTimestamp;
+    const oldVelocityX = this._velocityX;
+    const oldVelocityY = this._velocityY;
 
     // We compute velocity using a weighted average of the current velocity and the previous velocity
     // If the previous velocity is 0, put the full weight on the last 100 ms
-    var weight = 0.8;
+    let weight = 0.8;
     if (elapsed < TRACKER_TIMEOUT) {
       weight *= elapsed / TRACKER_TIMEOUT;
     }
@@ -269,11 +269,11 @@ class ReactTouchHandler {
    * This is called recursively on animation frames until the delta is below a threshold (5 pixels)
    */
   _autoScroll() {
-    var elapsed = Date.now() - this._autoScrollTimestamp;
-    var factor =
+    const elapsed = Date.now() - this._autoScrollTimestamp;
+    const factor =
       DECELERATION_AMPLITUDE * Math.exp(-elapsed / DECELERATION_FACTOR);
-    var deltaX = factor * this._velocityX;
-    var deltaY = factor * this._velocityY;
+    let deltaX = factor * this._velocityX;
+    let deltaY = factor * this._velocityY;
 
     if (Math.abs(deltaX) <= 5 || !this._handleScrollX(deltaX, deltaY)) {
       deltaX = 0;

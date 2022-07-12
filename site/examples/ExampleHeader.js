@@ -4,8 +4,8 @@
 
 'use strict';
 
-var React = require('react');
-var Constants = require('../Constants');
+const React = require('react');
+const Constants = require('../Constants');
 
 class ExampleHeader extends React.Component {
   render() {

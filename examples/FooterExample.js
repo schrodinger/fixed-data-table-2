@@ -19,7 +19,7 @@ class FooterExample extends React.Component {
   }
 
   render() {
-    var { dataList } = this.state;
+    const { dataList } = this.state;
     return (
       <Table
         rowHeight={50}

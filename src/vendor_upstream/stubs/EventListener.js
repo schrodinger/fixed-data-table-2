@@ -16,7 +16,7 @@ import emptyFunction from '../core/emptyFunction';
  * Upstream version of event listener. Does not take into account specific
  * nature of platform.
  */
-var EventListener = {
+const EventListener = {
   /**
    * Listen to DOM events during the bubble phase.
    *
@@ -25,18 +25,18 @@ var EventListener = {
    * @param {function} callback Callback function.
    * @return {object} Object with a `remove` method.
    */
-  listen: function (target, eventType, callback) {
+  listen(target, eventType, callback) {
     if (target.addEventListener) {
       target.addEventListener(eventType, callback, false);
       return {
-        remove: function () {
+        remove() {
           target.removeEventListener(eventType, callback, false);
         },
       };
     } else if (target.attachEvent) {
       target.attachEvent('on' + eventType, callback);
       return {
-        remove: function () {
+        remove() {
           target.detachEvent('on' + eventType, callback);
         },
       };
@@ -51,11 +51,11 @@ var EventListener = {
    * @param {function} callback Callback function.
    * @return {object} Object with a `remove` method.
    */
-  capture: function (target, eventType, callback) {
+  capture(target, eventType, callback) {
     if (target.addEventListener) {
       target.addEventListener(eventType, callback, true);
       return {
-        remove: function () {
+        remove() {
           target.removeEventListener(eventType, callback, true);
         },
       };
@@ -73,7 +73,7 @@ var EventListener = {
     }
   },
 
-  registerDefault: function () {},
+  registerDefault() {},
 };
 
 export default EventListener;

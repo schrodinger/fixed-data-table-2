@@ -55,7 +55,7 @@ class FakeObjectDataListStore {
    */
   getAll() {
     if (this._cache.length < this.size) {
-      for (var i = 0; i < this.size; i++) {
+      for (let i = 0; i < this.size; i++) {
         this.getObjectAt(i);
       }
     }

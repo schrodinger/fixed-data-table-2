@@ -34,7 +34,7 @@ class ResizeExample extends React.Component {
   };
 
   render() {
-    var { dataList, columnWidths } = this.state;
+    const { dataList, columnWidths } = this.state;
     return (
       <Table
         rowHeight={30}

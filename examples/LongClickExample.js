@@ -22,7 +22,7 @@ class LongClickExample extends React.Component {
   constructor(props) {
     super(props);
 
-    var dataList = new FakeObjectDataListStore(1000000);
+    const dataList = new FakeObjectDataListStore(1000000);
 
     this.state = {
       dataList,

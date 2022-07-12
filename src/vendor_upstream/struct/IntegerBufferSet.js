@@ -63,7 +63,7 @@ class IntegerBufferSet {
       this._valueToPositionMap[value] === undefined,
       "Shouldn't try to find new position for value already stored in BufferSet"
     );
-    var newPosition = this._size;
+    const newPosition = this._size;
     this._size++;
     this._pushToHeaps(newPosition, value);
     this._valueToPositionMap[value] = newPosition;
@@ -88,14 +88,14 @@ class IntegerBufferSet {
       return null;
     }
 
-    var minValue = this._smallValues.peek().value;
-    var maxValue = this._largeValues.peek().value;
+    const minValue = this._smallValues.peek().value;
+    const maxValue = this._largeValues.peek().value;
     if (minValue >= lowValue && maxValue <= highValue) {
       // All values currently stored are necessary, we can't reuse any of them.
       return null;
     }
 
-    var valueToReplace;
+    let valueToReplace;
     if (lowValue - minValue > maxValue - highValue) {
       // minValue is further from provided range. We will reuse it's position.
       valueToReplace = minValue;
@@ -104,7 +104,7 @@ class IntegerBufferSet {
       valueToReplace = maxValue;
       this._largeValues.pop();
     }
-    var position = this._valueToPositionMap[valueToReplace];
+    const position = this._valueToPositionMap[valueToReplace];
     delete this._valueToPositionMap[valueToReplace];
     this._valueToPositionMap[newValue] = position;
     this._pushToHeaps(position, newValue);
@@ -113,7 +113,7 @@ class IntegerBufferSet {
   }
 
   _pushToHeaps(/*number*/ position, /*number*/ value) {
-    var element = {
+    const element = {
       position,
       value,
     };
@@ -127,11 +127,11 @@ class IntegerBufferSet {
     // Here we make sure that there is no stale data on top of heaps.
     this._cleanHeap(this._smallValues);
     this._cleanHeap(this._largeValues);
-    var minHeapSize = Math.min(
+    const minHeapSize = Math.min(
       this._smallValues.size(),
       this._largeValues.size()
     );
-    var maxHeapSize = Math.max(
+    const maxHeapSize = Math.max(
       this._smallValues.size(),
       this._largeValues.size()
     );
@@ -143,20 +143,20 @@ class IntegerBufferSet {
   }
 
   _recreateHeaps() {
-    var sourceHeap =
+    const sourceHeap =
       this._smallValues.size() < this._largeValues.size()
         ? this._smallValues
         : this._largeValues;
-    var newSmallValues = new Heap(
+    const newSmallValues = new Heap(
       [], // Initial data in the heap
       this._smallerComparator
     );
-    var newLargeValues = new Heap(
+    const newLargeValues = new Heap(
       [], // Initial datat in the heap
       this._greaterComparator
     );
     while (!sourceHeap.empty()) {
-      var element = sourceHeap.pop();
+      const element = sourceHeap.pop();
       // Push all stil valid elements to new heaps
       if (this._valueToPositionMap[element.value] !== undefined) {
         newSmallValues.push(element);

@@ -23,17 +23,17 @@ import DOMMouseMoveTracker from '../vendor_upstream/dom/DOMMouseMoveTracker';
 import cssVar from '../stubs/cssVar';
 import FixedDataTableTranslateDOMPosition from '../FixedDataTableTranslateDOMPosition';
 
-var UNSCROLLABLE_STATE = {
+const UNSCROLLABLE_STATE = {
   position: 0,
   scrollable: false,
 };
 
-var FACE_MARGIN = parseInt(cssVar('--scrollbar-face-margin'), 10);
-var FACE_MARGIN_2 = FACE_MARGIN * 2;
-var FACE_SIZE_MIN = 30;
-var KEYBOARD_SCROLL_AMOUNT = 40;
+const FACE_MARGIN = parseInt(cssVar('--scrollbar-face-margin'), 10);
+const FACE_MARGIN_2 = FACE_MARGIN * 2;
+const FACE_SIZE_MIN = 30;
+const KEYBOARD_SCROLL_AMOUNT = 40;
 
-var _lastScrolledScrollbar = null;
+let _lastScrolledScrollbar = null;
 
 class Scrollbar extends React.PureComponent {
   static propTypes = {
@@ -63,7 +63,7 @@ class Scrollbar extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    var controlledPosition = this.props.position;
+    const controlledPosition = this.props.position;
     if (controlledPosition === undefined) {
       this._setNextState(
         this._calculateState(
@@ -103,19 +103,19 @@ class Scrollbar extends React.PureComponent {
       return null;
     }
 
-    var size = this.props.size;
+    const size = this.props.size;
     /** @type {React.CSSProperties} */
-    var mainStyle;
+    let mainStyle;
     /** @type {React.CSSProperties} */
-    var faceStyle;
-    var isHorizontal = this.state.isHorizontal;
-    var isVertical = !isHorizontal;
-    var isActive = this.state.focused || this.state.isDragging;
-    var faceSize = this.state.faceSize;
-    var isOpaque = this.props.isOpaque;
-    var verticalTop = this.props.verticalTop || 0;
+    let faceStyle;
+    const isHorizontal = this.state.isHorizontal;
+    const isVertical = !isHorizontal;
+    const isActive = this.state.focused || this.state.isDragging;
+    const faceSize = this.state.faceSize;
+    const isOpaque = this.props.isOpaque;
+    const verticalTop = this.props.verticalTop || 0;
 
-    var mainClassName = cx({
+    const mainClassName = cx({
       'ScrollbarLayout/main': true,
       'ScrollbarLayout/mainVertical': isVertical,
       'ScrollbarLayout/mainHorizontal': isHorizontal,
@@ -124,7 +124,7 @@ class Scrollbar extends React.PureComponent {
       'public/Scrollbar/mainActive': isActive,
     });
 
-    var faceClassName = cx({
+    const faceClassName = cx({
       'ScrollbarLayout/face': true,
       'ScrollbarLayout/faceHorizontal': isHorizontal,
       'ScrollbarLayout/faceVertical': isVertical,
@@ -132,7 +132,7 @@ class Scrollbar extends React.PureComponent {
       'public/Scrollbar/face': true,
     });
 
-    var position = this.state.position * this.state.scale + FACE_MARGIN;
+    const position = this.state.position * this.state.scale + FACE_MARGIN;
 
     if (isHorizontal) {
       mainStyle = {
@@ -204,8 +204,8 @@ class Scrollbar extends React.PureComponent {
   }
 
   componentDidMount() {
-    var isHorizontal = this.props.orientation === 'horizontal';
-    var onWheel = isHorizontal ? this._onWheelX : this._onWheelY;
+    const isHorizontal = this.props.orientation === 'horizontal';
+    const onWheel = isHorizontal ? this._onWheelX : this._onWheelY;
 
     this._wheelHandler = new ReactWheelHandler(
       onWheel,
@@ -264,7 +264,7 @@ class Scrollbar extends React.PureComponent {
       : false;
 
   _shouldHandleChange = (/*number*/ delta) /*boolean*/ => {
-    var nextState = this._calculateState(
+    const nextState = this._calculateState(
       this.state.position + delta,
       this.props.size,
       this.props.contentSize,
@@ -284,7 +284,7 @@ class Scrollbar extends React.PureComponent {
       return UNSCROLLABLE_STATE;
     }
 
-    var stateKey = `${position}_${clampedSize}_${contentSize}_${orientation}`;
+    const stateKey = `${position}_${clampedSize}_${contentSize}_${orientation}`;
     if (this._stateKey === stateKey) {
       return this._stateForKey;
     }
@@ -295,17 +295,17 @@ class Scrollbar extends React.PureComponent {
     // The logical position will be kept as as internal state and the `render()`
     // function will translate it into physical position to render.
 
-    var isHorizontal = orientation === 'horizontal';
-    var scale = clampedSize / contentSize;
-    var faceSize = clampedSize * scale;
+    const isHorizontal = orientation === 'horizontal';
+    let scale = clampedSize / contentSize;
+    let faceSize = clampedSize * scale;
 
     if (faceSize < FACE_SIZE_MIN) {
       scale = (clampedSize - FACE_SIZE_MIN) / (contentSize - clampedSize);
       faceSize = FACE_SIZE_MIN;
     }
 
-    var scrollable = true;
-    var maxPosition = contentSize - clampedSize;
+    const scrollable = true;
+    const maxPosition = contentSize - clampedSize;
 
     if (position < 0) {
       position = 0;
@@ -313,13 +313,13 @@ class Scrollbar extends React.PureComponent {
       position = maxPosition;
     }
 
-    var isDragging = this._mouseMoveTracker
+    const isDragging = this._mouseMoveTracker
       ? this._mouseMoveTracker.isDragging()
       : false;
 
     // This function should only return flat values that can be compared quiclky
     // by `ReactComponentWithPureRenderMixin`.
-    var state = {
+    const state = {
       faceSize,
       isDragging,
       isHorizontal,
@@ -343,7 +343,7 @@ class Scrollbar extends React.PureComponent {
   };
 
   _onWheel = (/*number*/ delta) => {
-    var props = this.props;
+    const props = this.props;
 
     // The mouse may move faster then the animation frame does.
     // Use `requestAnimationFrame` to avoid over-updating.
@@ -359,13 +359,13 @@ class Scrollbar extends React.PureComponent {
 
   _onMouseDown = (/*object*/ event) => {
     /** @type {object} */
-    var nextState;
+    let nextState;
 
     if (event.target !== this._faceRef) {
       // Both `offsetX` and `layerX` are non-standard DOM property but they are
       // magically available for browsers somehow.
-      var nativeEvent = event.nativeEvent;
-      var position = this.state.isHorizontal
+      const nativeEvent = event.nativeEvent;
+      let position = this.state.isHorizontal
         ? nativeEvent.offsetX ||
           nativeEvent.layerX ||
           this.getTouchX(nativeEvent)
@@ -375,7 +375,7 @@ class Scrollbar extends React.PureComponent {
 
       // MouseDown on the scroll-track directly, move the center of the
       // scroll-face to the mouse position.
-      var props = this.props;
+      const props = this.props;
       position /= this.state.scale;
       nextState = this._calculateState(
         position - (this.state.faceSize * 0.5) / this.state.scale,
@@ -413,8 +413,8 @@ class Scrollbar extends React.PureComponent {
   };
 
   _onMouseMove = (/*number*/ deltaX, /*number*/ deltaY) => {
-    var props = this.props;
-    var delta = this.state.isHorizontal
+    const props = this.props;
+    let delta = this.state.isHorizontal
       ? deltaX * (this.props.isRTL ? -1 : 1)
       : deltaY;
     delta /= this.state.scale;
@@ -436,15 +436,15 @@ class Scrollbar extends React.PureComponent {
   };
 
   _onKeyDown = (/*object*/ event) => {
-    var keyCode = event.keyCode;
+    const keyCode = event.keyCode;
 
     if (keyCode === Keys.TAB) {
       // Let focus move off the scrollbar.
       return;
     }
 
-    var distance = KEYBOARD_SCROLL_AMOUNT;
-    var direction = 0;
+    let distance = KEYBOARD_SCROLL_AMOUNT;
+    let direction = 0;
 
     if (this.state.isHorizontal) {
       switch (keyCode) {
@@ -506,7 +506,7 @@ class Scrollbar extends React.PureComponent {
 
     event.preventDefault();
 
-    var props = this.props;
+    let props = this.props;
     this._setNextState(
       this._calculateState(
         this.state.position + distance * direction,
@@ -530,7 +530,7 @@ class Scrollbar extends React.PureComponent {
   };
 
   _blur = () => {
-    var el = ReactDOM.findDOMNode(this);
+    const el = ReactDOM.findDOMNode(this);
     if (!el) {
       return;
     }
@@ -557,10 +557,10 @@ class Scrollbar extends React.PureComponent {
 
   _setNextState = (/*object*/ nextState, /*?object*/ props) => {
     props = props || this.props;
-    var controlledPosition = props.position;
-    var willScroll = this.state.position !== nextState.position;
+    const controlledPosition = props.position;
+    const willScroll = this.state.position !== nextState.position;
     if (controlledPosition === undefined) {
-      var callback = willScroll ? this._didScroll : undefined;
+      const callback = willScroll ? this._didScroll : undefined;
       this.setState(nextState, callback);
     } else if (controlledPosition === nextState.position) {
       this.setState(nextState);

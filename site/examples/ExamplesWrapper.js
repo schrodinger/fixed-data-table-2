@@ -6,10 +6,10 @@
 
 require('./examplesPageStyle.less');
 
-var MiniHeader = require('../MiniHeader');
-var SideBar = require('../SideBar');
-var React = require('react');
-var Constants = require('../Constants');
+const MiniHeader = require('../MiniHeader');
+const SideBar = require('../SideBar');
+const React = require('react');
+const Constants = require('../Constants');
 
 class ExamplesWrapper extends React.Component {
   render() {

@@ -31,7 +31,7 @@ import FixedDataTableBufferedRows from './FixedDataTableBufferedRows';
 import FixedDataTableRow from './FixedDataTableRow';
 import ReactTouchHandler from './ReactTouchHandler';
 
-var ARROW_SCROLL_SPEED = 25;
+const ARROW_SCROLL_SPEED = 25;
 
 /**
  * Data grid component with fixed or scrollable header and columns.
@@ -898,7 +898,7 @@ class FixedDataTable extends React.Component {
         />
       );
     }
-    var tabIndex = null;
+    let tabIndex = null;
     if (this.props.keyboardPageEnabled || this.props.keyboardScrollEnabled) {
       tabIndex = 0;
     }
@@ -1042,7 +1042,7 @@ class FixedDataTable extends React.Component {
 
       // This is a workaround to prevent content blurring. This happens when translate3d
       // is applied with non-rounded values to elements having text.
-      var roundedX = Math.round(x);
+      const roundedX = Math.round(x);
 
       //NOTE (asif) This is a hacky workaround to prevent FDT from setting its internal state
       if (onHorizontalScroll ? onHorizontalScroll(roundedX) : true) {

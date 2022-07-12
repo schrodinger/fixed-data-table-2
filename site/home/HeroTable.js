@@ -1,14 +1,14 @@
 'use strict';
 
-var FakeObjectDataListStore =
+const FakeObjectDataListStore =
   require('../../examples/helpers/FakeObjectDataListStore').default;
-var FixedDataTable = require('fixed-data-table-2');
-var React = require('react');
-var Constants = require('../Constants');
+const FixedDataTable = require('fixed-data-table-2');
+const React = require('react');
+const Constants = require('../Constants');
 
-var Table = FixedDataTable.Table;
-var Column = FixedDataTable.Column;
-var Cell = FixedDataTable.Cell;
+const Table = FixedDataTable.Table;
+const Column = FixedDataTable.Column;
+const Cell = FixedDataTable.Cell;
 
 // Require common FixedDataTable CSS.
 require('fixed-data-table-2/css/layout/ScrollbarLayout.css');
@@ -24,8 +24,8 @@ require('fixed-data-table-2/css/style/fixedDataTableColumnResizerLine.css');
 require('fixed-data-table-2/css/style/fixedDataTableRow.css');
 require('fixed-data-table-2/css/style/Scrollbar.css');
 
-var dataList = new FakeObjectDataListStore();
-var FakeTextCell = ({ rowIndex, field, ...props }) => (
+const dataList = new FakeObjectDataListStore();
+const FakeTextCell = ({ rowIndex, field, ...props }) => (
   <Cell {...props}>{dataList.getObjectAt(rowIndex)[field].toString()}</Cell>
 );
 

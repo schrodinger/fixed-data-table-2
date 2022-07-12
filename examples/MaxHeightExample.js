@@ -26,7 +26,7 @@ class MaxHeightExample extends React.Component {
   }
 
   render() {
-    var { dataList } = this.state;
+    const { dataList } = this.state;
     return (
       <div>
         <a onClick={this.addRow}>Add Row</a>

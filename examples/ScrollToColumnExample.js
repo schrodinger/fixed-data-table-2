@@ -14,7 +14,7 @@ class ScrollToColumnExample extends React.Component {
     super(props);
 
     this._dataList = new FakeObjectDataListStore(2000);
-    var data = this._dataList.getAll();
+    const data = this._dataList.getAll();
 
     this.state = {
       filteredDataList: this._dataList,
@@ -32,7 +32,7 @@ class ScrollToColumnExample extends React.Component {
   }
 
   render() {
-    var { filteredDataList, currentIndex } = this.state;
+    const { filteredDataList, currentIndex } = this.state;
 
     return (
       <div>

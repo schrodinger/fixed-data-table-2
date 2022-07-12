@@ -1,7 +1,7 @@
 'use strict';
 
-var React = require('react');
-var Constants = require('./Constants');
+const React = require('react');
+const Constants = require('./Constants');
 
 class SideBar extends React.Component {
   render() {
@@ -16,7 +16,7 @@ class SideBar extends React.Component {
 
   _renderSections(pages) {
     return Object.keys(pages).map((pageKey) => {
-      var page = pages[pageKey];
+      const page = pages[pageKey];
       if (typeof page !== 'object') {
         return null;
       }
@@ -37,8 +37,8 @@ class SideBar extends React.Component {
   }
 
   _renderLink(linkName, linkUrl) {
-    var arrow = <span className="arrowBullet" />;
-    var linkClass = 'sideItem';
+    const arrow = <span className="arrowBullet" />;
+    let linkClass = 'sideItem';
     if (this.props.page.location === linkUrl) {
       linkClass += ' curSideItem';
     }

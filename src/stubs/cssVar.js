@@ -13,7 +13,7 @@
 'use strict';
 
 // If you change these, you'll need to restart the dev server for it to take effect.
-var CSS_VARS = {
+const CSS_VARS = {
   '--scrollbar-face-active-color': '#7d7d7d',
   '--scrollbar-face-color': '#c2c2c2',
   '--scrollbar-face-margin': '4px',

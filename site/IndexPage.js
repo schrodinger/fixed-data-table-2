@@ -2,27 +2,27 @@
 
 require('./base.less');
 
-var Constants = require('./Constants');
-var HomePage = require('./home/HomePage');
-var DocsPage = require('./docs/DocsPage');
-var ExamplesPage = require('./examples/ExamplesPage');
-var React = require('react');
-var ReactDOMServer = require('react-dom/server');
+const Constants = require('./Constants');
+const HomePage = require('./home/HomePage');
+const DocsPage = require('./docs/DocsPage');
+const ExamplesPage = require('./examples/ExamplesPage');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 
-var faviconURL = require('./images/favicon.png');
+const faviconURL = require('./images/favicon.png');
 
-var DocsPages = Constants.DocsPages;
-var ExamplePages = Constants.ExamplePages;
-var OtherPages = Constants.OtherPages;
+const DocsPages = Constants.DocsPages;
+const ExamplePages = Constants.ExamplePages;
+const OtherPages = Constants.OtherPages;
 
 function getPageForLocation(pages, location) {
-  for (var key in pages) {
+  for (const key in pages) {
     if (!pages.hasOwnProperty(key) || typeof pages[key] !== 'object') {
       continue;
     }
 
     if (pages[key].groupTitle) {
-      var nestedPage = getPageForLocation(pages[key], location);
+      const nestedPage = getPageForLocation(pages[key], location);
       if (nestedPage) {
         return nestedPage;
       }
@@ -60,7 +60,7 @@ class IndexPage extends React.Component {
     // Dump out our current props to a global object via a script tag so
     // when initialising the browser environment we can bootstrap from the
     // same props as what each page was rendered with.
-    var browserInitScriptObj = {
+    const browserInitScriptObj = {
       __html: 'window.INITIAL_PROPS = ' + JSON.stringify(this.props) + ';\n',
     };
 
@@ -98,7 +98,7 @@ class IndexPage extends React.Component {
         return <HomePage />;
     }
 
-    var activeDocsPage = getPageForLocation(DocsPages, this.props.location);
+    const activeDocsPage = getPageForLocation(DocsPages, this.props.location);
     if (activeDocsPage) {
       return (
         <DocsPage
@@ -108,7 +108,7 @@ class IndexPage extends React.Component {
       );
     }
 
-    var activeExamplePage = getPageForLocation(
+    const activeExamplePage = getPageForLocation(
       ExamplePages,
       this.props.location
     );

@@ -2,10 +2,10 @@
 
 require('./homePageStyle.less');
 
-var Header = require('./Header');
-var React = require('react');
-var ReadMeHTML = require('../../README.md');
-var StaticHTMLBlock = require('../StaticHTMLBlock');
+const Header = require('./Header');
+const React = require('react');
+const ReadMeHTML = require('../../README.md');
+const StaticHTMLBlock = require('../StaticHTMLBlock');
 
 class HomePage extends React.Component {
   render() {

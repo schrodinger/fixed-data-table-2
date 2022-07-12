@@ -9,7 +9,7 @@ import { TextCell } from './helpers/cells';
 import { Table, Column, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
-var SortTypes = {
+const SortTypes = {
   ASC: 'ASC',
   DESC: 'DESC',
 };
@@ -26,7 +26,7 @@ class SortHeaderCell extends React.Component {
   }
 
   render() {
-    var { onSortChange, sortDir, children, ...props } = this.props;
+    const { onSortChange, sortDir, children, ...props } = this.props;
     return (
       <DataCell {...props}>
         <a onClick={this._onSortChange}>
@@ -72,8 +72,8 @@ class SortExample extends React.Component {
     this._dataList = new FakeObjectDataListStore(2000);
 
     this._defaultSortIndexes = [];
-    var size = this._dataList.getSize();
-    for (var index = 0; index < size; index++) {
+    const size = this._dataList.getSize();
+    for (let index = 0; index < size; index++) {
       this._defaultSortIndexes.push(index);
     }
 
@@ -86,11 +86,11 @@ class SortExample extends React.Component {
   }
 
   _onSortChange(columnKey, sortDir) {
-    var sortIndexes = this._defaultSortIndexes.slice();
+    const sortIndexes = this._defaultSortIndexes.slice();
     sortIndexes.sort((indexA, indexB) => {
-      var valueA = this._dataList.getObjectAt(indexA)[columnKey];
-      var valueB = this._dataList.getObjectAt(indexB)[columnKey];
-      var sortVal = 0;
+      const valueA = this._dataList.getObjectAt(indexA)[columnKey];
+      const valueB = this._dataList.getObjectAt(indexB)[columnKey];
+      let sortVal = 0;
       if (valueA > valueB) {
         sortVal = 1;
       }
@@ -113,7 +113,7 @@ class SortExample extends React.Component {
   }
 
   render() {
-    var { sortedDataList, colSortDirs } = this.state;
+    const { sortedDataList, colSortDirs } = this.state;
     return (
       <Table
         rowHeight={50}

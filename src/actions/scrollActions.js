@@ -34,7 +34,7 @@ const getScrollActions = (store, getProps) => {
 
     // This is a workaround to prevent content blurring. This happens when translate3d
     // is applied with non-rounded values to elements having text.
-    var roundedScrollPos = Math.round(scrollPos);
+    const roundedScrollPos = Math.round(scrollPos);
 
     const { onHorizontalScroll } = getProps();
     if (onHorizontalScroll ? onHorizontalScroll(roundedScrollPos) : true) {

@@ -38,7 +38,7 @@ class OwnerExample extends React.Component {
   }
 
   render() {
-    var { dataList, pageYOffset } = this.state;
+    const { dataList, pageYOffset } = this.state;
     return (
       <Table
         rowHeight={50}
