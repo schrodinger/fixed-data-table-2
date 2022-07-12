@@ -10,6 +10,15 @@ class FakeObjectDataListStore {
     this._cache = [];
   }
 
+  setSize(size) {
+    // truncate cache if necessary
+    if (this.size < size) {
+      this._cache = this._cache.slice(0, size);
+    }
+
+    this.size = size;
+  }
+
   createFakeRowObjectData(/*number*/ index) /*object*/ {
     return {
       id: index,
