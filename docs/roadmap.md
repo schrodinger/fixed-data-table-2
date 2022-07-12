@@ -50,7 +50,6 @@ Timeline and dependencies
 ---------------
 
 ### v3.0
-Targeted for Q4 2023
 Our major focus will be making FDT reusable through composability.  At Schrodinger we've had great success implementing frozen rows, more flexible column groups, and more performant column reordering on top of FDT.  We'd like to improve FDTs examples and demonstrate these capabilities.
 
 We've also had many requests for improved styling.  We'd like to develop an easily extensible plugin system for styling.  This will involve trimming down our default styles and creating easy to build and share themes for styling the grid as an alternative to the headaches of the current system.
