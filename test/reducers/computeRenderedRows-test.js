@@ -37,19 +37,27 @@ describe('computeRenderedRows', function () {
       for (let rowIdx = 0; rowIdx < 80; rowIdx++) {
         initialStoredHeights[rowIdx] = 125;
       }
+      const createInternalStateGetter = () => {
+        const internalState = {
+          rowBufferSet: new IntegerBufferSet(),
+          rowOffsetIntervalTree: PrefixIntervalTree.uniform(80, 125),
+          storedHeights: clone(initialStoredHeights),
+        };
+        return () => internalState;
+      };
       oldState = {
-        rowBufferSet: new IntegerBufferSet(),
         placeholder: 'temp',
-        rowOffsetIntervalTree: PrefixIntervalTree.uniform(80, 125),
+        getInternal: createInternalStateGetter(),
         rowSettings: {
           rowsCount: 80,
           rowHeightGetter: () => 125,
           subRowHeightGetter: () => 0,
         },
-        storedHeights: initialStoredHeights,
         scrollContentHeight: 10000,
       };
       newState = clone(oldState);
+      // NOTE (pradeep): getInternal is a function, and hence cannot be cloned directly
+      newState.getInternal = createInternalStateGetter();
     });
 
     afterEach(function () {
@@ -72,23 +80,23 @@ describe('computeRenderedRows', function () {
         expectedRowOffsets[rowIdx] = rowIdx * 125;
 
         assert.strictEqual(
-          newState.storedHeights[rowIdx],
+          newState.getInternal().storedHeights[rowIdx],
           125,
           'expected stored height of 125 for each row'
         );
         assert.strictEqual(
-          newState.rowOffsetIntervalTree.get(rowIdx),
+          newState.getInternal().rowOffsetIntervalTree.get(rowIdx),
           125,
           'expected row offsets for each row to be set to 125'
         );
         assert.isNotNull(
-          newState.rowBufferSet.getValuePosition(rowIdx),
+          newState.getInternal().rowBufferSet.getValuePosition(rowIdx),
           `expected a buffer position for each row. rowIdx: ${rowIdx}`
         );
       }
 
       assert.isNull(
-        newState.rowBufferSet.getValuePosition(12),
+        newState.getInternal().rowBufferSet.getValuePosition(12),
         'expected no buffer position for other row'
       );
 
@@ -102,6 +110,7 @@ describe('computeRenderedRows', function () {
           rowOffsets: expectedRowOffsets,
           rows: expectedRows,
           scrollY: 1900,
+          getInternal: newState.getInternal,
         })
       );
     });
@@ -122,23 +131,23 @@ describe('computeRenderedRows', function () {
         expectedRowOffsets[rowIdx] = rowIdx * 125;
 
         assert.strictEqual(
-          newState.storedHeights[rowIdx],
+          newState.getInternal().storedHeights[rowIdx],
           125,
           'expected stored height of 125 for each row'
         );
         assert.strictEqual(
-          newState.rowOffsetIntervalTree.get(rowIdx),
+          newState.getInternal().rowOffsetIntervalTree.get(rowIdx),
           125,
           'expected row offsets for each row to be set to 125'
         );
         assert.isNotNull(
-          newState.rowBufferSet.getValuePosition(rowIdx),
+          newState.getInternal().rowBufferSet.getValuePosition(rowIdx),
           `expected a buffer position for each row. rowIdx: ${rowIdx}`
         );
       }
 
       assert.isNull(
-        newState.rowBufferSet.getValuePosition(12),
+        newState.getInternal().rowBufferSet.getValuePosition(12),
         'expected no buffer position for other row'
       );
 
@@ -152,6 +161,7 @@ describe('computeRenderedRows', function () {
           rowOffsets: expectedRowOffsets,
           rows: expectedRows,
           scrollY: 3275,
+          getInternal: newState.getInternal,
         })
       );
     });
@@ -176,6 +186,7 @@ describe('computeRenderedRows', function () {
           rowOffsets: {},
           rows: [],
           scrollY: 0,
+          getInternal: newState.getInternal,
         })
       );
     });
@@ -196,23 +207,23 @@ describe('computeRenderedRows', function () {
         expectedRowOffsets[rowIdx] = rowIdx * 125;
 
         assert.strictEqual(
-          newState.storedHeights[rowIdx],
+          newState.getInternal().storedHeights[rowIdx],
           125,
           'expected stored height of 125 for each row'
         );
         assert.strictEqual(
-          newState.rowOffsetIntervalTree.get(rowIdx),
+          newState.getInternal().rowOffsetIntervalTree.get(rowIdx),
           125,
           'expected row offsets for each row to be set to 125'
         );
         assert.isNotNull(
-          newState.rowBufferSet.getValuePosition(rowIdx),
+          newState.getInternal().rowBufferSet.getValuePosition(rowIdx),
           `expected a buffer position for each row. rowIdx: ${rowIdx}`
         );
       }
 
       assert.isNull(
-        newState.rowBufferSet.getValuePosition(80),
+        newState.getInternal().rowBufferSet.getValuePosition(80),
         'expected no buffer position for other row'
       );
 
@@ -226,6 +237,7 @@ describe('computeRenderedRows', function () {
           rowOffsets: expectedRowOffsets,
           rows: expectedRows,
           scrollY: 9400,
+          getInternal: newState.getInternal,
         })
       );
     });
@@ -236,12 +248,15 @@ describe('computeRenderedRows', function () {
         firstOffset: -25,
         lastIndex: undefined,
       };
-      oldState.rowSettings.rowHeightGetter = () => 200;
+      newState.rowSettings.rowHeightGetter = () => 200;
 
       const rowOffsetIntervalTreeMock = sinon.mock(
         PrefixIntervalTree.prototype
       );
-      oldState.rowOffsetIntervalTree = PrefixIntervalTree.uniform(80, 125);
+      newState.getInternal().rowOffsetIntervalTree = PrefixIntervalTree.uniform(
+        80,
+        125
+      );
       for (let rowIdx = 13; rowIdx < 21; rowIdx++) {
         rowOffsetIntervalTreeMock.expects('set').once().withArgs(rowIdx, 200);
       }
@@ -258,7 +273,7 @@ describe('computeRenderedRows', function () {
         priorHeight += 200;
 
         assert.strictEqual(
-          newState.storedHeights[rowIdx],
+          newState.getInternal().storedHeights[rowIdx],
           200,
           'expected stored height of 200 for each row'
         );
@@ -275,6 +290,7 @@ describe('computeRenderedRows', function () {
           rows: expectedRows,
           scrollContentHeight: 10600,
           scrollY: 2050,
+          getInternal: newState.getInternal,
         })
       );
     });

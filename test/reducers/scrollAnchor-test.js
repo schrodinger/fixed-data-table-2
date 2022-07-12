@@ -21,11 +21,14 @@ describe('scrollAnchor', function () {
   describe('scrollTo', function () {
     let oldState;
     beforeEach(function () {
-      oldState = {
+      const oldInternalState = {
         rowOffsetIntervalTree: {
           greatestLowerBound: (scrollY) => Math.floor(scrollY / 100),
           sumUntil: (idx) => idx * 100,
         },
+      };
+      oldState = {
+        getInternal: () => oldInternalState,
         rowSettings: {
           rowsCount: 100,
         },
@@ -79,19 +82,22 @@ describe('scrollAnchor', function () {
   describe('scrollToRow', function () {
     let oldState;
     beforeEach(function () {
-      oldState = {
+      const oldInternalState = {
         rowOffsetIntervalTree: {
           sumUntil: (idx) => idx * 100,
-        },
-        rowSettings: {
-          rowsCount: 100,
-          rowHeightGetter: () => 100,
-          subRowHeightGetter: () => 0,
         },
         storedHeights: {
           0: 100,
           40: 100,
           99: 100,
+        },
+      };
+      oldState = {
+        getInternal: () => oldInternalState,
+        rowSettings: {
+          rowsCount: 100,
+          rowHeightGetter: () => 100,
+          subRowHeightGetter: () => 0,
         },
       };
     });
