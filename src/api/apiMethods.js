@@ -7,7 +7,10 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-import _ from 'lodash';
+import clamp from 'lodash/clamp';
+import get from 'lodash/get';
+import inRange from 'lodash/inRange';
+import size from 'lodash/size';
 import columnWidths from '../selectors/columnWidths';
 import shallowEqualSelector from '../helper/shallowEqualSelector';
 import { CellGroupType } from '../enums/CellGroup';
@@ -92,7 +95,7 @@ const getApiMethodsSelector = () =>
         cellGroupType = CellGroupType.SCROLLABLE
       ) => {
         const container = _getColumnContainerByCellGroupType(cellGroupType);
-        const groupIndex = _.get(container, [columnIndex, 'groupIdx']);
+        const groupIndex = get(container, [columnIndex, 'groupIdx']);
         const columnGroup = _getColumnGroupByAbsoluteIndex(groupIndex);
         return _getMinimalColumnGroup(columnGroup);
       };
@@ -126,17 +129,17 @@ const getApiMethodsSelector = () =>
       };
 
       const _getColumnGroupByAbsoluteIndex = (absoluteIndex) => {
-        let fixedCount = _.size(fixedColumnGroups);
-        let scrollableCount = _.size(scrollableColumnGroups);
-        let fixedRightCount = _.size(fixedRightColumnGroups);
-        if (_.inRange(absoluteIndex, 0, fixedCount)) {
+        let fixedCount = size(fixedColumnGroups);
+        let scrollableCount = size(scrollableColumnGroups);
+        let fixedRightCount = size(fixedRightColumnGroups);
+        if (inRange(absoluteIndex, 0, fixedCount)) {
           return fixedColumnGroups[absoluteIndex];
         } else if (
-          _.inRange(absoluteIndex, fixedCount, fixedCount + scrollableCount)
+          inRange(absoluteIndex, fixedCount, fixedCount + scrollableCount)
         ) {
           return scrollableColumnGroups[absoluteIndex - fixedCount];
         } else if (
-          _.inRange(
+          inRange(
             absoluteIndex,
             fixedCount + scrollableCount,
             fixedCount + scrollableCount + fixedRightCount
@@ -168,7 +171,7 @@ const getApiMethodsSelector = () =>
           index++;
         }
 
-        index = _.clamp(index - 1, 0, container.length - 1);
+        index = clamp(index - 1, 0, container.length - 1);
 
         return {
           element: container[index],

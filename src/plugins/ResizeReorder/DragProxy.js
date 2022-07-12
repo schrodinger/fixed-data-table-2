@@ -19,7 +19,9 @@ import { FixedDataTableContext } from '../../FixedDataTableContext';
 import FixedDataTableTranslateDOMPosition from '../../FixedDataTableTranslateDOMPosition';
 import requestAnimationFramePolyfill from '../../vendor_upstream/core/requestAnimationFramePolyfill';
 import cancelAnimationFramePolyfill from '../../vendor_upstream/core/cancelAnimationFramePolyfill';
-import _ from 'lodash';
+import clamp from 'lodash/clamp';
+import get from 'lodash/get';
+import inRange from 'lodash/inRange';
 import { CellGroupType } from '../../enums/CellGroup';
 
 const DRAG_SCROLL_SPEED = 15;
@@ -154,7 +156,7 @@ class DragProxy extends React.PureComponent {
 
     // subtract current cell width to make sure the right edge doesn't go past the bounds
     const maxReachableDisplacement = groupWidth - this.props.width;
-    return _.clamp(
+    return clamp(
       deltaX,
       -this.originalLeft + groupStart,
       -this.originalLeft + maxReachableDisplacement + groupStart
@@ -267,12 +269,12 @@ class DragProxy extends React.PureComponent {
     let columnAfter;
 
     // figure out what column lies at columnBeforeIndex and columnAfterIndex
-    if (_.inRange(columnBeforeIndex, 0, columnCount)) {
+    if (inRange(columnBeforeIndex, 0, columnCount)) {
       columnBefore = this.props.isGroupHeader
         ? this.context.getColumnGroup(columnBeforeIndex, cellGroupType)
         : this.context.getColumn(columnBeforeIndex, cellGroupType);
     }
-    if (_.inRange(columnAfterIndex, 0, columnCount)) {
+    if (inRange(columnAfterIndex, 0, columnCount)) {
       columnAfter = this.props.isGroupHeader
         ? this.context.getColumnGroup(columnAfterIndex, cellGroupType)
         : this.context.getColumn(columnAfterIndex, cellGroupType);
@@ -280,8 +282,8 @@ class DragProxy extends React.PureComponent {
 
     // let the user know that reordering has ended and supply the column before/after keys
     this.props.onColumnReorderEnd({
-      columnBefore: _.get(columnBefore, 'columnKey'),
-      columnAfter: _.get(columnAfter, 'columnKey'),
+      columnBefore: get(columnBefore, 'columnKey'),
+      columnAfter: get(columnAfter, 'columnKey'),
       reorderColumn: this.props.columnKey,
     });
   };

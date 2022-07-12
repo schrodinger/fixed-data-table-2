@@ -18,8 +18,9 @@ import FixedDataTableCellDefault from '../../FixedDataTableCellDefault';
 import { FixedDataTableContext } from '../../FixedDataTableContext';
 import DragProxy from './DragProxy';
 import ExternalContextProvider from '../ExternalContextProvider';
-import _ from 'lodash';
-import ResizeCell from './ResizeCell';
+import get from 'lodash/get';
+import lodashToString from 'lodash/toString';
+import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 
 const BORDER_WIDTH = 1;
@@ -55,12 +56,12 @@ class ReorderCell extends React.PureComponent {
      *   2. Now if the user drags cell "B" back such that the column associated with the cell becomes visible, then another instance of cell "A" will be mounted.
      *   3. The new instance of cell "A" now needs to figure out that the dragged proxy cell "B" already exists, and if so it should be in a reordering state.
      */
-    const draggedCellColumnKey = _.get(
+    const draggedCellColumnKey = get(
       this.getDragContainer(),
       'dataset.columnKey'
     );
     const isReordering =
-      _.toString(this.props.columnKey) === draggedCellColumnKey;
+      lodashToString(this.props.columnKey) === draggedCellColumnKey;
 
     if (isReordering) {
       // NOTE (pradeep): rerender the drag proxy to alert it that this instance is the new parent
@@ -196,7 +197,7 @@ class ReorderCell extends React.PureComponent {
   renderDragProxy(reorderStartEvent) {
     const additionalProps = {
       isDragProxy: true,
-      reorderStartEvent: reorderStartEvent,
+      reorderStartEvent,
       onColumnReorderEnd: this.onColumnReorderEnd,
       contents: this.cellRef.current,
     };
@@ -258,7 +259,7 @@ class ReorderCell extends React.PureComponent {
 ReorderCell.contextType = FixedDataTableContext;
 
 ReorderCell.defaultProps = {
-  onColumnReorderStart: _.noop,
+  onColumnReorderStart: noop,
 };
 
 ReorderCell.propTypes = {

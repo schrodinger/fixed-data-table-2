@@ -9,3 +9,7 @@ parserOptions:
 
 extends:
   - prettier
+
+rules:
+  no-var: "warn"
+  object-shorthand: "warn"

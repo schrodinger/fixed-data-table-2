@@ -17,7 +17,6 @@ import FixedDataTableEventHelper from '../../FixedDataTableEventHelper';
 import ResizerLine from './ResizerLine';
 import clamp from '../../vendor_upstream/core/clamp';
 import DOMMouseMoveTracker from '../../vendor_upstream/dom/DOMMouseMoveTracker';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 
 class ResizerKnob extends React.PureComponent {

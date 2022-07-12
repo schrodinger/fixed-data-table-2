@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'lodash';
+import noop from 'lodash/noop';
 import { assert, expect } from 'chai';
 import { createRenderer } from 'react-test-renderer/shallow';
 import {
@@ -68,12 +68,12 @@ class ReorderCellTest extends React.Component {
   }
 
   _onColumnReorderEndCallback = (event) => {
-    var columnOrder = this.state.columnOrder.filter((columnKey) => {
+    let columnOrder = this.state.columnOrder.filter((columnKey) => {
       return columnKey !== event.reorderColumn;
     });
 
     if (event.columnAfter) {
-      var index = columnOrder.indexOf(event.columnAfter);
+      let index = columnOrder.indexOf(event.columnAfter);
       columnOrder.splice(index, 0, event.reorderColumn);
     } else {
       if (fixedColumns.indexOf(event.reorderColumn) !== -1) {
@@ -83,7 +83,7 @@ class ReorderCellTest extends React.Component {
       }
     }
     this.setState({
-      columnOrder: columnOrder,
+      columnOrder,
       recycling: {},
     });
   };
@@ -128,7 +128,7 @@ class ReorderCellTest extends React.Component {
 describe('ReorderCell', () => {
   describe('render', () => {
     it('should not crash and burn', () => {
-      const reorderCell = <ReorderCell onColumnReorderEnd={_.noop} />;
+      const reorderCell = <ReorderCell onColumnReorderEnd={noop} />;
       const renderer = createRenderer();
       renderer.render(reorderCell);
       const reorderCellRender = renderer.getRenderOutput();

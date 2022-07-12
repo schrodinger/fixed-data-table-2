@@ -11,6 +11,7 @@
 
 'use strict';
 
+import clone from 'lodash/clone';
 import pick from 'lodash/pick';
 
 import IntegerBufferSet from '../vendor_upstream/struct/IntegerBufferSet';
@@ -123,7 +124,7 @@ const slice = createSlice({
     },
     propChange(state, action) {
       const { newProps, oldProps } = action.payload;
-      const oldState = _.clone(state);
+      const oldState = clone(state);
       setStateFromProps(state, newProps);
 
       if (

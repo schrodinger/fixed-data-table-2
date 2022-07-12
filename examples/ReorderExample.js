@@ -8,9 +8,8 @@ import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
 import { Table, Column, Plugins } from 'fixed-data-table-2';
 import React from 'react';
-import _ from 'lodash';
 
-var columnTitles = {
+let columnTitles = {
   firstName: 'First Name',
   lastName: 'Last Name',
   sentence: 'Sentence',
@@ -20,7 +19,7 @@ var columnTitles = {
   zipCode: 'Zip Code',
 };
 
-var columnWidths = {
+let columnWidths = {
   firstName: 150,
   lastName: 150,
   sentence: 240,
@@ -30,7 +29,7 @@ var columnWidths = {
   zipCode: 240,
 };
 
-var fixedColumns = ['firstName', 'lastName'];
+let fixedColumns = ['firstName', 'lastName'];
 
 class ReorderExample extends React.Component {
   constructor(props) {
@@ -52,12 +51,12 @@ class ReorderExample extends React.Component {
   }
 
   _onColumnReorderEndCallback = (event) => {
-    var columnOrder = this.state.columnOrder.filter((columnKey) => {
+    let columnOrder = this.state.columnOrder.filter((columnKey) => {
       return columnKey !== event.reorderColumn;
     });
 
     if (event.columnAfter) {
-      var index = columnOrder.indexOf(event.columnAfter);
+      let index = columnOrder.indexOf(event.columnAfter);
       columnOrder.splice(index, 0, event.reorderColumn);
     } else {
       if (fixedColumns.indexOf(event.reorderColumn) !== -1) {
@@ -67,7 +66,7 @@ class ReorderExample extends React.Component {
       }
     }
     this.setState({
-      columnOrder: columnOrder,
+      columnOrder,
       isReordering: {},
     });
   };

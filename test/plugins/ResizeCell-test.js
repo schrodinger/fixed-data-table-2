@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'lodash';
+import noop from 'lodash/noop';
 import { assert, expect } from 'chai';
 import { createRenderer } from 'react-test-renderer/shallow';
 import {
@@ -49,7 +49,7 @@ class ResizeCellTest extends React.Component {
   };
 
   render() {
-    var { dataList, columnWidths } = this.state;
+    let { dataList, columnWidths } = this.state;
     return (
       <Table
         rowHeight={30}
@@ -119,7 +119,7 @@ class ResizeCellTest extends React.Component {
 describe('ResizeCell', () => {
   describe('render', () => {
     it('should not crash and burn', () => {
-      const reorderCell = <ResizeCell onColumnResizeEnd={_.noop} />;
+      const reorderCell = <ResizeCell onColumnResizeEnd={noop} />;
       const renderer = createRenderer();
       renderer.render(reorderCell);
       const reorderCellRender = renderer.getRenderOutput();
