@@ -1,7 +1,7 @@
 'use strict';
 
 const { marked } = require('marked');
-var prism = require('./prism');
+let prism = require('./prism');
 
 // functions come before keywords
 prism.languages.insertBefore('javascript', 'keyword', {
@@ -17,16 +17,16 @@ prism.languages.insertBefore('javascript', {
 
 marked.setOptions({
   xhtml: true,
-  highlight: function (code) {
+  highlight(code) {
     return prism.highlight(code, prism.languages.javascript);
   },
 });
 
-var renderer = new marked.Renderer();
+let renderer = new marked.Renderer();
 
 renderer.code = function (code, lang, escaped) {
   if (this.options.highlight) {
-    var out = this.options.highlight(code, lang);
+    let out = this.options.highlight(code, lang);
     if (out != null && out !== code) {
       escaped = true;
       code = out;
@@ -49,5 +49,5 @@ function escapeCode(code) {
 }
 
 module.exports = function (markdown) {
-  return marked(markdown, { renderer: renderer });
+  return marked(markdown, { renderer });
 };

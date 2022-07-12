@@ -1,13 +1,13 @@
-var webpack = require('webpack');
-var path = require('path');
-var glob = require('glob');
-var MiniCssExtractPlugin = require('mini-css-extract-plugin');
-var packageJSON = require('./package.json');
+let webpack = require('webpack');
+let path = require('path');
+let glob = require('glob');
+let MiniCssExtractPlugin = require('mini-css-extract-plugin');
+let packageJSON = require('./package.json');
 const TerserPlugin = require('terser-webpack-plugin');
 
-var isDev = process.env.NODE_ENV !== 'production';
+let isDev = process.env.NODE_ENV !== 'production';
 
-var banner =
+let banner =
   '/**\n' +
   ' * FixedDataTable v' +
   packageJSON.version +
@@ -21,7 +21,7 @@ var banner =
   ' * of patent rights can be found in the PATENTS file in the same directory.\n' +
   ' */\n';
 
-var plugins = [
+let plugins = [
   new MiniCssExtractPlugin({
     filename: '[name].css',
   }),
@@ -30,12 +30,12 @@ var plugins = [
   }),
 ];
 
-var entry = {};
-var baseEntryPoints = glob.sync(path.join(__dirname, './src/css/layout/*.css'));
+let entry = {};
+let baseEntryPoints = glob.sync(path.join(__dirname, './src/css/layout/*.css'));
 
-var styleEntryPoints = glob.sync(path.join(__dirname, './src/css/style/*.css'));
+let styleEntryPoints = glob.sync(path.join(__dirname, './src/css/style/*.css'));
 
-var mainEntryPoints = glob.sync(path.join(__dirname, './src/**/*.css'));
+let mainEntryPoints = glob.sync(path.join(__dirname, './src/**/*.css'));
 mainEntryPoints.push('./src/FixedDataTableRoot.js');
 
 if (process.env.COMPRESS) {
@@ -77,7 +77,7 @@ module.exports = {
     ],
   },
 
-  entry: entry,
+  entry,
 
   output: {
     library: 'FixedDataTable',
@@ -105,7 +105,7 @@ module.exports = {
     Buffer: false,
   },
 
-  plugins: plugins,
+  plugins,
 };
 
 if (process.env.COMPRESS) {

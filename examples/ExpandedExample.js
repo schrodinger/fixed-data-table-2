@@ -36,7 +36,7 @@ class ExpandedExample extends React.Component {
     }
 
     this.setState({
-      scrollToRow: scrollToRow,
+      scrollToRow,
       collapsedRows: shallowCopyOfCollapsedRows,
     });
   }
@@ -51,7 +51,7 @@ class ExpandedExample extends React.Component {
     }
 
     const style = {
-      height: height,
+      height,
       width: width - 2,
     };
     return (
