@@ -28,6 +28,8 @@ const ExamplePages = Constants.ExamplePages;
 const EXAMPLE_COMPONENTS = {
   [ExamplePages.OBJECT_DATA_EXAMPLE
     .location]: require('../../examples/ObjectDataExample'),
+  [ExamplePages.DYNAMIC_ROW_HEIGHTS_EXAMPLE
+    .location]: require('../../examples/DynamicRowHeightExample'),
   [ExamplePages.RESIZE_EXAMPLE
     .location]: require('../../examples/ResizeExample'),
   [ExamplePages.REORDER_EXAMPLE

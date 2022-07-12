@@ -26,6 +26,15 @@ import Scrollbar from '../plugins/Scrollbar';
 import { createSlice } from '@reduxjs/toolkit';
 
 /**
+ * @typedef {{
+ *   rowBufferSet: IntegerBufferSet,
+ *   rowOffsetIntervalTree: PrefixIntervalTree,
+ *   storedHeights: !Array.<number>
+ * }}
+ */
+const InternalState = {};
+
+/**
  * Returns the default initial state for the redux store.
  * This must be a brand new, independent object for each table instance
  * or issues may occur due to multiple tables sharing data.
@@ -33,6 +42,8 @@ import { createSlice } from '@reduxjs/toolkit';
  * @return {!Object}
  */
 function getInitialState() {
+  const internalState = createInternalState();
+
   return {
     /*
      * Input state set from props
@@ -91,15 +102,32 @@ function getInitialState() {
     scrollbarYWidth: Scrollbar.SIZE,
     scrolling: false,
 
-    /*
-     * Internal state only used by this file
-     * NOTE (jordan) internal state is altered in place
-     * so don't trust it for redux history or immutability checks
-     * TODO (jordan) investigate if we want to move this to local or scoped state
+    /**
+     * Internal state is only used by reducers.
+     * NOTE (jordan, pradeep): Internal state is altered in place, so don't trust it for redux history or immutabability checks.
+     * We also purposefully avoid keeping the raw internal state as part of the redux store.
+     * Instead a getter can be used to retrieve the internal state.
+     *
+     * 1. Large data structures in internal state like `rowHeights` are mutated by reducers.
+     *    Since we don't care about immutability, we avoid overheads seen in a typical immutable data structure.
+     *
+     * 2. Immer internally uses proxies on the entire redux store state inorder to detect state mutations in reducers,
+     *    but watching large data structures is inefficient and slows down reducers.
+     *    Internal state isn't a direct part of the redux store state because we separated it through a getter.
+     *    This means there's no proxies watching over the internal state, and hence mutating it has no overheads.
+     *
+     * @type {!Function}
      */
+    getInternal: () => internalState,
+  };
+}
+
+/** @returns {!InternalState} */
+function createInternalState() {
+  return {
     rowBufferSet: new IntegerBufferSet(),
-    storedHeights: [],
     rowOffsetIntervalTree: null, // PrefixIntervalTree
+    storedHeights: [],
   };
 }
 
@@ -136,7 +164,7 @@ const slice = createSlice({
       }
 
       if (oldProps.rowsCount !== newProps.rowsCount) {
-        state.rowBufferSet = new IntegerBufferSet();
+        state.getInternal().rowBufferSet = new IntegerBufferSet();
       }
 
       const scrollAnchor = getScrollAnchor(state, newProps, oldProps);
@@ -202,9 +230,9 @@ function initializeRowHeightsAndOffsets(state) {
   for (let idx = 0; idx < rowsCount; idx++) {
     storedHeights[idx] = defaultFullRowHeight;
   }
-  Object.assign(state, {
+  state.scrollContentHeight = scrollContentHeight;
+  Object.assign(state.getInternal(), {
     rowOffsetIntervalTree,
-    scrollContentHeight,
     storedHeights,
   });
 }

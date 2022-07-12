@@ -70,7 +70,8 @@ export function getScrollAnchor(state, newProps, oldProps) {
  */
 export function scrollTo(state, scrollY) {
   const { availableHeight } = scrollbarsVisibleSelector(state);
-  const { rowOffsetIntervalTree, rowSettings, scrollContentHeight } = state;
+  const { rowSettings, scrollContentHeight } = state;
+  const { rowOffsetIntervalTree } = state.getInternal();
   const { rowsCount } = rowSettings;
 
   if (rowsCount === 0) {
@@ -133,7 +134,8 @@ export function scrollTo(state, scrollY) {
  */
 function scrollToRow(state, rowIndex) {
   const { availableHeight } = scrollbarsVisibleSelector(state);
-  const { rowOffsetIntervalTree, rowSettings, storedHeights, scrollY } = state;
+  const { rowSettings, scrollY } = state;
+  const { rowOffsetIntervalTree, storedHeights } = state.getInternal();
   const { rowsCount } = rowSettings;
 
   if (rowsCount === 0) {

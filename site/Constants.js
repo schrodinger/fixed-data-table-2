@@ -45,6 +45,12 @@ exports.ExamplePages = {
     description:
       'A basic table example with two fixed columns, fed in some JSON data.',
   },
+  DYNAMIC_ROW_HEIGHTS_EXAMPLE: {
+    location: 'dynamic-row-heights.html',
+    fileName: 'DynamicRowHeightExample.js',
+    title: 'Dynamic Row Heights',
+    description: 'A table example where each row has a different height.',
+  },
   FIXED_RIGHT_COLUMNS_EXAMPLE: {
     location: 'fixed-right-columns.html',
     fileName: 'FixedRightColumnsExample.js',
