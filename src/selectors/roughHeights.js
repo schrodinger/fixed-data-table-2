@@ -85,7 +85,8 @@ function roughHeights(
   scrollbarYWidth,
   columnSettings,
   fixedContentWidth,
-  scrollContentWidth
+  scrollContentWidth,
+  scrollContentHeight
 ) {
   const {
     cellGroupWrapperHeight,
@@ -126,12 +127,28 @@ function roughHeights(
     case ScrollbarState.VISIBLE: {
       minAvailableHeight -= scrollbarXHeight;
       maxAvailableHeight -= scrollbarXHeight;
+      break;
+    }
+    case ScrollbarState.JOINT_SCROLLBARS: {
+      minAvailableHeight -= scrollbarXHeight;
+      break;
+    }
+  }
+
+  const scrollStateY = getScrollStateY(
+    scrollFlags,
+    roughAvailableHeight,
+    scrollbarXHeight,
+    scrollContentHeight
+  );
+
+  switch (scrollStateY) {
+    case ScrollbarState.VISIBLE: {
       minAvailableWidth -= scrollbarYWidth;
       maxAvailableWidth -= scrollbarYWidth;
       break;
     }
     case ScrollbarState.JOINT_SCROLLBARS: {
-      minAvailableHeight -= scrollbarXHeight;
       minAvailableWidth -= scrollbarYWidth;
       break;
     }
@@ -180,6 +197,37 @@ function getScrollStateX(
   if (minColWidth > width - scrollbarYWidth) {
     return ScrollbarState.JOINT_SCROLLBARS;
   }
+  return ScrollbarState.HIDDEN;
+}
+
+/**
+ * @param {{
+ *   overflowX: string,
+ *   showScrollbarX: boolean,
+ * }} scrollFlags
+ * @param {number} height
+ * @param {number} scrollbarXHeight
+ * @param {number} scrollContentHeight
+ * @return {ScrollbarState}
+ */
+function getScrollStateY(
+  scrollFlags,
+  height,
+  scrollbarXHeight,
+  scrollContentHeight
+) {
+  const { overflowY, showScrollbarY } = scrollFlags;
+
+  if (overflowY === 'hidden' || showScrollbarY === false) {
+    return ScrollbarState.HIDDEN;
+  } else if (scrollContentHeight > height) {
+    return ScrollbarState.VISIBLE;
+  }
+
+  if (scrollContentHeight > height - scrollbarXHeight) {
+    return ScrollbarState.JOINT_SCROLLBARS;
+  }
+
   return ScrollbarState.HIDDEN;
 }
 
@@ -233,6 +281,7 @@ export default shallowEqualSelector(
     (state) => state.columnSettings,
     (state) => state.fixedContentWidth,
     (state) => state.scrollContentWidth,
+    (state) => state.scrollContentHeight,
   ],
   roughHeights
 );
