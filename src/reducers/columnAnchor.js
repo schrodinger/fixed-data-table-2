@@ -135,8 +135,9 @@ function scrollToColX(state, colIndex) {
   const { availableWidth } = scrollbarsVisibleSelector(state);
   const { colOffsetIntervalTree, columnSettings, storedWidths, scrollX } =
     state;
-  const { scrollableColumnsCount } = columnSettings;
-
+  const { scrollableColumnsCount, fixedColumnsCount } = columnSettings;
+  // (Kairav) colIndex here is the global index which includes fixedCOlumns as well, but we want the colIndex of scrollableColumns
+  colIndex = colIndex - fixedColumnsCount;
   if (scrollableColumnsCount === 0) {
     return {
       firstIndex: 0,
