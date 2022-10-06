@@ -99,10 +99,9 @@ export default function computeRenderedCols(state, scrollAnchor) {
 
   let scrollX = 0;
   if (scrollableColumnsCount > 0) {
-    scrollX = scrollAnchor.lastIndex
-      ? state.maxScrollX
-      : state.colOffsetIntervalTree.sumUntil(colRange.firstViewportIdx) -
-        colRange.firstOffset;
+    scrollX =
+      state.colOffsetIntervalTree.sumUntil(colRange.firstViewportIdx) -
+      colRange.firstOffset;
   }
 
   scrollX = clamp(scrollX, 0, maxScrollX);

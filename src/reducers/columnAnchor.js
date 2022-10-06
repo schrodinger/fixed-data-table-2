@@ -135,7 +135,7 @@ function scrollToColX(state, colIndex) {
   const { availableWidth } = scrollbarsVisibleSelector(state);
   const { colOffsetIntervalTree, columnSettings, storedWidths, scrollX } =
     state;
-  const { scrollableColumnsCount } = columnSettings;
+  const { scrollableColumnsCount, fixedColumnsCount } = columnSettings;
 
   if (scrollableColumnsCount === 0) {
     return {
@@ -145,8 +145,20 @@ function scrollToColX(state, colIndex) {
       changed: state.firstColumnIndex !== 0 || state.firstColumnOffset !== 0,
     };
   }
+  // (Kairav)colIndex passed by the user (through the scrollToColumn prop) refers to the index of the column in relation to the whole table.
+  // But here, we're using it in relation to just the set of scrollable columns.
+  colIndex = colIndex - fixedColumnsCount;
 
-  colIndex = clamp(colIndex, 0, Math.max(scrollableColumnsCount - 1, 0));
+  if (colIndex < 0 || colIndex >= scrollableColumnsCount) {
+    // if colIndex passed by the user is the index of fixedColumn or fixedRightColumn then do nothing
+    return {
+      firstIndex: state.firstColumnIndex,
+      firstOffset: state.firstColumnOffset,
+      lastIndex: undefined,
+      changed: false,
+    };
+  }
+
   getColWidth(state, colIndex);
   let colBegin = colOffsetIntervalTree.sumUntil(colIndex);
   let colEnd = colBegin + storedWidths.array[colIndex];
