@@ -69,6 +69,11 @@ class FixedDataTableCellDefault extends React.Component {
      * pass the prop through at their discretion.
      */
     rowIndex: PropTypes.number,
+
+    /**
+     * Whether this cell is currently within the viewport.
+     */
+    isVisible: PropTypes.boolean,
   };
 
   render() {
