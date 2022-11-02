@@ -76,6 +76,7 @@ class FixedDataTableCellDefault extends React.Component {
     var {
       height,
       width,
+      isVisible,
       style,
       className,
       children,
