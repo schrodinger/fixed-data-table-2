@@ -87,6 +87,11 @@ class FixedDataTableCell extends React.Component {
      * If the component should render for RTL direction
      */
     isRTL: PropTypes.bool,
+
+    /**
+     * Whether this cell is visible (i.e, inside the viewport) or not.
+     */
+    isVisible: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -96,7 +101,11 @@ class FixedDataTableCell extends React.Component {
   };
 
   shouldComponentUpdate(nextProps) {
-    if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
+    if (
+      nextProps.isScrolling &&
+      this.props.rowIndex === nextProps.rowIndex &&
+      this.props.isVisible === nextProps.isVisible
+    ) {
       return false;
     }
 
@@ -206,7 +215,14 @@ class FixedDataTableCell extends React.Component {
   };
 
   render() /*object*/ {
-    var { height, width, columnKey, isHeaderOrFooter, ...props } = this.props;
+    var {
+      height,
+      width,
+      isVisible,
+      columnKey,
+      isHeaderOrFooter,
+      ...props
+    } = this.props;
 
     var style = {
       height,
@@ -289,6 +305,7 @@ class FixedDataTableCell extends React.Component {
       columnKey,
       height,
       width,
+      isVisible,
     };
 
     if (props.rowIndex >= 0) {
