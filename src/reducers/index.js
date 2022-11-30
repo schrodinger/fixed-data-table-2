@@ -152,7 +152,7 @@ function getInitialState() {
     storedScrollableColumns: new ObjectWrapper(), // virtualized column objects
     storedScrollableColumnGroups: new ObjectWrapper(), // virtualized column group objects
     rowOffsetIntervalTree: null, // PrefixIntervalTree to calculate offsets of columns efficiently
-    colOffsetIntervalTree: null, // PrefixIntervalTree to calculate offsets of columns efficiently
+    scrollableColOffsetIntervalTree: null, // PrefixIntervalTree to calculate offsets of scrollable columns efficiently
     cachedColumnsToRender: new ArrayWrapper(), // cache of indexes of buffered columns
     cachedColumnGroupsToRender: new ArrayWrapper(), // cache of indexes of buffered column groups
   };
@@ -323,7 +323,7 @@ function initializeScrollableColumnWidthsAndOffsets(state) {
   let { columnSettings } = state;
   const scrollContentWidth =
     columnSettings.scrollableColumnsCount * columnSettings.defaultColumnWidth;
-  const colOffsetIntervalTree = PrefixIntervalTree.uniform(
+  const scrollableColOffsetIntervalTree = PrefixIntervalTree.uniform(
     columnSettings.scrollableColumnsCount,
     columnSettings.defaultColumnWidth
   );
@@ -332,7 +332,7 @@ function initializeScrollableColumnWidthsAndOffsets(state) {
   storedWidths.array.fill(columnSettings.defaultColumnWidth);
 
   Object.assign(state, {
-    colOffsetIntervalTree,
+    scrollableColOffsetIntervalTree,
     scrollContentWidth,
     storedWidths,
     scrollableColumns: {},

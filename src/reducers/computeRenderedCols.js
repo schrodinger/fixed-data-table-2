@@ -17,7 +17,10 @@ import clamp from 'lodash/clamp';
 import roughHeightsSelector from '../selectors/roughHeights';
 import scrollbarsVisibleSelector from '../selectors/scrollbarsVisible';
 import tableHeightsSelector from '../selectors/tableHeights';
-import { getColumn, getColWidth } from './updateColWidth';
+import {
+  getScrollableColumn,
+  getScrollableColumnWidth,
+} from './updateScrollableColumn';
 import convertColumnElementsToData from '../helper/convertColumnElementsToData';
 
 /**
@@ -100,8 +103,9 @@ export default function computeRenderedCols(state, scrollAnchor) {
   let scrollX = 0;
   if (scrollableColumnsCount > 0) {
     scrollX =
-      state.colOffsetIntervalTree.sumUntil(colRange.firstViewportIdx) -
-      colRange.firstOffset;
+      state.scrollableColOffsetIntervalTree.sumUntil(
+        colRange.firstViewportIdx
+      ) - colRange.firstOffset;
   }
 
   scrollX = clamp(scrollX, 0, maxScrollX);
@@ -252,9 +256,9 @@ function computeRenderedColumnGroups(state) {
     const { firstChildIdx, lastChildIdx } = columnGroup.props;
 
     columnGroupOffsets[idx] =
-      state.colOffsetIntervalTree.sumUntil(firstChildIdx);
+      state.scrollableColOffsetIntervalTree.sumUntil(firstChildIdx);
     state.storedScrollableColumnGroups.object[idx].props.width =
-      state.colOffsetIntervalTree.sumUntil(lastChildIdx) -
+      state.scrollableColOffsetIntervalTree.sumUntil(lastChildIdx) -
       columnGroupOffsets[idx] +
       state.storedWidths.array[lastChildIdx];
 
@@ -346,7 +350,7 @@ function calculateRenderedColRange(state, scrollAnchor) {
     colIdx >= 0 &&
     totalWidth < maxAvailableWidth
   ) {
-    totalWidth += getColWidth(state, colIdx);
+    totalWidth += getScrollableColumnWidth(state, colIdx);
     endIdx = colIdx;
     colIdx += step;
   }
@@ -367,7 +371,7 @@ function calculateRenderedColRange(state, scrollAnchor) {
     colIdx = firstIndex - 1;
 
     while (colIdx >= 0 && totalWidth < maxAvailableWidth) {
-      totalWidth += getColWidth(state, colIdx);
+      totalWidth += getScrollableColumnWidth(state, colIdx);
       startIdx = colIdx;
       --colIdx;
     }
@@ -380,7 +384,7 @@ function calculateRenderedColRange(state, scrollAnchor) {
     0
   );
   for (colIdx = firstBufferIdx; colIdx < firstViewportIdx; colIdx++) {
-    getColWidth(state, colIdx);
+    getScrollableColumnWidth(state, colIdx);
   }
 
   // Loop to walk the trailing buffer
@@ -392,7 +396,7 @@ function calculateRenderedColRange(state, scrollAnchor) {
     scrollableColumnsCount
   );
   for (colIdx = endViewportIdx; colIdx < endBufferIdx; colIdx++) {
-    getColWidth(state, colIdx);
+    getScrollableColumnWidth(state, colIdx);
   }
 
   const { availableWidth } = scrollbarsVisibleSelector(state);
@@ -439,7 +443,7 @@ function calculateRenderedColRange(state, scrollAnchor) {
  * @private
  */
 function computeRenderedColumnOffsets(state, colRange, viewportOnly) {
-  const { colBufferSet, colOffsetIntervalTree, storedWidths } = state;
+  const { colBufferSet, scrollableColOffsetIntervalTree, storedWidths } = state;
   const { endBufferIdx, endViewportIdx, firstBufferIdx, firstViewportIdx } =
     colRange;
 
@@ -458,7 +462,7 @@ function computeRenderedColumnOffsets(state, colRange, viewportOnly) {
   const columnOffsets = {}; // state.colOffsets
 
   // incremental way for calculating colOffset
-  let runningOffset = colOffsetIntervalTree.sumUntil(startIdx);
+  let runningOffset = scrollableColOffsetIntervalTree.sumUntil(startIdx);
 
   // compute col index and offsets for every columns inside the buffer
   for (let colIdx = startIdx; colIdx < endIdx; colIdx++) {
@@ -503,7 +507,7 @@ function getVirtualizedColumns(state) {
   const scrollableColumns = {};
   for (let colIdx of cachedColumnsToRender) {
     if (colIdx < state.columnSettings.scrollableColumnsCount) {
-      scrollableColumns[colIdx] = getColumn(state, colIdx);
+      scrollableColumns[colIdx] = getScrollableColumn(state, colIdx);
     }
   }
   state.cachedColumnsToRender.array = cachedColumnsToRender;

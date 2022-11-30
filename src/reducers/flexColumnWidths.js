@@ -12,7 +12,10 @@
 'use strict';
 
 import scrollbarsVisibleSelector from '../selectors/scrollbarsVisible';
-import { getColumn, updateColWidth } from './updateColWidth';
+import {
+  getScrollableColumn,
+  updateScrollableColumnWidth,
+} from './updateScrollableColumn';
 
 /**
  * @param state
@@ -36,7 +39,7 @@ export function initializeFlexColumnWidths(state) {
     availableWidth > 0 &&
     idx < state.columnSettings.scrollableColumnsCount
   ) {
-    const column = getColumn(state, idx);
+    const column = getScrollableColumn(state, idx);
     availableWidth -= column.props.width;
     flexTotal += column.props.flexGrow;
     idx++;
@@ -76,7 +79,7 @@ export function initializeFlexColumnWidths(state) {
   updateFlexWidths(
     state.storedScrollableColumns.object,
     (column, columnIndex, newWidth) => {
-      updateColWidth(state, columnIndex, newWidth);
+      updateScrollableColumnWidth(state, columnIndex, newWidth);
     }
   );
 

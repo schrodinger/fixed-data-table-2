@@ -56,7 +56,7 @@ const getApiMethodsSelector = () =>
         fixedColumnGroups,
         fixedRightColumns,
         fixedRightColumnGroups,
-        colOffsetIntervalTree,
+        scrollableColOffsetIntervalTree,
         fixedColumnOffsets,
         fixedColumnGroupOffsets,
         fixedRightColumnOffsets,
@@ -71,7 +71,7 @@ const getApiMethodsSelector = () =>
         } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
           fixedRightColumnOffsets[index];
         } else {
-          return colOffsetIntervalTree.sumTo(index);
+          return scrollableColOffsetIntervalTree.sumTo(index);
         }
       };
 
@@ -142,8 +142,12 @@ const getApiMethodsSelector = () =>
           columnGroup.props.index = columnGroupIndex;
 
           columnGroup.props.width =
-            colOffsetIntervalTree.sumTo(columnGroup.props.lastChildIdx) -
-            colOffsetIntervalTree.sumUntil(columnGroup.props.firstChildIdx);
+            scrollableColOffsetIntervalTree.sumTo(
+              columnGroup.props.lastChildIdx
+            ) -
+            scrollableColOffsetIntervalTree.sumUntil(
+              columnGroup.props.firstChildIdx
+            );
         }
 
         return columnGroup;
@@ -186,7 +190,9 @@ const getApiMethodsSelector = () =>
 
       const _getScrollableColumnGroupOffset = (columnGroup) => {
         // offset of column group is same as offset of its first child column
-        return colOffsetIntervalTree.sumUntil(columnGroup.props.firstChildIdx);
+        return scrollableColOffsetIntervalTree.sumUntil(
+          columnGroup.props.firstChildIdx
+        );
       };
 
       const getColumnGroup = (
@@ -260,10 +266,11 @@ const getApiMethodsSelector = () =>
           columnOffset = fixedRightColumnOffsets[element.props.index];
           column = element;
         } else {
-          let index = colOffsetIntervalTree.greatestLowerBound(offset);
+          let index =
+            scrollableColOffsetIntervalTree.greatestLowerBound(offset);
           index = _.clamp(index, 0, columnSettings.scrollableColumnsCount - 1);
           column = _getScrollableColumn(index);
-          columnOffset = colOffsetIntervalTree.sumUntil(index);
+          columnOffset = scrollableColOffsetIntervalTree.sumUntil(index);
         }
 
         if (column) {
@@ -291,7 +298,8 @@ const getApiMethodsSelector = () =>
           columnGroup = element;
         } else {
           // figure out the column at given offset
-          let columnIndex = colOffsetIntervalTree.greatestLowerBound(offset);
+          let columnIndex =
+            scrollableColOffsetIntervalTree.greatestLowerBound(offset);
           columnIndex = _.clamp(
             columnIndex,
             0,
