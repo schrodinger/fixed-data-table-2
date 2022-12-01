@@ -27,16 +27,19 @@ export function getScrollableColumn(state, localColIdx) {
     return state.storedScrollableColumns.object[localColIdx];
   }
 
+  // index of the column in relation to the whole table.
+  const colIdx = localColIdx + state.fixedColumnsCount;
+
   // if column doesn't exist in cache, then get the column from the user
-  const columnProps = state.columnSettings.getScrollableColumn(localColIdx);
+  const columnProps = state.columnSettings.getColumn(colIdx);
   const column = convertColumnElementsToData(columnProps);
-  column.props.index = localColIdx;
+  column.props.index = colIdx;
 
   // update column groups associated with the current column
   const { columnGroupIndex } = column.props;
   if (!_.isNil(columnGroupIndex)) {
     const columnGroupProps =
-      state.columnSettings.getScrollableColumnGroup(columnGroupIndex);
+      state.columnSettings.getColumnGroup(columnGroupIndex);
     const columnGroup = convertColumnElementsToData(columnGroupProps);
     const storedColumnGroup =
       state.storedScrollableColumnGroups.object[columnGroupIndex];

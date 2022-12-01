@@ -21,10 +21,8 @@ class AutoScrollExample extends React.Component {
       horizontalScrollDelta: 0,
       verticalScrollDelta: 0,
       columns: [],
-      fixedColumnsCount: 2,
-      fixedRightColumnsCount: 2,
-      scrollableColumnsCount: 10000 - 2 - 2,
       columnGroups: [],
+      columnsCount: 10000,
     };
 
     const cellRenderer = (props) => `${props.columnKey}, ${props.rowIndex}`;
@@ -39,6 +37,8 @@ class AutoScrollExample extends React.Component {
         cell: cellRenderer,
         width: 100,
         allowCellsRecycling: true,
+        fixed: i < 2 ? true : false,
+        fixedRight: i >= 10000 - 4 ? true : false,
       };
       this.state.columnGroups[columnGroupIndex] = {
         columnKey: 'Column Group ' + columnGroupIndex,
@@ -120,18 +120,8 @@ class AutoScrollExample extends React.Component {
         scrollTop={scrollTop}
         onVerticalScroll={this.onVerticalScroll}
         onHorizontalScroll={this.onHorizontalScroll}
-        scrollableColumnsCount={this.state.scrollableColumnsCount}
-        getScrollableColumn={(i) =>
-          this.state.columns[this.state.fixedColumnsCount + i]
-        }
-        getFixedColumn={(i) => this.state.columns[i]}
-        fixedColumnsCount={this.state.fixedColumnsCount}
-        fixedRightColumnsCount={this.state.fixedRightColumnsCount}
-        getFixedRightColumn={(i) =>
-          this.state.columns[
-            this.state.fixedColumnsCount + this.state.scrollableColumnsCount + i
-          ]
-        }
+        columnsCount={this.state.columnsCount}
+        getColumn={(i) => this.state.columns[i]}
         getColumnGroup={(i) => this.state.columnGroups[i]}
         {...this.props}
       />

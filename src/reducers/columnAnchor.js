@@ -72,10 +72,9 @@ export function scrollToX(state, scrollX) {
   const { availableWidth } = scrollbarsVisibleSelector(state);
   const {
     scrollableColOffsetIntervalTree,
-    columnSettings,
+    scrollableColumnsCount,
     scrollContentWidth,
   } = state;
-  const { scrollableColumnsCount } = columnSettings;
 
   if (scrollableColumnsCount === 0) {
     return {
@@ -141,11 +140,11 @@ function scrollToColX(state, colIndex) {
   const { availableWidth } = scrollbarsVisibleSelector(state);
   const {
     scrollableColOffsetIntervalTree,
-    columnSettings,
+    fixedColumnsCount,
+    scrollableColumnsCount,
     storedWidths,
     scrollX,
   } = state;
-  const { scrollableColumnsCount, fixedColumnsCount } = columnSettings;
 
   if (scrollableColumnsCount === 0) {
     return {

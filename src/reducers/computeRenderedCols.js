@@ -41,34 +41,24 @@ import convertColumnElementsToData from '../helper/convertColumnElementsToData';
 export default function computeRenderedCols(state, scrollAnchor) {
   let colRange = calculateRenderedColRange(state, scrollAnchor);
 
-  const { scrollContentWidth } = state;
-  const { fixedColumnsCount, fixedRightColumnsCount, scrollableColumnsCount } =
-    state.columnSettings;
+  const { scrollableColumnsCount, scrollContentWidth } = state;
   const { availableScrollWidth } = tableHeightsSelector(state);
 
   const {
     columnsToRender: fixedColumnsToRender,
     columnOffsets: fixedColumnOffsets,
+    columnsGroupsContainer: fixedColumnGroups,
     columnGroupsToRender: fixedColumnGroupsToRender,
     columnGroupOffsets: fixedColumnGroupOffsets,
-  } = computeRenderedFixedColumnsAndGroups(
-    state,
-    state.fixedColumns,
-    state.fixedColumnGroups,
-    state.columnSettings.getFixedColumnGroup
-  );
+  } = computeRenderedFixedColumnsAndGroups(state, state.fixedColumns);
 
   const {
     columnsToRender: fixedRightColumnsToRender,
     columnOffsets: fixedRightColumnOffsets,
+    columnsGroupsContainer: fixedRightColumnGroups,
     columnGroupsToRender: fixedRightColumnGroupsToRender,
     columnGroupOffsets: fixedRightColumnGroupOffsets,
-  } = computeRenderedFixedColumnsAndGroups(
-    state,
-    state.fixedRightColumns,
-    state.fixedRightColumnGroups,
-    state.columnSettings.getFixedRightColumnGroup
-  );
+  } = computeRenderedFixedColumnsAndGroups(state, state.fixedRightColumns);
 
   const maxScrollX = scrollContentWidth - availableScrollWidth;
   let firstColumnOffset;
@@ -115,8 +105,10 @@ export default function computeRenderedCols(state, scrollAnchor) {
     firstColumnOffset,
     fixedColumnsToRender,
     fixedColumnOffsets,
+    fixedRightColumnGroups,
     fixedRightColumnsToRender,
     fixedRightColumnOffsets,
+    fixedColumnGroups,
     fixedColumnGroupsToRender,
     fixedColumnGroupOffsets,
     fixedRightColumnGroupsToRender,
@@ -136,16 +128,9 @@ export default function computeRenderedCols(state, scrollAnchor) {
  *
  * @param state
  * @param columnsContainer
- * @param columnsGroupsContainer
- * @param columnGroupGetter
- * @returns {{columnsToRender: Array, columnOffsets: {}, columnGroupsToRender: Array, columnGroupOffsets: {}}}
+ * @returns {{columnsToRender: Array, columnOffsets: {}, columnsGroupsContainer: Array, columnGroupsToRender: Array, columnGroupOffsets: {}}}
  */
-function computeRenderedFixedColumnsAndGroups(
-  state,
-  columnsContainer,
-  columnsGroupsContainer,
-  columnGroupGetter
-) {
+function computeRenderedFixedColumnsAndGroups(state, columnsContainer) {
   const tableWidth = state.tableSize.width;
 
   let widthUsed = 0;
@@ -153,10 +138,11 @@ function computeRenderedFixedColumnsAndGroups(
   const columnGroupsToRender = [];
   const columnOffsets = {};
   const columnGroupOffsets = {};
-  const columnGroupWidths = {};
+  const columnsGroupsContainer = [];
+  let prevColumnGroupIndex = null;
 
   // iterate over the fixed columns
-  for (var idx = 0; idx < _.size(columnsContainer); idx++) {
+  for (let idx = 0; idx < _.size(columnsContainer); idx++) {
     // no need to calculate fixed columns past the viewport
     if (widthUsed > tableWidth) {
       break;
@@ -168,24 +154,21 @@ function computeRenderedFixedColumnsAndGroups(
 
     // update column group widths and offsets along the way if they exist
     if (!_.isNil(columnGroupIndex)) {
-      if (_.isNil(columnGroupOffsets[columnGroupIndex])) {
-        columnGroupOffsets[columnGroupIndex] = widthUsed;
-      }
-      if (_.isNil(columnGroupsToRender[columnGroupIndex])) {
-        columnGroupsToRender.push(columnGroupIndex);
-      }
-
-      columnGroupWidths[columnGroupIndex] =
-        (columnGroupWidths[columnGroupIndex] || 0) + width;
-
-      if (_.isNil(columnsGroupsContainer[columnGroupIndex])) {
-        columnsGroupsContainer[columnGroupIndex] = convertColumnElementsToData(
-          columnGroupGetter(columnGroupIndex)
+      if (prevColumnGroupIndex !== columnGroupIndex) {
+        const columnGroupData = convertColumnElementsToData(
+          state.columnSettings.getColumnGroup(columnGroupIndex)
         );
+        columnGroupData.props.index = columnGroupIndex;
+        columnGroupData.props.width = 0;
+        columnsGroupsContainer.push(columnGroupData);
+        columnGroupsToRender.push(columnsGroupsContainer.length - 1);
+        columnGroupOffsets[columnsGroupsContainer.length - 1] = widthUsed;
       }
-      columnsGroupsContainer[columnGroupIndex].props.width =
-        columnGroupWidths[columnGroupIndex];
+      columnsGroupsContainer[columnsGroupsContainer.length - 1].props.width +=
+        width;
     }
+
+    prevColumnGroupIndex = columnGroupIndex;
 
     widthUsed += width;
   }
@@ -193,6 +176,7 @@ function computeRenderedFixedColumnsAndGroups(
   return {
     columnsToRender,
     columnOffsets,
+    columnsGroupsContainer,
     columnGroupsToRender,
     columnGroupOffsets,
   };
@@ -305,7 +289,7 @@ function computeRenderedColumnGroups(state) {
 function calculateRenderedColRange(state, scrollAnchor) {
   const { bufferColCount, maxAvailableWidth } = roughHeightsSelector(state);
 
-  const scrollableColumnsCount = state.columnSettings.scrollableColumnsCount;
+  const scrollableColumnsCount = state.scrollableColumnsCount;
 
   if (scrollableColumnsCount === 0) {
     return {
@@ -506,7 +490,7 @@ function getVirtualizedColumns(state) {
   );
   const scrollableColumns = {};
   for (let colIdx of cachedColumnsToRender) {
-    if (colIdx < state.columnSettings.scrollableColumnsCount) {
+    if (colIdx < state.scrollableColumnsCount) {
       scrollableColumns[colIdx] = getScrollableColumn(state, colIdx);
     }
   }

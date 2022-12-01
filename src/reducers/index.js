@@ -25,7 +25,6 @@ import Scrollbar from '../plugins/Scrollbar';
 import { createSlice } from '@reduxjs/toolkit';
 import computeRenderedCols from './computeRenderedCols';
 import { initializeFlexColumnWidths } from './flexColumnWidths';
-import clamp from 'lodash/clamp';
 
 // NOTE (pradeep): Custom class objects are ignored by immer. (see https://immerjs.github.io/immer/complex-objects/)
 // We wrap our non-user defined structures from "internal" state into these wrapper classes so that immer
@@ -77,15 +76,9 @@ function getInitialState() {
     columnSettings: {
       defaultColumnWidth: 100,
       bufferColCount: undefined,
-      fixedColumnsCount: 0,
-      fixedRightColumnsCount: 0,
-      scrollableColumnsCount: 0,
-      getFixedColumnGroup: () => {},
-      getFixedRightColumnGroup: () => {},
-      getScrollableColumnGroup: () => {},
-      getFixedColumn: () => {},
-      getFixedRightColumn: () => {},
-      getScrollableColumn: () => {},
+      columnsCount: 0,
+      getColumn: () => {},
+      getColumnGroup: () => {},
     },
     scrollFlags: {
       overflowX: 'auto',
@@ -137,6 +130,11 @@ function getInitialState() {
     scrollableColumnGroups: {}, // we use a sparse object to represent the currently required set of columns
     fixedColumns: [],
     fixedRightColumns: [],
+    fixedColumnsCount: 0,
+    fixedRightColumnsCount: 0,
+    scrollableColumnsCount: 0,
+    fixedColumnGroups: [],
+    fixedRightColumnGroups: [],
 
     /*
      * Internal state only used by this file
@@ -171,6 +169,7 @@ const slice = createSlice({
       const props = action.payload;
       Object.assign(state, getInitialState());
       setStateFromProps(state, props);
+      initializeFixedAndScrollableColumnsCount(state);
       initializeRowHeightsAndOffsets(state);
       initializeFixedColumnWidthsAndOffsets(state);
       initializeScrollableColumnWidthsAndOffsets(state);
@@ -184,6 +183,7 @@ const slice = createSlice({
       const { newProps, oldProps } = action.payload;
       const oldState = _.clone(state);
       setStateFromProps(state, newProps);
+      initializeFixedAndScrollableColumnsCount(state);
 
       if (
         oldProps.rowsCount !== newProps.rowsCount ||
@@ -194,7 +194,7 @@ const slice = createSlice({
       }
 
       initializeFixedColumnWidthsAndOffsets(state);
-      if (oldProps.scrollableColumnsCount !== newProps.scrollableColumnsCount) {
+      if (oldState.scrollableColumnsCount !== state.scrollableColumnsCount) {
         initializeScrollableColumnWidthsAndOffsets(state);
       }
       initializeFlexColumnWidths(state);
@@ -203,7 +203,7 @@ const slice = createSlice({
         state.rowBufferSet = new IntegerBufferSet();
       }
 
-      if (oldProps.scrollableColumnsCount !== newProps.scrollableColumnsCount) {
+      if (oldState.scrollableColumnsCount !== state.scrollableColumnsCount) {
         state.colBufferSet = new IntegerBufferSet();
       }
 
@@ -257,6 +257,36 @@ const slice = createSlice({
   },
 });
 
+function initializeFixedAndScrollableColumnsCount(state) {
+  const columnSettings = state.columnSettings;
+  let fixedColumnsCount = 0;
+  let fixedRightColumnsCount = 0;
+
+  for (let idx = 0; idx < columnSettings.columnsCount; idx++) {
+    if (columnSettings.getColumn(idx).fixed) {
+      fixedColumnsCount++;
+    } else {
+      break;
+    }
+  }
+  for (let idx = columnSettings.columnsCount - 1; idx >= 0; idx--) {
+    if (columnSettings.getColumn(idx).fixedRight) {
+      fixedRightColumnsCount++;
+    } else {
+      break;
+    }
+  }
+
+  const scrollableColumnsCount =
+    columnSettings.columnsCount - fixedColumnsCount - fixedRightColumnsCount;
+
+  Object.assign(state, {
+    fixedColumnsCount,
+    fixedRightColumnsCount,
+    scrollableColumnsCount,
+  });
+}
+
 /**
  * Initialize row heights (storedHeights) & offsets based on the default rowHeight
  *
@@ -283,28 +313,29 @@ function initializeRowHeightsAndOffsets(state) {
 }
 
 function initializeFixedColumnWidthsAndOffsets(state) {
-  let { columnSettings } = state;
+  const { columnSettings, fixedColumnsCount, fixedRightColumnsCount } = state;
+  const { columnsCount, getColumn } = columnSettings;
   let fixedColumnsWidth = 0;
   let fixedRightColumnsWidth = 0;
-  const fixedColumns = new Array(columnSettings.fixedColumnsCount);
-  const fixedRightColumns = new Array(columnSettings.fixedRightColumnsCount);
-  const fixedColumnGroups = [];
-  const fixedRightColumnGroups = [];
+  const fixedColumns = [];
+  const fixedRightColumns = [];
 
-  for (let idx = 0; idx < fixedColumns.length; idx++) {
-    fixedColumns[idx] = convertColumnElementsToData(
-      columnSettings.getFixedColumn(idx)
-    );
-    fixedColumns[idx].props.index = idx;
-    fixedColumnsWidth += fixedColumns[idx].props.width;
+  for (let idx = 0; idx < fixedColumnsCount; idx++) {
+    const columnData = convertColumnElementsToData(getColumn(idx));
+    columnData.props.index = idx;
+    fixedColumnsWidth += columnData.props.width;
+    fixedColumns.push(columnData);
   }
 
-  for (let idx = 0; idx < fixedRightColumns.length; idx++) {
-    fixedRightColumns[idx] = convertColumnElementsToData(
-      columnSettings.getFixedRightColumn(idx)
-    );
-    fixedRightColumns[idx].props.index = idx;
-    fixedRightColumnsWidth += fixedRightColumns[idx].props.width;
+  for (
+    let idx = columnsCount - fixedRightColumnsCount;
+    idx < columnsCount;
+    idx++
+  ) {
+    const columnData = convertColumnElementsToData(getColumn(idx));
+    columnData.props.index = idx;
+    fixedRightColumnsWidth += columnData.props.width;
+    fixedRightColumns.push(columnData);
   }
   const fixedContentWidth = fixedRightColumnsWidth + fixedColumnsWidth;
 
@@ -314,22 +345,20 @@ function initializeFixedColumnWidthsAndOffsets(state) {
     fixedContentWidth,
     fixedColumns,
     fixedRightColumns,
-    fixedColumnGroups,
-    fixedRightColumnGroups,
   });
 }
 
 function initializeScrollableColumnWidthsAndOffsets(state) {
-  let { columnSettings } = state;
-  const scrollContentWidth =
-    columnSettings.scrollableColumnsCount * columnSettings.defaultColumnWidth;
+  const { columnSettings, scrollableColumnsCount } = state;
+  const defaultColumnWidth = columnSettings.defaultColumnWidth;
+  const scrollContentWidth = scrollableColumnsCount * defaultColumnWidth;
   const scrollableColOffsetIntervalTree = PrefixIntervalTree.uniform(
-    columnSettings.scrollableColumnsCount,
-    columnSettings.defaultColumnWidth
+    scrollableColumnsCount,
+    defaultColumnWidth
   );
   const storedScrollableColumns = new ObjectWrapper();
-  const storedWidths = new ArrayWrapper(columnSettings.scrollableColumnsCount);
-  storedWidths.array.fill(columnSettings.defaultColumnWidth);
+  const storedWidths = new ArrayWrapper(scrollableColumnsCount);
+  storedWidths.array.fill(defaultColumnWidth);
 
   Object.assign(state, {
     scrollableColOffsetIntervalTree,
@@ -380,15 +409,9 @@ function setStateFromProps(state, props) {
     state.columnSettings,
     pick(props, [
       'bufferColCount',
-      'scrollableColumnsCount',
-      'fixedColumnsCount',
-      'fixedRightColumnsCount',
-      'getScrollableColumn',
-      'getFixedColumn',
-      'getFixedRightColumn',
-      'getScrollableColumnGroup',
-      'getFixedColumnGroup',
-      'getFixedRightColumnGroup',
+      'columnsCount',
+      'getColumn',
+      'getColumnGroup',
     ])
   );
 

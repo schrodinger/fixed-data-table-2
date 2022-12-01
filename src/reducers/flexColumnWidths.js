@@ -35,10 +35,7 @@ export function initializeFlexColumnWidths(state) {
 
   // iterate scrollable columns until they fill up the available space
   let idx = 0;
-  while (
-    availableWidth > 0 &&
-    idx < state.columnSettings.scrollableColumnsCount
-  ) {
+  while (availableWidth > 0 && idx < state.scrollableColumnsCount) {
     const column = getScrollableColumn(state, idx);
     availableWidth -= column.props.width;
     flexTotal += column.props.flexGrow;
@@ -46,10 +43,7 @@ export function initializeFlexColumnWidths(state) {
   }
 
   // check if there's free space left to fill up flex widths
-  if (
-    availableWidth <= 0 &&
-    idx < state.columnSettings.scrollableColumnsCount
-  ) {
+  if (availableWidth <= 0 && idx < state.scrollableColumnsCount) {
     return;
   }
 
