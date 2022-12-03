@@ -73,7 +73,7 @@ class FixedDataTableCellDefault extends React.Component {
     /**
      * Whether this cell is currently within the viewport.
      */
-    isVisible: PropTypes.boolean,
+    isVisible: PropTypes.bool,
   };
 
   render() {
