@@ -171,11 +171,25 @@ function groupElements(elements) {
     const newElement = {
       ...element,
       offset: container.offset,
-      index: container.elements.length,
     };
 
     container.offset += newElement.width;
     container.elements.push(newElement);
+  });
+
+  // Assign index to each column in same order they appear in table
+  let index = 0;
+  forEach(fixed.elements, (element) => {
+    element.index = index;
+    index += 1;
+  });
+  forEach(scrollable.elements, (element) => {
+    element.index = index;
+    index += 1;
+  });
+  forEach(fixedRight.elements, (element) => {
+    element.index = index;
+    index += 1;
   });
 
   return {

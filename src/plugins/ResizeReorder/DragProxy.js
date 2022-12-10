@@ -142,10 +142,7 @@ class DragProxy extends React.PureComponent {
 
     if (groupHeaderExists && !this.props.isGroupHeader) {
       // this is a normal header cell within a column group
-      const group = this.context.getColumnGroupByChild(
-        this.props.columnIndex,
-        cellGroupType
-      );
+      const group = this.context.getColumnGroupByChild(this.props.columnIndex);
       groupWidth = group.width;
       groupStart = group.offset;
     } else {
@@ -271,13 +268,13 @@ class DragProxy extends React.PureComponent {
     // figure out what column lies at columnBeforeIndex and columnAfterIndex
     if (inRange(columnBeforeIndex, 0, columnCount)) {
       columnBefore = this.props.isGroupHeader
-        ? this.context.getColumnGroup(columnBeforeIndex, cellGroupType)
-        : this.context.getColumn(columnBeforeIndex, cellGroupType);
+        ? this.context.getColumnGroup(columnBeforeIndex)
+        : this.context.getColumn(columnBeforeIndex);
     }
     if (inRange(columnAfterIndex, 0, columnCount)) {
       columnAfter = this.props.isGroupHeader
-        ? this.context.getColumnGroup(columnAfterIndex, cellGroupType)
-        : this.context.getColumn(columnAfterIndex, cellGroupType);
+        ? this.context.getColumnGroup(columnAfterIndex)
+        : this.context.getColumn(columnAfterIndex);
     }
 
     // let the user know that reordering has ended and supply the column before/after keys
