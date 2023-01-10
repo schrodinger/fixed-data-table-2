@@ -64,7 +64,7 @@ const getApiMethodsSelector = () =>
 
         if (
           columnIndex < 0 ||
-          columnIndex > totalColumns ||
+          columnIndex >= totalColumns ||
           !Number.isInteger(columnIndex)
         ) {
           throw `columnIndex must be an integer between 0 and ${
@@ -91,7 +91,7 @@ const getApiMethodsSelector = () =>
 
         if (
           columnGroupIndex < 0 ||
-          columnGroupIndex > totalColumnGroups ||
+          columnGroupIndex >= totalColumnGroups ||
           !Number.isInteger(columnGroupIndex)
         ) {
           throw `columnGroupIndex must be an integer between 0 and ${
