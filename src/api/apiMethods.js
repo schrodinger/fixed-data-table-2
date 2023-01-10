@@ -113,7 +113,7 @@ const getApiMethodsSelector = () =>
         return CellGroupType.FIXED_RIGHT;
       };
 
-      const _getColumnLocalIndex = (columnIndex, cellGroupType) => {
+      const _getLocalColumnIndex = (columnIndex, cellGroupType) => {
         if (cellGroupType === CellGroupType.FIXED) {
           return columnIndex;
         }
@@ -124,7 +124,7 @@ const getApiMethodsSelector = () =>
         }
       };
 
-      const _getColumnGroupLocalIndex = (columnGroupIndex, cellGroupType) => {
+      const _getLocalColumnGroupIndex = (columnGroupIndex, cellGroupType) => {
         if (cellGroupType === CellGroupType.FIXED) {
           return columnGroupIndex;
         }
@@ -151,7 +151,7 @@ const getApiMethodsSelector = () =>
 
       const getColumn = (columnIndex) => {
         const cellGroupType = _getCellGroupTypeFromColumnIndex(columnIndex);
-        const localColumnIndex = _getColumnLocalIndex(
+        const localColumnIndex = _getLocalColumnIndex(
           columnIndex,
           cellGroupType
         );
@@ -192,7 +192,7 @@ const getApiMethodsSelector = () =>
       const getColumnGroup = (columnGroupIndex) => {
         const cellGroupType =
           _getCellGroupTypeFromColumnGroupIndex(columnGroupIndex);
-        const localColumnGroupIndex = _getColumnGroupLocalIndex(
+        const localColumnGroupIndex = _getLocalColumnGroupIndex(
           columnGroupIndex,
           cellGroupType
         );
@@ -201,7 +201,7 @@ const getApiMethodsSelector = () =>
 
       const getColumnGroupByChild = (columnIndex) => {
         const cellGroupType = _getCellGroupTypeFromColumnIndex(columnIndex);
-        const localColumnIndex = _getColumnLocalIndex(
+        const localColumnIndex = _getLocalColumnIndex(
           columnIndex,
           cellGroupType
         );
