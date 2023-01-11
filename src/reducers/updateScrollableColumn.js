@@ -28,7 +28,7 @@ export function getScrollableColumn(state, localColIdx) {
   }
 
   // index of the column in relation to the whole table.
-  const colIdx = localColIdx + state.fixedColumnsCount;
+  const colIdx = localColIdx + state.fixedColumns.length;
 
   // if column doesn't exist in cache, then get the column from the user
   const columnProps = state.columnSettings.getColumn(colIdx);

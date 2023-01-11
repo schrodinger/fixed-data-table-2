@@ -10,6 +10,7 @@
 import _ from 'lodash';
 import convertColumnElementsToData from '../helper/convertColumnElementsToData';
 import shallowEqualSelector from '../helper/shallowEqualSelector';
+import columnCounts from '../selectors/columnCounts';
 import { CellGroupType } from '../enums/CellGroup';
 
 /**
@@ -57,16 +58,19 @@ const getApiMethodsSelector = () =>
         fixedRightColumns,
         fixedRightColumnGroups,
         scrollableColOffsetIntervalTree,
-        fixedColumnsCount,
         fixedColumnOffsets,
         fixedColumnGroupOffsets,
-        fixedRightColumnsCount,
         fixedRightColumnOffsets,
         fixedRightColumnGroupOffsets,
-        scrollableColumnsCount,
         storedScrollableColumns,
         storedScrollableColumnGroups,
       } = state;
+
+      const {
+        fixedColumnsCount,
+        fixedRightColumnsCount,
+        scrollableColumnsCount,
+      } = columnCounts(state);
 
       const _getCellGroupTypeFromColumnIndex = (columnIndex) => {
         if (columnIndex >= 0 && columnIndex < fixedColumnsCount) {

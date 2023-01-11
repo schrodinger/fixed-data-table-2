@@ -15,6 +15,7 @@ import clamp from '../vendor_upstream/core/clamp';
 
 import scrollbarsVisibleSelector from '../selectors/scrollbarsVisible';
 import { getScrollableColumnWidth } from './updateScrollableColumn';
+import columnCounts from '../selectors/columnCounts';
 
 /**
  * Get the anchor for scrolling.
@@ -70,11 +71,9 @@ export function getColumnAnchor(state, newProps, oldProps) {
  */
 export function scrollToX(state, scrollX) {
   const { availableWidth } = scrollbarsVisibleSelector(state);
-  const {
-    scrollableColOffsetIntervalTree,
-    scrollableColumnsCount,
-    scrollContentWidth,
-  } = state;
+  const { scrollableColOffsetIntervalTree, scrollContentWidth } = state;
+
+  const { scrollableColumnsCount } = columnCounts(state);
 
   if (scrollableColumnsCount === 0) {
     return {
@@ -138,13 +137,9 @@ export function scrollToX(state, scrollX) {
  */
 function scrollToColX(state, colIndex) {
   const { availableWidth } = scrollbarsVisibleSelector(state);
-  const {
-    scrollableColOffsetIntervalTree,
-    fixedColumnsCount,
-    scrollableColumnsCount,
-    storedWidths,
-    scrollX,
-  } = state;
+  const { scrollableColOffsetIntervalTree, storedWidths, scrollX } = state;
+
+  const { fixedColumnsCount, scrollableColumnsCount } = columnCounts(state);
 
   if (scrollableColumnsCount === 0) {
     return {

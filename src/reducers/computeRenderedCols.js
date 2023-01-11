@@ -22,6 +22,7 @@ import {
   getScrollableColumnWidth,
 } from './updateScrollableColumn';
 import convertColumnElementsToData from '../helper/convertColumnElementsToData';
+import columnCounts from '../selectors/columnCounts';
 
 /**
  * Returns data about the columns to render
@@ -41,7 +42,8 @@ import convertColumnElementsToData from '../helper/convertColumnElementsToData';
 export default function computeRenderedCols(state, scrollAnchor) {
   let colRange = calculateRenderedColRange(state, scrollAnchor);
 
-  const { scrollableColumnsCount, scrollContentWidth } = state;
+  const { scrollContentWidth } = state;
+  const { scrollableColumnsCount } = columnCounts(state);
   const { availableScrollWidth } = tableHeightsSelector(state);
 
   const {
@@ -289,7 +291,7 @@ function computeRenderedColumnGroups(state) {
 function calculateRenderedColRange(state, scrollAnchor) {
   const { bufferColCount, maxAvailableWidth } = roughHeightsSelector(state);
 
-  const scrollableColumnsCount = state.scrollableColumnsCount;
+  const { scrollableColumnsCount } = columnCounts(state);
 
   if (scrollableColumnsCount === 0) {
     return {
@@ -488,9 +490,10 @@ function getVirtualizedColumns(state) {
     state.cachedColumnsToRender.array,
     state.columnsToRender
   );
+  const { scrollableColumnsCount } = columnCounts(state);
   const scrollableColumns = {};
   for (let colIdx of cachedColumnsToRender) {
-    if (colIdx < state.scrollableColumnsCount) {
+    if (colIdx < scrollableColumnsCount) {
       scrollableColumns[colIdx] = getScrollableColumn(state, colIdx);
     }
   }
