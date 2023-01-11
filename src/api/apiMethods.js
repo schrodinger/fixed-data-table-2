@@ -73,6 +73,16 @@ const getApiMethodsSelector = () =>
       } = columnCounts(state);
 
       const _getCellGroupTypeFromColumnIndex = (columnIndex) => {
+        if (
+          columnIndex < 0 ||
+          columnIndex >= columnSettings.columnsCount ||
+          !Number.isInteger(columnIndex)
+        ) {
+          throw `columnIndex must be an integer between 0 and ${
+            columnSettings.columnsCount - 1
+          } inclusive`;
+        }
+
         if (columnIndex >= 0 && columnIndex < fixedColumnsCount) {
           return CellGroupType.FIXED;
         } else if (
@@ -101,6 +111,14 @@ const getApiMethodsSelector = () =>
           fixedRightColumnsCount - 1,
           CellGroupType.FIXED_RIGHT
         ).props.columnGroupIndex;
+
+        if (
+          columnGroupIndex < 0 ||
+          columnGroupIndex > lastFixedRightColumnGroupIndex ||
+          !Number.isInteger(columnGroupIndex)
+        ) {
+          throw `columnGroupIndex must be an integer between 0 and ${lastFixedRightColumnGroupIndex} inclusive`;
+        }
 
         if (
           columnGroupIndex >= 0 &&
