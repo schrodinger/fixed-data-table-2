@@ -6,11 +6,11 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, Plugins } from 'fixed-data-table-2';
+import { Table, Plugins } from 'fixed-data-table-2';
 import React from 'react';
 import _ from 'lodash';
 
-var columnTitles = {
+const columnTitles = {
   firstName: 'First Name',
   lastName: 'Last Name',
   sentence: 'Sentence',
@@ -20,7 +20,7 @@ var columnTitles = {
   zipCode: 'Zip Code',
 };
 
-var columnWidths = {
+const columnWidths = {
   firstName: 150,
   lastName: 150,
   sentence: 240,
@@ -30,7 +30,7 @@ var columnWidths = {
   zipCode: 240,
 };
 
-var fixedColumns = ['firstName', 'lastName'];
+const fixedColumns = ['firstName', 'lastName'];
 
 class ReorderExample extends React.Component {
   constructor(props) {
@@ -52,12 +52,12 @@ class ReorderExample extends React.Component {
   }
 
   _onColumnReorderEndCallback = (event) => {
-    var columnOrder = this.state.columnOrder.filter((columnKey) => {
+    const columnOrder = this.state.columnOrder.filter((columnKey) => {
       return columnKey !== event.reorderColumn;
     });
 
     if (event.columnAfter) {
-      var index = columnOrder.indexOf(event.columnAfter);
+      const index = columnOrder.indexOf(event.columnAfter);
       columnOrder.splice(index, 0, event.reorderColumn);
     } else {
       if (fixedColumns.indexOf(event.reorderColumn) !== -1) {
@@ -92,29 +92,27 @@ class ReorderExample extends React.Component {
         isColumnReordering={false}
         width={1000}
         height={500}
+        columnsCount={7}
+        getColumn={(i) => {
+          return {
+            allowCellsRecycling: true,
+            columnKey: this.state.columnOrder[i],
+            key: i,
+            header: (
+              <Plugins.ReorderCell
+                onColumnReorderStart={onColumnReorderStart}
+                onColumnReorderEnd={onColumnReorderEndCallback}
+              >
+                {columnTitles[this.state.columnOrder[i]]}
+              </Plugins.ReorderCell>
+            ),
+            cell: <TextCell data={dataList} />,
+            fixed: fixedColumns.indexOf(this.state.columnOrder[i]) !== -1,
+            width: columnWidths[this.state.columnOrder[i]],
+          };
+        }}
         {...this.props}
-      >
-        {this.state.columnOrder.map(function (columnKey, i) {
-          return (
-            <Column
-              allowCellsRecycling={true}
-              columnKey={columnKey}
-              key={i}
-              header={
-                <Plugins.ReorderCell
-                  onColumnReorderStart={onColumnReorderStart}
-                  onColumnReorderEnd={onColumnReorderEndCallback}
-                >
-                  {columnTitles[columnKey]}
-                </Plugins.ReorderCell>
-              }
-              cell={<TextCell data={dataList} />}
-              fixed={fixedColumns.indexOf(columnKey) !== -1}
-              width={columnWidths[columnKey]}
-            />
-          );
-        })}
-      </Table>
+      />
     );
   }
 }

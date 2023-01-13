@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, DataCell } from 'fixed-data-table-2';
+import { Table, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 import debounce from 'lodash/debounce';
 
@@ -46,30 +46,34 @@ class ResponsiveExample extends React.Component {
         rowsCount={dataList.getSize()}
         width={tableWidth}
         height={tableHeight}
+        columnsCount={3}
+        getColumn={(i) =>
+          [
+            {
+              columnKey: 'firstName',
+              header: <DataCell>First Name</DataCell>,
+              cell: <TextCell data={dataList} />,
+              flexGrow: 1,
+              width: 20,
+            },
+            {
+              columnKey: 'lastName',
+              header: <DataCell>Last Name</DataCell>,
+              cell: <TextCell data={dataList} />,
+              flexGrow: 1,
+              width: 20,
+            },
+            {
+              columnKey: 'companyName',
+              header: <DataCell>Company</DataCell>,
+              cell: <TextCell data={dataList} />,
+              flexGrow: 1,
+              width: 50,
+            },
+          ][i]
+        }
         {...props}
-      >
-        <Column
-          columnKey="firstName"
-          header={<DataCell>First Name</DataCell>}
-          cell={<TextCell data={dataList} />}
-          flexGrow={1}
-          width={20}
-        />
-        <Column
-          columnKey="lastName"
-          header={<DataCell>Last Name</DataCell>}
-          cell={<TextCell data={dataList} />}
-          flexGrow={1}
-          width={20}
-        />
-        <Column
-          columnKey="companyName"
-          header={<DataCell>Company</DataCell>}
-          cell={<TextCell data={dataList} />}
-          flexGrow={1}
-          width={50}
-        />
-      </Table>
+      />
     );
   }
 }

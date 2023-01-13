@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { DateCell } from './helpers/cells';
-import { Table, Column, DataCell } from 'fixed-data-table-2';
+import { Table, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class OwnerExample extends React.Component {
@@ -38,7 +38,7 @@ class OwnerExample extends React.Component {
   }
 
   render() {
-    var { dataList, pageYOffset } = this.state;
+    const { dataList, pageYOffset } = this.state;
     return (
       <Table
         rowHeight={50}
@@ -47,16 +47,20 @@ class OwnerExample extends React.Component {
         width={400}
         height={600}
         footerHeight={30}
+        columnsCount={1}
+        getColumn={(i) =>
+          [
+            {
+              columnKey: 'date',
+              header: <DataCell>DOB</DataCell>,
+              footer: <DataCell>sample footer</DataCell>,
+              cell: <DateCell data={dataList} />,
+              width: 500,
+            },
+          ][i]
+        }
         ownerHeight={this.props.height + 60 + pageYOffset}
-      >
-        <Column
-          columnKey="date"
-          header={<DataCell>DOB</DataCell>}
-          footer={<DataCell>sample footer</DataCell>}
-          cell={<DateCell data={dataList} />}
-          width={500}
-        />
-      </Table>
+      />
     );
   }
 }

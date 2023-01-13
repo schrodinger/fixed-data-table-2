@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, DataCell } from 'fixed-data-table-2';
+import { Table, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class LongClickExample extends React.Component {
@@ -22,7 +22,7 @@ class LongClickExample extends React.Component {
   constructor(props) {
     super(props);
 
-    var dataList = new FakeObjectDataListStore(1000000);
+    const dataList = new FakeObjectDataListStore(1000000);
 
     this.state = {
       dataList,
@@ -55,16 +55,14 @@ class LongClickExample extends React.Component {
     let columns = [];
 
     Object.keys(this.displayColumns).forEach((columnKey) => {
-      columns.push(
-        <Column
-          key={columnKey}
-          columnKey={columnKey}
-          flexGrow={2}
-          header={<DataCell>{columns[columnKey]}</DataCell>}
-          cell={(cell) => this.getCell(cell.rowIndex, cell.columnKey)}
-          width={100}
-        />
-      );
+      columns.push({
+        key: columnKey,
+        columnKey: columnKey,
+        flexGrow: 2,
+        header: <DataCell>{columns[columnKey]}</DataCell>,
+        cell: (cell) => this.getCell(cell.rowIndex, cell.columnKey),
+        width: 100,
+      });
     });
 
     return columns;
@@ -103,6 +101,8 @@ class LongClickExample extends React.Component {
         onRowMouseUp={(event, rowIndex) => {
           this.handleRowMouseUp(rowIndex);
         }}
+        columnsCount={this.state.columns.length}
+        getColumn={(i) => this.state.columns[i]}
         {...this.props}
       >
         {this.state.columns}
