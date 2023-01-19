@@ -434,7 +434,8 @@ class Scrollbar extends React.PureComponent {
      *
      * (Read more on automatic batching by React here: https://github.com/reactwg/react-18/discussions/21)
      */
-    ReactDOM.flushSync(() =>
+    const flushSync = ReactDOM.flushSync || ((fn) => fn()); // ReactDOM.flushSync doesn't exist in older versions of React
+    flushSync(() =>
       this._setNextState(
         this._calculateState(
           this.state.position + delta,
