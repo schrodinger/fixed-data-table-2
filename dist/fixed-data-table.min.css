@@ -1,5 +1,5 @@
 /**
- * FixedDataTable v1.2.15 
+ * FixedDataTable v1.2.16 
  *
  * Copyright Schrodinger, LLC
  * All rights reserved.
@@ -307,6 +307,7 @@
   position: absolute;
   -webkit-user-select: none;
      -moz-user-select: none;
+      -ms-user-select: none;
           user-select: none;
 }
 
