@@ -419,12 +419,30 @@ class Scrollbar extends React.PureComponent {
       : deltaY;
     delta /= this.state.scale;
 
-    this._setNextState(
-      this._calculateState(
-        this.state.position + delta,
-        props.size,
-        props.contentSize,
-        props.orientation
+    /**
+     * NOTE (pradeep): Starting from React 18, React batches multiple state updates together for improving performance.
+     *
+     * While this is generally good, the legacy code here (for whatever reason) expects state updates to be
+     * unbatched.
+     * This leads to https://github.com/schrodinger/fixed-data-table-2/issues/668, where the scrollbar doesn't
+     * move as fast as the user's cursor when they drag the scrollbar thumb.
+     * This causes the cursor and the scrollbar to go out of sync, which is a bit frustrating.
+     *
+     * I'm fixing this by using ReactDOM's flushSync API to make sure that the state update is flushed immediately.
+     *
+     * TODO (pradeep): While the fix works, we should really be relying on automatic batching for performance.
+     *
+     * (Read more on automatic batching by React here: https://github.com/reactwg/react-18/discussions/21)
+     */
+    const flushSync = ReactDOM.flushSync || ((fn) => fn()); // ReactDOM.flushSync doesn't exist in older versions of React
+    flushSync(() =>
+      this._setNextState(
+        this._calculateState(
+          this.state.position + delta,
+          props.size,
+          props.contentSize,
+          props.orientation
+        )
       )
     );
   };
