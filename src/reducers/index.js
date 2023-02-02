@@ -307,9 +307,8 @@ function initializeFixedColumnWidthsAndOffsets(state) {
     }
     columnData.props.index = idx;
     fixedRightColumnsWidth += columnData.props.width;
-    fixedRightColumns.push(columnData);
+    fixedRightColumns.unshift(columnData);
   }
-  fixedRightColumns.reverse();
 
   const fixedContentWidth = fixedRightColumnsWidth + fixedColumnsWidth;
 

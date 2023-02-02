@@ -85,17 +85,16 @@ const getApiMethodsSelector = () =>
 
         if (columnIndex >= 0 && columnIndex < fixedColumnsCount) {
           return CellGroupType.FIXED;
-        } else if (
+        }
+
+        if (
           columnIndex >= fixedColumnsCount &&
           columnIndex < fixedColumnsCount + scrollableColumnsCount
         ) {
           return CellGroupType.SCROLLABLE;
-        } else if (
-          columnIndex >= fixedColumnsCount + scrollableColumnsCount &&
-          columnIndex < columnSettings.columnsCount
-        ) {
-          return CellGroupType.FIXED_RIGHT;
         }
+
+        return CellGroupType.FIXED_RIGHT;
       };
 
       const _getCellGroupTypeFromColumnGroupIndex = (columnGroupIndex) => {
@@ -125,17 +124,16 @@ const getApiMethodsSelector = () =>
           columnGroupIndex <= lastFixedColumGroupIndex
         ) {
           return CellGroupType.FIXED;
-        } else if (
+        }
+
+        if (
           columnGroupIndex > lastFixedColumGroupIndex &&
           columnGroupIndex <= lastScrollableColumnGroupIndex
         ) {
           return CellGroupType.SCROLLABLE;
-        } else if (
-          columnGroupIndex > lastScrollableColumnGroupIndex &&
-          columnGroupIndex <= lastFixedRightColumnGroupIndex
-        ) {
-          return CellGroupType.FIXED_RIGHT;
         }
+
+        return CellGroupType.FIXED_RIGHT;
       };
 
       const _getColumnLocalIndex = (columnIndex, cellGroupType) => {
