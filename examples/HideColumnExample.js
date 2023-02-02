@@ -76,7 +76,6 @@ class HideColumnExample extends React.Component {
             const columnKey = this.state.columnOrder[i];
             return {
               columnKey: columnKey,
-              key: i,
               header: (
                 <RemovableHeaderCell callback={handleColumnHide}>
                   {columnTitles[columnKey]}

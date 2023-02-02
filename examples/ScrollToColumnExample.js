@@ -19,7 +19,6 @@ class ScrollToColumnExample extends React.Component {
       filteredDataList: this._dataList,
       currentIndex: 0,
       columns: [],
-      columnsCount: 10,
     };
     this.state.columns = [
       {
@@ -112,7 +111,7 @@ class ScrollToColumnExample extends React.Component {
           headerHeight={50}
           width={1000}
           height={500}
-          columnsCount={this.state.columnsCount}
+          columnsCount={this.state.columns.length}
           getColumn={(i) => this.state.columns[i]}
           {...this.props}
         />

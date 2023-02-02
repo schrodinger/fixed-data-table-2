@@ -160,7 +160,6 @@ class ColumnGroupsExample extends React.Component {
         getColumnGroup={(i) => {
           const columnGroupKey = this.state.columnGroupOrder[i];
           return {
-            key: i,
             header: (
               <Plugins.ReorderCell
                 onColumnReorderEnd={onColumnGroupReorderEndCallback}
@@ -190,7 +189,6 @@ class ColumnGroupsExample extends React.Component {
           return {
             allowCellsRecycling: true,
             columnKey: columnKey,
-            key: i,
             header: (
               <Plugins.ReorderCell
                 onColumnReorderEnd={onColumnReorderEndCallback}

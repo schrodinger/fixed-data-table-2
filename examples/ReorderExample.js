@@ -97,7 +97,6 @@ class ReorderExample extends React.Component {
           return {
             allowCellsRecycling: true,
             columnKey: this.state.columnOrder[i],
-            key: i,
             header: (
               <Plugins.ReorderCell
                 onColumnReorderStart={onColumnReorderStart}

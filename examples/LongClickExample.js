@@ -56,7 +56,6 @@ class LongClickExample extends React.Component {
 
     Object.keys(this.displayColumns).forEach((columnKey) => {
       columns.push({
-        key: columnKey,
         columnKey: columnKey,
         flexGrow: 2,
         header: <DataCell>{columns[columnKey]}</DataCell>,

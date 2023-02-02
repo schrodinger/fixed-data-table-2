@@ -52,7 +52,7 @@ class ResizeExample extends React.Component {
                 <Plugins.ResizeCell
                   onColumnResizeEnd={this._onColumnResizeEndCallback}
                 >
-                  First Name{' '}
+                  First Name
                 </Plugins.ResizeCell>
               ),
               cell: <TextCell data={dataList} />,
@@ -81,7 +81,7 @@ class ResizeExample extends React.Component {
                 <Plugins.ResizeCell
                   onColumnResizeEnd={this._onColumnResizeEndCallback}
                 >
-                  Company{' '}
+                  Company
                 </Plugins.ResizeCell>
               ),
               cell: <TextCell data={dataList} />,
@@ -93,7 +93,7 @@ class ResizeExample extends React.Component {
                 <Plugins.ResizeCell
                   onColumnResizeEnd={this._onColumnResizeEndCallback}
                 >
-                  Sentence{' '}
+                  Sentence
                 </Plugins.ResizeCell>
               ),
               cell: <TextCell data={dataList} />,
