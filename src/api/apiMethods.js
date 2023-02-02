@@ -144,18 +144,18 @@ const getApiMethodsSelector = () =>
         return container.reduce((sum, column) => sum + column.width, 0);
       };
 
-      const _getColumn = (localColumnIndex, cellGroupType) => {
+      const _getColumn = (columnIndex, cellGroupType) => {
         const container = _getColumnContainerByCellGroupType(cellGroupType);
+        const localColumnIndex = _getLocalColumnIndex(
+          columnIndex,
+          cellGroupType
+        );
         return _getMinimalColumn(container[localColumnIndex]);
       };
 
       const getColumn = (columnIndex) => {
         const cellGroupType = _getCellGroupTypeFromColumnIndex(columnIndex);
-        const localColumnIndex = _getLocalColumnIndex(
-          columnIndex,
-          cellGroupType
-        );
-        return _getColumn(localColumnIndex, cellGroupType);
+        return _getColumn(columnIndex, cellGroupType);
       };
 
       const getColumnCount = (cellGroupType = null) => {
@@ -183,20 +183,20 @@ const getApiMethodsSelector = () =>
         return container.length;
       };
 
-      const _getColumnGroup = (localColumnGroupIndex, cellGroupType) => {
+      const _getColumnGroup = (columnGroupIndex, cellGroupType) => {
         const container =
           _getColumnGroupContainerByCellGroupType(cellGroupType);
+        const localColumnGroupIndex = _getLocalColumnGroupIndex(
+          columnGroupIndex,
+          cellGroupType
+        );
         return _getMinimalColumnGroup(container[localColumnGroupIndex]);
       };
 
       const getColumnGroup = (columnGroupIndex) => {
         const cellGroupType =
           _getCellGroupTypeFromColumnGroupIndex(columnGroupIndex);
-        const localColumnGroupIndex = _getLocalColumnGroupIndex(
-          columnGroupIndex,
-          cellGroupType
-        );
-        return _getColumnGroup(localColumnGroupIndex, cellGroupType);
+        return _getColumnGroup(columnGroupIndex, cellGroupType);
       };
 
       const getColumnGroupByChild = (columnIndex) => {
