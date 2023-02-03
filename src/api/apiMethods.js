@@ -72,7 +72,7 @@ const getApiMethodsSelector = () =>
         scrollableColumnsCount,
       } = columnCounts(state);
 
-      const _getCellGroupTypeFromColumnIndex = (columnIndex) => {
+      const validateColumnIndex = (columnIndex) => {
         if (
           columnIndex < 0 ||
           columnIndex >= columnSettings.columnsCount ||
@@ -82,11 +82,39 @@ const getApiMethodsSelector = () =>
             columnSettings.columnsCount - 1
           } inclusive`;
         }
+      };
 
+      const validateColumnGroupIndex = (columnGroupIndex) => {
+        const lastColumnGroupIndex = _getColumn(
+          columnSettings.columnsCount - 1,
+          _getCellGroupTypeFromColumnIndex(columnSettings.columnsCount - 1)
+        ).props.columnGroupIndex;
+        if (
+          columnGroupIndex < 0 ||
+          columnGroupIndex > lastColumnGroupIndex ||
+          !Number.isInteger(columnGroupIndex)
+        ) {
+          throw `columnGroupIndex must be an integer between 0 and ${lastColumnGroupIndex} inclusive`;
+        }
+      };
+
+      const validateCellGroupType = (cellGroupType, allowNil = false) => {
+        if (allowNil && _.isNil(cellGroupType)) {
+          return;
+        }
+        if (
+          cellGroupType !== CellGroupType.FIXED &&
+          cellGroupType !== CellGroupType.FIXED_RIGHT &&
+          cellGroupType !== CellGroupType.SCROLLABLE
+        ) {
+          throw 'Invalid CellGroupType';
+        }
+      };
+
+      const _getCellGroupTypeFromColumnIndex = (columnIndex) => {
         if (columnIndex >= 0 && columnIndex < fixedColumnsCount) {
           return CellGroupType.FIXED;
         }
-
         if (
           columnIndex >= fixedColumnsCount &&
           columnIndex < fixedColumnsCount + scrollableColumnsCount
@@ -98,26 +126,18 @@ const getApiMethodsSelector = () =>
       };
 
       const _getCellGroupTypeFromColumnGroupIndex = (columnGroupIndex) => {
-        const lastFixedColumGroupIndex = _getColumn(
-          fixedColumnsCount - 1,
-          CellGroupType.FIXED
-        ).props.columnGroupIndex;
-        const lastScrollableColumnGroupIndex = _getColumn(
-          scrollableColumnsCount - 1,
-          CellGroupType.SCROLLABLE
-        ).props.columnGroupIndex;
-        const lastFixedRightColumnGroupIndex = _getColumn(
-          fixedRightColumnsCount - 1,
-          CellGroupType.FIXED_RIGHT
-        ).props.columnGroupIndex;
-
-        if (
-          columnGroupIndex < 0 ||
-          columnGroupIndex > lastFixedRightColumnGroupIndex ||
-          !Number.isInteger(columnGroupIndex)
-        ) {
-          throw `columnGroupIndex must be an integer between 0 and ${lastFixedRightColumnGroupIndex} inclusive`;
-        }
+        const lastFixedColumGroupIndex =
+          fixedColumnsCount > 0
+            ? _getColumn(fixedColumnsCount - 1, CellGroupType.FIXED).props
+                .columnGroupIndex
+            : -1;
+        const lastScrollableColumnGroupIndex =
+          scrollableColumnsCount > 0
+            ? _getColumn(
+                fixedColumnsCount + scrollableColumnsCount - 1,
+                CellGroupType.SCROLLABLE
+              ).props.columnGroupIndex
+            : -1;
 
         if (
           columnGroupIndex >= 0 &&
@@ -146,7 +166,11 @@ const getApiMethodsSelector = () =>
         }
       };
 
-      const _getColumnOffset = (localColumnIndex, cellGroupType) => {
+      const _getColumnOffset = (columnIndex, cellGroupType) => {
+        const localColumnIndex = _getColumnLocalIndex(
+          columnIndex,
+          cellGroupType
+        );
         if (cellGroupType === CellGroupType.FIXED) {
           return fixedColumnOffsets[localColumnIndex];
         } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
@@ -157,6 +181,7 @@ const getApiMethodsSelector = () =>
       };
 
       const getCellGroupWidth = (cellGroupType = CellGroupType.SCROLLABLE) => {
+        validateCellGroupType(cellGroupType);
         if (cellGroupType === CellGroupType.FIXED) {
           return fixedColumnsWidth;
         } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
@@ -166,7 +191,11 @@ const getApiMethodsSelector = () =>
         }
       };
 
-      const _getColumn = (localColumnIndex, cellGroupType) => {
+      const _getColumn = (columnIndex, cellGroupType) => {
+        const localColumnIndex = _getColumnLocalIndex(
+          columnIndex,
+          cellGroupType
+        );
         if (cellGroupType === CellGroupType.FIXED) {
           return fixedColumns[localColumnIndex];
         } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
@@ -232,17 +261,15 @@ const getApiMethodsSelector = () =>
       };
 
       const getColumn = (columnIndex) => {
+        validateColumnIndex(columnIndex);
         const cellGroupType = _getCellGroupTypeFromColumnIndex(columnIndex);
-        const localColumnIndex = _getColumnLocalIndex(
-          columnIndex,
-          cellGroupType
-        );
-        const column = _getColumn(localColumnIndex, cellGroupType);
-        const offset = _getColumnOffset(localColumnIndex, cellGroupType);
+        const column = _getColumn(columnIndex, cellGroupType);
+        const offset = _getColumnOffset(columnIndex, cellGroupType);
         return _getMinimalColumn(column, offset);
       };
 
       const getColumnCount = (cellGroupType = null) => {
+        validateCellGroupType(cellGroupType, true);
         if (cellGroupType === CellGroupType.FIXED) {
           return fixedColumnsCount;
         } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
@@ -271,6 +298,7 @@ const getApiMethodsSelector = () =>
       };
 
       const getColumnGroupCount = (cellGroupType = null) => {
+        validateCellGroupType(cellGroupType, true);
         if (cellGroupType === CellGroupType.FIXED) {
           return fixedColumnGroups.length;
         }
@@ -320,18 +348,16 @@ const getApiMethodsSelector = () =>
       };
 
       const getColumnGroup = (columnGroupIndex) => {
+        validateColumnGroupIndex(columnGroupIndex);
         const cellGroupType =
           _getCellGroupTypeFromColumnGroupIndex(columnGroupIndex);
         return _getColumnGroup(columnGroupIndex, cellGroupType);
       };
 
       const getColumnGroupByChild = (columnIndex) => {
+        validateColumnIndex(columnIndex);
         const cellGroupType = _getCellGroupTypeFromColumnIndex(columnIndex);
-        const localColumnIndex = _getColumnLocalIndex(
-          columnIndex,
-          cellGroupType
-        );
-        const column = _getColumn(localColumnIndex, cellGroupType);
+        const column = _getColumn(columnIndex, cellGroupType);
         const columnGroupIndex = column.props.columnGroupIndex;
         return _getColumnGroup(columnGroupIndex, cellGroupType);
       };
@@ -401,6 +427,7 @@ const getApiMethodsSelector = () =>
         offset,
         cellGroupType = CellGroupType.SCROLLABLE
       ) => {
+        validateCellGroupType(cellGroupType);
         const { column, columnOffset } = _getColumnAtOffset(
           offset,
           cellGroupType
@@ -417,6 +444,7 @@ const getApiMethodsSelector = () =>
         offset,
         cellGroupType = CellGroupType.SCROLLABLE
       ) => {
+        validateCellGroupType(cellGroupType);
         const { column } = _getColumnAtOffset(offset, cellGroupType);
         if (_.isNil(column)) {
           return { columnGroup: null, distanceFromOffset: null };
