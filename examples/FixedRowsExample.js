@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { DateCell, ImageCell, LinkCell, TextCell } from './helpers/cells';
-import { Table, Column, DataCell } from 'fixed-data-table-2';
+import { Table, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 // wrapper over a DataList that allows you to specify custom index mapping
@@ -109,89 +109,93 @@ class FixedRowsExample extends React.Component {
         rowHeight={50}
         rowsCount={dataList.getSize()}
         width={500}
+        columnsCount={13}
+        getColumn={(i) =>
+          [
+            {
+              columnKey: 'id',
+              header: <DataCell>Id</DataCell>,
+              cell: <TextCell data={dataList} />,
+              fixed: true,
+              width: 100,
+            },
+            {
+              columnKey: 'avatar',
+              header: <DataCell>Avatar</DataCell>,
+              cell: <ImageCell data={dataList} />,
+              width: 50,
+            },
+            {
+              columnKey: 'firstName',
+              header: <DataCell>First Name</DataCell>,
+              cell: <LinkCell data={dataList} />,
+              width: 100,
+            },
+            {
+              columnKey: 'lastName',
+              header: <DataCell>Last Name</DataCell>,
+              cell: <TextCell data={dataList} />,
+              width: 100,
+            },
+            {
+              columnKey: 'city',
+              header: <DataCell>City</DataCell>,
+              cell: <TextCell data={dataList} />,
+              width: 250,
+            },
+            {
+              columnKey: 'street',
+              header: <DataCell>Street</DataCell>,
+              cell: <TextCell data={dataList} />,
+              width: 250,
+            },
+            {
+              columnKey: 'zipCode',
+              header: <DataCell>Zip Code</DataCell>,
+              cell: <TextCell data={dataList} />,
+              width: 100,
+            },
+            {
+              columnKey: 'email',
+              header: <DataCell>Email</DataCell>,
+              cell: <LinkCell data={dataList} />,
+              width: 400,
+            },
+            {
+              columnKey: 'date',
+              header: <DataCell>DOB</DataCell>,
+              cell: <DateCell data={dataList} />,
+              width: 200,
+            },
+            {
+              columnKey: 'catchPhrase',
+              header: <DataCell>Catch Phrase</DataCell>,
+              cell: <TextCell data={dataList} />,
+              width: 200,
+            },
+            {
+              columnKey: 'companyName',
+              header: <DataCell>Company Name</DataCell>,
+              cell: <TextCell data={dataList} />,
+              width: 200,
+            },
+            {
+              columnKey: 'words',
+              header: <DataCell>Words</DataCell>,
+              cell: <TextCell data={dataList} />,
+              width: 200,
+            },
+            {
+              columnKey: 'sentence',
+              header: <DataCell>Sentence</DataCell>,
+              cell: <TextCell data={dataList} />,
+              width: 200,
+            },
+          ][i]
+        }
         {...this.props}
         {...additionalProps}
-      >
-        <Column
-          columnKey="id"
-          header={<DataCell>Id</DataCell>}
-          cell={<TextCell data={dataList} />}
-          fixed={true}
-          width={100}
-        />
-        <Column
-          columnKey="avatar"
-          header={<DataCell>Avatar</DataCell>}
-          cell={<ImageCell data={dataList} />}
-          width={50}
-        />
-        <Column
-          columnKey="firstName"
-          header={<DataCell>First Name</DataCell>}
-          cell={<LinkCell data={dataList} />}
-          width={100}
-        />
-        <Column
-          columnKey="lastName"
-          header={<DataCell>Last Name</DataCell>}
-          cell={<TextCell data={dataList} />}
-          width={100}
-        />
-        <Column
-          columnKey="city"
-          header={<DataCell>City</DataCell>}
-          cell={<TextCell data={dataList} />}
-          width={250}
-        />
-        <Column
-          columnKey="street"
-          header={<DataCell>Street</DataCell>}
-          cell={<TextCell data={dataList} />}
-          width={250}
-        />
-        <Column
-          columnKey="zipCode"
-          header={<DataCell>Zip Code</DataCell>}
-          cell={<TextCell data={dataList} />}
-          width={100}
-        />
-        <Column
-          columnKey="email"
-          header={<DataCell>Email</DataCell>}
-          cell={<LinkCell data={dataList} />}
-          width={400}
-        />
-        <Column
-          columnKey="date"
-          header={<DataCell>DOB</DataCell>}
-          cell={<DateCell data={dataList} />}
-          width={200}
-        />
-        <Column
-          columnKey="catchPhrase"
-          header={<DataCell>Catch Phrase</DataCell>}
-          cell={<TextCell data={dataList} />}
-          width={200}
-        />
-        <Column
-          columnKey="companyName"
-          header={<DataCell>Company Name</DataCell>}
-          cell={<TextCell data={dataList} />}
-          width={200}
-        />
-        <Column
-          columnKey="words"
-          header={<DataCell>Words</DataCell>}
-          cell={<TextCell data={dataList} />}
-          width={200}
-        />
-        <Column
-          columnKey="sentence"
-          header={<DataCell>Sentence</DataCell>}
-          cell={<TextCell data={dataList} />}
-          width={200}
-        />
-      </Table>
+      />
     );
   }
 

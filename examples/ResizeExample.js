@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { TextCell } from './helpers/cells';
-import { Table, Column, Plugins } from 'fixed-data-table-2';
+import { Table, Plugins } from 'fixed-data-table-2';
 import React from 'react';
 
 class ResizeExample extends React.Component {
@@ -34,7 +34,7 @@ class ResizeExample extends React.Component {
   };
 
   render() {
-    var { dataList, columnWidths } = this.state;
+    const { dataList, columnWidths } = this.state;
     return (
       <Table
         rowHeight={30}
@@ -43,60 +43,66 @@ class ResizeExample extends React.Component {
         touchScrollEnabled={true}
         width={1000}
         height={500}
+        columnsCount={4}
+        getColumn={(i) =>
+          [
+            {
+              columnKey: 'firstName',
+              header: (
+                <Plugins.ResizeCell
+                  onColumnResizeEnd={this._onColumnResizeEndCallback}
+                >
+                  First Name
+                </Plugins.ResizeCell>
+              ),
+              cell: <TextCell data={dataList} />,
+              fixed: true,
+              width: columnWidths.firstName,
+            },
+
+            {
+              columnKey: 'lastName',
+              header: (
+                <Plugins.ResizeCell
+                  minWidth={70}
+                  maxWidth={170}
+                  onColumnResizeEnd={this._onColumnResizeEndCallback}
+                >
+                  Last Name (min/max constrained)
+                </Plugins.ResizeCell>
+              ),
+              cell: <TextCell data={dataList} />,
+              width: columnWidths.lastName,
+              fixed: true,
+            },
+            {
+              columnKey: 'companyName',
+              header: (
+                <Plugins.ResizeCell
+                  onColumnResizeEnd={this._onColumnResizeEndCallback}
+                >
+                  Company
+                </Plugins.ResizeCell>
+              ),
+              cell: <TextCell data={dataList} />,
+              width: columnWidths.companyName,
+            },
+            {
+              columnKey: 'sentence',
+              header: (
+                <Plugins.ResizeCell
+                  onColumnResizeEnd={this._onColumnResizeEndCallback}
+                >
+                  Sentence
+                </Plugins.ResizeCell>
+              ),
+              cell: <TextCell data={dataList} />,
+              width: columnWidths.sentence,
+            },
+          ][i]
+        }
         {...this.props}
-      >
-        <Column
-          columnKey="firstName"
-          header={
-            <Plugins.ResizeCell
-              onColumnResizeEnd={this._onColumnResizeEndCallback}
-            >
-              First Name{' '}
-            </Plugins.ResizeCell>
-          }
-          cell={<TextCell data={dataList} />}
-          fixed={true}
-          width={columnWidths.firstName}
-        />
-        <Column
-          columnKey="lastName"
-          header={
-            <Plugins.ResizeCell
-              minWidth={70}
-              maxWidth={170}
-              onColumnResizeEnd={this._onColumnResizeEndCallback}
-            >
-              Last Name (min/max constrained)
-            </Plugins.ResizeCell>
-          }
-          cell={<TextCell data={dataList} />}
-          width={columnWidths.lastName}
-        />
-        <Column
-          columnKey="companyName"
-          header={
-            <Plugins.ResizeCell
-              onColumnResizeEnd={this._onColumnResizeEndCallback}
-            >
-              Company{' '}
-            </Plugins.ResizeCell>
-          }
-          cell={<TextCell data={dataList} />}
-          width={columnWidths.companyName}
-        />
-        <Column
-          columnKey="sentence"
-          header={
-            <Plugins.ResizeCell
-              onColumnResizeEnd={this._onColumnResizeEndCallback}
-            >
-              Sentence{' '}
-            </Plugins.ResizeCell>
-          }
-          cell={<TextCell data={dataList} />}
-          width={columnWidths.sentence}
-        />
-      </Table>
+      />
     );
   }
 }

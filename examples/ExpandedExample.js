@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { CollapseCell, TextCell } from './helpers/cells';
-import { Table, Column, DataCell } from 'fixed-data-table-2';
+import { Table, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
@@ -75,51 +75,54 @@ class ExpandedExample extends React.Component {
           headerHeight={50}
           width={1000}
           height={500}
-          {...this.props}
-        >
-          <Column
-            cell={
-              <CollapseCell
-                callback={this._handleCollapseClick}
-                collapsedRows={collapsedRows}
-              />
-            }
-            fixed={true}
-            width={30}
-          />
-          <Column
-            columnKey="firstName"
-            header={<DataCell>First Name</DataCell>}
-            cell={<TextCell data={dataList} />}
-            fixed={true}
-            width={100}
-          />
-          <Column
-            columnKey="lastName"
-            header={<DataCell>Last Name</DataCell>}
-            cell={<TextCell data={dataList} />}
-            fixed={true}
-            width={100}
-          />
-          <Column
-            columnKey="city"
-            header={<DataCell>City</DataCell>}
-            cell={<TextCell data={dataList} />}
-            width={100}
-          />
-          <Column
-            columnKey="street"
-            header={<DataCell>Street</DataCell>}
-            cell={<TextCell data={dataList} />}
-            width={200}
-          />
-          <Column
-            columnKey="zipCode"
-            header={<DataCell>Zip Code</DataCell>}
-            cell={<TextCell data={dataList} />}
-            width={200}
-          />
-        </Table>
+          columnsCount={6}
+          getColumn={(i) =>
+            [
+              {
+                cell: (
+                  <CollapseCell
+                    callback={this._handleCollapseClick}
+                    collapsedRows={collapsedRows}
+                  />
+                ),
+                fixed: true,
+                width: 30,
+              },
+              {
+                columnKey: 'firstName',
+                header: <DataCell>First Name</DataCell>,
+                cell: <TextCell data={dataList} />,
+                fixed: true,
+                width: 100,
+              },
+              {
+                columnKey: 'lastName',
+                header: <DataCell>Last Name</DataCell>,
+                cell: <TextCell data={dataList} />,
+                fixed: true,
+                width: 100,
+              },
+              {
+                columnKey: 'city',
+                header: <DataCell>City</DataCell>,
+                cell: <TextCell data={dataList} />,
+                width: 100,
+              },
+              {
+                columnKey: 'street',
+                header: <DataCell>Street</DataCell>,
+                cell: <TextCell data={dataList} />,
+                width: 200,
+              },
+              {
+                columnKey: 'zipCode',
+                header: <DataCell>Zip Code</DataCell>,
+                cell: <TextCell data={dataList} />,
+                width: 200,
+              },
+            ][i]
+          }
+        />
       </div>
     );
   }

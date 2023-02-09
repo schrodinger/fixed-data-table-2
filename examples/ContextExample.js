@@ -6,7 +6,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Table, Column, DataCell } from 'fixed-data-table-2';
+import { Table, DataCell } from 'fixed-data-table-2';
 import { DataCtxt, AddFilter } from './helpers/HOC';
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import examplePropTypes from './helpers/examplePropTypes';
@@ -188,41 +188,45 @@ class ContextExample extends React.Component {
           headerHeight={50}
           width={1000}
           height={500}
+          columnsCount={5}
+          getColumn={(i) =>
+            [
+              {
+                columnKey: 'firstName',
+                header: <DataCell>First</DataCell>,
+                cell: <PagedCell />,
+                fixed: true,
+                width: 100,
+              },
+              {
+                columnKey: 'lastName',
+                header: <DataCell>Last Name</DataCell>,
+                cell: <PagedCell />,
+                fixed: true,
+                width: 100,
+              },
+              {
+                columnKey: 'city',
+                header: <DataCell>City</DataCell>,
+                cell: <PagedCell />,
+                width: 100,
+              },
+              {
+                columnKey: 'street',
+                header: <DataCell>Street</DataCell>,
+                cell: <PagedCell />,
+                width: 200,
+              },
+              {
+                columnKey: 'zipCode',
+                header: <DataCell>Zip Code</DataCell>,
+                cell: <PagedCell />,
+                width: 200,
+              },
+            ][i]
+          }
           {...this.props}
-        >
-          <Column
-            columnKey="firstName"
-            header={<DataCell>First</DataCell>}
-            cell={<PagedCell />}
-            fixed={true}
-            width={100}
-          />
-          <Column
-            columnKey="lastName"
-            header={<DataCell>Last Name</DataCell>}
-            cell={<PagedCell />}
-            fixed={true}
-            width={100}
-          />
-          <Column
-            columnKey="city"
-            header={<DataCell>City</DataCell>}
-            cell={<PagedCell />}
-            width={100}
-          />
-          <Column
-            columnKey="street"
-            header={<DataCell>Street</DataCell>}
-            cell={<PagedCell />}
-            width={200}
-          />
-          <Column
-            columnKey="zipCode"
-            header={<DataCell>Zip Code</DataCell>}
-            cell={<PagedCell />}
-            width={200}
-          />
-        </FilterablePagingTable>
+        />
       </div>
     );
   }

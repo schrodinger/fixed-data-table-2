@@ -40,7 +40,7 @@ export function initializeFlexColumnWidths(state) {
   while (availableWidth > 0 && idx < scrollableColumnsCount) {
     const column = getScrollableColumn(state, idx);
     availableWidth -= column.props.width;
-    flexTotal += column.props.flexGrow;
+    flexTotal += column.props.flexGrow || 0;
     idx++;
   }
 

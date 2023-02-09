@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, TextCell } from './helpers/cells';
-import { Table, Column, DataCell } from 'fixed-data-table-2';
+import { Table, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class ScrollToRowExample extends React.Component {
@@ -14,7 +14,6 @@ class ScrollToRowExample extends React.Component {
     super(props);
 
     this._dataList = new FakeObjectDataListStore(2000);
-    var data = this._dataList.getAll();
 
     this.state = {
       filteredDataList: this._dataList,
@@ -36,11 +35,11 @@ class ScrollToRowExample extends React.Component {
       });
     }
 
-    var filterBy = e.target.value.toLowerCase();
-    var size = this._dataList.getSize();
-    var filteredIndexes = [];
-    for (var index = 0; index < size; index++) {
-      var { firstName } = this._dataList.getObjectAt(index);
+    const filterBy = e.target.value.toLowerCase();
+    const size = this._dataList.getSize();
+    const filteredIndexes = [];
+    for (let index = 0; index < size; index++) {
+      const { firstName } = this._dataList.getObjectAt(index);
       if (firstName.toLowerCase().indexOf(filterBy) !== -1) {
         filteredIndexes.push(index);
       }
@@ -74,9 +73,9 @@ class ScrollToRowExample extends React.Component {
   }
 
   render() {
-    var { filteredDataList, currentIndex, matchedRows } = this.state;
+    const { filteredDataList, currentIndex, matchedRows } = this.state;
 
-    var search = matchedRows.length ? (
+    const search = matchedRows.length ? (
       <span>
         <button disabled={currentIndex === 0} onClick={this._prevSearch}>
           {'<'}
@@ -109,47 +108,51 @@ class ScrollToRowExample extends React.Component {
           headerHeight={50}
           width={1000}
           height={500}
+          columnsCount={6}
+          getColumn={(i) =>
+            [
+              {
+                columnKey: 'avatar',
+                cell: <ImageCell data={filteredDataList} />,
+                fixed: true,
+                width: 50,
+              },
+              {
+                columnKey: 'firstName',
+                header: <DataCell>First Name</DataCell>,
+                cell: <TextCell data={filteredDataList} />,
+                fixed: true,
+                width: 100,
+              },
+              {
+                columnKey: 'lastName',
+                header: <DataCell>Last Name</DataCell>,
+                cell: <TextCell data={filteredDataList} />,
+                fixed: true,
+                width: 100,
+              },
+              {
+                columnKey: 'city',
+                header: <DataCell>City</DataCell>,
+                cell: <TextCell data={filteredDataList} />,
+                width: 100,
+              },
+              {
+                columnKey: 'street',
+                header: <DataCell>Street</DataCell>,
+                cell: <TextCell data={filteredDataList} />,
+                width: 200,
+              },
+              {
+                columnKey: 'zipCode',
+                header: <DataCell>Zip Code</DataCell>,
+                cell: <TextCell data={filteredDataList} />,
+                width: 200,
+              },
+            ][i]
+          }
           {...this.props}
-        >
-          <Column
-            columnKey="avatar"
-            cell={<ImageCell data={filteredDataList} />}
-            fixed={true}
-            width={50}
-          />
-          <Column
-            columnKey="firstName"
-            header={<DataCell>First Name</DataCell>}
-            cell={<TextCell data={filteredDataList} />}
-            fixed={true}
-            width={100}
-          />
-          <Column
-            columnKey="lastName"
-            header={<DataCell>Last Name</DataCell>}
-            cell={<TextCell data={filteredDataList} />}
-            fixed={true}
-            width={100}
-          />
-          <Column
-            columnKey="city"
-            header={<DataCell>City</DataCell>}
-            cell={<TextCell data={filteredDataList} />}
-            width={100}
-          />
-          <Column
-            columnKey="street"
-            header={<DataCell>Street</DataCell>}
-            cell={<TextCell data={filteredDataList} />}
-            width={200}
-          />
-          <Column
-            columnKey="zipCode"
-            header={<DataCell>Zip Code</DataCell>}
-            cell={<TextCell data={filteredDataList} />}
-            width={200}
-          />
-        </Table>
+        />
       </div>
     );
   }

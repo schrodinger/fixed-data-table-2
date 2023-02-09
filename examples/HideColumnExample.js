@@ -5,12 +5,8 @@
 'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
-import {
-  ColoredTextCell,
-  RemovableHeaderCell,
-  TextCell,
-} from './helpers/cells';
-import { Table, Column, DataCell } from 'fixed-data-table-2';
+import { RemovableHeaderCell, TextCell } from './helpers/cells';
+import { Table } from 'fixed-data-table-2';
 import React from 'react';
 
 let columnTitles = {
@@ -62,8 +58,8 @@ class HideColumnExample extends React.Component {
   }
 
   render() {
-    let { dataList } = this.state;
-    let handleColumnHide = this._handleColumnHide;
+    const { dataList } = this.state;
+    const handleColumnHide = this._handleColumnHide;
 
     return (
       <div>
@@ -75,25 +71,23 @@ class HideColumnExample extends React.Component {
           rowsCount={dataList.getSize()}
           width={1000}
           height={500}
+          columnsCount={this.state.columnOrder.length}
+          getColumn={(i) => {
+            const columnKey = this.state.columnOrder[i];
+            return {
+              columnKey: columnKey,
+              header: (
+                <RemovableHeaderCell callback={handleColumnHide}>
+                  {columnTitles[columnKey]}
+                </RemovableHeaderCell>
+              ),
+              cell: <TextCell data={dataList} />,
+              fixed: i === 0,
+              width: columnWidths[columnKey],
+            };
+          }}
           {...this.props}
-        >
-          {this.state.columnOrder.map(function (columnKey, i) {
-            return (
-              <Column
-                columnKey={columnKey}
-                key={i}
-                header={
-                  <RemovableHeaderCell callback={handleColumnHide}>
-                    {columnTitles[columnKey]}
-                  </RemovableHeaderCell>
-                }
-                cell={<TextCell data={dataList} />}
-                fixed={i === 0}
-                width={columnWidths[columnKey]}
-              />
-            );
-          })}
-        </Table>
+        />
       </div>
     );
   }

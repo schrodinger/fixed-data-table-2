@@ -5,8 +5,8 @@
 'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
-import { ImageCell, TextCell } from './helpers/cells';
-import { Table, Column, DataCell } from 'fixed-data-table-2';
+import { TextCell } from './helpers/cells';
+import { Table, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class ScrollToColumnExample extends React.Component {
@@ -14,15 +14,11 @@ class ScrollToColumnExample extends React.Component {
     super(props);
 
     this._dataList = new FakeObjectDataListStore(2000);
-    var data = this._dataList.getAll();
 
     this.state = {
       filteredDataList: this._dataList,
       currentIndex: 0,
       columns: [],
-      fixedColumnsCount: 2,
-      fixedRightColumnsCount: 0,
-      scrollableColumnsCount: 10 - 2 - 0,
     };
     this.state.columns = [
       {
@@ -100,7 +96,7 @@ class ScrollToColumnExample extends React.Component {
   }
 
   render() {
-    var { filteredDataList, currentIndex } = this.state;
+    const { filteredDataList, currentIndex } = this.state;
 
     return (
       <div>
@@ -115,20 +111,8 @@ class ScrollToColumnExample extends React.Component {
           headerHeight={50}
           width={1000}
           height={500}
-          scrollableColumnsCount={this.state.scrollableColumnsCount}
-          getScrollableColumn={(i) =>
-            this.state.columns[this.state.fixedColumnsCount + i]
-          }
-          getFixedColumn={(i) => this.state.columns[i]}
-          fixedColumnsCount={this.state.fixedColumnsCount}
-          fixedRightColumnsCount={this.state.fixedRightColumnsCount}
-          getFixedRightColumn={(i) =>
-            this.state.columns[
-              this.state.fixedColumnsCount +
-                this.state.scrollableColumnsCount +
-                i
-            ]
-          }
+          columnsCount={this.state.columns.length}
+          getColumn={(i) => this.state.columns[i]}
           {...this.props}
         />
       </div>

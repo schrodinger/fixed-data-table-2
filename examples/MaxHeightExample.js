@@ -6,7 +6,7 @@
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { DateCell } from './helpers/cells';
-import { Table, Column, DataCell } from 'fixed-data-table-2';
+import { Table, DataCell } from 'fixed-data-table-2';
 import React from 'react';
 
 class MaxHeightExample extends React.Component {
@@ -26,7 +26,7 @@ class MaxHeightExample extends React.Component {
   }
 
   render() {
-    var { dataList } = this.state;
+    const { dataList } = this.state;
     return (
       <div>
         <a onClick={this.addRow}>Add Row</a>
@@ -38,15 +38,19 @@ class MaxHeightExample extends React.Component {
           width={400}
           maxHeight={450}
           footerHeight={30}
-        >
-          <Column
-            columnKey="date"
-            header={<DataCell>DOB</DataCell>}
-            footer={<DataCell>sample footer</DataCell>}
-            cell={<DateCell data={dataList} />}
-            width={500}
-          />
-        </Table>
+          columnsCount={1}
+          getColumn={(i) =>
+            [
+              {
+                columnKey: 'date',
+                header: <DataCell>DOB</DataCell>,
+                footer: <DataCell>sample footer</DataCell>,
+                cell: <DateCell data={dataList} />,
+                width: 500,
+              },
+            ][i]
+          }
+        />
       </div>
     );
   }
