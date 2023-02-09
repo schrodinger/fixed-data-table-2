@@ -11,8 +11,12 @@
 
 'use strict';
 
+import columnCounts from '../selectors/columnCounts';
 import scrollbarsVisibleSelector from '../selectors/scrollbarsVisible';
-import { getColumn, updateColWidth } from './updateColWidth';
+import {
+  getScrollableColumn,
+  updateScrollableColumnWidth,
+} from './updateScrollableColumn';
 
 /**
  * @param state
@@ -22,6 +26,7 @@ export function initializeFlexColumnWidths(state) {
   const { scrollEnabledY } = scrollbarsVisibleSelector(state);
   const tableWidth = state.tableSize.width;
   const scrollbarSpace = scrollEnabledY ? state.scrollbarYWidth : 0;
+  const { scrollableColumnsCount } = columnCounts(state);
   let availableWidth = tableWidth - scrollbarSpace - state.fixedContentWidth;
 
   let flexTotal = 0;
@@ -32,21 +37,15 @@ export function initializeFlexColumnWidths(state) {
 
   // iterate scrollable columns until they fill up the available space
   let idx = 0;
-  while (
-    availableWidth > 0 &&
-    idx < state.columnSettings.scrollableColumnsCount
-  ) {
-    const column = getColumn(state, idx);
+  while (availableWidth > 0 && idx < scrollableColumnsCount) {
+    const column = getScrollableColumn(state, idx);
     availableWidth -= column.props.width;
     flexTotal += column.props.flexGrow;
     idx++;
   }
 
   // check if there's free space left to fill up flex widths
-  if (
-    availableWidth <= 0 &&
-    idx < state.columnSettings.scrollableColumnsCount
-  ) {
+  if (availableWidth <= 0 && idx < scrollableColumnsCount) {
     return;
   }
 
@@ -76,7 +75,7 @@ export function initializeFlexColumnWidths(state) {
   updateFlexWidths(
     state.storedScrollableColumns.object,
     (column, columnIndex, newWidth) => {
-      updateColWidth(state, columnIndex, newWidth);
+      updateScrollableColumnWidth(state, columnIndex, newWidth);
     }
   );
 

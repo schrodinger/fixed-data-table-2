@@ -10,6 +10,7 @@
 import _ from 'lodash';
 import convertColumnElementsToData from '../helper/convertColumnElementsToData';
 import shallowEqualSelector from '../helper/shallowEqualSelector';
+import columnCounts from '../selectors/columnCounts';
 import { CellGroupType } from '../enums/CellGroup';
 
 /**
@@ -56,7 +57,7 @@ const getApiMethodsSelector = () =>
         fixedColumnGroups,
         fixedRightColumns,
         fixedRightColumnGroups,
-        colOffsetIntervalTree,
+        scrollableColOffsetIntervalTree,
         fixedColumnOffsets,
         fixedColumnGroupOffsets,
         fixedRightColumnOffsets,
@@ -65,46 +66,152 @@ const getApiMethodsSelector = () =>
         storedScrollableColumnGroups,
       } = state;
 
-      const getColumnOffset = (index, cellGroupType) => {
+      const {
+        fixedColumnsCount,
+        fixedRightColumnsCount,
+        scrollableColumnsCount,
+      } = columnCounts(state);
+
+      const validateColumnIndex = (columnIndex) => {
+        if (
+          columnIndex < 0 ||
+          columnIndex >= columnSettings.columnsCount ||
+          !Number.isInteger(columnIndex)
+        ) {
+          throw `columnIndex must be an integer between 0 and ${
+            columnSettings.columnsCount - 1
+          } inclusive`;
+        }
+      };
+
+      const validateColumnGroupIndex = (columnGroupIndex) => {
+        const lastColumnGroupIndex = _getColumn(
+          columnSettings.columnsCount - 1,
+          _getCellGroupTypeFromColumnIndex(columnSettings.columnsCount - 1)
+        ).props.columnGroupIndex;
+        if (
+          columnGroupIndex < 0 ||
+          columnGroupIndex > lastColumnGroupIndex ||
+          !Number.isInteger(columnGroupIndex)
+        ) {
+          throw `columnGroupIndex must be an integer between 0 and ${lastColumnGroupIndex} inclusive`;
+        }
+      };
+
+      const validateCellGroupType = (cellGroupType, allowNil = false) => {
+        if (allowNil && _.isNil(cellGroupType)) {
+          return;
+        }
+        if (
+          cellGroupType !== CellGroupType.FIXED &&
+          cellGroupType !== CellGroupType.FIXED_RIGHT &&
+          cellGroupType !== CellGroupType.SCROLLABLE
+        ) {
+          throw 'Invalid CellGroupType';
+        }
+      };
+
+      const _getCellGroupTypeFromColumnIndex = (columnIndex) => {
+        if (columnIndex >= 0 && columnIndex < fixedColumnsCount) {
+          return CellGroupType.FIXED;
+        }
+        if (
+          columnIndex >= fixedColumnsCount &&
+          columnIndex < fixedColumnsCount + scrollableColumnsCount
+        ) {
+          return CellGroupType.SCROLLABLE;
+        }
+
+        return CellGroupType.FIXED_RIGHT;
+      };
+
+      const _getCellGroupTypeFromColumnGroupIndex = (columnGroupIndex) => {
+        const lastFixedColumGroupIndex =
+          fixedColumnsCount > 0
+            ? _getColumn(fixedColumnsCount - 1, CellGroupType.FIXED).props
+                .columnGroupIndex
+            : -1;
+        const lastScrollableColumnGroupIndex =
+          scrollableColumnsCount > 0
+            ? _getColumn(
+                fixedColumnsCount + scrollableColumnsCount - 1,
+                CellGroupType.SCROLLABLE
+              ).props.columnGroupIndex
+            : -1;
+
+        if (
+          columnGroupIndex >= 0 &&
+          columnGroupIndex <= lastFixedColumGroupIndex
+        ) {
+          return CellGroupType.FIXED;
+        }
+
+        if (
+          columnGroupIndex > lastFixedColumGroupIndex &&
+          columnGroupIndex <= lastScrollableColumnGroupIndex
+        ) {
+          return CellGroupType.SCROLLABLE;
+        }
+
+        return CellGroupType.FIXED_RIGHT;
+      };
+
+      const _getColumnLocalIndex = (columnIndex, cellGroupType) => {
         if (cellGroupType === CellGroupType.FIXED) {
-          fixedColumnOffsets[index];
+          return columnIndex;
+        } else if (cellGroupType === CellGroupType.SCROLLABLE) {
+          return columnIndex - fixedColumnsCount;
         } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
-          fixedRightColumnOffsets[index];
+          return columnIndex - fixedColumnsCount - scrollableColumnsCount;
+        }
+      };
+
+      const _getColumnOffset = (columnIndex, cellGroupType) => {
+        const localColumnIndex = _getColumnLocalIndex(
+          columnIndex,
+          cellGroupType
+        );
+        if (cellGroupType === CellGroupType.FIXED) {
+          return fixedColumnOffsets[localColumnIndex];
+        } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
+          return fixedRightColumnOffsets[localColumnIndex];
         } else {
-          return colOffsetIntervalTree.sumTo(index);
+          return scrollableColOffsetIntervalTree.sumTo(localColumnIndex);
         }
       };
 
       const getCellGroupWidth = (cellGroupType = CellGroupType.SCROLLABLE) => {
+        validateCellGroupType(cellGroupType);
         if (cellGroupType === CellGroupType.FIXED) {
           return fixedColumnsWidth;
         } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
           return fixedRightColumnsWidth;
-        } else {
+        } else if (cellGroupType === CellGroupType.SCROLLABLE) {
           return scrollContentWidth;
         }
       };
 
-      const _getColumn = (
-        columnIndex,
-        cellGroupType = CellGroupType.SCROLLABLE
-      ) => {
+      const _getColumn = (columnIndex, cellGroupType) => {
+        const localColumnIndex = _getColumnLocalIndex(
+          columnIndex,
+          cellGroupType
+        );
         if (cellGroupType === CellGroupType.FIXED) {
-          return fixedColumns[columnIndex];
+          return fixedColumns[localColumnIndex];
         } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
-          return fixedRightColumns[columnIndex];
-        } else {
-          return _getScrollableColumn(columnIndex);
+          return fixedRightColumns[localColumnIndex];
+        } else if (cellGroupType === CellGroupType.SCROLLABLE) {
+          return _getScrollableColumn(localColumnIndex);
         }
       };
 
-      const _getScrollableColumn = (columnIndex) => {
-        let column = storedScrollableColumns.object[columnIndex];
+      const _getScrollableColumn = (localColumnIndex) => {
+        let column = storedScrollableColumns.object[localColumnIndex];
 
         // if no column exists in the cache, then fetch the column from the user
         if (!column) {
           column = convertColumnElementsToData(
-            columnSettings.getScrollableColumn(columnIndex)
+            columnSettings.getColumn(localColumnIndex + fixedColumnsCount)
           );
 
           // we don't store the column to the cache because our functions should be pure
@@ -122,14 +229,14 @@ const getApiMethodsSelector = () =>
         // if no column group exists in the cache, then fetch the column group from the user
         if (!columnGroup) {
           columnGroup = convertColumnElementsToData(
-            columnSettings.getScrollableColumnGroup(columnGroupIndex)
+            columnSettings.getColumnGroup(columnGroupIndex)
           );
 
           // we also need to figure out the children of the column group to accurately determine the start and end child indexes, as well as the supposed total width of the column group
           let firstChildIndex;
           let lastChildIndex;
           // NOTE (pradeep): This runs at O(N). Consider another approach, like a binary search to atleast make this run at O(log N).
-          for (let i = 0; i < columnSettings.scrollableColumnsCount; i++) {
+          for (let i = 0; i < scrollableColumnsCount; i++) {
             const column = _getScrollableColumn(i);
             if (column.props.columnGroupIndex === columnGroupIndex) {
               firstChildIndex = _.min([i, firstChildIndex]);
@@ -142,57 +249,83 @@ const getApiMethodsSelector = () =>
           columnGroup.props.index = columnGroupIndex;
 
           columnGroup.props.width =
-            colOffsetIntervalTree.sumTo(columnGroup.props.lastChildIdx) -
-            colOffsetIntervalTree.sumUntil(columnGroup.props.firstChildIdx);
+            scrollableColOffsetIntervalTree.sumTo(
+              columnGroup.props.lastChildIdx
+            ) -
+            scrollableColOffsetIntervalTree.sumUntil(
+              columnGroup.props.firstChildIdx
+            );
         }
 
         return columnGroup;
       };
 
-      const getColumn = (
-        columnIndex,
-        cellGroupType = CellGroupType.SCROLLABLE
-      ) => {
+      const getColumn = (columnIndex) => {
+        validateColumnIndex(columnIndex);
+        const cellGroupType = _getCellGroupTypeFromColumnIndex(columnIndex);
         const column = _getColumn(columnIndex, cellGroupType);
-        const offset = getColumnOffset(columnIndex, cellGroupType);
+        const offset = _getColumnOffset(columnIndex, cellGroupType);
         return _getMinimalColumn(column, offset);
       };
 
-      const getColumnCount = (cellGroupType = CellGroupType.SCROLLABLE) => {
+      const getColumnCount = (cellGroupType = null) => {
+        validateCellGroupType(cellGroupType, true);
         if (cellGroupType === CellGroupType.FIXED) {
-          return columnSettings.fixedColumnsCount;
+          return fixedColumnsCount;
         } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
-          return columnSettings.fixedRightColumnsCount;
+          return fixedRightColumnsCount;
+        } else if (cellGroupType == CellGroupType.SCROLLABLE) {
+          return scrollableColumnsCount;
         } else {
-          return columnSettings.scrollableColumnsCount;
+          return columnSettings.columnsCount;
         }
       };
 
-      const getColumnGroupCount = (
-        cellGroupType = CellGroupType.SCROLLABLE
-      ) => {
+      const _getScrollableColumnGroupsCount = () => {
+        if (scrollableColumnsCount === 0) {
+          return 0;
+        }
+        const lastScrollableColumn = _getScrollableColumn(
+          scrollableColumnsCount - 1
+        );
+        const firstScrollableColumn = _getScrollableColumn(0);
+
+        return (
+          lastScrollableColumn.props.columnGroupIndex -
+          firstScrollableColumn.props.columnGroupIndex +
+          1
+        );
+      };
+
+      const getColumnGroupCount = (cellGroupType = null) => {
+        validateCellGroupType(cellGroupType, true);
         if (cellGroupType === CellGroupType.FIXED) {
           return fixedColumnGroups.length;
-        } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
-          return fixedRightColumnGroups.length;
-        } else {
-          // the parent column group of the last scrollable column will also be the last scrollable column group
-          const lastColumn = _getScrollableColumn(
-            columnSettings.scrollableColumnsCount - 1
-          );
-          return lastColumn.props.columnGroupIndex + 1;
         }
+        if (cellGroupType === CellGroupType.FIXED_RIGHT) {
+          return fixedRightColumnGroups.length;
+        }
+        const scrollableColumnGroupsCount = _getScrollableColumnGroupsCount();
+        if (cellGroupType === CellGroupType.SCROLLABLE) {
+          return scrollableColumnGroupsCount;
+        }
+
+        // if cellGroupType is not given return total column groups.
+        return (
+          scrollableColumnGroupsCount +
+          fixedColumnGroups.length +
+          fixedRightColumnGroups.length
+        );
       };
 
       const _getScrollableColumnGroupOffset = (columnGroup) => {
         // offset of column group is same as offset of its first child column
-        return colOffsetIntervalTree.sumUntil(columnGroup.props.firstChildIdx);
+        return scrollableColOffsetIntervalTree.sumUntil(
+          columnGroup.props.firstChildIdx
+        );
       };
 
-      const getColumnGroup = (
-        columnGroupIndex,
-        cellGroupType = CellGroupType.SCROLLABLE
-      ) => {
+      const _getColumnGroup = (columnGroupIndex, cellGroupType) => {
         let columnGroup;
         let offset = 0;
 
@@ -200,8 +333,12 @@ const getApiMethodsSelector = () =>
           columnGroup = fixedColumnGroups[columnGroupIndex];
           offset = fixedColumnGroupOffsets[columnGroupIndex];
         } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
-          columnGroup = fixedRightColumnGroups[columnGroupIndex];
-          offset = fixedRightColumnGroupOffsets[columnGroupIndex];
+          const localColumnGroupIndex =
+            columnGroupIndex -
+            getColumnGroupCount(CellGroupType.FIXED) -
+            getColumnGroupCount(CellGroupType.SCROLLABLE);
+          columnGroup = fixedRightColumnGroups[localColumnGroupIndex];
+          offset = fixedRightColumnGroupOffsets[localColumnGroupIndex];
         } else {
           columnGroup = _getScrollableColumnGroup(columnGroupIndex);
           offset = _getScrollableColumnGroupOffset(columnGroup);
@@ -210,13 +347,19 @@ const getApiMethodsSelector = () =>
         return _getMinimalColumnGroup(columnGroup, offset);
       };
 
-      const getColumnGroupByChild = (
-        columnIndex,
-        cellGroupType = CellGroupType.SCROLLABLE
-      ) => {
+      const getColumnGroup = (columnGroupIndex) => {
+        validateColumnGroupIndex(columnGroupIndex);
+        const cellGroupType =
+          _getCellGroupTypeFromColumnGroupIndex(columnGroupIndex);
+        return _getColumnGroup(columnGroupIndex, cellGroupType);
+      };
+
+      const getColumnGroupByChild = (columnIndex) => {
+        validateColumnIndex(columnIndex);
+        const cellGroupType = _getCellGroupTypeFromColumnIndex(columnIndex);
         const column = _getColumn(columnIndex, cellGroupType);
         const columnGroupIndex = column.props.columnGroupIndex;
-        return getColumnGroup(columnGroupIndex, cellGroupType);
+        return _getColumnGroup(columnGroupIndex, cellGroupType);
       };
 
       const _getElementAtOffset = (container, offset) => {
@@ -246,32 +389,53 @@ const getApiMethodsSelector = () =>
         };
       };
 
-      const getColumnAtOffset = (
+      const _getColumnAtOffset = (
         offset,
         cellGroupType = CellGroupType.SCROLLABLE
       ) => {
         let column, columnOffset;
         if (cellGroupType === CellGroupType.FIXED) {
           const { element } = _getElementAtOffset(fixedColumns, offset);
-          columnOffset = fixedColumnOffsets[element.props.index];
+          columnOffset =
+            fixedColumnOffsets[
+              _getColumnLocalIndex(element.props.index, CellGroupType.FIXED)
+            ];
           column = element;
         } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
           const { element } = _getElementAtOffset(fixedRightColumns, offset);
-          columnOffset = fixedRightColumnOffsets[element.props.index];
+          columnOffset =
+            fixedRightColumnOffsets[
+              _getColumnLocalIndex(
+                element.props.index,
+                CellGroupType.FIXED_RIGHT
+              )
+            ];
           column = element;
         } else {
-          let index = colOffsetIntervalTree.greatestLowerBound(offset);
-          index = _.clamp(index, 0, columnSettings.scrollableColumnsCount - 1);
-          column = _getScrollableColumn(index);
-          columnOffset = colOffsetIntervalTree.sumUntil(index);
+          const localIndex = _.clamp(
+            scrollableColOffsetIntervalTree.greatestLowerBound(offset),
+            0,
+            scrollableColumnsCount - 1
+          );
+          column = _getScrollableColumn(localIndex);
+          columnOffset = scrollableColOffsetIntervalTree.sumUntil(localIndex);
         }
+        return { column, columnOffset };
+      };
 
-        if (column) {
-          column = _getMinimalColumn(column, columnOffset);
-        }
-
+      const getColumnAtOffset = (
+        offset,
+        cellGroupType = CellGroupType.SCROLLABLE
+      ) => {
+        validateCellGroupType(cellGroupType);
+        const { column, columnOffset } = _getColumnAtOffset(
+          offset,
+          cellGroupType
+        );
         return {
-          column,
+          column: _.isNil(column)
+            ? column
+            : _getMinimalColumn(column, columnOffset),
           distanceFromOffset: offset - columnOffset,
         };
       };
@@ -280,34 +444,18 @@ const getApiMethodsSelector = () =>
         offset,
         cellGroupType = CellGroupType.SCROLLABLE
       ) => {
-        let columnGroup, distanceFromOffset, columnGroupOffset;
-        if (cellGroupType === CellGroupType.FIXED) {
-          const { element } = _getElementAtOffset(fixedColumns, offset);
-          columnGroupOffset = fixedColumnOffsets[element.props.index];
-          columnGroup = element;
-        } else if (cellGroupType === CellGroupType.FIXED_RIGHT) {
-          const { element } = _getElementAtOffset(fixedRightColumns, offset);
-          columnGroupOffset = fixedRightColumnOffsets[element.props.index];
-          columnGroup = element;
-        } else {
-          // figure out the column at given offset
-          let columnIndex = colOffsetIntervalTree.greatestLowerBound(offset);
-          columnIndex = _.clamp(
-            columnIndex,
-            0,
-            columnSettings.scrollableColumnsCount - 1
-          );
-          const column = _getScrollableColumn(columnIndex);
-
-          // get the parent column group of the column
-          const { columnGroupIndex } = column.props;
-          columnGroup = _getScrollableColumnGroup(columnGroupIndex);
-          columnGroupOffset = _getScrollableColumnGroupOffset(columnGroup);
+        validateCellGroupType(cellGroupType);
+        const { column } = _getColumnAtOffset(offset, cellGroupType);
+        if (_.isNil(column)) {
+          return { columnGroup: null, distanceFromOffset: null };
         }
-
+        const columnGroup = _getColumnGroup(
+          column.props.columnGroupIndex,
+          cellGroupType
+        );
         return {
-          columnGroup: _getMinimalColumnGroup(columnGroup, columnGroupOffset),
-          distanceFromOffset: offset - columnGroupOffset,
+          columnGroup,
+          distanceFromOffset: offset - columnGroup.offset,
         };
       };
 
