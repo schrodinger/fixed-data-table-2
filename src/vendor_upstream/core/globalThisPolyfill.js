@@ -9,7 +9,7 @@
  * @providesModule globalThisPolyfill
  */
 
-const globalThis =
+const globalThisPolyfill =
   typeof globalThis !== 'undefined'
     ? globalThis
     : typeof window !== 'undefined'
@@ -20,4 +20,4 @@ const globalThis =
     ? self
     : {};
 
-export default globalThis;
+export default globalThisPolyfill;
