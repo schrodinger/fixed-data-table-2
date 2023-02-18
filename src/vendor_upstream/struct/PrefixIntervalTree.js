@@ -14,11 +14,12 @@
 'use strict';
 
 import invariant from '../../stubs/invariant';
+import globalThis from '../core/globalThisPolyfill';
 
 var parent = (node) => Math.floor(node / 2);
 
 var Int32Array =
-  global.Int32Array ||
+  globalThis.Int32Array ||
   function (size: number): Array<number> {
     var xs = [];
     for (var i = size - 1; i >= 0; --i) {
