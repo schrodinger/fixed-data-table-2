@@ -14,14 +14,17 @@
 
 import BrowserSupportCore from './BrowserSupportCore';
 import getVendorPrefixedName from '../core/getVendorPrefixedName';
+import globalThis from '../core/globalThisPolyfill';
 
 var TRANSFORM = getVendorPrefixedName('transform');
 var BACKFACE_VISIBILITY = getVendorPrefixedName('backfaceVisibility');
 
 var translateDOMPositionXY = (function () {
   if (BrowserSupportCore.hasCSSTransforms()) {
-    var ua = global.window ? global.window.navigator.userAgent : 'UNKNOWN';
-    var isSafari = /Safari\//.test(ua) && !/Chrome\//.test(ua);
+    const ua = globalThis.window
+      ? globalThis.window.navigator.userAgent
+      : 'UNKNOWN';
+    const isSafari = /Safari\//.test(ua) && !/Chrome\//.test(ua);
     // It appears that Safari messes up the composition order
     // of GPU-accelerated layers
     // (see bug https://bugs.webkit.org/show_bug.cgi?id=61824).
