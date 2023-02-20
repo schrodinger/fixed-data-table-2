@@ -92,4 +92,5 @@ jobs:
 
       # publish our site to gh-pages
       - name: Deploy GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v1.2.4
