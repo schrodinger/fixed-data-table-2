@@ -87,13 +87,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/pradeepnschrodinger/fixed-data-table-2.git"
+    "url": "https://github.com/schrodinger/fixed-data-table-2.git"
   },
   "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/schrodinger/fixed-data-table-2/issues"
   },
-  "homepage": "https://pradeepnschrodinger.github.io/fixed-data-table-2",
+  "homepage": "https://schrodinger.github.io/fixed-data-table-2",
   "tags": [
     "react",
     "table"
