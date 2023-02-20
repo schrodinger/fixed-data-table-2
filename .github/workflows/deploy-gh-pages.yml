@@ -79,9 +79,16 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile # do a clean install of all of our dependencies
 
-      # build our static contents
+      # build our static site contents
       - name: Build static site!
         run: yarn run site-build
+
+      # upload the static site contents as an artifact
+      # the artifact is non-optional, and is consumed by the deploy-pages action below
+      - name: Upload static site artifacts
+        uses: actions/upload-pages-artifact@v1.0.7
+        with:
+          path: "__site__/"
 
       # publish our site to gh-pages
       - name: Deploy GitHub Pages
