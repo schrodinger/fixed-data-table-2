@@ -12,7 +12,9 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import defaultTo from 'lodash/defaultTo';
 import inRange from 'lodash/inRange';
+import isNil from 'lodash/isNil';
 import get from 'lodash/get';
 import sortBy from 'lodash/sortBy';
 
@@ -126,18 +128,15 @@ class FixedDataTableBufferedRows extends React.Component {
 
     // render each row from the buffer into the static row array
     for (let i = 0; i < this._staticRowArray.length; i++) {
-      let rowIndex = rowsToRender[i];
       // if the row doesn't exist in the buffer set, then take the previous one
-      if (rowIndex === undefined) {
-        rowIndex = this._staticRowArray[i]
-          ? this._staticRowArray[i].props.index
-          : undefined;
-        if (rowIndex === undefined) {
-          this._staticRowArray[i] = null;
-          continue;
-        }
-      }
-      if (rowIndex >= this.props.rowSettings.rowsCount) {
+      const rowIndex = defaultTo(
+        rowsToRender[i],
+        get(this._staticRowArray[i], ['props', 'index'])
+      );
+      if (
+        isNil(rowIndex) ||
+        !inRange(rowIndex, 0, this.props.rowSettings.rowsCount)
+      ) {
         this._staticRowArray[i] = null;
         continue;
       }
