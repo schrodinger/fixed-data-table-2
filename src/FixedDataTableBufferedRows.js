@@ -137,6 +137,10 @@ class FixedDataTableBufferedRows extends React.Component {
           continue;
         }
       }
+      if (rowIndex >= this.props.rowSettings.rowsCount) {
+        this._staticRowArray[i] = null;
+        continue;
+      }
       const rowOffsetTop =
         rowOffsets[rowIndex] -
         Math.floor(scrollTop / bufferHeight) * bufferHeight;
