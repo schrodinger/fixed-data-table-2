@@ -197,6 +197,7 @@ const slice = createSlice({
         columnCounts(state);
       if (oldScrollableColumnsCount !== newScrollableColumnsCount) {
         initializeScrollableColumnWidthsAndOffsets(state);
+        // initializeFixedColumnWidthsAndOffsets(state);
       }
       initializeFlexColumnWidths(state);
 
@@ -311,6 +312,7 @@ function initializeFixedColumnWidthsAndOffsets(state) {
   }
 
   const fixedContentWidth = fixedRightColumnsWidth + fixedColumnsWidth;
+  // const fixedContentWidth =  fixedColumnsWidth;
 
   Object.assign(state, {
     fixedColumnsWidth,

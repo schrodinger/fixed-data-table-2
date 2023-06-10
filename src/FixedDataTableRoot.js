@@ -26,7 +26,7 @@ const Plugins = {
   ResizeCell,
   ReorderCell,
 };
-
+// console.log(DataCell, "bibio")
 export {
   Cell,
   Column,

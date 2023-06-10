@@ -30,7 +30,7 @@ var HEADER_BORDER_BOTTOM_WIDTH = 1;
  * This component should not be used directly by developer. Instead,
  * only <FixedDataTable /> should use the component internally.
  */
-class FixedDataTableRowImpl extends React.Component {
+class FixedDataTableRow extends React.Component {
   /**
    * The index of a row for which to fire the onMouseLeave event.
    */
@@ -158,6 +158,13 @@ class FixedDataTableRowImpl extends React.Component {
      * )
      * ```
      */
+    zIndex: PropTypes.number,
+
+    /**
+     * The vertical position where the row should render itself
+     */
+    offsetTop: PropTypes.number.isRequired,
+
     onColumnResizeEndCallback: PropTypes.func,
 
     /**
@@ -175,6 +182,14 @@ class FixedDataTableRowImpl extends React.Component {
      */
     template: PropTypes.oneOf(['cell', 'footer', 'header']).isRequired,
   };
+  constructor(props) {
+    super(props);
+    this._initialRender = true;
+  }
+
+  componentDidMount() {
+    this._initialRender = false;
+  }
 
   shouldComponentUpdate(nextProps) {
     // only skip updates while scrolling
@@ -182,36 +197,78 @@ class FixedDataTableRowImpl extends React.Component {
       return true;
     }
 
-    // if row is not visible then no need to render it
-    // change in visibility is handled by the parent
+    // if row's visibility has changed, then update it
+    if (this.props.visible !== nextProps.visible) {
+      return true;
+    }
+
+    // if row is still not visible then no need to update
     if (!nextProps.visible) {
       return false;
     }
 
-    // Only update the row if scrolling leads to a change in horizontal offsets.
-    // The vertical offset is taken care of by the wrapper
+    // if offsets haven't changed for the same row while scrolling, then skip update
     return !(
+      nextProps.isScrolling &&
       this.props.index === nextProps.index &&
+      this.props.offsetTop === nextProps.offsetTop &&
       this.props.scrollLeft === nextProps.scrollLeft
     );
   }
+
+  // shouldComponentUpdate(nextProps) {
+  //   // only skip updates while scrolling
+  //   if (!nextProps.isScrolling) {
+  //     return true;
+  //   }
+
+  //   // if row is not visible then no need to render it
+  //   // change in visibility is handled by the parent
+  //   if (!nextProps.visible) {
+  //     return false;
+  //   }
+
+  //   // Only update the row if scrolling leads to a change in horizontal offsets.
+  //   // The vertical offset is taken care of by the wrapper
+  //   return !(
+  //     this.props.index === nextProps.index &&
+  //     this.props.scrollLeft === nextProps.scrollLeft
+  //   );
+  // }
 
   render() /*object*/ {
     var subRowHeight = this.props.subRowHeight || 0;
     var style = {
       width: this.props.width,
       height: this.props.height + subRowHeight,
+      zIndex: this.props.zIndex ? this.props.zIndex : 0,
+      position: 'absolute',
     };
+    if (!this.props.visible) {
+      style.display = 'none';
+    }
+    FixedDataTableTranslateDOMPosition(
+      style,
+      0,
+      this.props.offsetTop || 0,
+      this._initialRender,
+      this.props.isRTL
+    );
+
     var className = cx({
       'fixedDataTableRowLayout/main': true,
       'public/fixedDataTableRow/main': true,
       'public/fixedDataTableRow/highlighted': this.props.index % 2 === 1,
-      'public/fixedDataTableRow/odd': this.props.index % 2 === 1,
-      'public/fixedDataTableRow/even': this.props.index % 2 === 0,
+      // 'public/fixedDataTableRow/odd': this.props.index % 2 === 1,
+      // 'public/fixedDataTableRow/even': this.props.index % 2 === 0,
+      //No CSS corresponding to these (archit)
     });
     var fixedColumnsWidth = this.props.fixedColumnsWidth;
     var fixedRightColumnsWidth = this.props.fixedRightColumnsWidth;
     var scrollableColumnsWidth = this.props.scrollableColumnsWidth;
+    // var Archit=(
+    //   <
+    // )
     var fixedColumns = (
       <FixedDataTableCellGroup
         key="fixed_cells"
@@ -223,6 +280,8 @@ class FixedDataTableRowImpl extends React.Component {
         width={fixedColumnsWidth}
         contentWidth={fixedColumnsWidth}
         zIndex={2}
+        // position='absolute'
+
         columns={this.props.fixedColumns}
         touchEnabled={this.props.touchEnabled}
         onColumnResizeEndCallback={this.props.onColumnResizeEndCallback}
@@ -295,6 +354,7 @@ class FixedDataTableRowImpl extends React.Component {
         }
         contentWidth={scrollableColumnsWidth}
         zIndex={0}
+        // position='absolute'
         columns={this.props.scrollableColumns}
         touchEnabled={this.props.touchEnabled}
         onColumnResizeEndCallback={this.props.onColumnResizeEndCallback}
@@ -341,7 +401,12 @@ class FixedDataTableRowImpl extends React.Component {
 
     return (
       <div
-        className={joinClasses(className, this.props.className)}
+        className={joinClasses(
+          className,
+          this.props.className,
+          cx('fixedDataTableRowLayout/body'),
+          cx('fixedDataTableRowLayout/rowWrapper')
+        )}
         role={'row'}
         aria-rowindex={this.props.ariaRowIndex}
         {...this.props.attributes}
@@ -361,14 +426,14 @@ class FixedDataTableRowImpl extends React.Component {
         onTouchMove={this.props.onTouchMove ? this._onTouchMove : null}
         style={style}
       >
-        <div className={cx('fixedDataTableRowLayout/body')}>
-          {fixedColumns}
-          {scrollableColumns}
-          {columnsLeftShadow}
-          {fixedRightColumns}
-          {fixedRightColumnsShadow}
-          {scrollbarSpacer}
-        </div>
+        {/* <div className={cx('fixedDataTableRowLayout/body')}> */}
+        {fixedColumns}
+        {scrollableColumns}
+        {columnsLeftShadow}
+        {fixedRightColumns}
+        {fixedRightColumnsShadow}
+        {scrollbarSpacer}
+        {/* </div> */}
         {rowExpanded && (
           <div
             className={cx('fixedDataTableRowLayout/rowExpanded')}
@@ -516,96 +581,96 @@ class FixedDataTableRowImpl extends React.Component {
   };
 }
 
-class FixedDataTableRow extends React.Component {
-  static propTypes = {
-    isScrolling: PropTypes.bool,
+// class FixedDataTableRow extends React.Component {
+//   static propTypes = {
+//     isScrolling: PropTypes.bool,
 
-    /**
-     * Height of the row.
-     */
-    height: PropTypes.number.isRequired,
+//     /**
+//      * Height of the row.
+//      */
+//     height: PropTypes.number.isRequired,
 
-    /**
-     * Z-index on which the row will be displayed. Used e.g. for keeping
-     * header and footer in front of other rows.
-     */
-    zIndex: PropTypes.number,
+//     /**
+//      * Z-index on which the row will be displayed. Used e.g. for keeping
+//      * header and footer in front of other rows.
+//      */
+//     zIndex: PropTypes.number,
 
-    /**
-     * The vertical position where the row should render itself
-     */
-    offsetTop: PropTypes.number.isRequired,
+//     /**
+//      * The vertical position where the row should render itself
+//      */
+//     offsetTop: PropTypes.number.isRequired,
 
-    /**
-     * Pass false to hide the row via CSS
-     */
-    visible: PropTypes.bool.isRequired,
+//     /**
+//      * Pass false to hide the row via CSS
+//      */
+//     visible: PropTypes.bool.isRequired,
 
-    /**
-     * Width of the row.
-     */
-    width: PropTypes.number.isRequired,
-  };
+//     /**
+//      * Width of the row.
+//      */
+//     width: PropTypes.number.isRequired,
+//   };
 
-  constructor(props) {
-    super(props);
-    this._initialRender = true;
-  }
+//   constructor(props) {
+//     super(props);
+//     this._initialRender = true;
+//   }
 
-  componentDidMount() {
-    this._initialRender = false;
-  }
+//   componentDidMount() {
+//     this._initialRender = false;
+//   }
 
-  shouldComponentUpdate(nextProps) {
-    // only skip updates while scrolling
-    if (!nextProps.isScrolling) {
-      return true;
-    }
+//   shouldComponentUpdate(nextProps) {
+//     // only skip updates while scrolling
+//     if (!nextProps.isScrolling) {
+//       return true;
+//     }
 
-    // if row's visibility has changed, then update it
-    if (this.props.visible !== nextProps.visible) {
-      return true;
-    }
+//     // if row's visibility has changed, then update it
+//     if (this.props.visible !== nextProps.visible) {
+//       return true;
+//     }
 
-    // if row is still not visible then no need to update
-    if (!nextProps.visible) {
-      return false;
-    }
+//     // if row is still not visible then no need to update
+//     if (!nextProps.visible) {
+//       return false;
+//     }
 
-    // if offsets haven't changed for the same row while scrolling, then skip update
-    return !(
-      nextProps.isScrolling &&
-      this.props.index === nextProps.index &&
-      this.props.offsetTop === nextProps.offsetTop &&
-      this.props.scrollLeft === nextProps.scrollLeft
-    );
-  }
+//     // if offsets haven't changed for the same row while scrolling, then skip update
+//     return !(
+//       nextProps.isScrolling &&
+//       this.props.index === nextProps.index &&
+//       this.props.offsetTop === nextProps.offsetTop &&
+//       this.props.scrollLeft === nextProps.scrollLeft
+//     );
+//   }
 
-  render() /*object*/ {
-    const { offsetTop, zIndex, ...rowProps } = this.props;
+//   render() /*object*/ {
+//     const { offsetTop, zIndex, ...rowProps } = this.props;
 
-    var style = {
-      width: this.props.width,
-      height: this.props.height,
-      zIndex: zIndex ? zIndex : 0,
-    };
-    if (!rowProps.visible) {
-      style.display = 'none';
-    }
-    FixedDataTableTranslateDOMPosition(
-      style,
-      0,
-      offsetTop || 0,
-      this._initialRender,
-      this.props.isRTL
-    );
+//     var style = {
+//       width: this.props.width,
+//       height: this.props.height,
+//       zIndex: zIndex ? zIndex : 0,
+//     };
+//     if (!rowProps.visible) {
+//       style.display = 'none';
+//     }
+//     FixedDataTableTranslateDOMPosition(
+//       style,
+//       0,
+//       offsetTop || 0,
+//       this._initialRender,
+//       this.props.isRTL
+//     );
 
-    return (
-      <div style={style} className={cx('fixedDataTableRowLayout/rowWrapper')}>
-        <FixedDataTableRowImpl {...rowProps} />
-      </div>
-    );
-  }
-}
+//     return (
+//       <div style={style} className={cx('fixedDataTableRowLayout/rowWrapper')}>
+//         <FixedDataTableRowImpl {...rowProps} />
+//       </div>
+//     );
+//   }
+// }
 
 export default FixedDataTableRow;

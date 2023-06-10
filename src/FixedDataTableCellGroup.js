@@ -20,8 +20,9 @@ import FixedDataTableCell from './FixedDataTableCell';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 import _ from 'lodash';
 import inRange from 'lodash/inRange';
+import joinClasses from './vendor_upstream/core/joinClasses';
 
-class FixedDataTableCellGroupImpl extends React.Component {
+class FixedDataTableCellGroup extends React.Component {
   /**
    * PropTypes are disabled in this component, because having them on slows
    * down the FixedDataTable hugely in DEV mode. You can enable them back for
@@ -58,6 +59,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
     touchEnabled: PropTypes.bool,
 
     isHeaderOrFooter: PropTypes.bool,
+
+    offsetLeft: PropTypes.number,
 
     isRTL: PropTypes.bool,
 
@@ -114,6 +117,20 @@ class FixedDataTableCellGroupImpl extends React.Component {
   componentDidMount() {
     this._initialRender = false;
   }
+  shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
+    /// if offsets haven't changed for the same cell group while scrolling, then skip update
+    return !(
+      nextProps.isScrolling &&
+      this.props.rowIndex === nextProps.rowIndex &&
+      this.props.left === nextProps.left &&
+      this.props.offsetLeft === nextProps.offsetLeft
+    );
+  }
+
+  static defaultProps = /*object*/ {
+    left: 0,
+    offsetLeft: 0,
+  };
 
   render() /*object*/ {
     var props = this.props;
@@ -129,7 +146,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     } else {
       this._staticCells.length = columnsToRender.length;
     }
-
+    // console.log(this._staticCells,'hello')
     for (let i = 0; i < this._staticCells.length; i++) {
       let columnIndex = columnsToRender[i];
 
@@ -148,18 +165,26 @@ class FixedDataTableCellGroupImpl extends React.Component {
     }
 
     var style = {
-      height: props.height,
+      height: props.cellGroupWrapperHeight || props.height,
       position: 'absolute',
       width: props.contentWidth,
       zIndex: props.zIndex,
     };
+
+    // // // // console.log(this._initialRender,"Hello")
     FixedDataTableTranslateDOMPosition(
       style,
       -1 * props.left,
       0,
       this._initialRender,
-      this.props.isRTL
+      this.isRTL
     );
+
+    if (this.props.isRTL) {
+      style.right = props.offsetLeft;
+    } else {
+      style.left = props.offsetLeft;
+    }
 
     // NOTE (pradeep): Sort the cells by column index so that they appear with the right order in the DOM (see #221)
     const sortedCells = _.sortBy(this._staticCells, (cell) =>
@@ -168,10 +193,13 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     return (
       <div
-        className={cx('fixedDataTableCellGroupLayout/cellGroup')}
+        // className={joinClasses(cx('fixedDataTableCellGroupLayout/cellGroup'),cx('fixedDataTableCellGroupLayout/cellGroupWrapper'))}
         style={style}
       >
+        {/* <div> */}
+        {/* <> */}
         {sortedCells}
+        {/* </> */}
       </div>
     );
   }
@@ -182,11 +210,24 @@ class FixedDataTableCellGroupImpl extends React.Component {
       this.props.firstViewportColumnIndex,
       this.props.endViewportColumnIndex
     );
-    const columnProps = this.props.columns[columnIndex].props;
+    const columnProps = this.props.columns[columnIndex].props; //columnkey,fixed,index,width
+    var zIndex = 0;
+    let position;
+    if (columnProps.fixed) {
+      zIndex = 2;
+      // position='absolute'
+    }
+    // else {
+    // position='relative'
+    // }
     const cellTemplate =
-      this.props.columns[columnIndex].templates[this.props.template];
+      this.props.columns[columnIndex].templates[this.props.template]; //imagecell
 
     var className = columnProps.cellClassName;
+    // let cnt=0
+
+    // console.log(className,cnt)
+    // cnt=cnt+1
     var pureRendering = columnProps.pureRendering || false;
 
     const onColumnReorderEndCallback = columnProps.isReorderable
@@ -207,7 +248,11 @@ class FixedDataTableCellGroupImpl extends React.Component {
         className={className}
         height={this.props.rowHeight}
         key={key}
-        columnIndex={columnIndex}
+        zIndex={zIndex}
+        // position={position}
+        left1={this.props.left}
+        initialRender={this.props._initialRender}
+        // columnIndex={columnIndex}
         maxWidth={columnProps.maxWidth}
         minWidth={columnProps.minWidth}
         touchEnabled={this.props.touchEnabled}
@@ -216,6 +261,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         rowIndex={this.props.rowIndex}
         columnKey={columnProps.columnKey}
         width={columnProps.width}
+        offsetLeft={this.props.offsetLeft}
         left={this.props.columnOffsets[columnIndex]}
         cell={cellTemplate}
         pureRendering={pureRendering}
@@ -223,70 +269,71 @@ class FixedDataTableCellGroupImpl extends React.Component {
         visible={visible}
         cellGroupType={this.props.cellGroupType}
       />
+      // <></>
     );
   };
 }
 
-class FixedDataTableCellGroup extends React.Component {
-  /**
-   * PropTypes are disabled in this component, because having them on slows
-   * down the FixedDataTable hugely in DEV mode. You can enable them back for
-   * development, but please don't commit this component with enabled propTypes.
-   */
-  static propTypes_DISABLED_FOR_PERFORMANCE = {
-    isScrolling: PropTypes.bool,
-    /**
-     * Height of the row.
-     */
-    height: PropTypes.number.isRequired,
+// class FixedDataTableCellGroup extends React.Component {
+//   /**
+//    * PropTypes are disabled in this component, because having them on slows
+//    * down the FixedDataTable hugely in DEV mode. You can enable them back for
+//    * development, but please don't commit this component with enabled propTypes.
+//    */
+//   static propTypes_DISABLED_FOR_PERFORMANCE = {
+//     isScrolling: PropTypes.bool,
+//     /**
+//      * Height of the row.
+//      */
+//     height: PropTypes.number.isRequired,
 
-    offsetLeft: PropTypes.number,
+//     offsetLeft: PropTypes.number,
 
-    left: PropTypes.number,
-    /**
-     * Z-index on which the row will be displayed. Used e.g. for keeping
-     * header and footer in front of other rows.
-     */
-    zIndex: PropTypes.number.isRequired,
-  };
+//     left: PropTypes.number,
+//     /**
+//      * Z-index on which the row will be displayed. Used e.g. for keeping
+//      * header and footer in front of other rows.
+//      */
+//     zIndex: PropTypes.number.isRequired,
+//   };
 
-  shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
-    /// if offsets haven't changed for the same cell group while scrolling, then skip update
-    return !(
-      nextProps.isScrolling &&
-      this.props.rowIndex === nextProps.rowIndex &&
-      this.props.left === nextProps.left &&
-      this.props.offsetLeft === nextProps.offsetLeft
-    );
-  }
+//   shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
+//     /// if offsets haven't changed for the same cell group while scrolling, then skip update
+//     return !(
+//       nextProps.isScrolling &&
+//       this.props.rowIndex === nextProps.rowIndex &&
+//       this.props.left === nextProps.left &&
+//       this.props.offsetLeft === nextProps.offsetLeft
+//     );
+//   }
 
-  static defaultProps = /*object*/ {
-    left: 0,
-    offsetLeft: 0,
-  };
+//   static defaultProps = /*object*/ {
+//     left: 0,
+//     offsetLeft: 0,
+//   };
 
-  render() /*object*/ {
-    var { offsetLeft, ...props } = this.props;
+//   render() /*object*/ {
+//     var { offsetLeft, ...props } = this.props;
 
-    var style = {
-      height: props.cellGroupWrapperHeight || props.height,
-      width: props.width,
-    };
+//     var style = {
+//       height: props.cellGroupWrapperHeight || props.height,
+//       width: props.width,
+//     };
 
-    if (this.props.isRTL) {
-      style.right = offsetLeft;
-    } else {
-      style.left = offsetLeft;
-    }
+//     if (this.props.isRTL) {
+//       style.right = offsetLeft;
+//     } else {
+//       style.left = offsetLeft;
+//     }
 
-    return (
-      <div
-        style={style}
-        className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}
-      >
-        <FixedDataTableCellGroupImpl {...props} />
-      </div>
-    );
-  }
-}
+//     return (
+//       <div
+//         style={style}
+//         className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}
+//       >
+//         <FixedDataTableCellGroupImpl {...props} />
+//       </div>
+//     );
+//   }
+// }
 export default FixedDataTableCellGroup;

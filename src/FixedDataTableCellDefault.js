@@ -110,5 +110,5 @@ class FixedDataTableCellDefault extends React.Component {
     );
   }
 }
-
+// console.log(FixedDataTableCellDefault, "eieio")
 export default FixedDataTableCellDefault;
