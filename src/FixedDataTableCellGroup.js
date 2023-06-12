@@ -163,28 +163,30 @@ class FixedDataTableCellGroup extends React.Component {
 
       this._staticCells[i] = this._renderCell(i, columnIndex);
     }
+    // console.log(this._staticCells,'hello2')
 
     var style = {
-      height: props.cellGroupWrapperHeight || props.height,
+      // height: props.cellGroupWrapperHeight || props.height,
       position: 'absolute',
-      width: props.contentWidth,
+      // width: props.contentWidth,
       zIndex: props.zIndex,
     };
 
     // // // // console.log(this._initialRender,"Hello")
-    FixedDataTableTranslateDOMPosition(
-      style,
-      -1 * props.left,
-      0,
-      this._initialRender,
-      this.isRTL
-    );
-
-    if (this.props.isRTL) {
-      style.right = props.offsetLeft;
-    } else {
-      style.left = props.offsetLeft;
-    }
+    // FixedDataTableTranslateDOMPosition(
+    //   style,
+    //   -1 * props.left,
+    //   0,
+    //   this._initialRender,
+    //   this.isRTL
+    // );
+    // console.log(style,'Hello1')
+    // if (this.props.isRTL) {
+    //   style.right = props.offsetLeft;
+    // } else {
+    //   style.left = props.offsetLeft;
+    // }
+    // console.log(style,'Hello2')
 
     // NOTE (pradeep): Sort the cells by column index so that they appear with the right order in the DOM (see #221)
     const sortedCells = _.sortBy(this._staticCells, (cell) =>
@@ -193,13 +195,13 @@ class FixedDataTableCellGroup extends React.Component {
 
     return (
       <div
-        // className={joinClasses(cx('fixedDataTableCellGroupLayout/cellGroup'),cx('fixedDataTableCellGroupLayout/cellGroupWrapper'))}
-        style={style}
+      // className={joinClasses(cx('fixedDataTableCellGroupLayout/cellGroup'),cx('fixedDataTableCellGroupLayout/cellGroupWrapper'))}
+      // style={style}
       >
         {/* <div> */}
-        {/* <> */}
+        {/* <>  */}
         {sortedCells}
-        {/* </> */}
+        {/* </>  */}
       </div>
     );
   }
@@ -211,7 +213,7 @@ class FixedDataTableCellGroup extends React.Component {
       this.props.endViewportColumnIndex
     );
     const columnProps = this.props.columns[columnIndex].props; //columnkey,fixed,index,width
-    var zIndex = 0;
+    let zIndex = 0;
     let position;
     if (columnProps.fixed) {
       zIndex = 2;

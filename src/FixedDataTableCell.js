@@ -129,9 +129,9 @@ class FixedDataTableCell extends React.Component {
       CellGroupType.SCROLLABLE,
     ]),
   };
-  componentDidMount() {
-    this._initialRender = false;
-  }
+  // componentDidMount() {
+  //   this._initialRender = false;
+  // }
   shouldComponentUpdate(nextProps) {
     // we need to render the cell to hide/show it
     if (this.props.visible !== nextProps.visible) {
@@ -198,13 +198,13 @@ class FixedDataTableCell extends React.Component {
       ...props
     } = this.props;
     // debugger
-    // var style = {
-    //   height,
-    //   position:'absolute',
-    //   width,
-    //   zIndex,
-    //   visibility: visible ? 'visible' : 'hidden',
-    // };
+    var style = {
+      height,
+      // position:'absolute',
+      width,
+      zIndex,
+      visibility: visible ? 'visible' : 'hidden',
+    };
 
     // console.log(this._initialRender,"Hello")
     // if (this.props.isRTL) {
@@ -212,30 +212,32 @@ class FixedDataTableCell extends React.Component {
     // } else {
     //   style.left = props.left;
     // }
-    // FixedDataTableTranslateDOMPosition(
-    //   style,
-    //   -1*(left1),
-    //   0,
-    //   this.props.initialRender,
-    //   this.props.isRTL
-    // );
+    FixedDataTableTranslateDOMPosition(
+      style,
+      this.props.offsetLeft - 1 * left1,
+      0,
+      this.props.initialRender,
+      this.props.isRTL
+    );
 
     // if (this.props.isRTL) {
     //   style.right =this.props.left+this.props.offsetLeft-left1;
     // } else {
     //   style.left = this.props.left+this.props.offsetLeft-left1;
     // }
-    var style = {
-      height,
-      width,
-      visibility: visible ? 'visible' : 'hidden',
-    };
-
+    // var style = {
+    //   height,
+    //   width,
+    //   visibility: visible ? 'visible' : 'hidden',
+    // };
+    console.log(style, 'h1');
     if (this.props.isRTL) {
       style.right = props.left;
     } else {
       style.left = props.left;
     }
+    console.log(style, 'h2');
+
     // {console.log(props.lastChild,"hello")}
     var className = joinClasses(
       cx({
