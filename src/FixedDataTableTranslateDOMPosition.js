@@ -24,11 +24,9 @@ function FixedDataTableTranslateDOMPosition(
     return;
   }
   if (initialRender) {
-    // console.log("render")
     style.left = x + 'px';
     style.top = y + 'px';
   } else {
-    // console.log("hey")
     if (BrowserSupportCore.hasCSSTransforms()) {
       x *= isRTL ? -1 : 1;
     }

@@ -129,9 +129,7 @@ class FixedDataTableCell extends React.Component {
       CellGroupType.SCROLLABLE,
     ]),
   };
-  componentDidMount() {
-    this._initialRender = false;
-  }
+
   shouldComponentUpdate(nextProps) {
     // we need to render the cell to hide/show it
     if (this.props.visible !== nextProps.visible) {
@@ -179,9 +177,6 @@ class FixedDataTableCell extends React.Component {
   static defaultProps = /*object*/ {
     align: 'left',
     highlighted: false,
-    left: 0,
-    offsetLeft: 0,
-    zIndex: 0,
   };
 
   render() /*object*/ {
@@ -192,39 +187,9 @@ class FixedDataTableCell extends React.Component {
       columnKey,
       isHeaderOrFooter,
       visible,
-      zIndex,
-      left1,
-      // position,
       ...props
     } = this.props;
-    // debugger
-    // var style = {
-    //   height,
-    //   position:'absolute',
-    //   width,
-    //   zIndex,
-    //   visibility: visible ? 'visible' : 'hidden',
-    // };
 
-    // console.log(this._initialRender,"Hello")
-    // if (this.props.isRTL) {
-    //   style.right = props.left;
-    // } else {
-    //   style.left = props.left;
-    // }
-    // FixedDataTableTranslateDOMPosition(
-    //   style,
-    //   -1*(left1),
-    //   0,
-    //   this.props.initialRender,
-    //   this.props.isRTL
-    // );
-
-    // if (this.props.isRTL) {
-    //   style.right =this.props.left+this.props.offsetLeft-left1;
-    // } else {
-    //   style.left = this.props.left+this.props.offsetLeft-left1;
-    // }
     var style = {
       height,
       width,
@@ -236,14 +201,14 @@ class FixedDataTableCell extends React.Component {
     } else {
       style.left = props.left;
     }
-    // {console.log(props.lastChild,"hello")}
+
     var className = joinClasses(
       cx({
         'fixedDataTableCellLayout/main': true,
         'fixedDataTableCellLayout/lastChild': props.lastChild,
         'fixedDataTableCellLayout/alignRight': props.align === 'right',
         'fixedDataTableCellLayout/alignCenter': props.align === 'center',
-        // 'public/fixedDataTableCell/alignRight': props.align === 'right', //archit
+        'public/fixedDataTableCell/alignRight': props.align === 'right',
         'public/fixedDataTableCell/highlighted': props.highlighted,
         'public/fixedDataTableCell/main': true,
       }),
