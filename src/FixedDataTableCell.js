@@ -20,7 +20,6 @@ import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-com
 import ReorderCell from './plugins/ResizeReorder/ReorderCell';
 import ResizeCell from './plugins/ResizeReorder/ResizeCell';
 import { CellGroupType } from './enums/CellGroup';
-import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -291,15 +290,7 @@ class FixedDataTableCell extends React.Component {
     const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
 
     return (
-      <div
-        style={style}
-        role={role}
-        className={joinClasses(
-          cx('fixedDataTableCellGroupLayout/cellGroup'),
-          cx('fixedDataTableCellGroupLayout/cellGroupWrapper'),
-          className
-        )}
-      >
+      <div className={className} style={style} role={role}>
         {content}
       </div>
     );

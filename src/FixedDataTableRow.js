@@ -445,6 +445,8 @@ class FixedDataTableRow extends React.Component {
       'fixedDataTableRowLayout/columnsShadow': this.props.scrollLeft > 0,
       'public/fixedDataTableRow/fixedColumnsDivider': left > 0,
       'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0,
+      'public/fixedDataTableRow/odd': this.props.index % 2 === 1,
+      'public/fixedDataTableRow/even': this.props.index % 2 === 0,
     });
     var dividerHeight = this.props.cellGroupWrapperHeight
       ? this.props.cellGroupWrapperHeight - HEADER_BORDER_BOTTOM_WIDTH

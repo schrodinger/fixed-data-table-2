@@ -19,6 +19,7 @@ import FixedDataTableCell from './FixedDataTableCell';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 import _ from 'lodash';
 import inRange from 'lodash/inRange';
+import cx from './vendor_upstream/stubs/cx';
 
 class FixedDataTableCellGroup extends React.Component {
   /**
@@ -188,7 +189,14 @@ class FixedDataTableCellGroup extends React.Component {
       _.get(cell, 'props.columnIndex', Infinity)
     );
 
-    return <div style={style}>{sortedCells}</div>;
+    return (
+      <div
+        className={cx('fixedDataTableCellGroupLayout/cellGroup')}
+        style={style}
+      >
+        {sortedCells}
+      </div>
+    );
   }
 
   _renderCell = (/*number*/ key, /*number*/ columnIndex) /*object*/ => {
@@ -224,8 +232,6 @@ class FixedDataTableCellGroup extends React.Component {
         className={className}
         height={this.props.rowHeight}
         key={key}
-        left1={this.props.left}
-        initialRender={this.props._initialRender}
         maxWidth={columnProps.maxWidth}
         minWidth={columnProps.minWidth}
         touchEnabled={this.props.touchEnabled}
@@ -234,7 +240,6 @@ class FixedDataTableCellGroup extends React.Component {
         rowIndex={this.props.rowIndex}
         columnKey={columnProps.columnKey}
         width={columnProps.width}
-        offsetLeft={this.props.offsetLeft}
         left={this.props.columnOffsets[columnIndex]}
         cell={cellTemplate}
         pureRendering={pureRendering}
