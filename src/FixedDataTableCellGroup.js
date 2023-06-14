@@ -160,10 +160,11 @@ class FixedDataTableCellGroup extends React.Component {
         this._staticCells[i] = null;
         continue;
       }
+      // console.log(i,columnIndex,this._staticCells.length)
 
       this._staticCells[i] = this._renderCell(i, columnIndex);
     }
-    // console.log(this._staticCells,'hello2')
+    // console.log('cellgroup')
 
     var style = {
       // height: props.cellGroupWrapperHeight || props.height,
@@ -194,15 +195,13 @@ class FixedDataTableCellGroup extends React.Component {
     );
 
     return (
-      <div
+      // <div
       // className={joinClasses(cx('fixedDataTableCellGroupLayout/cellGroup'),cx('fixedDataTableCellGroupLayout/cellGroupWrapper'))}
       // style={style}
-      >
-        {/* <div> */}
-        {/* <>  */}
-        {sortedCells}
-        {/* </>  */}
-      </div>
+      // >
+      /* <div> */
+      <>{sortedCells}</>
+      // </div>
     );
   }
 

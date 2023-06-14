@@ -14,7 +14,7 @@ class AutoScrollExample extends React.Component {
     super(props);
 
     this.state = {
-      dataList: new FakeObjectDataListStore(10000),
+      dataList: new FakeObjectDataListStore(1000000),
       scrollTop: 0,
       scrollLeft: 0,
       autoScrollEnabled: true,

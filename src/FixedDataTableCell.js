@@ -133,7 +133,7 @@ class FixedDataTableCell extends React.Component {
   //   this._initialRender = false;
   // }
   shouldComponentUpdate(nextProps) {
-    // we need to render the cell to hide/show it
+    //   // we need to render the cell to hide/show it
     if (this.props.visible !== nextProps.visible) {
       return true;
     }
@@ -143,17 +143,17 @@ class FixedDataTableCell extends React.Component {
       return false;
     }
 
-    // skip update for the same cell if we're scrolling
+    //   // skip update for the same cell if we're scrolling
     if (
       nextProps.isScrolling &&
-      this.props.rowIndex === nextProps.rowIndex &&
+      // this.props.rowIndex === nextProps.rowIndex &&
       this.props.columnIndex === nextProps.columnIndex &&
-      this.props.left === nextProps.left
+      this.props.left1 === nextProps.left1
     ) {
       return false;
     }
 
-    //Performance check not enabled
+    //   //Performance check not enabled
     if (!nextProps.pureRendering) {
       return true;
     }
@@ -230,14 +230,14 @@ class FixedDataTableCell extends React.Component {
     //   width,
     //   visibility: visible ? 'visible' : 'hidden',
     // };
-    console.log(style, 'h1');
+    // console.log(style, 'h1');
     if (this.props.isRTL) {
       style.right = props.left;
     } else {
       style.left = props.left;
     }
-    console.log(style, 'h2');
-
+    // console.log('h2');
+    // console.log('hh',props.rowIndex,columnIndex)
     // {console.log(props.lastChild,"hello")}
     var className = joinClasses(
       cx({

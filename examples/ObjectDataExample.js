@@ -14,7 +14,7 @@ class ObjectDataExample extends React.Component {
     super(props);
 
     this.state = {
-      dataList: new FakeObjectDataListStore(1),
+      dataList: new FakeObjectDataListStore(1000000),
     };
   }
 
