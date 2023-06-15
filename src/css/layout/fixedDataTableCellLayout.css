@@ -54,7 +54,7 @@
 
 .fixedDataTableCellLayout/wrap3 {
   display: table-cell;
-  vertical-align: middle;
+  vertical-align: bottom;
 }
 
 .fixedDataTableCellLayout/columnResizerContainer {
