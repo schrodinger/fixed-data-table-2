@@ -20,7 +20,7 @@ import joinClasses from './vendor_upstream/core/joinClasses';
 
 import FixedDataTableCellGroup from './FixedDataTableCellGroup';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
-import { CellGroupType } from './enums/CellGroup';
+import { CellGroupType, VersionType } from './enums/CellGroup';
 
 // .fixedDataTableLayout/header border-bottom-width
 var HEADER_BORDER_BOTTOM_WIDTH = 1;
@@ -182,6 +182,7 @@ class FixedDataTableRow extends React.Component {
      */
     template: PropTypes.oneOf(['cell', 'footer', 'header']).isRequired,
   };
+  // version=this.version.bind(this)
   constructor(props) {
     super(props);
     this._initialRender = true;
@@ -190,7 +191,6 @@ class FixedDataTableRow extends React.Component {
   componentDidMount() {
     this._initialRender = false;
   }
-
   shouldComponentUpdate(nextProps) {
     // only skip updates while scrolling
     if (!nextProps.isScrolling) {
@@ -198,6 +198,7 @@ class FixedDataTableRow extends React.Component {
     }
 
     // if row's visibility has changed, then update it
+
     if (this.props.visible !== nextProps.visible) {
       return true;
     }
@@ -206,7 +207,6 @@ class FixedDataTableRow extends React.Component {
     if (!nextProps.visible) {
       return false;
     }
-
     // if offsets haven't changed for the same row while scrolling, then skip update
     return !(
       nextProps.isScrolling &&
@@ -218,15 +218,35 @@ class FixedDataTableRow extends React.Component {
 
   render() /*object*/ {
     var subRowHeight = this.props.subRowHeight || 0;
+    var props = this.props;
+
     var style = {
       width: this.props.width,
       height: this.props.height + subRowHeight,
       zIndex: this.props.zIndex ? this.props.zIndex : 0,
-      position: 'absolute',
+    };
+
+    var style1 = {
+      width: this.props.width,
+      height: this.props.height,
+      zIndex: this.props.zIndex ? this.props.zIndex : 0,
+    };
+
+    var style2 = {
+      width: this.props.width,
+      height: this.props.height + subRowHeight,
     };
     if (!this.props.visible) {
       style.display = 'none';
+      style1.display = 'none';
     }
+    FixedDataTableTranslateDOMPosition(
+      style1,
+      0,
+      this.props.offsetTop || 0,
+      this._initialRender,
+      this.props.isRTL
+    );
     FixedDataTableTranslateDOMPosition(
       style,
       0,
@@ -272,6 +292,7 @@ class FixedDataTableRow extends React.Component {
         firstViewportColumnIndex={0}
         endViewportColumnIndex={_.size(this.props.fixedColumns)}
         cellGroupType={CellGroupType.FIXED}
+        version={this.props.version}
       />
     );
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
@@ -304,6 +325,7 @@ class FixedDataTableRow extends React.Component {
         firstViewportColumnIndex={0}
         endViewportColumnIndex={_.size(this.props.fixedRightColumns)}
         cellGroupType={CellGroupType.FIXED_RIGHT}
+        version={this.props.version}
       />
     );
     var fixedRightColumnsShadow = fixedRightColumnsWidth
@@ -344,6 +366,7 @@ class FixedDataTableRow extends React.Component {
         firstViewportColumnIndex={this.props.firstViewportColumnIndex}
         endViewportColumnIndex={this.props.endViewportColumnIndex}
         cellGroupType={CellGroupType.SCROLLABLE}
+        version={this.props.version}
       />
     );
     var columnsRightShadow = this._renderColumnsRightShadow(
@@ -372,51 +395,103 @@ class FixedDataTableRow extends React.Component {
         />
       );
     }
-
-    return (
-      <div
-        className={joinClasses(
-          className,
-          this.props.className,
-          cx('fixedDataTableRowLayout/body'),
-          cx('fixedDataTableRowLayout/rowWrapper')
-        )}
-        role={'row'}
-        aria-rowindex={this.props.ariaRowIndex}
-        {...this.props.attributes}
-        onClick={this.props.onClick ? this._onClick : null}
-        onContextMenu={this.props.onContextMenu ? this._onContextMenu : null}
-        onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
-        onMouseDown={this.props.onMouseDown ? this._onMouseDown : null}
-        onMouseUp={this.props.onMouseUp ? this._onMouseUp : null}
-        onMouseEnter={
-          this.props.onMouseEnter || this.props.onMouseLeave
-            ? this._onMouseEnter
-            : null
-        }
-        onMouseLeave={this.props.onMouseLeave ? this._onMouseLeave : null}
-        onTouchStart={this.props.onTouchStart ? this._onTouchStart : null}
-        onTouchEnd={this.props.onTouchEnd ? this._onTouchEnd : null}
-        onTouchMove={this.props.onTouchMove ? this._onTouchMove : null}
-        style={style}
-      >
-        {fixedColumns}
-        {scrollableColumns}
-        {columnsLeftShadow}
-        {fixedRightColumns}
-        {fixedRightColumnsShadow}
-        {scrollbarSpacer}
-        {rowExpanded && (
+    if (this.props.version === VersionType.OLD_VERSION) {
+      return (
+        <div
+          style={style1}
+          className={cx('fixedDataTableRowLayout/rowWrapper')}
+        >
           <div
-            className={cx('fixedDataTableRowLayout/rowExpanded')}
-            style={rowExpandedStyle}
+            className={joinClasses(className, this.props.className)}
+            role={'row'}
+            aria-rowindex={this.props.ariaRowIndex}
+            {...this.props.attributes}
+            onClick={this.props.onClick ? this._onClick : null}
+            onContextMenu={
+              this.props.onContextMenu ? this._onContextMenu : null
+            }
+            onDoubleClick={
+              this.props.onDoubleClick ? this._onDoubleClick : null
+            }
+            onMouseDown={this.props.onMouseDown ? this._onMouseDown : null}
+            onMouseUp={this.props.onMouseUp ? this._onMouseUp : null}
+            onMouseEnter={
+              this.props.onMouseEnter || this.props.onMouseLeave
+                ? this._onMouseEnter
+                : null
+            }
+            onMouseLeave={this.props.onMouseLeave ? this._onMouseLeave : null}
+            onTouchStart={this.props.onTouchStart ? this._onTouchStart : null}
+            onTouchEnd={this.props.onTouchEnd ? this._onTouchEnd : null}
+            onTouchMove={this.props.onTouchMove ? this._onTouchMove : null}
+            style={style2}
           >
-            {rowExpanded}
+            <div className={cx('fixedDataTableRowLayout/body')}>
+              {fixedColumns}
+              {scrollableColumns}
+              {columnsLeftShadow}
+              {fixedRightColumns}
+              {fixedRightColumnsShadow}
+              {scrollbarSpacer}
+            </div>
+            {rowExpanded && (
+              <div
+                className={cx('fixedDataTableRowLayout/rowExpanded')}
+                style={rowExpandedStyle}
+              >
+                {rowExpanded}
+              </div>
+            )}
+            {columnsRightShadow}
           </div>
-        )}
-        {columnsRightShadow}
-      </div>
-    );
+        </div>
+      );
+    } else {
+      return (
+        <div
+          className={joinClasses(
+            className,
+            this.props.className,
+            cx('fixedDataTableRowLayout/body'),
+            cx('fixedDataTableRowLayout/rowWrapper')
+          )}
+          role={'row'}
+          aria-rowindex={this.props.ariaRowIndex}
+          {...this.props.attributes}
+          onClick={this.props.onClick ? this._onClick : null}
+          onContextMenu={this.props.onContextMenu ? this._onContextMenu : null}
+          onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
+          onMouseDown={this.props.onMouseDown ? this._onMouseDown : null}
+          onMouseUp={this.props.onMouseUp ? this._onMouseUp : null}
+          onMouseEnter={
+            this.props.onMouseEnter || this.props.onMouseLeave
+              ? this._onMouseEnter
+              : null
+          }
+          onMouseLeave={this.props.onMouseLeave ? this._onMouseLeave : null}
+          onTouchStart={this.props.onTouchStart ? this._onTouchStart : null}
+          onTouchEnd={this.props.onTouchEnd ? this._onTouchEnd : null}
+          onTouchMove={this.props.onTouchMove ? this._onTouchMove : null}
+          style={style}
+        >
+          {fixedColumns}
+          {scrollableColumns}
+          {columnsLeftShadow}
+          {fixedRightColumns}
+          {fixedRightColumnsShadow}
+          {scrollbarSpacer}
+          {rowExpanded && (
+            <div
+              className={cx('fixedDataTableRowLayout/rowExpanded')}
+              style={rowExpandedStyle}
+            >
+              {rowExpanded}
+            </div>
+          )}
+          {columnsRightShadow}
+        </div>
+      );
+    }
   }
 
   _getRowExpanded = (/*number*/ subRowHeight) => /*?object*/ {

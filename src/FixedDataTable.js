@@ -872,6 +872,7 @@ class FixedDataTable extends React.Component {
           fixedColumnsWidth={this.props.fixedColumnsWidth}
           fixedRightColumnsWidth={this.props.fixedRightColumnsWidth}
           isGroupHeader={true}
+          version={this.props.version}
         />
       );
     }
@@ -923,6 +924,7 @@ class FixedDataTable extends React.Component {
           endViewportColumnIndex={this.props.endColumnIndex}
           fixedColumnsWidth={this.props.fixedColumnsWidth}
           fixedRightColumnsWidth={this.props.fixedRightColumnsWidth}
+          version={this.props.version}
         />
       );
     }
@@ -976,6 +978,7 @@ class FixedDataTable extends React.Component {
         fixedRightColumnsWidth={this.props.fixedRightColumnsWidth}
         firstViewportColumnIndex={this.props.firstColumnIndex}
         endViewportColumnIndex={this.props.endColumnIndex}
+        version={this.props.version}
       />
     );
 
@@ -1123,6 +1126,7 @@ class FixedDataTable extends React.Component {
         fixedRightColumnsWidth={this.props.fixedRightColumnsWidth}
         scrollbarYWidth={props.scrollbarYWidth}
         isRTL={props.isRTL}
+        version={props.version}
       />
     );
   };

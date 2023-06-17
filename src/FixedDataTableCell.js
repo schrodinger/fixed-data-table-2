@@ -20,7 +20,6 @@ import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-com
 import ReorderCell from './plugins/ResizeReorder/ReorderCell';
 import ResizeCell from './plugins/ResizeReorder/ResizeCell';
 import { CellGroupType } from './enums/CellGroup';
-import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -131,7 +130,7 @@ class FixedDataTableCell extends React.Component {
   };
 
   shouldComponentUpdate(nextProps) {
-    //   // we need to render the cell to hide/show it
+    // we need to render the cell to hide/show it
     if (this.props.visible !== nextProps.visible) {
       return true;
     }
@@ -141,18 +140,17 @@ class FixedDataTableCell extends React.Component {
       return false;
     }
 
-    //   // skip update for the same cell if we're scrolling
+    // skip update for the same cell if we're scrolling
     if (
       nextProps.isScrolling &&
       this.props.rowIndex === nextProps.rowIndex &&
       this.props.columnIndex === nextProps.columnIndex &&
-      this.props.scrollOffsetLeft === nextProps.scrollOffsetLeft &&
       this.props.left === nextProps.left
     ) {
       return false;
     }
 
-    //   //Performance check not enabled
+    //Performance check not enabled
     if (!nextProps.pureRendering) {
       return true;
     }
@@ -178,9 +176,6 @@ class FixedDataTableCell extends React.Component {
   static defaultProps = /*object*/ {
     align: 'left',
     highlighted: false,
-    left: 0,
-    offsetLeft: 0,
-    zIndex: 0,
   };
 
   render() /*object*/ {
@@ -191,26 +186,14 @@ class FixedDataTableCell extends React.Component {
       columnKey,
       isHeaderOrFooter,
       visible,
-      zIndex,
-      scrollOffsetLeft,
       ...props
     } = this.props;
 
     var style = {
       height,
-      position: 'absolute',
       width,
-      zIndex,
       visibility: visible ? 'visible' : 'hidden',
     };
-
-    FixedDataTableTranslateDOMPosition(
-      style,
-      this.props.offsetLeft - 1 * scrollOffsetLeft,
-      0,
-      this.props.initialRender,
-      this.props.isRTL
-    );
 
     if (this.props.isRTL) {
       style.right = props.left;
@@ -307,15 +290,7 @@ class FixedDataTableCell extends React.Component {
     const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
 
     return (
-      <div
-        style={style}
-        role={role}
-        className={joinClasses(
-          cx('fixedDataTableCellGroupLayout/cellGroup'),
-          cx('fixedDataTableCellGroupLayout/cellGroupWrapper'),
-          className
-        )}
-      >
+      <div className={className} style={style} role={role}>
         {content}
       </div>
     );

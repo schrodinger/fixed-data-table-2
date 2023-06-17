@@ -63,6 +63,7 @@ class IndexPage extends React.Component {
     var browserInitScriptObj = {
       __html: 'window.INITIAL_PROPS = ' + JSON.stringify(this.props) + ';\n',
     };
+    let version = 'new';
 
     return (
       <html>
@@ -83,7 +84,7 @@ class IndexPage extends React.Component {
           <base target="_blank" />
         </head>
         <body>
-          {this.state.renderPage && this._renderPage()}
+          {this.state.renderPage && this._renderPage(version)}
 
           <script dangerouslySetInnerHTML={browserInitScriptObj} />
           <script src={this.props.files['main.js']}></script>
@@ -92,7 +93,7 @@ class IndexPage extends React.Component {
     );
   }
 
-  _renderPage() {
+  _renderPage(version) {
     switch (this.props.location) {
       case OtherPages.HOME.location:
         return <HomePage />;
@@ -117,6 +118,7 @@ class IndexPage extends React.Component {
         <ExamplesPage
           page={activeExamplePage.page}
           pageType={activeExamplePage.pageType}
+          version={version}
         />
       );
     }

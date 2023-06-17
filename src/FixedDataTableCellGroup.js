@@ -16,8 +16,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import FixedDataTableCell from './FixedDataTableCell';
+import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 import _ from 'lodash';
 import inRange from 'lodash/inRange';
+import cx from './vendor_upstream/stubs/cx';
+import { VersionType } from './enums/CellGroup';
 
 class FixedDataTableCellGroup extends React.Component {
   /**
@@ -160,13 +163,74 @@ class FixedDataTableCellGroup extends React.Component {
 
       this._staticCells[i] = this._renderCell(i, columnIndex);
     }
+    var style = {
+      height: props.cellGroupWrapperHeight || props.height,
+      position: 'absolute',
+      width: props.contentWidth,
+      zIndex: props.zIndex,
+    };
+    var style1 = {
+      height: props.cellGroupWrapperHeight || props.height,
+      width: props.width,
+    };
+    var style2 = {
+      height: props.height,
+      position: 'absolute',
+      width: props.contentWidth,
+      zIndex: props.zIndex,
+    };
+    FixedDataTableTranslateDOMPosition(
+      style2,
+      -1 * props.left,
+      0,
+      this._initialRender,
+      this.props.isRTL
+    );
 
-    // NOTE (pradeep): Sort the cells by column index so that they appear with the right order in the DOM (see #221)
+    FixedDataTableTranslateDOMPosition(
+      style,
+      -1 * props.left,
+      0,
+      this._initialRender,
+      this.props.isRTL
+    );
+
+    if (this.props.isRTL) {
+      style.right = props.offsetLeft;
+      style1.right = props.offsetLeft;
+    } else {
+      style.left = props.offsetLeft;
+      style1.left = props.offsetLeft;
+    }
     const sortedCells = _.sortBy(this._staticCells, (cell) =>
       _.get(cell, 'props.columnIndex', Infinity)
     );
+    if (this.props.version === VersionType.OLD_VERSION) {
+      return (
+        <div
+          style={style1}
+          className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}
+        >
+          <div
+            className={cx('fixedDataTableCellGroupLayout/cellGroup')}
+            style={style2}
+          >
+            {sortedCells}
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div
+          className={cx('fixedDataTableCellGroupLayout/cellGroup')}
+          style={style}
+        >
+          {sortedCells}
+        </div>
+      );
+    }
 
-    return <>{sortedCells}</>;
+    // NOTE (pradeep): Sort the cells by column index so that they appear with the right order in the DOM (see #221)
   }
 
   _renderCell = (/*number*/ key, /*number*/ columnIndex) /*object*/ => {
@@ -202,8 +266,6 @@ class FixedDataTableCellGroup extends React.Component {
         className={className}
         height={this.props.rowHeight}
         key={key}
-        zIndex={this.props.zIndex}
-        scrollOffsetLeft={this.props.left}
         maxWidth={columnProps.maxWidth}
         minWidth={columnProps.minWidth}
         touchEnabled={this.props.touchEnabled}
@@ -212,7 +274,6 @@ class FixedDataTableCellGroup extends React.Component {
         rowIndex={this.props.rowIndex}
         columnKey={columnProps.columnKey}
         width={columnProps.width}
-        offsetLeft={this.props.offsetLeft}
         left={this.props.columnOffsets[columnIndex]}
         cell={cellTemplate}
         pureRendering={pureRendering}
