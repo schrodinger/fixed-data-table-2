@@ -63,7 +63,7 @@ class IndexPage extends React.Component {
     var browserInitScriptObj = {
       __html: 'window.INITIAL_PROPS = ' + JSON.stringify(this.props) + ';\n',
     };
-    let version = 'new';
+    let version = 'old';
 
     return (
       <html>

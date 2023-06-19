@@ -169,23 +169,25 @@ class FixedDataTableCellGroup extends React.Component {
       width: props.contentWidth,
       zIndex: props.zIndex,
     };
-    var style1 = {
-      height: props.cellGroupWrapperHeight || props.height,
-      width: props.width,
-    };
-    var style2 = {
-      height: props.height,
-      position: 'absolute',
-      width: props.contentWidth,
-      zIndex: props.zIndex,
-    };
-    FixedDataTableTranslateDOMPosition(
-      style2,
-      -1 * props.left,
-      0,
-      this._initialRender,
-      this.props.isRTL
-    );
+    if (this.props.version === VersionType.OLD_VERSION) {
+      var style1 = {
+        height: props.cellGroupWrapperHeight || props.height,
+        width: props.width,
+      };
+      var style2 = {
+        height: props.height,
+        position: 'absolute',
+        width: props.contentWidth,
+        zIndex: props.zIndex,
+      };
+      FixedDataTableTranslateDOMPosition(
+        style2,
+        -1 * props.left,
+        0,
+        this._initialRender,
+        this.props.isRTL
+      );
+    }
 
     FixedDataTableTranslateDOMPosition(
       style,
@@ -197,10 +199,12 @@ class FixedDataTableCellGroup extends React.Component {
 
     if (this.props.isRTL) {
       style.right = props.offsetLeft;
-      style1.right = props.offsetLeft;
+      if (this.props.version === VersionType.OLD_VERSION)
+        style1.right = props.offsetLeft;
     } else {
       style.left = props.offsetLeft;
-      style1.left = props.offsetLeft;
+      if (this.props.version === VersionType.OLD_VERSION)
+        style1.left = props.offsetLeft;
     }
     const sortedCells = _.sortBy(this._staticCells, (cell) =>
       _.get(cell, 'props.columnIndex', Infinity)

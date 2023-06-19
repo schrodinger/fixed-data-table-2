@@ -225,28 +225,34 @@ class FixedDataTableRow extends React.Component {
       height: this.props.height + subRowHeight,
       zIndex: this.props.zIndex ? this.props.zIndex : 0,
     };
+    if (this.props.version === VersionType.OLD_VERSION) {
+      var style1 = {
+        width: this.props.width,
+        height: this.props.height,
+        zIndex: this.props.zIndex ? this.props.zIndex : 0,
+      };
 
-    var style1 = {
-      width: this.props.width,
-      height: this.props.height,
-      zIndex: this.props.zIndex ? this.props.zIndex : 0,
-    };
+      var style2 = {
+        width: this.props.width,
+        height: this.props.height + subRowHeight,
+      };
+    }
 
-    var style2 = {
-      width: this.props.width,
-      height: this.props.height + subRowHeight,
-    };
     if (!this.props.visible) {
       style.display = 'none';
-      style1.display = 'none';
+      if (this.props.version === VersionType.OLD_VERSION)
+        style1.display = 'none';
     }
-    FixedDataTableTranslateDOMPosition(
-      style1,
-      0,
-      this.props.offsetTop || 0,
-      this._initialRender,
-      this.props.isRTL
-    );
+    if (this.props.version === VersionType.OLD_VERSION) {
+      FixedDataTableTranslateDOMPosition(
+        style1,
+        0,
+        this.props.offsetTop || 0,
+        this._initialRender,
+        this.props.isRTL
+      );
+    }
+
     FixedDataTableTranslateDOMPosition(
       style,
       0,
