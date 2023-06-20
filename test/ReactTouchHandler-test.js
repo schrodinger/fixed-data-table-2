@@ -67,7 +67,8 @@ describe('ReactTouchHandler', function () {
       assert.isFalse(fakeEvent.stopPropagation.called);
     });
 
-    it('should prevent default if flag is true', function () {
+    // NOTE (pradeep): this ensures that mouse events like clicks still fire
+    it('should not prevent default even if the flag is true', function () {
       // --- Run Test ---
       var reactTouchHandler = new ReactTouchHandler(
         () => {},
@@ -79,7 +80,7 @@ describe('ReactTouchHandler', function () {
       reactTouchHandler.onTouchStart(fakeEvent);
 
       // --- Verify Expectations ---
-      assert.isTrue(fakeEvent.preventDefault.calledOnce);
+      assert.isFalse(fakeEvent.preventDefault.called);
     });
 
     it('should start new interval', function () {
@@ -148,7 +149,8 @@ describe('ReactTouchHandler', function () {
       assert.isFalse(fakeEvent.stopPropagation.called);
     });
 
-    it('should prevent default if flag is true', function () {
+    // NOTE (pradeep): this ensures that mouse events like clicks still fire
+    it('should not prevent default even if flag is true', function () {
       // --- Run Test ---
       var reactTouchHandler = new ReactTouchHandler(
         () => {},
@@ -160,7 +162,7 @@ describe('ReactTouchHandler', function () {
       reactTouchHandler.onTouchEnd(fakeEvent);
 
       // --- Verify Expectations ---
-      assert.isTrue(fakeEvent.preventDefault.calledOnce);
+      assert.isFalse(fakeEvent.preventDefault.called);
     });
 
     it('should clear last interval', function () {
