@@ -4,14 +4,13 @@
   "description": "A React table component designed to allow presenting thousands of rows of data.",
   "main": "main.js",
   "peerDependencies": {
-    "react": ">=18.2.0",
-    "react-dom": ">=18.2.0"
+    "react": ">=17.0.1",
+    "react-dom": ">=17.0.1"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.5.1",
     "lodash": "^4.17.4",
     "prop-types": "^15.7.2",
-    "react-fps": "^1.0.6",
     "react-lifecycles-compat": "^3.0.4",
     "react-portal": "^4.2.1",
     "redux": "^4.0.1",
@@ -27,7 +26,6 @@
     "@babel/preset-react": "^7.0.0",
     "@types/chai": "^4.2.10",
     "@types/mocha": "^7.0.2",
-    "@types/webpack": "^5.28.1",
     "@webpack-cli/serve": "^1.6.1",
     "aphrodite": "2.4.0",
     "autoprefixer": "^10.4.2",
@@ -59,10 +57,10 @@
     "postcss": "8.2.13",
     "postcss-custom-properties": "^12.1.4",
     "prettier": "2",
-    "react": "18.2.0",
+    "react": "17.0.1",
     "react-docgen": "4.1.1",
-    "react-dom": "18.2.0",
-    "react-test-renderer": "18.2.0",
+    "react-dom": "17.0.1",
+    "react-test-renderer": "17.0.1",
     "react-tools": "0.13.3",
     "react-tooltip": "3.11.1",
     "rimraf": "^3.0.2",
@@ -72,7 +70,7 @@
     "url-loader": "2.1.0",
     "webpack": "^4.39.3",
     "webpack-cli": "^4.3.0",
-    "webpack-dev-server": "^4.15.1"
+    "webpack-dev-server": "^4.7.4"
   },
   "scripts": {
     "webpack": "webpack",
