@@ -94,6 +94,11 @@ class FixedDataTableCellGroupImpl extends React.Component {
      * Whether these cells belong to the header/group-header
      */
     isHeader: PropTypes.bool,
+
+    /**
+     * Whether this cell group is visible (i.e, inside the viewport) or not.
+     */
+    isVisible: PropTypes.bool.isRequired,
   };
 
   constructor(props) {
@@ -117,11 +122,10 @@ class FixedDataTableCellGroupImpl extends React.Component {
       const cellTemplate = columns[i].template;
 
       const recyclable = columnProps.allowCellsRecycling;
-      if (
-        !recyclable ||
-        (currentPosition - props.left <= props.width &&
-          currentPosition - props.left + columnProps.width >= 0)
-      ) {
+      const isHorizontallyVisible =
+        currentPosition - props.left <= props.width &&
+        currentPosition - props.left + columnProps.width >= 0;
+      if (!recyclable || isHorizontallyVisible) {
         const key = columnProps.columnKey || 'cell_' + i;
         cells[i] = this._renderCell(
           i,
@@ -130,7 +134,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
           columnProps,
           cellTemplate,
           currentPosition,
-          key
+          key,
+          isHorizontallyVisible
         );
       }
       currentPosition += columnProps.width;
@@ -166,7 +171,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
     /*object*/ columnProps,
     /*object*/ cellTemplate,
     /*number*/ left,
-    /*string*/ key
+    /*string*/ key,
+    /*boolean*/ isHorizontallyVisible
   ) /*object*/ => {
     const className = columnProps.cellClassName;
     const pureRendering = columnProps.pureRendering || false;
@@ -202,6 +208,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         pureRendering={pureRendering}
         isRTL={this.props.isRTL}
         cellGroupType={this.props.cellGroupType}
+        isVisible={this.props.isVisible && isHorizontallyVisible}
       />
     );
   };
@@ -231,12 +238,13 @@ class FixedDataTableCellGroup extends React.Component {
   };
 
   shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
-    /// if offsets haven't changed for the same cell group while scrolling, then skip update
+    /// if offsets and visibility haven't changed for the same cell group while scrolling, then skip update
     return !(
       nextProps.isScrolling &&
       this.props.rowIndex === nextProps.rowIndex &&
       this.props.left === nextProps.left &&
-      this.props.offsetLeft === nextProps.offsetLeft
+      this.props.offsetLeft === nextProps.offsetLeft &&
+      this.props.isVisible === nextProps.isVisible
     );
   }
 

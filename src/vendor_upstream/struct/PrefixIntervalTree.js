@@ -14,14 +14,15 @@
 'use strict';
 
 import invariant from '../../stubs/invariant';
+import globalThis from '../core/globalThisPolyfill';
 
-var parent = (node) => Math.floor(node / 2);
+let parent = (node) => Math.floor(node / 2);
 
-var Int32Array =
-  global.Int32Array ||
+let Int32Array =
+  globalThis.Int32Array ||
   function (size: number): Array<number> {
-    var xs = [];
-    for (var i = size - 1; i >= 0; --i) {
+    let xs = [];
+    for (let i = size - 1; i >= 0; --i) {
       xs[i] = 0;
     }
     return xs;
@@ -31,7 +32,7 @@ var Int32Array =
  * Computes the next power of 2 after or equal to x.
  */
 function ceilLog2(x: number): number {
-  var y = 1;
+  let y = 1;
   while (y < x) {
     y *= 2;
   }
@@ -80,7 +81,7 @@ class PrefixIntervalTree {
      */
     this._heap = new Int32Array(2 * this._half);
 
-    var i;
+    let i;
     for (i = 0; i < this._size; ++i) {
       this._heap[this._half + i] = xs[i];
     }
@@ -91,8 +92,8 @@ class PrefixIntervalTree {
   }
 
   static uniform(size: number, initialValue: number): PrefixIntervalTree {
-    var xs = [];
-    for (var i = size - 1; i >= 0; --i) {
+    let xs = [];
+    for (let i = size - 1; i >= 0; --i) {
       xs[i] = initialValue;
     }
 
@@ -106,7 +107,7 @@ class PrefixIntervalTree {
   set(index: number, value: number): void {
     invariant(0 <= index && index < this._size, 'Index out of range %s', index);
 
-    var node = this._half + index;
+    let node = this._half + index;
     this._heap[node] = value;
 
     node = parent(node);
@@ -118,7 +119,7 @@ class PrefixIntervalTree {
   get(index: number): number {
     invariant(0 <= index && index < this._size, 'Index out of range %s', index);
 
-    var node = this._half + index;
+    let node = this._half + index;
     return this._heap[node];
   }
 
@@ -136,8 +137,8 @@ class PrefixIntervalTree {
       return 0;
     }
 
-    var node = this._half + end - 1;
-    var sum = this._heap[node];
+    let node = this._half + end - 1;
+    let sum = this._heap[node];
     for (; node !== 1; node = parent(node)) {
       if (node % 2 === 1) {
         sum += this._heap[node - 1];
@@ -176,13 +177,13 @@ class PrefixIntervalTree {
       return -1;
     }
 
-    var node = 1;
+    let node = 1;
     if (this._heap[node] <= t) {
       return this._size;
     }
 
     while (node < this._half) {
-      var leftSum = this._heap[2 * node];
+      let leftSum = this._heap[2 * node];
       if (t < leftSum) {
         node = 2 * node;
       } else {
@@ -203,13 +204,13 @@ class PrefixIntervalTree {
       return -1;
     }
 
-    var node = 1;
+    let node = 1;
     if (this._heap[node] < t) {
       return this._size;
     }
 
     while (node < this._half) {
-      var leftSum = this._heap[2 * node];
+      let leftSum = this._heap[2 * node];
       if (t <= leftSum) {
         node = 2 * node;
       } else {
