@@ -6637,6 +6637,11 @@ react-dom@18.2.0:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
+react-fps@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/react-fps/-/react-fps-1.0.6.tgz#e0090971c7a098aa003edba77264c150a89c1a1f"
+  integrity sha512-+3PAuADQHD0vwSO/q1QWroSwWH+xS16KVeXmhdjQU4qM8YiI86djOt403CD6UfjchLpUTiGoprU4dGA/4BJsFA==
+
 "react-is@^16.12.0 || ^17.0.0 || ^18.0.0", react-is@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"

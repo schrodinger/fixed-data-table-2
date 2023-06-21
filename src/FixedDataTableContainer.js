@@ -17,7 +17,6 @@ import pick from 'lodash/pick';
 
 import { getScrollActions } from './actions/scrollActions';
 import FixedDataTable from './FixedDataTable';
-import FixedDataTableLegacy from './FixedDataTableLegacy';
 import FixedDataTableStore from './FixedDataTableStore';
 import Scrollbar from './plugins/Scrollbar';
 import ScrollContainer from './plugins/ScrollContainer';
@@ -25,9 +24,6 @@ import { FixedDataTableContext } from './FixedDataTableContext';
 import { createApi } from './api';
 import { initialize, propChange } from './reducers';
 import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
-import FixedDataTableBufferedRowsLegacy from './FixedDataTableBufferedRowsLegacy';
-import FixedDataTableRowLegacy from './FixedDataTableRowLegacy';
-import FixedDataTableRow from './FixedDataTableRow';
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
@@ -128,27 +124,18 @@ class FixedDataTableContainer extends React.Component {
 
   render() {
     const fixedDataTableContextValue = this.getApi();
-    let fdt;
+    // let fdt;
     if (this.props.shouldUseLegacyComponents === undefined) {
       this.props.shouldUseLegacyComponents = true;
     }
-    if (this.props.shouldUseLegacyComponents) {
-      fdt = (
-        <FixedDataTableLegacy
-          {...this.props}
-          {...this.state.boundState}
-          scrollActions={this.scrollActions}
-        />
-      );
-    } else {
-      fdt = (
-        <FixedDataTable
-          {...this.props}
-          {...this.state.boundState}
-          scrollActions={this.scrollActions}
-        />
-      );
-    }
+
+    const fdt = (
+      <FixedDataTable
+        {...this.props}
+        {...this.state.boundState}
+        scrollActions={this.scrollActions}
+      />
+    );
 
     // For backward compatibility, by default we render FDT-2 scrollbars
     if (this.props.defaultScrollbars) {

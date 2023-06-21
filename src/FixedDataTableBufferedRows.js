@@ -233,4 +233,5 @@ class FixedDataTableBufferedRows extends React.Component {
     );
   }
 }
+//}
 export default FixedDataTableBufferedRows;

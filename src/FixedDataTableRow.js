@@ -16,11 +16,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import cx from './vendor_upstream/stubs/cx';
-import joinClasses from './vendor_upstream/core/joinClasses';
 
 import FixedDataTableCellGroup from './FixedDataTableCellGroup';
-import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 import { CellGroupType } from './enums/CellGroup';
+import Row from './FixedDataTableRowFunction';
+import RowLegacy from './FixedDataTableRowLegacyFunction';
 
 // .fixedDataTableLayout/header border-bottom-width
 var HEADER_BORDER_BOTTOM_WIDTH = 1;
@@ -218,28 +218,28 @@ class FixedDataTableRow extends React.Component {
 
   render() /*object*/ {
     var subRowHeight = this.props.subRowHeight || 0;
-    var style = {
-      width: this.props.width,
-      height: this.props.height + subRowHeight,
-      zIndex: this.props.zIndex ? this.props.zIndex : 0,
-      position: 'absolute',
-    };
-    if (!this.props.visible) {
-      style.display = 'none';
-    }
-    FixedDataTableTranslateDOMPosition(
-      style,
-      0,
-      this.props.offsetTop || 0,
-      this._initialRender,
-      this.props.isRTL
-    );
+    // var style = {
+    //   width: this.props.width,
+    //   height: this.props.height + subRowHeight,
+    //   zIndex: this.props.zIndex ? this.props.zIndex : 0,
+    //   position: 'absolute',
+    // };
+    // if (!this.props.visible) {
+    //   style.display = 'none';
+    // }
+    // FixedDataTableTranslateDOMPosition(
+    //   style,
+    //   0,
+    //   this.props.offsetTop || 0,
+    //   this._initialRender,
+    //   this.props.isRTL
+    // );
 
-    var className = cx({
-      'fixedDataTableRowLayout/main': true,
-      'public/fixedDataTableRow/main': true,
-      'public/fixedDataTableRow/highlighted': this.props.index % 2 === 1,
-    });
+    // var className = cx({
+    //   'fixedDataTableRowLayout/main': true,
+    //   'public/fixedDataTableRow/main': true,
+    //   'public/fixedDataTableRow/highlighted': this.props.index % 2 === 1,
+    // });
     var fixedColumnsWidth = this.props.fixedColumnsWidth;
     var fixedRightColumnsWidth = this.props.fixedRightColumnsWidth;
     var scrollableColumnsWidth = this.props.scrollableColumnsWidth;
@@ -270,6 +270,7 @@ class FixedDataTableRow extends React.Component {
         firstViewportColumnIndex={0}
         endViewportColumnIndex={_.size(this.props.fixedColumns)}
         cellGroupType={CellGroupType.FIXED}
+        shouldUseLegacyComponents={this.props.shouldUseLegacyComponents}
       />
     );
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
@@ -302,6 +303,7 @@ class FixedDataTableRow extends React.Component {
         firstViewportColumnIndex={0}
         endViewportColumnIndex={_.size(this.props.fixedRightColumns)}
         cellGroupType={CellGroupType.FIXED_RIGHT}
+        shouldUseLegacyComponents={this.props.shouldUseLegacyComponents}
       />
     );
     var fixedRightColumnsShadow = fixedRightColumnsWidth
@@ -342,6 +344,7 @@ class FixedDataTableRow extends React.Component {
         firstViewportColumnIndex={this.props.firstViewportColumnIndex}
         endViewportColumnIndex={this.props.endViewportColumnIndex}
         cellGroupType={CellGroupType.SCROLLABLE}
+        shouldUseLegacyComponents={this.props.shouldUseLegacyComponents}
       />
     );
     var columnsRightShadow = this._renderColumnsRightShadow(
@@ -370,51 +373,59 @@ class FixedDataTableRow extends React.Component {
         />
       );
     }
-
-    return (
-      <div
-        className={joinClasses(
-          className,
-          this.props.className,
-          cx('fixedDataTableRowLayout/body'),
-          cx('fixedDataTableRowLayout/rowWrapper')
-        )}
-        role={'row'}
-        aria-rowindex={this.props.ariaRowIndex}
-        {...this.props.attributes}
-        onClick={this.props.onClick ? this._onClick : null}
-        onContextMenu={this.props.onContextMenu ? this._onContextMenu : null}
-        onDoubleClick={this.props.onDoubleClick ? this._onDoubleClick : null}
-        onMouseDown={this.props.onMouseDown ? this._onMouseDown : null}
-        onMouseUp={this.props.onMouseUp ? this._onMouseUp : null}
-        onMouseEnter={
-          this.props.onMouseEnter || this.props.onMouseLeave
-            ? this._onMouseEnter
-            : null
-        }
-        onMouseLeave={this.props.onMouseLeave ? this._onMouseLeave : null}
-        onTouchStart={this.props.onTouchStart ? this._onTouchStart : null}
-        onTouchEnd={this.props.onTouchEnd ? this._onTouchEnd : null}
-        onTouchMove={this.props.onTouchMove ? this._onTouchMove : null}
-        style={style}
-      >
-        {fixedColumns}
-        {scrollableColumns}
-        {columnsLeftShadow}
-        {fixedRightColumns}
-        {fixedRightColumnsShadow}
-        {scrollbarSpacer}
-        {rowExpanded && (
-          <div
-            className={cx('fixedDataTableRowLayout/rowExpanded')}
-            style={rowExpandedStyle}
-          >
-            {rowExpanded}
-          </div>
-        )}
-        {columnsRightShadow}
-      </div>
-    );
+    if (!this.props.shouldUseLegacyComponents) {
+      return (
+        <Row
+          {...this.props}
+          _initialRender={this._initialRender}
+          _onClick={this._onClick}
+          _onContextMenu={this._onContextMenu}
+          _onDoubleClick={this._onDoubleClick}
+          _onMouseDown={this._onMouseDown}
+          _onMouseUp={this._onMouseUp}
+          _onMouseEnter={this._onMouseEnter}
+          _onMouseLeave={this._onMouseLeave}
+          _onTouchStart={this._onTouchStart}
+          _onTouchEnd={this._onTouchEnd}
+          _onTouchMove={this._onTouchMove}
+          fixedColumns={fixedColumns}
+          scrollableColumns={scrollableColumns}
+          columnsLeftShadow={columnsLeftShadow}
+          fixedRightColumns={fixedRightColumns}
+          fixedRightColumnsShadow={fixedRightColumnsShadow}
+          scrollbarSpacer={scrollbarSpacer}
+          rowExpanded={rowExpanded}
+          rowExpandedStyle={rowExpandedStyle}
+          columnsRightShadow={columnsRightShadow}
+        />
+      );
+    } else {
+      return (
+        <RowLegacy
+          {...this.props}
+          _initialRender={this._initialRender}
+          _onClick={this._onClick}
+          _onContextMenu={this._onContextMenu}
+          _onDoubleClick={this._onDoubleClick}
+          _onMouseDown={this._onMouseDown}
+          _onMouseUp={this._onMouseUp}
+          _onMouseEnter={this._onMouseEnter}
+          _onMouseLeave={this._onMouseLeave}
+          _onTouchStart={this._onTouchStart}
+          _onTouchEnd={this._onTouchEnd}
+          _onTouchMove={this._onTouchMove}
+          fixedColumns={fixedColumns}
+          scrollableColumns={scrollableColumns}
+          columnsLeftShadow={columnsLeftShadow}
+          fixedRightColumns={fixedRightColumns}
+          fixedRightColumnsShadow={fixedRightColumnsShadow}
+          scrollbarSpacer={scrollbarSpacer}
+          rowExpanded={rowExpanded}
+          rowExpandedStyle={rowExpandedStyle}
+          columnsRightShadow={columnsRightShadow}
+        />
+      );
+    }
   }
 
   _getRowExpanded = (/*number*/ subRowHeight) => /*?object*/ {

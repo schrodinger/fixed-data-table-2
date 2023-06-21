@@ -16,10 +16,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import FixedDataTableCell from './FixedDataTableCell';
-import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 import _ from 'lodash';
 import inRange from 'lodash/inRange';
-import cx from './vendor_upstream/stubs/cx';
+import CellGroup from './FixedDataCellGroupFunction';
+import CellGroupLegacy from './FixedDataCellGroupLegacyFunction';
 
 class FixedDataTableCellGroup extends React.Component {
   /**
@@ -163,40 +163,28 @@ class FixedDataTableCellGroup extends React.Component {
       this._staticCells[i] = this._renderCell(i, columnIndex);
     }
 
-    var style = {
-      height: props.cellGroupWrapperHeight || props.height,
-      position: 'absolute',
-      width: props.contentWidth,
-      zIndex: props.zIndex,
-    };
-
-    FixedDataTableTranslateDOMPosition(
-      style,
-      -1 * props.left,
-      0,
-      this._initialRender,
-      this.props.isRTL
-    );
-
-    if (this.props.isRTL) {
-      style.right = props.offsetLeft;
-    } else {
-      style.left = props.offsetLeft;
-    }
-
     // NOTE (pradeep): Sort the cells by column index so that they appear with the right order in the DOM (see #221)
-    const sortedCells = _.sortBy(this._staticCells, (cell) =>
+    var sortedCells = _.sortBy(this._staticCells, (cell) =>
       _.get(cell, 'props.columnIndex', Infinity)
     );
 
-    return (
-      <div
-        className={cx('fixedDataTableCellGroupLayout/cellGroup')}
-        style={style}
-      >
-        {sortedCells}
-      </div>
-    );
+    if (props.shouldUseLegacyComponents) {
+      return (
+        <CellGroupLegacy
+          {...props}
+          _initialRender={this._initialRender}
+          sortedCells={sortedCells}
+        />
+      );
+    } else {
+      return (
+        <CellGroup
+          {...props}
+          _initialRender={this._initialRender}
+          sortedCells={sortedCells}
+        />
+      );
+    }
   }
 
   _renderCell = (/*number*/ key, /*number*/ columnIndex) /*object*/ => {
@@ -246,6 +234,7 @@ class FixedDataTableCellGroup extends React.Component {
         isRTL={this.props.isRTL}
         visible={visible}
         cellGroupType={this.props.cellGroupType}
+        shouldUseLegacyComponents={this.props.shouldUseLegacyComponents}
       />
     );
   };
