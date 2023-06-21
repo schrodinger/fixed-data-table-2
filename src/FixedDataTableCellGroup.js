@@ -168,23 +168,17 @@ class FixedDataTableCellGroup extends React.Component {
       _.get(cell, 'props.columnIndex', Infinity)
     );
 
-    if (props.shouldUseLegacyComponents) {
-      return (
-        <CellGroupLegacy
-          {...props}
-          _initialRender={this._initialRender}
-          sortedCells={sortedCells}
-        />
-      );
-    } else {
-      return (
-        <CellGroup
-          {...props}
-          _initialRender={this._initialRender}
-          sortedCells={sortedCells}
-        />
-      );
-    }
+    const CellGroupComponent = this.props.shouldUseLegacyComponents
+      ? CellGroupLegacy
+      : CellGroup;
+
+    return (
+      <CellGroupComponent
+        {...props}
+        _initialRender={this._initialRender}
+        sortedCells={sortedCells}
+      />
+    );
   }
 
   _renderCell = (/*number*/ key, /*number*/ columnIndex) /*object*/ => {

@@ -373,59 +373,33 @@ class FixedDataTableRow extends React.Component {
         />
       );
     }
-    if (!this.props.shouldUseLegacyComponents) {
-      return (
-        <Row
-          {...this.props}
-          _initialRender={this._initialRender}
-          _onClick={this._onClick}
-          _onContextMenu={this._onContextMenu}
-          _onDoubleClick={this._onDoubleClick}
-          _onMouseDown={this._onMouseDown}
-          _onMouseUp={this._onMouseUp}
-          _onMouseEnter={this._onMouseEnter}
-          _onMouseLeave={this._onMouseLeave}
-          _onTouchStart={this._onTouchStart}
-          _onTouchEnd={this._onTouchEnd}
-          _onTouchMove={this._onTouchMove}
-          fixedColumns={fixedColumns}
-          scrollableColumns={scrollableColumns}
-          columnsLeftShadow={columnsLeftShadow}
-          fixedRightColumns={fixedRightColumns}
-          fixedRightColumnsShadow={fixedRightColumnsShadow}
-          scrollbarSpacer={scrollbarSpacer}
-          rowExpanded={rowExpanded}
-          rowExpandedStyle={rowExpandedStyle}
-          columnsRightShadow={columnsRightShadow}
-        />
-      );
-    } else {
-      return (
-        <RowLegacy
-          {...this.props}
-          _initialRender={this._initialRender}
-          _onClick={this._onClick}
-          _onContextMenu={this._onContextMenu}
-          _onDoubleClick={this._onDoubleClick}
-          _onMouseDown={this._onMouseDown}
-          _onMouseUp={this._onMouseUp}
-          _onMouseEnter={this._onMouseEnter}
-          _onMouseLeave={this._onMouseLeave}
-          _onTouchStart={this._onTouchStart}
-          _onTouchEnd={this._onTouchEnd}
-          _onTouchMove={this._onTouchMove}
-          fixedColumns={fixedColumns}
-          scrollableColumns={scrollableColumns}
-          columnsLeftShadow={columnsLeftShadow}
-          fixedRightColumns={fixedRightColumns}
-          fixedRightColumnsShadow={fixedRightColumnsShadow}
-          scrollbarSpacer={scrollbarSpacer}
-          rowExpanded={rowExpanded}
-          rowExpandedStyle={rowExpandedStyle}
-          columnsRightShadow={columnsRightShadow}
-        />
-      );
-    }
+    const RowComponent = this.props.shouldUseLegacyComponents ? RowLegacy : Row;
+
+    return (
+      <RowComponent
+        {...this.props}
+        _initialRender={this._initialRender}
+        _onClick={this._onClick}
+        _onContextMenu={this._onContextMenu}
+        _onDoubleClick={this._onDoubleClick}
+        _onMouseDown={this._onMouseDown}
+        _onMouseUp={this._onMouseUp}
+        _onMouseEnter={this._onMouseEnter}
+        _onMouseLeave={this._onMouseLeave}
+        _onTouchStart={this._onTouchStart}
+        _onTouchEnd={this._onTouchEnd}
+        _onTouchMove={this._onTouchMove}
+        fixedColumns={fixedColumns}
+        scrollableColumns={scrollableColumns}
+        columnsLeftShadow={columnsLeftShadow}
+        fixedRightColumns={fixedRightColumns}
+        fixedRightColumnsShadow={fixedRightColumnsShadow}
+        scrollbarSpacer={scrollbarSpacer}
+        rowExpanded={rowExpanded}
+        rowExpandedStyle={rowExpandedStyle}
+        columnsRightShadow={columnsRightShadow}
+      />
+    );
   }
 
   _getRowExpanded = (/*number*/ subRowHeight) => /*?object*/ {

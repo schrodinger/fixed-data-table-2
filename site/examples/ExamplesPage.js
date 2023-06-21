@@ -90,21 +90,16 @@ class ExamplesPage extends React.Component {
     return (
       <ExamplesWrapper {...this.props}>
         <ExampleHeader {...this.props} />
-        {this.state.renderPage &&
-          this._renderPage(this.props.shouldUseLegacyComponents)}
+        {this.state.renderPage && this._renderPage()}
       </ExamplesWrapper>
     );
   }
 
-  _renderPage(shouldUseLegacyComponents) {
+  _renderPage() {
     var Example = EXAMPLE_COMPONENTS[this.props.page.location].default;
 
     return (
-      <Example
-        height={this.state.tableHeight}
-        width={this.state.tableWidth}
-        shouldUseLegacyComponents={shouldUseLegacyComponents}
-      />
+      <Example height={this.state.tableHeight} width={this.state.tableWidth} />
     );
   }
 
