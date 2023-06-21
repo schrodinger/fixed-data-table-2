@@ -133,7 +133,6 @@ class FixedDataTableContainer extends React.Component {
         scrollActions={this.scrollActions}
       />
     );
-
     // For backward compatibility, by default we render FDT-2 scrollbars
     if (this.props.defaultScrollbars) {
       return (

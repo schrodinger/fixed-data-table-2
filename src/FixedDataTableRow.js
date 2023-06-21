@@ -207,7 +207,7 @@ class FixedDataTableRow extends React.Component {
       return false;
     }
 
-    // if offsets haven't changed for the same row while scrolling, then skip update
+    // if these props haven't changed for the same row while scrolling, then skip update
     return !(
       nextProps.isScrolling &&
       this.props.index === nextProps.index &&
@@ -218,32 +218,9 @@ class FixedDataTableRow extends React.Component {
 
   render() /*object*/ {
     var subRowHeight = this.props.subRowHeight || 0;
-    // var style = {
-    //   width: this.props.width,
-    //   height: this.props.height + subRowHeight,
-    //   zIndex: this.props.zIndex ? this.props.zIndex : 0,
-    //   position: 'absolute',
-    // };
-    // if (!this.props.visible) {
-    //   style.display = 'none';
-    // }
-    // FixedDataTableTranslateDOMPosition(
-    //   style,
-    //   0,
-    //   this.props.offsetTop || 0,
-    //   this._initialRender,
-    //   this.props.isRTL
-    // );
-
-    // var className = cx({
-    //   'fixedDataTableRowLayout/main': true,
-    //   'public/fixedDataTableRow/main': true,
-    //   'public/fixedDataTableRow/highlighted': this.props.index % 2 === 1,
-    // });
     var fixedColumnsWidth = this.props.fixedColumnsWidth;
     var fixedRightColumnsWidth = this.props.fixedRightColumnsWidth;
     var scrollableColumnsWidth = this.props.scrollableColumnsWidth;
-
     var fixedColumns = (
       <FixedDataTableCellGroup
         key="fixed_cells"
@@ -430,8 +407,6 @@ class FixedDataTableRow extends React.Component {
       'fixedDataTableRowLayout/columnsShadow': this.props.scrollLeft > 0,
       'public/fixedDataTableRow/fixedColumnsDivider': left > 0,
       'public/fixedDataTableRow/columnsShadow': this.props.scrollLeft > 0,
-      'public/fixedDataTableRow/odd': this.props.index % 2 === 1,
-      'public/fixedDataTableRow/even': this.props.index % 2 === 0,
     });
     var dividerHeight = this.props.cellGroupWrapperHeight
       ? this.props.cellGroupWrapperHeight - HEADER_BORDER_BOTTOM_WIDTH

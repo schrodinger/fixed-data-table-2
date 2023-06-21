@@ -164,7 +164,7 @@ class FixedDataTableCellGroup extends React.Component {
     }
 
     // NOTE (pradeep): Sort the cells by column index so that they appear with the right order in the DOM (see #221)
-    var sortedCells = _.sortBy(this._staticCells, (cell) =>
+    const sortedCells = _.sortBy(this._staticCells, (cell) =>
       _.get(cell, 'props.columnIndex', Infinity)
     );
 
@@ -188,12 +188,10 @@ class FixedDataTableCellGroup extends React.Component {
       this.props.endViewportColumnIndex
     );
     const columnProps = this.props.columns[columnIndex].props;
-
     const cellTemplate =
       this.props.columns[columnIndex].templates[this.props.template];
 
     var className = columnProps.cellClassName;
-
     var pureRendering = columnProps.pureRendering || false;
 
     const onColumnReorderEndCallback = columnProps.isReorderable

@@ -26,6 +26,8 @@ function Row(props) {
     'fixedDataTableRowLayout/main': true,
     'public/fixedDataTableRow/main': true,
     'public/fixedDataTableRow/highlighted': props.index % 2 === 1,
+    'public/fixedDataTableRow/odd': props.index % 2 === 1,
+    'public/fixedDataTableRow/even': props.index % 2 === 0,
   });
   return (
     <div

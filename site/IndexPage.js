@@ -64,9 +64,6 @@ class IndexPage extends React.Component {
       __html: 'window.INITIAL_PROPS = ' + JSON.stringify(this.props) + ';\n',
     };
 
-    let shouldUseLegacyComponents = false;
-    // bool
-
     return (
       <html>
         <head>
@@ -86,7 +83,7 @@ class IndexPage extends React.Component {
           <base target="_blank" />
         </head>
         <body>
-          {this.state.renderPage && this._renderPage(shouldUseLegacyComponents)}
+          {this.state.renderPage && this._renderPage()}
 
           <script dangerouslySetInnerHTML={browserInitScriptObj} />
           <script src={this.props.files['main.js']}></script>
@@ -95,7 +92,7 @@ class IndexPage extends React.Component {
     );
   }
 
-  _renderPage(shouldUseLegacyComponents) {
+  _renderPage() {
     switch (this.props.location) {
       case OtherPages.HOME.location:
         return <HomePage />;
@@ -120,7 +117,6 @@ class IndexPage extends React.Component {
         <ExamplesPage
           page={activeExamplePage.page}
           pageType={activeExamplePage.pageType}
-          shouldUseLegacyComponents={shouldUseLegacyComponents}
         />
       );
     }

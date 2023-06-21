@@ -23,4 +23,5 @@ const CellGroupType = {
   FIXED_RIGHT: 'fixedRight',
   SCROLLABLE: 'scrollable',
 };
+
 export { CellGroupType };

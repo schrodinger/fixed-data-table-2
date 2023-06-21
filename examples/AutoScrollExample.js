@@ -8,14 +8,13 @@ import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, LinkCell } from './helpers/cells';
 import { Table, Column, DataCell, Plugins } from 'fixed-data-table-2';
 import React from 'react';
-import { FpsView } from 'react-fps';
 
 class AutoScrollExample extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      dataList: new FakeObjectDataListStore(1000000),
+      dataList: new FakeObjectDataListStore(10000),
       scrollTop: 0,
       scrollLeft: 0,
       autoScrollEnabled: true,
@@ -69,13 +68,10 @@ class AutoScrollExample extends React.Component {
 
   render() {
     return (
-      <>
-        <div className="autoScrollContainer">
-          {this.renderControls()}
-          {this.renderTable()}
-        </div>
-        <FpsView />
-      </>
+      <div className="autoScrollContainer">
+        {this.renderControls()}
+        {this.renderTable()}
+      </div>
     );
   }
 
