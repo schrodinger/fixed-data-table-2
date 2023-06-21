@@ -26,8 +26,8 @@ import ReactWheelHandler from './vendor_upstream/dom/ReactWheelHandler';
 import ariaAttributesSelector from './selectors/ariaAttributes';
 import scrollbarsVisible from './selectors/scrollbarsVisible';
 import tableHeightsSelector from './selectors/tableHeights';
-import FixedDataTableBufferedRows from './FixedDataTableBufferedRows';
-import FixedDataTableRow from './FixedDataTableRow';
+import FixedDataTableBufferedRowsLegacy from './FixedDataTableBufferedRowsLegacy';
+import FixedDataTableRowLegacy from './FixedDataTableRowLegacy';
 import ReactTouchHandler from './ReactTouchHandler';
 
 var ARROW_SCROLL_SPEED = 25;
@@ -78,7 +78,7 @@ var ARROW_SCROLL_SPEED = 25;
  * - Scrollable Body Columns: The body columns that move while scrolling
  *   vertically or horizontally.
  */
-class FixedDataTable extends React.Component {
+class FixedDataTableLegacy extends React.Component {
   static propTypes = {
     // TODO (jordan) Remove propType of width without losing documentation (moved to tableSize)
     /**
@@ -832,7 +832,7 @@ class FixedDataTable extends React.Component {
     let groupHeader;
     if (groupHeaderHeight > 0) {
       groupHeader = (
-        <FixedDataTableRow
+        <FixedDataTableRowLegacy
           key="group_header"
           ariaRowIndex={ariaGroupHeaderIndex}
           isHeaderOrFooter={true}
@@ -890,7 +890,7 @@ class FixedDataTable extends React.Component {
     let footer = null;
     if (footerHeight) {
       footer = (
-        <FixedDataTableRow
+        <FixedDataTableRowLegacy
           key="footer"
           ariaRowIndex={ariaFooterIndex}
           isHeaderOrFooter={true}
@@ -939,7 +939,7 @@ class FixedDataTable extends React.Component {
     );
 
     const header = (
-      <FixedDataTableRow
+      <FixedDataTableRowLegacy
         key="header"
         ariaRowIndex={ariaHeaderIndex}
         isHeaderOrFooter={true}
@@ -1080,7 +1080,7 @@ class FixedDataTable extends React.Component {
     const props = this.props;
 
     return (
-      <FixedDataTableBufferedRows
+      <FixedDataTableBufferedRowsLegacy
         ariaRowIndexOffset={ariaRowIndexOffset}
         isScrolling={props.scrolling}
         fixedColumns={fixedColumns}
@@ -1280,4 +1280,4 @@ class FixedDataTable extends React.Component {
   };
 }
 
-export default FixedDataTable;
+export default FixedDataTableLegacy;

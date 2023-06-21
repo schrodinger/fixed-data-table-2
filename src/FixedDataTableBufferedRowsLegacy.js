@@ -18,10 +18,10 @@ import cx from './vendor_upstream/stubs/cx';
 import emptyFunction from './vendor_upstream/core/emptyFunction';
 import joinClasses from './vendor_upstream/core/joinClasses';
 
-import FixedDataTableRow from './FixedDataTableRow';
+import FixedDataTableRowLegacy from './FixedDataTableRowLegacy';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 
-class FixedDataTableBufferedRows extends React.Component {
+class FixedDataTableBufferedRowsLegacy extends React.Component {
   static propTypes = {
     ariaRowIndexOffset: PropTypes.number,
     isScrolling: PropTypes.bool,
@@ -190,7 +190,7 @@ class FixedDataTableBufferedRows extends React.Component {
     );
 
     return (
-      <FixedDataTableRow
+      <FixedDataTableRowLegacy
         key={key}
         index={rowIndex}
         ariaRowIndex={rowIndex + props.ariaRowIndexOffset}
@@ -233,4 +233,4 @@ class FixedDataTableBufferedRows extends React.Component {
     );
   }
 }
-export default FixedDataTableBufferedRows;
+export default FixedDataTableBufferedRowsLegacy;

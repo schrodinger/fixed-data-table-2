@@ -23,9 +23,4 @@ const CellGroupType = {
   FIXED_RIGHT: 'fixedRight',
   SCROLLABLE: 'scrollable',
 };
-const VersionType = {
-  NEW_VERSION: 'new',
-  OLD_VERSION: 'old',
-};
-
-export { CellGroupType, VersionType };
+export { CellGroupType };
