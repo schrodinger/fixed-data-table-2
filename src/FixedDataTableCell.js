@@ -193,6 +193,10 @@ class FixedDataTableCell extends React.Component {
       height,
       width,
       visibility: visible ? 'visible' : 'hidden',
+      // display: 'flex',
+      // justifyContent: 'center',
+      // flexDirection:'column',
+      // padding:'8px'
     };
 
     if (this.props.isRTL) {
@@ -230,6 +234,7 @@ class FixedDataTableCell extends React.Component {
     }
 
     var content;
+    // console.log('Heee')
     if (
       this.props.isHeader &&
       (this.props.onColumnResizeEnd || this.props.onColumnReorderEnd)
@@ -276,10 +281,14 @@ class FixedDataTableCell extends React.Component {
         );
       }
     } else if (React.isValidElement(props.cell)) {
+      // console.log('Hello')
       content = React.cloneElement(props.cell, cellProps);
     } else if (typeof props.cell === 'function') {
+      // console.log('HEEE')
       content = props.cell(cellProps);
     } else {
+      // console.log('Hello1')
+
       content = (
         <FixedDataTableCellDefaultDeprecated {...cellProps}>
           {props.cell}
