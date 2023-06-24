@@ -70,6 +70,7 @@ class FixedDataTableCellDefault extends React.Component {
 
   render() {
     //Remove some props which we don't pass into div
+
     var {
       height,
       width,

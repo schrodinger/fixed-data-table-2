@@ -20,6 +20,7 @@ import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-com
 import ReorderCell from './plugins/ResizeReorder/ReorderCell';
 import ResizeCell from './plugins/ResizeReorder/ResizeCell';
 import { CellGroupType } from './enums/CellGroup';
+import { ImageCell } from '../examples/helpers/cells';
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -188,15 +189,19 @@ class FixedDataTableCell extends React.Component {
       visible,
       ...props
     } = this.props;
-
+    let isImg = props.cell === ImageCell;
     var style = {
-      height,
-      width,
+      // height,
+      // width,
       visibility: visible ? 'visible' : 'hidden',
       // display: 'flex',
       // justifyContent: 'center',
       // flexDirection:'column',
-      // padding:'8px'
+      // verticalAlign:'middle',
+      // padding:isImg?'0px':'8px',
+      // paddingLeft
+      // paddingTop:'9px',
+      // paddingBottom:'12px'
     };
 
     if (this.props.isRTL) {
@@ -227,6 +232,8 @@ class FixedDataTableCell extends React.Component {
       height: this.props.height,
       width: this.props.width,
       left: this.props.left,
+      style: style,
+      className: className,
     };
 
     if (props.rowIndex >= 0) {
@@ -297,11 +304,11 @@ class FixedDataTableCell extends React.Component {
     }
 
     const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
-
+    // if()
     return (
-      <div className={className} style={style} role={role}>
-        {content}
-      </div>
+      // <div className={className} style={style} role={role}>
+      <>{content}</>
+      //  </div>
     );
   }
 }

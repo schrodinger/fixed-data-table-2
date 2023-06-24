@@ -40,7 +40,7 @@
 
 .fixedDataTableCellLayout/wrap {
   display: table-cell;
-  vertical-align: middle;
+  /* vertical-align: middle; */
   box-sizing: border-box;
 }
 
