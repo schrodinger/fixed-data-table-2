@@ -20,47 +20,53 @@ const BORDER_WIDTH = 1;
 
 class ResizeCell extends React.PureComponent {
   render() {
-    const {
-      children,
-      minWidth,
-      maxWidth,
-      onColumnResizeEnd,
-      onColumnReorderEnd,
-      rowIndex,
-      left,
-      touchEnabled,
-      cellGroupType,
-      onColumnReorderStart,
-      ...props
-    } = this.props;
-
+    // const {
+    //   children,
+    //   minWidth,
+    //   maxWidth,
+    //   onColumnResizeEnd,
+    //   onColumnReorderEnd,
+    //   rowIndex,
+    //   left,
+    //   touchEnabled,
+    //   cellGroupType,
+    //   onColumnReorderStart,
+    //   ...props
+    // } = this.props;
+    // console.log(2)
     let style = {
-      height: props.height,
-      width: props.width - BORDER_WIDTH,
+      height: this.props.height,
+      width: this.props.width - BORDER_WIDTH,
     };
 
     if (this.context.isRTL) {
-      style.right = left;
+      style.right = this.props.left;
     } else {
-      style.left = left;
+      style.left = this.props.left;
     }
-
+    var props = { ...this.props, ...this.context };
     let content;
-    if (React.isValidElement(children)) {
-      content = React.cloneElement(children, props);
-    } else if (typeof children === 'function') {
-      content = children(props);
+    // console.log(this.props)
+    if (React.isValidElement(this.props.children)) {
+      // console.log(1)
+
+      content = React.cloneElement(this.props.children, this.props);
+    } else if (typeof this.props.children === 'function') {
+      // console.log(2)
+      content = this.props.children(this.props);
     } else {
+      // console.log(3)
+
       content = (
         <FixedDataTableCellDefault {...props}>
-          {children}
+          {this.props.children}
         </FixedDataTableCellDefault>
       );
     }
-
+    // console.log(this.context)
     return (
       <>
-        <ResizerKnob
+        {/* <ResizerKnob
           height={this.props.height}
           resizerLineHeight={this.context.tableHeight}
           onColumnResizeEnd={this.props.onColumnResizeEnd}
@@ -70,7 +76,7 @@ class ResizeCell extends React.PureComponent {
           columnKey={this.props.columnKey}
           touchEnabled={this.props.touchEnabled}
           isRTL={this.context.isRTL}
-        />
+        /> */}
         {content}
       </>
     );

@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 
 import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
+import ResizerKnob from './plugins/ResizeReorder/ResizerKnob';
 
 /**
  * Component that handles default cell layout and styling.
@@ -106,6 +107,17 @@ class FixedDataTableCellDefault extends React.Component {
         )}
         style={innerStyle}
       >
+        <ResizerKnob
+          height={this.props.height}
+          resizerLineHeight={this.props.tableHeight}
+          onColumnResizeEnd={this.props.onColumnResizeEnd}
+          width={this.props.width}
+          minWidth={this.props.minWidth}
+          maxWidth={this.props.maxWidth}
+          columnKey={this.props.columnKey}
+          touchEnabled={this.props.touchEnabled}
+          isRTL={this.props.isRTL}
+        />
         {children}
       </div>
     );

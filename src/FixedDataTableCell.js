@@ -191,8 +191,8 @@ class FixedDataTableCell extends React.Component {
     } = this.props;
     let isImg = props.cell === ImageCell;
     var style = {
-      // height,
-      // width,
+      height,
+      width,
       visibility: visible ? 'visible' : 'hidden',
       // display: 'flex',
       // justifyContent: 'center',
@@ -241,7 +241,7 @@ class FixedDataTableCell extends React.Component {
     }
 
     var content;
-    // console.log('Heee')
+    // console.log(1)
     if (
       this.props.isHeader &&
       (this.props.onColumnResizeEnd || this.props.onColumnReorderEnd)
