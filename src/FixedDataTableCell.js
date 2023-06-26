@@ -234,6 +234,7 @@ class FixedDataTableCell extends React.Component {
       left: this.props.left,
       style: style,
       className: className,
+      visibility: visible,
     };
 
     if (props.rowIndex >= 0) {
