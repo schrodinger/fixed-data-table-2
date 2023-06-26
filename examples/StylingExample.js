@@ -37,12 +37,7 @@ class StylingExample extends React.Component {
           header={
             <DataCell className={css(styles.tableHeaderStyles)}></DataCell>
           }
-          cell={
-            <ImageCell
-              className={css(styles.tableCellStyles)}
-              data={dataList}
-            />
-          }
+          cell={<ImageCell data={dataList} />}
           fixed={true}
           width={50}
         />
@@ -54,9 +49,7 @@ class StylingExample extends React.Component {
               First Name
             </DataCell>
           }
-          cell={
-            <TextCell className={css(styles.tableCellStyles)} data={dataList} />
-          }
+          cell={<TextCell data={dataList} />}
           fixed={true}
           width={150}
         />
@@ -67,9 +60,7 @@ class StylingExample extends React.Component {
               Last Name
             </DataCell>
           }
-          cell={
-            <TextCell className={css(styles.tableCellStyles)} data={dataList} />
-          }
+          cell={<TextCell data={dataList} />}
           width={150}
         />
         <Column
@@ -79,9 +70,7 @@ class StylingExample extends React.Component {
               Company
             </DataCell>
           }
-          cell={
-            <TextCell className={css(styles.tableCellStyles)} data={dataList} />
-          }
+          cell={<TextCell data={dataList} />}
           width={200}
         />
       </Table>
