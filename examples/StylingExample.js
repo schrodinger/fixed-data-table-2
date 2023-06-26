@@ -28,28 +28,34 @@ class StylingExample extends React.Component {
         rowHeight={50}
         headerHeight={50}
         rowsCount={dataList.getSize()}
-        width={550}
+        width={500}
         height={500}
         {...props}
       >
         <Column
           columnKey="avatar"
-          header={<DataCell className={css(styles.newTableHeader)}></DataCell>}
+          header={
+            <DataCell className={css(styles.tableHeaderStyles)}></DataCell>
+          }
           cell={
-            <ImageCell className={css(styles.newCellBorder)} data={dataList} />
+            <ImageCell
+              className={css(styles.tableCellStyles)}
+              data={dataList}
+            />
           }
           fixed={true}
           width={50}
         />
         <Column
           columnKey="firstName"
+          cellClassName={css(styles.tableFixedCellWrapperStyles)}
           header={
-            <DataCell className={css(styles.newTableHeader)}>
+            <DataCell className={css(styles.tableHeaderStyles)}>
               First Name
             </DataCell>
           }
           cell={
-            <TextCell className={css(styles.newCellBorder)} data={dataList} />
+            <TextCell className={css(styles.tableCellStyles)} data={dataList} />
           }
           fixed={true}
           width={150}
@@ -57,22 +63,24 @@ class StylingExample extends React.Component {
         <Column
           columnKey="lastName"
           header={
-            <DataCell className={css(styles.newTableHeader)}>
+            <DataCell className={css(styles.tableHeaderStyles)}>
               Last Name
             </DataCell>
           }
           cell={
-            <TextCell className={css(styles.newCellBorder)} data={dataList} />
+            <TextCell className={css(styles.tableCellStyles)} data={dataList} />
           }
           width={150}
         />
         <Column
           columnKey="companyName"
           header={
-            <DataCell className={css(styles.newTableHeader)}>Company</DataCell>
+            <DataCell className={css(styles.tableHeaderStyles)}>
+              Company
+            </DataCell>
           }
           cell={
-            <TextCell className={css(styles.newCellBorder)} data={dataList} />
+            <TextCell className={css(styles.tableCellStyles)} data={dataList} />
           }
           width={200}
         />
@@ -90,12 +98,16 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     height: '100%',
   },
-  newTableHeader: {
+  tableHeaderStyles: {
     color: '#000',
     fontSize: '12px',
     lineHeight: '1',
     background: '#CCFFEE',
     border: 'none',
+  },
+  tableFixedCellWrapperStyles: {
+    background: '#ADF',
+    textAlign: 'center',
   },
 });
 

@@ -91,8 +91,8 @@ class HeroTable extends React.Component {
         />
         <Column
           width={300}
-          header={<Cell>BS!</Cell>}
-          cell={<FakeTextCell field="bs" />}
+          header={<Cell>Buzz Phrase!</Cell>}
+          cell={<FakeTextCell field="buzzPhrase" />}
         />
         <Column
           width={400}

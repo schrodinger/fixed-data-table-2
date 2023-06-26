@@ -60,11 +60,6 @@ class FixedDataTableContainer extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, currentState) {
-    invariant(
-      nextProps.height !== undefined || nextProps.maxHeight !== undefined,
-      'You must set either a height or a maxHeight'
-    );
-
     // getDerivedStateFromProps is called for both prop and state updates.
     // If props are unchanged here, then there's no need to recalculate derived state.
     if (nextProps === currentState.props) {

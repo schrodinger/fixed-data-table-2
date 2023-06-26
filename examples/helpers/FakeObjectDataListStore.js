@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-import faker from 'faker';
+import { faker } from '@faker-js/faker';
 
 class FakeObjectDataListStore {
   constructor(/*number*/ size) {
@@ -10,20 +10,29 @@ class FakeObjectDataListStore {
     this._cache = [];
   }
 
+  setSize(size) {
+    // truncate cache if necessary
+    if (this.size < size) {
+      this._cache = this._cache.slice(0, size);
+    }
+
+    this.size = size;
+  }
+
   createFakeRowObjectData(/*number*/ index) /*object*/ {
     return {
       id: index,
       avatar: faker.image.avatar(),
-      city: faker.address.city(),
+      city: faker.location.city(),
       email: faker.internet.email(),
-      firstName: faker.name.firstName(),
-      lastName: faker.name.lastName(),
-      street: faker.address.streetName(),
-      zipCode: faker.address.zipCode(),
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      street: faker.location.street(),
+      zipCode: faker.location.zipCode(),
       date: faker.date.past(),
-      bs: faker.company.bs(),
+      buzzPhrase: faker.company.buzzPhrase(),
       catchPhrase: faker.company.catchPhrase(),
-      companyName: faker.company.companyName(),
+      companyName: faker.company.name(),
       words: faker.lorem.words(),
       sentence: faker.lorem.sentence(),
     };
