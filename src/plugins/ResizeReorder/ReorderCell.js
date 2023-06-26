@@ -94,10 +94,11 @@ class ReorderCell extends React.PureComponent {
       height: props.height,
       width: props.width,
       left: left,
-      visibility: this.props.visible ? 'visible' : 'hidden',
+      // visibility: this.props.visible ? 'visible' : 'hidden',
       // left: left,
     };
-    // props.style.left = '12px';
+    // let style2={...this.props.style}
+    props.style.left = '12px';
 
     let content;
     if (React.isValidElement(children)) {
@@ -114,10 +115,12 @@ class ReorderCell extends React.PureComponent {
     }
 
     return (
+      // <div className={this.props.className} style={style2}>
       <div className={reorderClasses} style={style1} ref={this.cellRef}>
         {this.renderReorderHandle()}
         {content}
       </div>
+      // </div>
     );
   }
 
@@ -159,6 +162,7 @@ class ReorderCell extends React.PureComponent {
    * @param {string} columnKey
    */
   onDragStart = (event) => {
+    console.log(event);
     this.createDragContainer();
     this.renderDragProxy(event);
     this.props.onColumnReorderStart(this.props.columnKey);
@@ -213,13 +217,16 @@ class ReorderCell extends React.PureComponent {
     this.dragContainer.dataset.columnKey = this.props.columnKey;
     this.dragContainer.style.position = 'absolute';
     this.dragContainer.style.zIndex = 2;
+    // this.dragContainer.style.left = '0px';
 
     // Place the container inside the parent cell group so that our dragged cell ends up in the correct heirarchy.
     // This is important for correct styling and layout calculations.
     const cellGroup = this.cellRef.current.closest(
       '.fixedDataTableCellGroupLayout_cellGroup'
     );
+    console.log(cellGroup);
     cellGroup.appendChild(this.dragContainer);
+    // console.log(cellGroup, this.dragContainer)
   };
 
   getDragContainer = () => {
