@@ -40,7 +40,7 @@
 
 .fixedDataTableCellLayout/wrap {
   display: table-cell;
-  /* vertical-align: middle; */
+  vertical-align: middle;
   box-sizing: border-box;
 }
 
@@ -59,7 +59,7 @@
 
 .fixedDataTableCellLayout/columnResizerContainer {
   position: absolute;
-  right: 0px;
+  /* right: 0px; */
   width: 6px;
   z-index: 1;
 }

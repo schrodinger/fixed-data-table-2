@@ -70,7 +70,10 @@ class ResizerKnob extends React.PureComponent {
   render() {
     const resizerKnobStyle = {
       height: this.props.height,
+      left: this.props.left + this.props.width - 6,
+      // right:this.props.width
     };
+    // style.left={this.state.currentMouseXCoordinate}
     const resizerLine = (
       <ResizerLine
         height={this.props.resizerLineHeight}

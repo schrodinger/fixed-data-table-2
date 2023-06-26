@@ -90,10 +90,12 @@ class ReorderCell extends React.PureComponent {
       })
     );
 
-    let style = {
+    let style1 = {
       height: props.height,
-      width: props.width - BORDER_WIDTH,
+      width: props.width,
+      left: left,
     };
+    props.style.left = '0px';
 
     let content;
     if (React.isValidElement(children)) {
@@ -101,6 +103,7 @@ class ReorderCell extends React.PureComponent {
     } else if (typeof children === 'function') {
       content = children(props);
     } else {
+      // console.log('Hello11')
       content = (
         <FixedDataTableCellDefault {...props}>
           {children}
@@ -109,7 +112,7 @@ class ReorderCell extends React.PureComponent {
     }
 
     return (
-      <div className={reorderClasses} style={style} ref={this.cellRef}>
+      <div className={reorderClasses} style={style1} ref={this.cellRef}>
         {this.renderReorderHandle()}
         {content}
       </div>
