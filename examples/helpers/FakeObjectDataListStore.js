@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-import { faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker/locale/en';
 
 class FakeObjectDataListStore {
   constructor(/*number*/ size) {
