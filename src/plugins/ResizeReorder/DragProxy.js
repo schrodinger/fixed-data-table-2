@@ -42,8 +42,10 @@ class DragProxy extends React.PureComponent {
     // );
     // this.props.contents.style.left=null
     draggedContents.classList.add(cx('public/fixedDataTableCell/reordering'));
-    // console.log(this.containerRef.current)
+    console.log(this.containerRef.current);
+    console.log(draggedContents);
     this.containerRef.current.appendChild(draggedContents);
+    console.log(this.containerRef.current);
 
     this.startDrag();
   }

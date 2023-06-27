@@ -94,6 +94,7 @@ class ReorderCell extends React.PureComponent {
       height: props.height,
       width: props.width,
       left: left,
+      position: 'absolute',
       // visibility: this.props.visible ? 'visible' : 'hidden',
       // left: left,
     };
