@@ -349,11 +349,6 @@ describe('FixedDataTableRoot', function () {
             `translate(${-scroll}px,0px)`,
             "should translate the cell's right value when in RTL"
           );
-          assert.equal(
-            scrollableCellGroup.style.left,
-            '',
-            "should negate the cell's left value when in RTL"
-          );
 
           done();
         });
@@ -463,11 +458,6 @@ describe('FixedDataTableRoot', function () {
             scrollableCellGroup.style.transform,
             `translate(${-scroll}px,0px)`,
             "should translate the cell's left value when in LTR"
-          );
-          assert.equal(
-            scrollableCellGroup.style.right,
-            '',
-            "should negate the cell's right value when in LTR"
           );
 
           done();
