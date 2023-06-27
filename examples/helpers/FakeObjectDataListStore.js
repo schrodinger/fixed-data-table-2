@@ -2,7 +2,7 @@
  * Copyright Schrodinger, LLC
  */
 
-import { faker } from '@faker-js/faker/locale/en';
+import faker from 'faker';
 
 class FakeObjectDataListStore {
   constructor(/*number*/ size) {
@@ -22,17 +22,20 @@ class FakeObjectDataListStore {
   createFakeRowObjectData(/*number*/ index) /*object*/ {
     return {
       id: index,
-      avatar: faker.image.avatar(),
-      city: faker.location.city(),
+      // avatar: faker.image.avatar(), // NOTE (pradeep): faker.image.avatar() doesn't work unless we upgrade faker to @faker/fakerjs
+      avatar: `https://avatars.githubusercontent.com/u/${Math.floor(
+        Math.random() * 100000000
+      )}`,
+      city: faker.address.city(),
       email: faker.internet.email(),
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      street: faker.location.street(),
-      zipCode: faker.location.zipCode(),
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      street: faker.address.streetName(),
+      zipCode: faker.address.zipCode(),
       date: faker.date.past(),
-      buzzPhrase: faker.company.buzzPhrase(),
+      buzzPhrase: faker.company.bs(),
       catchPhrase: faker.company.catchPhrase(),
-      companyName: faker.company.name(),
+      companyName: faker.company.companyName(),
       words: faker.lorem.words(),
       sentence: faker.lorem.sentence(),
     };
