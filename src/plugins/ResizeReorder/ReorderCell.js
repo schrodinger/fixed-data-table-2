@@ -162,7 +162,7 @@ class ReorderCell extends React.PureComponent {
    * @param {string} columnKey
    */
   onDragStart = (event) => {
-    console.log(event);
+    // console.log(event);
     this.createDragContainer();
     this.renderDragProxy(event);
     this.props.onColumnReorderStart(this.props.columnKey);
@@ -224,7 +224,7 @@ class ReorderCell extends React.PureComponent {
     const cellGroup = this.cellRef.current.closest(
       '.fixedDataTableCellGroupLayout_cellGroup'
     );
-    console.log(cellGroup);
+    // console.log(cellGroup);
     cellGroup.appendChild(this.dragContainer);
     // console.log(cellGroup, this.dragContainer)
   };
