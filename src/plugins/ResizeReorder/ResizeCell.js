@@ -25,9 +25,7 @@ class ResizeCell extends React.PureComponent {
       minWidth,
       maxWidth,
       onColumnResizeEnd,
-      onColumnReorderEnd,
       rowIndex,
-      left,
       touchEnabled,
       cellGroupType,
       onColumnReorderStart,
@@ -40,37 +38,32 @@ class ResizeCell extends React.PureComponent {
     };
 
     if (this.context.isRTL) {
-      style.right = left;
+      style.right = this.props.left;
     } else {
-      style.left = left;
+      style.left = this.props.left;
     }
 
     let content;
-    // console.log(this.props)
     if (React.isValidElement(children)) {
-      // console.log(1)
-
-      content = React.cloneElement(this.props.children, props);
+      content = React.cloneElement(children, props);
     } else if (typeof children === 'function') {
-      // console.log(2)
-      content = this.props.children(props);
+      content = children(props);
     } else {
-      // console.log(3)
-
       content = (
         <FixedDataTableCellDefault {...props}>
           {children}
         </FixedDataTableCellDefault>
       );
     }
-    // console.log(this.context)
+
     return (
-      // <div className={this.props.className1} style={this.props.style1}>
       <>
         <ResizerKnob
           height={this.props.height}
           resizerLineHeight={this.context.tableHeight}
           onColumnResizeEnd={this.props.onColumnResizeEnd}
+          onColumnReorderEnd={this.props.onColumnReorderEnd}
+          shouldUseLegacyComponents={this.props.shouldUseLegacyComponents}
           width={this.props.width}
           minWidth={this.props.minWidth}
           maxWidth={this.props.maxWidth}

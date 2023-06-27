@@ -95,33 +95,27 @@ class ReorderCell extends React.PureComponent {
       width: props.width,
       left: left,
       position: 'absolute',
-      // visibility: this.props.visible ? 'visible' : 'hidden',
-      // left: left,
     };
-    // let style2={...this.props.style}
     props.style.left = '12px';
 
     let content;
     if (React.isValidElement(children)) {
-      content = React.cloneElement(children, props);
+      content = React.cloneElement(children, this.props);
     } else if (typeof children === 'function') {
-      content = children(props);
+      content = children(this.props);
     } else {
-      // console.log('Hello11')
       content = (
-        <FixedDataTableCellDefault {...props}>
+        <FixedDataTableCellDefault {...this.props}>
           {children}
         </FixedDataTableCellDefault>
       );
     }
 
     return (
-      // <div className={this.props.className} style={style2}>
       <div className={reorderClasses} style={style1} ref={this.cellRef}>
         {this.renderReorderHandle()}
         {content}
       </div>
-      // </div>
     );
   }
 

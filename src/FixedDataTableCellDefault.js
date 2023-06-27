@@ -93,41 +93,9 @@ class FixedDataTableCellDefault extends React.Component {
     var innerStyle = {
       height,
       width,
-      ...style,
+      // ...style,
     };
-    // let abc = parseInt(innerStyle.left) + 12
-    // innerStyle.left=toString(abc)
-    // if(this.props.isHeader){
-    //   return (
-    //     <div
-    //     // {...this.props}
-    //     className={joinClasses(
-    //       cx('fixedDataTableCellLayout/wrap'),
-    //       cx('public/fixedDataTableCell/wrap'),
-    //       cx('public/fixedDataTableCell/cellContent'),
-    //       className
-    //     )}
-    //     style={innerStyle}
-    //   >
-    //     {/* if(this.props.isHeader){ */}
-    //       <ResizerKnob
-    //       height={this.props.height}
-    //       resizerLineHeight={this.props.tableHeight}
-    //       onColumnResizeEnd={this.props.onColumnResizeEnd}
-    //       width={this.props.width}
-    //       minWidth={this.props.minWidth}
-    //       maxWidth={this.props.maxWidth}
-    //       columnKey={this.props.columnKey}
-    //       touchEnabled={this.props.touchEnabled}
-    //       isRTL={this.props.isRTL}
-    //     />
-    //     {/* } */}
 
-    //     {children}
-    //   </div>
-    //   );
-    // }
-    // else{
     return (
       <div
         {...props}

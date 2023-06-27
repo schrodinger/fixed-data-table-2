@@ -18,7 +18,9 @@ import ResizerLine from './ResizerLine';
 import clamp from '../../vendor_upstream/core/clamp';
 import DOMMouseMoveTracker from '../../vendor_upstream/dom/DOMMouseMoveTracker';
 import _ from 'lodash';
-import PropTypes from 'prop-types';
+import PropTypes, { element } from 'prop-types';
+import ResizerKnobFunction from './ResizerKnobFunction';
+import ResizerKnobLegacyFunction from './ResizerKnobLegacyFunction';
 
 class ResizerKnob extends React.PureComponent {
   initialState = {
@@ -68,12 +70,6 @@ class ResizerKnob extends React.PureComponent {
   }
 
   render() {
-    const resizerKnobStyle = {
-      height: this.props.height,
-      left: this.props.left + this.props.width - 6,
-      // right:this.props.width
-    };
-    // style.left={this.state.currentMouseXCoordinate}
     const resizerLine = (
       <ResizerLine
         height={this.props.resizerLineHeight}
@@ -82,19 +78,18 @@ class ResizerKnob extends React.PureComponent {
         top={this.state.top}
       />
     );
+    const ResizerKnobComponent = this.props.shouldUseLegacyComponents
+      ? ResizerKnobLegacyFunction
+      : ResizerKnobFunction;
 
     return (
-      <div
-        className={cx('fixedDataTableCellLayout/columnResizerContainer')}
-        ref={(element) => (this.curRef = element)}
-        style={resizerKnobStyle}
+      <ResizerKnobComponent
+        {...this.props}
+        settingRef={this.settingRef}
         onMouseDown={this.onMouseDown}
-        onTouchStart={this.props.touchEnabled ? this.onMouseDown : null}
-        onTouchEnd={this.props.touchEnabled ? this.suppressEvent : null}
-        onTouchMove={this.props.touchEnabled ? this.suppressEvent : null}
-      >
-        {resizerLine}
-      </div>
+        suppressEvent={this.suppressEvent}
+        resizerLine={resizerLine}
+      />
     );
   }
 
@@ -102,6 +97,9 @@ class ResizerKnob extends React.PureComponent {
    * Registers event listeners for mouse tracking
    * @param {MouseEvent} event
    */
+  settingRef = (element) => {
+    this.curRef = element;
+  };
   initializeDOMMouseMoveTracker = (event) => {
     this.mouseMoveTracker = new DOMMouseMoveTracker(
       this.onMouseMove,

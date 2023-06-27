@@ -20,7 +20,8 @@ import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-com
 import ReorderCell from './plugins/ResizeReorder/ReorderCell';
 import ResizeCell from './plugins/ResizeReorder/ResizeCell';
 import { CellGroupType } from './enums/CellGroup';
-import { ImageCell } from '../examples/helpers/cells';
+import Cell from './FixedDataTableCellFunction';
+import CellLegacy from './FixedDataTableCellLegacyFunction';
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -189,19 +190,11 @@ class FixedDataTableCell extends React.Component {
       visible,
       ...props
     } = this.props;
-    let isImg = props.cell === ImageCell;
+
     var style = {
       height,
       width,
       visibility: visible ? 'visible' : 'hidden',
-      // display: 'flex',
-      // justifyContent: 'center',
-      // flexDirection:'column',
-      // verticalAlign:'middle',
-      // padding:isImg?'0px':'8px',
-      // paddingLeft
-      // paddingTop:'9px',
-      // paddingBottom:'12px'
     };
 
     if (this.props.isRTL) {
@@ -232,9 +225,9 @@ class FixedDataTableCell extends React.Component {
       height: this.props.height,
       width: this.props.width,
       left: this.props.left,
+      shouldUseLegacyComponents: this.props.shouldUseLegacyComponents,
       style: style,
       className: className,
-      visibility: visible,
     };
 
     if (props.rowIndex >= 0) {
@@ -242,7 +235,6 @@ class FixedDataTableCell extends React.Component {
     }
 
     var content;
-    // console.log(1)
     if (
       this.props.isHeader &&
       (this.props.onColumnResizeEnd || this.props.onColumnReorderEnd)
@@ -289,28 +281,24 @@ class FixedDataTableCell extends React.Component {
         );
       }
     } else if (React.isValidElement(props.cell)) {
-      // console.log('Hello')
       content = React.cloneElement(props.cell, cellProps);
     } else if (typeof props.cell === 'function') {
-      // console.log('HEEE')
       content = props.cell(cellProps);
     } else {
-      // console.log('Hello1')
-
       content = (
         <FixedDataTableCellDefaultDeprecated {...cellProps}>
           {props.cell}
         </FixedDataTableCellDefaultDeprecated>
       );
     }
+    const CellComponent = this.props.shouldUseLegacyComponents
+      ? CellLegacy
+      : Cell;
 
-    const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
-    // if()
     return (
-      // <div className={className} style={style}>
-      <>{content}</>
-      // </div>
+      <CellComponent className={className} style={style} content={content} />
     );
+    return <>{content}</>;
   }
 }
 
