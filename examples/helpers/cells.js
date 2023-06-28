@@ -69,7 +69,6 @@ class ImageCell extends React.PureComponent {
 class LinkCell extends React.PureComponent {
   render() {
     const { data, rowIndex, columnKey, ...props } = this.props;
-
     return (
       <DataCell {...props}>
         <a href="#">{data.getObjectAt(rowIndex)[columnKey]}</a>

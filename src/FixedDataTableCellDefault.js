@@ -15,7 +15,8 @@ import PropTypes from 'prop-types';
 
 import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
-import ResizerKnob from './plugins/ResizeReorder/ResizerKnob';
+import CellDefault from './FixedDataTableCellDefaultFunction';
+import CellDefaultLegacy from './FixedDataTableCellDefaultLegacyFunction';
 
 /**
  * Component that handles default cell layout and styling.
@@ -72,45 +73,11 @@ class FixedDataTableCellDefault extends React.Component {
   render() {
     //Remove some props which we don't pass into div
 
-    var {
-      height,
-      width,
-      style,
-      className,
-      children,
-      columnKey,
-      columnIndex,
-      rowIndex,
-      left,
-      cellGroupType,
-      isHeader,
-      isGroupHeader,
-      maxWidth,
-      minWidth,
-      ...props
-    } = this.props;
+    const CellDefaultComponent = this.props.shouldUseLegacyComponents
+      ? CellDefaultLegacy
+      : CellDefault;
 
-    var innerStyle = {
-      height,
-      width,
-      // ...style,
-    };
-
-    return (
-      <div
-        {...props}
-        className={joinClasses(
-          cx('fixedDataTableCellLayout/wrap'),
-          cx('public/fixedDataTableCell/wrap'),
-          cx('public/fixedDataTableCell/cellContent'),
-          className
-        )}
-        style={innerStyle}
-      >
-        {children}
-      </div>
-    );
-    // }
+    return <CellDefaultComponent {...this.props} />;
   }
 }
 

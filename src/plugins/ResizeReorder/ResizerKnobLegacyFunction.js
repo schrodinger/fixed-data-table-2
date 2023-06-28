@@ -4,6 +4,7 @@ import cx from '../../vendor_upstream/stubs/cx';
 function ResizerKnobLegacyFunction(props) {
   const resizerKnobStyle = {
     height: props.height,
+    right: '0px',
   };
   return (
     <div

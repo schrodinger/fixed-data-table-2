@@ -298,7 +298,6 @@ class FixedDataTableCell extends React.Component {
     return (
       <CellComponent className={className} style={style} content={content} />
     );
-    return <>{content}</>;
   }
 }
 
