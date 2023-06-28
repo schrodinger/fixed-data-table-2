@@ -92,12 +92,12 @@ class ReorderCell extends React.PureComponent {
       })
     );
 
-    let style1 = {
+    let style = {
       height: props.height,
       width: props.width,
     };
     if (!this.props.shouldUseLegacyComponents)
-      [(style1.left = left), (style1.position = 'absolute')];
+      [(style.left = left), (style.position = 'absolute')];
 
     let content;
     if (React.isValidElement(children)) {
@@ -113,7 +113,7 @@ class ReorderCell extends React.PureComponent {
     }
 
     return (
-      <div className={reorderClasses} style={style1} ref={this.cellRef}>
+      <div className={reorderClasses} style={style} ref={this.cellRef}>
         {this.renderReorderHandle()}
         {content}
       </div>
@@ -158,7 +158,6 @@ class ReorderCell extends React.PureComponent {
    * @param {string} columnKey
    */
   onDragStart = (event) => {
-    // console.log(event);
     this.createDragContainer();
     this.renderDragProxy(event);
     this.props.onColumnReorderStart(this.props.columnKey);
@@ -219,7 +218,6 @@ class ReorderCell extends React.PureComponent {
     const cellGroup = this.cellRef.current.closest(
       '.fixedDataTableCellGroupLayout_cellGroup'
     );
-
     cellGroup.appendChild(this.dragContainer);
   };
 

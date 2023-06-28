@@ -46,7 +46,7 @@
 }
 
 .public/fixedDataTableCell/reordering {
-  z-index: 10;
+  z-index: 2;
 }
 
 .public/fixedDataTableCell/resizeReorderCellContainer {
