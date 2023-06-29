@@ -170,7 +170,7 @@ class FixedDataTableColumn extends React.Component {
     pureRendering: PropTypes.bool,
 
     /**
-     * Additional cell classnames that can be added to the cell component.
+     * Additional classnames to be added to cells under this column.
      */
     cellClassName: PropTypes.string,
   };
