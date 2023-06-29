@@ -34,14 +34,25 @@ class DragProxy extends React.PureComponent {
 
   componentDidMount() {
     // the first param to cloneNode is `true` to indicate a deep clone
-    const draggedContents = this.props.contents.parentNode.cloneNode(true);
-    draggedContents.firstChild.classList.add(
-      cx('public/fixedDataTableCell/reordering')
-    );
+    if (this.props.shouldUseLegacyComponents) {
+      // the first param to cloneNode is `true` to indicate a deep clone
+      const draggedContents = this.props.contents.parentNode.cloneNode(true);
+      draggedContents.firstChild.classList.add(
+        cx('public/fixedDataTableCell/reordering')
+      );
 
-    this.containerRef.current.appendChild(draggedContents);
+      this.containerRef.current.appendChild(draggedContents);
 
-    this.startDrag();
+      this.startDrag();
+    } else {
+      const draggedContents = this.props.contents.cloneNode(true);
+
+      draggedContents.classList.add(cx('public/fixedDataTableCell/reordering'));
+
+      this.containerRef.current.appendChild(draggedContents);
+
+      this.startDrag();
+    }
   }
 
   render() {

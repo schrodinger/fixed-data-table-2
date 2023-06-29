@@ -25,9 +25,7 @@ class ResizeCell extends React.PureComponent {
       minWidth,
       maxWidth,
       onColumnResizeEnd,
-      onColumnReorderEnd,
       rowIndex,
-      left,
       touchEnabled,
       cellGroupType,
       onColumnReorderStart,
@@ -35,14 +33,14 @@ class ResizeCell extends React.PureComponent {
     } = this.props;
 
     let style = {
-      height: props.height,
-      width: props.width - BORDER_WIDTH,
+      height: this.props.height,
+      width: this.props.width - BORDER_WIDTH,
     };
 
     if (this.context.isRTL) {
-      style.right = left;
+      style.right = this.props.left;
     } else {
-      style.left = left;
+      style.left = this.props.left;
     }
 
     let content;
@@ -64,12 +62,15 @@ class ResizeCell extends React.PureComponent {
           height={this.props.height}
           resizerLineHeight={this.context.tableHeight}
           onColumnResizeEnd={this.props.onColumnResizeEnd}
+          onColumnReorderEnd={this.props.onColumnReorderEnd}
+          shouldUseLegacyComponents={this.props.shouldUseLegacyComponents}
           width={this.props.width}
           minWidth={this.props.minWidth}
           maxWidth={this.props.maxWidth}
           columnKey={this.props.columnKey}
           touchEnabled={this.props.touchEnabled}
           isRTL={this.context.isRTL}
+          left={this.props.left}
         />
         {content}
       </>

@@ -20,6 +20,8 @@ import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-com
 import ReorderCell from './plugins/ResizeReorder/ReorderCell';
 import ResizeCell from './plugins/ResizeReorder/ResizeCell';
 import { CellGroupType } from './enums/CellGroup';
+import Cell from './FixedDataTableCellFunction';
+import CellLegacy from './FixedDataTableCellLegacyFunction';
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -223,6 +225,9 @@ class FixedDataTableCell extends React.Component {
       height: this.props.height,
       width: this.props.width,
       left: this.props.left,
+      shouldUseLegacyComponents: this.props.shouldUseLegacyComponents,
+      style: style,
+      className: className,
     };
 
     if (props.rowIndex >= 0) {
@@ -286,13 +291,12 @@ class FixedDataTableCell extends React.Component {
         </FixedDataTableCellDefaultDeprecated>
       );
     }
-
-    const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
+    const CellComponent = this.props.shouldUseLegacyComponents
+      ? CellLegacy
+      : Cell;
 
     return (
-      <div className={className} style={style} role={role}>
-        {content}
-      </div>
+      <CellComponent className={className} style={style} content={content} />
     );
   }
 }

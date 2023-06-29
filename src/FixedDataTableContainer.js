@@ -10,7 +10,6 @@
  * @typechecks
  * @noflow
  */
-
 import React from 'react';
 import invariant from './stubs/invariant';
 import pick from 'lodash/pick';
@@ -30,6 +29,7 @@ class FixedDataTableContainer extends React.Component {
     defaultScrollbars: true,
     scrollbarXHeight: Scrollbar.SIZE,
     scrollbarYWidth: Scrollbar.SIZE,
+    shouldUseLegacyComponents: false,
   };
 
   constructor(props) {
@@ -115,7 +115,6 @@ class FixedDataTableContainer extends React.Component {
    */
   notifyApiValueChanges() {
     const fixedDataTableContextValue = this.getApi();
-
     if (this.previousApiValue !== fixedDataTableContextValue) {
       this.fixedDataTableApi.notify();
       this.previousApiValue = fixedDataTableContextValue;
@@ -210,7 +209,6 @@ class FixedDataTableContainer extends React.Component {
     const newBoundState = FixedDataTableContainer.getBoundState(
       this.reduxStore
     );
-
     // If onStoreUpdate was called through a prop change, then skip updating local state.
     // This is fine because getDerivedStateFromProps already calculates the new state.
     if (this.state.boundState.propsRevision !== newBoundState.propsRevision) {
