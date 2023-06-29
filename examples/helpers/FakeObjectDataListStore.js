@@ -10,10 +10,22 @@ class FakeObjectDataListStore {
     this._cache = [];
   }
 
+  setSize(size) {
+    // truncate cache if necessary
+    if (this.size < size) {
+      this._cache = this._cache.slice(0, size);
+    }
+
+    this.size = size;
+  }
+
   createFakeRowObjectData(/*number*/ index) /*object*/ {
     return {
       id: index,
-      avatar: faker.image.avatar(),
+      // avatar: faker.image.avatar(), // NOTE (pradeep): faker.image.avatar() doesn't work unless we upgrade faker to @faker/fakerjs
+      avatar: `https://avatars.githubusercontent.com/u/${Math.floor(
+        Math.random() * 100000000
+      )}`,
       city: faker.address.city(),
       email: faker.internet.email(),
       firstName: faker.name.firstName(),
@@ -21,7 +33,7 @@ class FakeObjectDataListStore {
       street: faker.address.streetName(),
       zipCode: faker.address.zipCode(),
       date: faker.date.past(),
-      bs: faker.company.bs(),
+      buzzPhrase: faker.company.bs(),
       catchPhrase: faker.company.catchPhrase(),
       companyName: faker.company.companyName(),
       words: faker.lorem.words(),
