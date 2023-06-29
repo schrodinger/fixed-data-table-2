@@ -24,7 +24,7 @@ class StylingExample extends React.Component {
     const { width, ...props } = this.props;
     return (
       <Table
-        className={css(styles.wrapperStyles)}
+        className={css(styles.tableWrapperStyles)}
         rowHeight={50}
         headerHeight={50}
         rowsCount={dataList.getSize()}
@@ -79,13 +79,8 @@ class StylingExample extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  wrapperStyles: {
-    marginTop: '1rem',
-    marginLeft: '1rem',
-    marginRight: '3rem',
-    border: 'none',
-    overflow: 'hidden',
-    height: '100%',
+  tableWrapperStyles: {
+    border: '1px solid #e100ff',
   },
   tableHeaderStyles: {
     color: '#000',
