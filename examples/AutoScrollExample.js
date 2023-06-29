@@ -5,9 +5,11 @@
 'use strict';
 
 import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
-import { ImageCell, LinkCell } from './helpers/cells';
+import { ImageCell, LinkCell, TextCell } from './helpers/cells';
 import { Table, Column, DataCell, Plugins } from 'fixed-data-table-2';
 import React from 'react';
+import cx from '../src/vendor_upstream/stubs/cx';
+import joinClasses from '../src/vendor_upstream/core/joinClasses';
 
 class AutoScrollExample extends React.Component {
   constructor(props) {
@@ -24,9 +26,20 @@ class AutoScrollExample extends React.Component {
       columnGroups: [],
       columnsCount: 10000,
     };
+    const cellRenderer2 = (props) => (
+      <DataCell {...props}>
+        {props.columnKey},{props.rowIndex}
+      </DataCell>
+    );
+    const cellRenderer = (props) => (
+      <div style={props.style_default} className={props.className_default}>
+        {props.columnKey}, {props.rowIndex}
+      </div>
+    );
 
-    const cellRenderer = (props) => `${props.columnKey}, ${props.rowIndex}`;
-    const headerCellRenderer = (props) => props.columnKey;
+    const headerCellRenderer = (props) => (
+      <DataCell {...props}>{props.columnKey}</DataCell>
+    );
 
     for (let i = 0; i < 10000; i++) {
       const columnGroupIndex = Math.floor(i / 2);
@@ -34,7 +47,7 @@ class AutoScrollExample extends React.Component {
         columnKey: 'Column ' + i,
         columnGroupIndex,
         header: headerCellRenderer,
-        cell: cellRenderer,
+        cell: i % 2 ? cellRenderer : cellRenderer2,
         width: 100,
         allowCellsRecycling: true,
         fixed: i < 2 ? true : false,

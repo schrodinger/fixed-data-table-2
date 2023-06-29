@@ -4,8 +4,8 @@ import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
 
 function Row(props) {
-  var subRowHeight = props.subRowHeight || 0;
-  var style = {
+  const subRowHeight = props.subRowHeight || 0;
+  let style = {
     width: props.width,
     height: props.height + subRowHeight,
     zIndex: props.zIndex ? props.zIndex : 0,
@@ -22,7 +22,7 @@ function Row(props) {
     props.isRTL
   );
 
-  var className = cx({
+  let className = cx({
     'fixedDataTableRowLayout/main': true,
     'public/fixedDataTableRow/main': true,
     'public/fixedDataTableRow/highlighted': props.index % 2 === 1,

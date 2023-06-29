@@ -4,27 +4,27 @@ import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
 
 function RowLegacy(props) {
-  var subRowHeight = props.subRowHeight || 0;
-  var style1 = {
+  const subRowHeight = props.subRowHeight || 0;
+  let style_wrapper = {
     width: props.width,
     height: props.height,
     zIndex: props.zIndex ? props.zIndex : 0,
   };
   if (!props.visible) {
-    style1.display = 'none';
+    style_wrapper.display = 'none';
   }
   FixedDataTableTranslateDOMPosition(
-    style1,
+    style_wrapper,
     0,
     props.offsetTop || 0,
     props._initialRender,
     props.isRTL
   );
-  var style2 = {
+  const style_inner = {
     width: props.width,
     height: props.height + subRowHeight,
   };
-  var className = cx({
+  let className = cx({
     'fixedDataTableRowLayout/main': true,
     'public/fixedDataTableRow/main': true,
     'public/fixedDataTableRow/highlighted': props.index % 2 === 1,
@@ -32,7 +32,10 @@ function RowLegacy(props) {
     'public/fixedDataTableRow/even': props.index % 2 === 0,
   });
   return (
-    <div style={style1} className={cx('fixedDataTableRowLayout/rowWrapper')}>
+    <div
+      style={style_wrapper}
+      className={cx('fixedDataTableRowLayout/rowWrapper')}
+    >
       <div
         className={joinClasses(className, props.className)}
         role={'row'}
@@ -50,7 +53,7 @@ function RowLegacy(props) {
         onTouchStart={props.onTouchStart ? props._onTouchStart : null}
         onTouchEnd={props.onTouchEnd ? props._onTouchEnd : null}
         onTouchMove={props.onTouchMove ? props._onTouchMove : null}
-        style={style2}
+        style={style_inner}
       >
         <div className={cx('fixedDataTableRowLayout/body')}>
           {props.fixedColumns}

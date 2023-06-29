@@ -21,9 +21,6 @@ import ExternalContextProvider from '../ExternalContextProvider';
 import _ from 'lodash';
 import ResizeCell from './ResizeCell';
 import PropTypes from 'prop-types';
-import ReorderCellFunction from './ReorderCellFunction';
-import ReorderCellLegacyFunction from './ReorderCellLegacyFunction';
-
 const BORDER_WIDTH = 1;
 
 /**
@@ -96,8 +93,10 @@ class ReorderCell extends React.PureComponent {
       height: props.height,
       width: props.width,
     };
-    if (!this.props.shouldUseLegacyComponents)
-      [(style.left = left), (style.position = 'absolute')];
+    if (!this.props.shouldUseLegacyComponents) {
+      style.left = left;
+      style.position = 'absolute';
+    } else style.width = style.width - BORDER_WIDTH;
 
     let content;
     if (React.isValidElement(children)) {

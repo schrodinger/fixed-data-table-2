@@ -106,7 +106,6 @@
 
 .fixedDataTableCellLayout_columnResizerContainer {
   position: absolute;
-  right: 0px;
   width: 6px;
   z-index: 1;
 }

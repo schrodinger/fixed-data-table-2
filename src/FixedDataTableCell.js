@@ -226,8 +226,8 @@ class FixedDataTableCell extends React.Component {
       width: this.props.width,
       left: this.props.left,
       shouldUseLegacyComponents: this.props.shouldUseLegacyComponents,
-      style: style,
-      className: className,
+      style_default: style,
+      className_default: className,
     };
 
     if (props.rowIndex >= 0) {
@@ -296,7 +296,11 @@ class FixedDataTableCell extends React.Component {
       : Cell;
 
     return (
-      <CellComponent className={className} style={style} content={content} />
+      <CellComponent
+        className_default={className}
+        style_default={style}
+        content={content}
+      />
     );
   }
 }

@@ -33,14 +33,14 @@ class ResizeCell extends React.PureComponent {
     } = this.props;
 
     let style = {
-      height: this.props.height,
-      width: this.props.width - BORDER_WIDTH,
+      height: props.height,
+      width: props.width - BORDER_WIDTH,
     };
 
     if (this.context.isRTL) {
-      style.right = this.props.left;
+      style.right = props.left;
     } else {
-      style.left = this.props.left;
+      style.left = props.left;
     }
 
     let content;

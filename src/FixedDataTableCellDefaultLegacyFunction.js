@@ -7,7 +7,9 @@ function CellDefaultLegacy(props) {
     height,
     width,
     style,
+    style_default,
     className,
+    className_default,
     children,
     columnKey,
     columnIndex,
@@ -19,17 +21,17 @@ function CellDefaultLegacy(props) {
     maxWidth,
     minWidth,
     shouldUseLegacyComponents,
-    ...props1
+    ...props_remaining
   } = props;
-  var innerStyle = {
+  let innerStyle = {
     height: props.height,
     width: props.width,
+    ...style,
   };
-  if (props.onColumnReorderEnd !== undefined) innerStyle.left = '12px';
 
   return (
     <div
-      {...props1}
+      {...props_remaining}
       className={joinClasses(
         cx('fixedDataTableCellLayout/wrap'),
         cx('public/fixedDataTableCell/wrap'),

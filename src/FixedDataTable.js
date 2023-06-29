@@ -524,6 +524,8 @@ class FixedDataTable extends React.Component {
      * ```
      */
     rowAttributesGetter: PropTypes.func,
+
+    shouldUseLegacyComponents: PropTypes.bool,
   };
 
   static defaultProps = /*object*/ {
