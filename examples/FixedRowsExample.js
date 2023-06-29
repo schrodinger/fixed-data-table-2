@@ -29,7 +29,7 @@ class FixedRowsExample extends React.Component {
   constructor(props) {
     super(props);
 
-    const dataList = new FakeObjectDataListStore(1000000);
+    const dataList = new FakeObjectDataListStore(100000);
     const fixedRowsCount = 3;
     const topIndexMap = [];
     const bottomIndexMap = [];
@@ -77,6 +77,7 @@ class FixedRowsExample extends React.Component {
           showScrollbarY: false,
           showScrollbarX: false,
           headerHeight,
+          onHorizontalScroll: this.onHorizontalScroll,
           scrollLeft,
         })}
         {this.renderTable(topDataList, {
@@ -84,12 +85,14 @@ class FixedRowsExample extends React.Component {
           showScrollbarY: false,
           showScrollbarX: false,
           headerHeight: 0,
+          onHorizontalScroll: this.onHorizontalScroll,
           scrollLeft,
         })}
         {this.renderTable(middleDataList, {
           height: middleTableHeight,
           showScrollbarX: false,
           headerHeight: 0,
+          onHorizontalScroll: this.onHorizontalScroll,
           scrollLeft,
         })}
         {this.renderTable(bottomDataList, {

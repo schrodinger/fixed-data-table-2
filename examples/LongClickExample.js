@@ -16,7 +16,7 @@ class LongClickExample extends React.Component {
     firstName: 'First Name',
     lastName: 'Last Name',
     city: 'City',
-    street: 'zipCode',
+    zipCode: 'Zip Code',
   };
 
   constructor(props) {
@@ -60,7 +60,7 @@ class LongClickExample extends React.Component {
           key={columnKey}
           columnKey={columnKey}
           flexGrow={2}
-          header={<DataCell>{columns[columnKey]}</DataCell>}
+          header={<DataCell>{this.displayColumns[columnKey]}</DataCell>}
           cell={(cell) => this.getCell(cell.rowIndex, cell.columnKey)}
           width={100}
         />
@@ -77,6 +77,7 @@ class LongClickExample extends React.Component {
       backgroundColor: isCellHighlighted ? 'yellow' : 'transparent',
       width: '100%',
       height: '100%',
+      display: 'block',
     };
 
     return (

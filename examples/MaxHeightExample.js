@@ -13,23 +13,29 @@ class MaxHeightExample extends React.Component {
   constructor(props) {
     super(props);
 
-    this.addRow = this.addRow.bind(this);
     this.state = {
       dataList: new FakeObjectDataListStore(5),
     };
   }
 
-  addRow() {
-    this.setState({
-      dataList: new FakeObjectDataListStore(this.state.dataList.getSize() + 1),
-    });
-  }
+  addRow = () => {
+    this.state.dataList.setSize(this.state.dataList.getSize() + 1);
+    this.forceUpdate();
+  };
+
+  resetRows = () => {
+    this.state.dataList.setSize(5);
+    this.forceUpdate();
+  };
 
   render() {
     const { dataList } = this.state;
     return (
       <div>
         <a onClick={this.addRow}>Add Row</a>
+        <a style={{ marginLeft: 100 }} onClick={this.resetRows}>
+          Reset Rows
+        </a>
         <br />
         <Table
           rowHeight={50}
