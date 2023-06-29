@@ -168,6 +168,11 @@ class FixedDataTableColumn extends React.Component {
      * rendering if none of it's passed in props have changed
      */
     pureRendering: PropTypes.bool,
+
+    /**
+     * Additional classnames to be added to cells under this column.
+     */
+    cellClassName: PropTypes.string,
   };
 
   static defaultProps = {

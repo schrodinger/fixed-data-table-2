@@ -17,7 +17,7 @@ class OwnerExample extends React.Component {
     this.onScroll = this.onScroll.bind(this);
     this.state = {
       dataList: new FakeObjectDataListStore(100),
-      scrollY: 0,
+      pageYOffset: 0,
     };
   }
 
