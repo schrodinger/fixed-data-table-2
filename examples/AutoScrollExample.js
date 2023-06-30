@@ -14,7 +14,6 @@ import joinClasses from '../src/vendor_upstream/core/joinClasses';
 class AutoScrollExample extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       dataList: new FakeObjectDataListStore(10000),
       scrollTop: 0,
@@ -25,17 +24,28 @@ class AutoScrollExample extends React.Component {
       columns: [],
       columnGroups: [],
       columnsCount: 10000,
+      shouldUseLegacyComponents: false, //we have to pass this as a prop to FixedDataTableContainer
     };
-    const cellRenderer2 = (props) => (
+    // let shouldUseLegacyComponents=false;
+    // this.cellRenderer_datacell= this.cellRenderer_datacell(this);
+    //these are legacy function because we are already providing the styles in FixedDataTableCell for this so there is no need of any div here
+    const cellRenderer_legacy = (props) =>
+      `${props.columnKey}, ${props.rowIndex}`;
+
+    const headerCellRenderer_legacy = (props) => props.columnKey;
+
+    const cellRenderer_datacell = (props) => (
       <DataCell {...props}>
         {props.columnKey},{props.rowIndex}
       </DataCell>
     );
-    const cellRenderer = (props) => (
+    const cellRenderer_div = (props) => (
       <div style={props.style_default} className={props.className_default}>
         {props.columnKey}, {props.rowIndex}
       </div>
     );
+    //user can pass any function as here we passed cellRenderer_div
+    //we have to pass the default styles which we were earlier providing in the FixedDataTableCell div
 
     const headerCellRenderer = (props) => (
       <DataCell {...props}>{props.columnKey}</DataCell>
@@ -46,8 +56,14 @@ class AutoScrollExample extends React.Component {
       this.state.columns[i] = {
         columnKey: 'Column ' + i,
         columnGroupIndex,
-        header: headerCellRenderer,
-        cell: i % 2 ? cellRenderer : cellRenderer2,
+        header: this.state.shouldUseLegacyComponents
+          ? headerCellRenderer_legacy
+          : headerCellRenderer,
+        cell: this.state.shouldUseLegacyComponents
+          ? cellRenderer_legacy
+          : i % 2
+          ? cellRenderer_datacell
+          : cellRenderer_div,
         width: 100,
         allowCellsRecycling: true,
         fixed: i < 2 ? true : false,
@@ -136,6 +152,7 @@ class AutoScrollExample extends React.Component {
         columnsCount={this.state.columnsCount}
         getColumn={(i) => this.state.columns[i]}
         getColumnGroup={(i) => this.state.columnGroups[i]}
+        shouldUseLegacyComponents={this.state.shouldUseLegacyComponents}
         {...this.props}
       />
     );
