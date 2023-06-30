@@ -1,7 +1,7 @@
 import React from 'react';
-import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
-import cx from './vendor_upstream/stubs/cx';
-import joinClasses from './vendor_upstream/core/joinClasses';
+import FixedDataTableTranslateDOMPosition from '../FixedDataTableTranslateDOMPosition';
+import cx from '../vendor_upstream/stubs/cx';
+import joinClasses from '../vendor_upstream/core/joinClasses';
 
 function Row(props) {
   const subRowHeight = props.subRowHeight || 0;

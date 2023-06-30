@@ -15,8 +15,8 @@ import PropTypes from 'prop-types';
 
 import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
-import CellDefault from './FixedDataTableCellDefaultFunction';
-import CellDefaultLegacy from './FixedDataTableCellDefaultLegacyFunction';
+import CellDefault from './hoc_components/FixedDataTableCellDefaultFunction';
+import CellDefaultLegacy from './hoc_components/FixedDataTableCellDefaultLegacyFunction';
 
 /**
  * Component that handles default cell layout and styling.

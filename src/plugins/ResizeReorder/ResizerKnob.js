@@ -19,8 +19,8 @@ import clamp from '../../vendor_upstream/core/clamp';
 import DOMMouseMoveTracker from '../../vendor_upstream/dom/DOMMouseMoveTracker';
 import _ from 'lodash';
 import PropTypes, { element } from 'prop-types';
-import ResizerKnobFunction from './ResizerKnobFunction';
-import ResizerKnobLegacyFunction from './ResizerKnobLegacyFunction';
+import ResizerKnobFunction from '../../hoc_components/ResizerKnobFunction';
+import ResizerKnobLegacyFunction from '../../hoc_components/ResizerKnobLegacyFunction';
 
 class ResizerKnob extends React.PureComponent {
   initialState = {

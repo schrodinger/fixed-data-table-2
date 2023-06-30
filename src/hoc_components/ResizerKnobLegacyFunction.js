@@ -1,13 +1,10 @@
 import React from 'react';
-import cx from '../../vendor_upstream/stubs/cx';
+import cx from '../vendor_upstream/stubs/cx';
 
-function ResizerKnobFunction(props) {
+function ResizerKnobLegacyFunction(props) {
   const resizerKnobStyle = {
     height: props.height,
-    left:
-      props.onColumnReorderEnd === undefined
-        ? props.left + props.width - 6
-        : props.width - 6,
+    right: '0px',
   };
   return (
     <div
@@ -23,4 +20,4 @@ function ResizerKnobFunction(props) {
     </div>
   );
 }
-export default ResizerKnobFunction;
+export default ResizerKnobLegacyFunction;

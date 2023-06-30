@@ -20,8 +20,8 @@ import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-com
 import ReorderCell from './plugins/ResizeReorder/ReorderCell';
 import ResizeCell from './plugins/ResizeReorder/ResizeCell';
 import { CellGroupType } from './enums/CellGroup';
-import Cell from './FixedDataTableCellFunction';
-import CellLegacy from './FixedDataTableCellLegacyFunction';
+import Cell from './hoc_components/FixedDataTableCellFunction';
+import CellLegacy from './hoc_components/FixedDataTableCellLegacyFunction';
 
 class FixedDataTableCell extends React.Component {
   /**

@@ -19,8 +19,8 @@ import cx from './vendor_upstream/stubs/cx';
 
 import FixedDataTableCellGroup from './FixedDataTableCellGroup';
 import { CellGroupType } from './enums/CellGroup';
-import Row from './FixedDataTableRowFunction';
-import RowLegacy from './FixedDataTableRowLegacyFunction';
+import Row from './hoc_components/FixedDataTableRowFunction';
+import RowLegacy from './hoc_components/FixedDataTableRowLegacyFunction';
 
 // .fixedDataTableLayout/header border-bottom-width
 var HEADER_BORDER_BOTTOM_WIDTH = 1;

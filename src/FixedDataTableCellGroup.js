@@ -18,8 +18,8 @@ import PropTypes from 'prop-types';
 import FixedDataTableCell from './FixedDataTableCell';
 import _ from 'lodash';
 import inRange from 'lodash/inRange';
-import CellGroup from './FixedDataCellGroupFunction';
-import CellGroupLegacy from './FixedDataCellGroupLegacyFunction';
+import CellGroup from './hoc_components/FixedDataCellGroupFunction';
+import CellGroupLegacy from './hoc_components/FixedDataCellGroupLegacyFunction';
 
 class FixedDataTableCellGroup extends React.Component {
   /**

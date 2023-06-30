@@ -1,6 +1,6 @@
 import React from 'react';
-import cx from './vendor_upstream/stubs/cx';
-import joinClasses from './vendor_upstream/core/joinClasses';
+import cx from '../vendor_upstream/stubs/cx';
+import joinClasses from '../vendor_upstream/core/joinClasses';
 
 function CellDefault(props) {
   var {

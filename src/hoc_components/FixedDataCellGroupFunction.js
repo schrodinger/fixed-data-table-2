@@ -1,6 +1,6 @@
 import React from 'react';
-import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
-import cx from './vendor_upstream/stubs/cx';
+import FixedDataTableTranslateDOMPosition from '../FixedDataTableTranslateDOMPosition';
+import cx from '../vendor_upstream/stubs/cx';
 
 function CellGroup(props) {
   var style = {
