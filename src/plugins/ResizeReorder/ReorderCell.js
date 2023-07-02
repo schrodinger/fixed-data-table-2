@@ -93,6 +93,7 @@ class ReorderCell extends React.PureComponent {
       height: props.height,
       width: props.width,
     };
+
     if (!this.props.shouldUseLegacyComponents) {
       style.left = left;
       style.position = 'absolute';

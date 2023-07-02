@@ -76,6 +76,8 @@ class FixedDataTableCellDefault extends React.Component {
     var {
       height,
       width,
+      style_default,
+      className_default,
       style,
       className,
       children,
@@ -94,8 +96,10 @@ class FixedDataTableCellDefault extends React.Component {
     var innerStyle = {
       height,
       width,
+      ...style_default,
       ...style,
     };
+    if (props.onColumnReorderEnd !== undefined) innerStyle.left = '3px';
 
     return (
       <div
@@ -103,7 +107,8 @@ class FixedDataTableCellDefault extends React.Component {
         className={joinClasses(
           cx('fixedDataTableCellLayout/wrap1'),
           cx('public/fixedDataTableCell/wrap1'),
-          className
+          className,
+          className_default
         )}
         style={innerStyle}
       >

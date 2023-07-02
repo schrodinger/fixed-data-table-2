@@ -11,6 +11,7 @@
     "@reduxjs/toolkit": "^1.5.1",
     "lodash": "^4.17.4",
     "prop-types": "^15.7.2",
+    "react-fps": "^1.0.6",
     "react-lifecycles-compat": "^3.0.4",
     "react-portal": "^4.2.1",
     "redux": "^4.0.1",
