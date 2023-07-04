@@ -98,10 +98,10 @@ class ReorderCell extends React.PureComponent {
     };
 
     if (!this.props.shouldUseLegacyComponents) {
-      style.left = left;
+      if (left === undefined) style.display = 'none';
+      else style.left = left;
       style.position = 'absolute';
     } else style.width = style.width - BORDER_WIDTH;
-
     let content;
     if (React.isValidElement(children)) {
       content = React.cloneElement(children, this.props);
