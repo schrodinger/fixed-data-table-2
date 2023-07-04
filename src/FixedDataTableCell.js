@@ -216,6 +216,8 @@ class FixedDataTableCell extends React.Component {
       props.className
     );
 
+    const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
+
     var cellProps = {
       isHeader: this.props.isHeader,
       isGroupHeader: this.props.isGroupHeader,
@@ -226,8 +228,9 @@ class FixedDataTableCell extends React.Component {
       width: this.props.width,
       left: this.props.left,
       shouldUseLegacyComponents: this.props.shouldUseLegacyComponents,
-      style_default: style,
-      className_default: className,
+      styleDefault: style,
+      classNameDefault: className,
+      role: role,
     };
 
     if (props.rowIndex >= 0) {
@@ -291,15 +294,17 @@ class FixedDataTableCell extends React.Component {
         </FixedDataTableCellDefaultDeprecated>
       );
     }
+
     const CellComponent = this.props.shouldUseLegacyComponents
       ? CellLegacy
       : Cell;
 
     return (
       <CellComponent
-        className_default={className}
-        style_default={style}
+        classNameDefault={className}
+        styleDefault={style}
         content={content}
+        role={role}
       />
     );
   }

@@ -3,13 +3,13 @@ import cx from '../vendor_upstream/stubs/cx';
 import joinClasses from '../vendor_upstream/core/joinClasses';
 
 function CellDefault(props) {
-  var {
+  const {
     height,
     width,
     style,
-    style_default,
+    styleDefault,
     className,
-    className_default,
+    classNameDefault,
     children,
     columnKey,
     columnIndex,
@@ -22,25 +22,26 @@ function CellDefault(props) {
     minWidth,
     onColumnReorderStart,
     shouldUseLegacyComponents,
-    ...props_remaining
+    onColumnReorderEnd,
+    ...propsRemaining
   } = props;
-  var innerStyle = {
+  const innerStyle = {
     height: props.height,
     width: props.width,
-    ...props.style_default,
+    ...props.styleDefault,
     ...props.style,
   };
   if (props.onColumnReorderEnd !== undefined) innerStyle.left = '12px';
 
   return (
     <div
-      {...props_remaining}
+      {...propsRemaining}
       className={joinClasses(
         cx('fixedDataTableCellLayout/wrap'),
         cx('public/fixedDataTableCell/wrap'),
         cx('public/fixedDataTableCell/cellContent'),
         props.className,
-        props.className_default
+        props.classNameDefault
       )}
       style={innerStyle}
     >

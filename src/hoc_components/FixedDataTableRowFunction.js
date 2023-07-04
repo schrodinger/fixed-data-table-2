@@ -5,7 +5,7 @@ import joinClasses from '../vendor_upstream/core/joinClasses';
 
 function Row(props) {
   const subRowHeight = props.subRowHeight || 0;
-  let style = {
+  const style = {
     width: props.width,
     height: props.height + subRowHeight,
     zIndex: props.zIndex ? props.zIndex : 0,
@@ -22,7 +22,7 @@ function Row(props) {
     props.isRTL
   );
 
-  let className = cx({
+  const className = cx({
     'fixedDataTableRowLayout/main': true,
     'public/fixedDataTableRow/main': true,
     'public/fixedDataTableRow/highlighted': props.index % 2 === 1,

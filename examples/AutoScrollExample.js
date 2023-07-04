@@ -26,25 +26,23 @@ class AutoScrollExample extends React.Component {
       columnsCount: 10000,
       shouldUseLegacyComponents: false, //we have to pass this as a prop to FixedDataTableContainer
     };
-    // let shouldUseLegacyComponents=false;
-    // this.cellRenderer_datacell= this.cellRenderer_datacell(this);
     //these are legacy function because we are already providing the styles in FixedDataTableCell for this so there is no need of any div here
-    const cellRenderer_legacy = (props) =>
+    const cellRendererLegacy = (props) =>
       `${props.columnKey}, ${props.rowIndex}`;
 
-    const headerCellRenderer_legacy = (props) => props.columnKey;
+    const headercellRendererLegacy = (props) => props.columnKey;
 
-    const cellRenderer_datacell = (props) => (
+    const cellRendererDatacell = (props) => (
       <DataCell {...props}>
         {props.columnKey},{props.rowIndex}
       </DataCell>
     );
-    const cellRenderer_div = (props) => (
-      <div style={props.style_default} className={props.className_default}>
+    const cellRendererDiv = (props) => (
+      <div style={props.styleDefault} className={props.classNameDefault}>
         {props.columnKey}, {props.rowIndex}
       </div>
     );
-    //user can pass any function as here we passed cellRenderer_div
+    //user can pass any function as here we passed cellRendererDiv
     //we have to pass the default styles which we were earlier providing in the FixedDataTableCell div
 
     const headerCellRenderer = (props) => (
@@ -57,13 +55,13 @@ class AutoScrollExample extends React.Component {
         columnKey: 'Column ' + i,
         columnGroupIndex,
         header: this.state.shouldUseLegacyComponents
-          ? headerCellRenderer_legacy
+          ? headercellRendererLegacy
           : headerCellRenderer,
         cell: this.state.shouldUseLegacyComponents
-          ? cellRenderer_legacy
+          ? cellRendererLegacy
           : i % 2
-          ? cellRenderer_datacell
-          : cellRenderer_div,
+          ? cellRendererDatacell
+          : cellRendererDiv,
         width: 100,
         allowCellsRecycling: true,
         fixed: i < 2 ? true : false,

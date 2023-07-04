@@ -3,7 +3,7 @@ import FixedDataTableTranslateDOMPosition from '../FixedDataTableTranslateDOMPos
 import cx from '../vendor_upstream/stubs/cx';
 
 function CellGroup(props) {
-  var style = {
+  const style = {
     height: props.cellGroupWrapperHeight || props.height,
     position: 'absolute',
     width: props.contentWidth,

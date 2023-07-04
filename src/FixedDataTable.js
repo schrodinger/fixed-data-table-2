@@ -525,6 +525,9 @@ class FixedDataTable extends React.Component {
      */
     rowAttributesGetter: PropTypes.func,
 
+    /**
+     * Whether user wants to use Legacy components or the non Legacy Components
+     */
     shouldUseLegacyComponents: PropTypes.bool,
   };
 

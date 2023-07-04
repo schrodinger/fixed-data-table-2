@@ -3,13 +3,13 @@ import cx from '../vendor_upstream/stubs/cx';
 import joinClasses from '../vendor_upstream/core/joinClasses';
 
 function CellDefaultLegacy(props) {
-  var {
+  const {
     height,
     width,
     style,
-    style_default,
+    styleDefault,
     className,
-    className_default,
+    classNameDefault,
     children,
     columnKey,
     columnIndex,
@@ -21,9 +21,10 @@ function CellDefaultLegacy(props) {
     maxWidth,
     minWidth,
     shouldUseLegacyComponents,
-    ...props_remaining
+    onColumnReorderEnd,
+    ...propsRemaining
   } = props;
-  let innerStyle = {
+  const innerStyle = {
     height: props.height,
     width: props.width,
     ...style,
@@ -31,7 +32,7 @@ function CellDefaultLegacy(props) {
 
   return (
     <div
-      {...props_remaining}
+      {...propsRemaining}
       className={joinClasses(
         cx('fixedDataTableCellLayout/wrap'),
         cx('public/fixedDataTableCell/wrap'),

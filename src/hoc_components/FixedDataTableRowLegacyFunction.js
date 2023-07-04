@@ -5,26 +5,26 @@ import joinClasses from '../vendor_upstream/core/joinClasses';
 
 function RowLegacy(props) {
   const subRowHeight = props.subRowHeight || 0;
-  let style_wrapper = {
+  const styleWrapper = {
     width: props.width,
     height: props.height,
     zIndex: props.zIndex ? props.zIndex : 0,
   };
   if (!props.visible) {
-    style_wrapper.display = 'none';
+    styleWrapper.display = 'none';
   }
   FixedDataTableTranslateDOMPosition(
-    style_wrapper,
+    styleWrapper,
     0,
     props.offsetTop || 0,
     props._initialRender,
     props.isRTL
   );
-  const style_inner = {
+  const styleInner = {
     width: props.width,
     height: props.height + subRowHeight,
   };
-  let className = cx({
+  const className = cx({
     'fixedDataTableRowLayout/main': true,
     'public/fixedDataTableRow/main': true,
     'public/fixedDataTableRow/highlighted': props.index % 2 === 1,
@@ -33,7 +33,7 @@ function RowLegacy(props) {
   });
   return (
     <div
-      style={style_wrapper}
+      style={styleWrapper}
       className={cx('fixedDataTableRowLayout/rowWrapper')}
     >
       <div
@@ -53,7 +53,7 @@ function RowLegacy(props) {
         onTouchStart={props.onTouchStart ? props._onTouchStart : null}
         onTouchEnd={props.onTouchEnd ? props._onTouchEnd : null}
         onTouchMove={props.onTouchMove ? props._onTouchMove : null}
-        style={style_inner}
+        style={styleInner}
       >
         <div className={cx('fixedDataTableRowLayout/body')}>
           {props.fixedColumns}

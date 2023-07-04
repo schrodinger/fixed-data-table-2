@@ -2,25 +2,25 @@ import React from 'react';
 import FixedDataTableTranslateDOMPosition from '../FixedDataTableTranslateDOMPosition';
 import cx from '../vendor_upstream/stubs/cx';
 function CellGroupLegacy(props) {
-  let style_wrapper = {
+  const styleWrapper = {
     height: props.cellGroupWrapperHeight || props.height,
     width: props.width,
   };
 
   if (props.isRTL) {
-    style_wrapper.right = props.offsetLeft;
+    styleWrapper.right = props.offsetLeft;
   } else {
-    style_wrapper.left = props.offsetLeft;
+    styleWrapper.left = props.offsetLeft;
   }
 
-  let style_inner = {
+  const styleInner = {
     height: props.height,
     position: 'absolute',
     width: props.contentWidth,
     zIndex: props.zIndex,
   };
   FixedDataTableTranslateDOMPosition(
-    style_inner,
+    styleInner,
     -1 * props.left,
     0,
     props._initialRender,
@@ -29,12 +29,12 @@ function CellGroupLegacy(props) {
 
   return (
     <div
-      style={style_wrapper}
+      style={styleWrapper}
       className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}
     >
       <div
         className={cx('fixedDataTableCellGroupLayout/cellGroup')}
-        style={style_inner}
+        style={styleInner}
       >
         {props.sortedCells}
       </div>
