@@ -30,7 +30,7 @@ class FixedDataTableContainer extends React.Component {
     defaultScrollbars: true,
     scrollbarXHeight: Scrollbar.SIZE,
     scrollbarYWidth: Scrollbar.SIZE,
-    shouldUseLegacyComponents: true,
+    shouldUseLegacyComponents: false,
   };
 
   constructor(props) {

@@ -70,6 +70,8 @@ class ReorderCell extends React.PureComponent {
       onColumnReorderStart,
       onColumnReorderEnd,
       reorderStartEvent,
+      style_default,
+      className_default,
       ...props
     } = this.props;
 
@@ -79,7 +81,8 @@ class ReorderCell extends React.PureComponent {
       cx({
         'public/fixedDataTableCell/resizeReorderCellContainer': true,
       }),
-      props.className
+      props.className,
+      className_default
     );
 
     const reorderClasses = joinClasses(
