@@ -198,7 +198,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     return (
       <FixedDataTableCell
-        columnIndex={columnIndex}
+        columnIndex={columnProps.index}
         isScrolling={this.props.isScrolling}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
         isHeader={this.props.isHeader}
@@ -207,7 +207,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
         className={className}
         height={this.props.rowHeight}
         key={key}
-        columnIndex={columnIndex}
         maxWidth={columnProps.maxWidth}
         minWidth={columnProps.minWidth}
         touchEnabled={this.props.touchEnabled}
