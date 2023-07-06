@@ -54,6 +54,7 @@ export function getScrollableColumn(state, localColIdx) {
       _.get(storedColumnGroup, 'props.lastChildIdx'),
     ]);
 
+    columnGroup.props.width = _.get(storedColumnGroup, 'props.width');
     columnGroup.props.index = columnGroupIndex;
 
     // cache the column group
