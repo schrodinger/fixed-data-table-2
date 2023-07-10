@@ -131,20 +131,20 @@ class FixedDataTableCellGroupImpl extends React.Component {
     }
 
     for (let i = 0; i < this._staticCells.length; i++) {
-      let columnIndex = columnsToRender[i];
+      let localColumnIndex = columnsToRender[i];
 
-      if (columnIndex === undefined) {
+      if (localColumnIndex === undefined) {
         // if the column index doesn't exist in the buffer set, then take the index from the previous render
-        columnIndex =
-          this._staticCells[i] && this._staticCells[i].props.columnIndex;
+        localColumnIndex =
+          this._staticCells[i] && this._staticCells[i].props.localColumnIndex;
       }
 
-      if (_.isNil(columns[columnIndex])) {
+      if (_.isNil(columns[localColumnIndex])) {
         this._staticCells[i] = null;
         continue;
       }
 
-      this._staticCells[i] = this._renderCell(i, columnIndex);
+      this._staticCells[i] = this._renderCell(i, localColumnIndex);
     }
 
     var style = {
@@ -163,7 +163,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     // NOTE (pradeep): Sort the cells by column index so that they appear with the right order in the DOM (see #221)
     const sortedCells = _.sortBy(this._staticCells, (cell) =>
-      _.get(cell, 'props.columnIndex', Infinity)
+      _.get(cell, 'props.localColumnIndex', Infinity)
     );
 
     return (
@@ -176,15 +176,15 @@ class FixedDataTableCellGroupImpl extends React.Component {
     );
   }
 
-  _renderCell = (/*number*/ key, /*number*/ columnIndex) /*object*/ => {
+  _renderCell = (/*number*/ key, /*number*/ localColumnIndex) /*object*/ => {
     const visible = inRange(
-      columnIndex,
+      localColumnIndex,
       this.props.firstViewportColumnIndex,
       this.props.endViewportColumnIndex
     );
-    const columnProps = this.props.columns[columnIndex].props;
+    const columnProps = this.props.columns[localColumnIndex].props;
     const cellTemplate =
-      this.props.columns[columnIndex].templates[this.props.template];
+      this.props.columns[localColumnIndex].templates[this.props.template];
 
     var className = columnProps.cellClassName;
     var pureRendering = columnProps.pureRendering || false;
@@ -198,6 +198,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     return (
       <FixedDataTableCell
+        localColumnIndex={localColumnIndex}
         columnIndex={columnProps.index}
         isScrolling={this.props.isScrolling}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
@@ -215,7 +216,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         rowIndex={this.props.rowIndex}
         columnKey={columnProps.columnKey}
         width={columnProps.width}
-        left={this.props.columnOffsets[columnIndex]}
+        left={this.props.columnOffsets[localColumnIndex]}
         cell={cellTemplate}
         pureRendering={pureRendering}
         isRTL={this.props.isRTL}
