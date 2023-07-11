@@ -82,8 +82,8 @@ class ScrollToColumnExample extends React.Component {
             width={200}
           />
           <Column
-            columnKey="bs"
-            header={<DataCell>BS [5]</DataCell>}
+            columnKey="buzzPhrase"
+            header={<DataCell>Buzz Phrase [5]</DataCell>}
             cell={<TextCell data={filteredDataList} />}
             width={200}
           />

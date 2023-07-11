@@ -56,9 +56,11 @@ class AutoScrollExample extends React.Component {
         return;
       }
       this.setState((prevState) => ({
-        scrollTop: prevState.scrollTop + (prevState.verticalScrollDelta || 0),
+        scrollTop:
+          prevState.scrollTop + (parseInt(prevState.verticalScrollDelta) || 0),
         scrollLeft:
-          prevState.scrollLeft + (prevState.horizontalScrollDelta || 0),
+          prevState.scrollLeft +
+          (parseInt(prevState.horizontalScrollDelta) || 0),
       }));
     }, 16);
   }
@@ -151,22 +153,14 @@ class AutoScrollExample extends React.Component {
   }
 
   setHorizontalScrollDelta(event) {
-    const { value } = event.target;
-    if (isNaN(value)) {
-      return;
-    }
     this.setState({
-      horizontalScrollDelta: parseInt(value),
+      horizontalScrollDelta: event.target.value,
     });
   }
 
   setVerticalScrollDelta(event) {
-    const { value } = event.target;
-    if (isNaN(value)) {
-      return;
-    }
     this.setState({
-      verticalScrollDelta: parseInt(value),
+      verticalScrollDelta: event.target.value,
     });
   }
 }

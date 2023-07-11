@@ -9,11 +9,13 @@
  * @providesModule nativeRequestAnimationFrame
  */
 
+import globalThis from './globalThisPolyfill';
+
 const nativeRequestAnimationFrame =
-  global.requestAnimationFrame ||
-  global.webkitRequestAnimationFrame ||
-  global.mozRequestAnimationFrame ||
-  global.oRequestAnimationFrame ||
-  global.msRequestAnimationFrame;
+  globalThis.requestAnimationFrame ||
+  globalThis.webkitRequestAnimationFrame ||
+  globalThis.mozRequestAnimationFrame ||
+  globalThis.oRequestAnimationFrame ||
+  globalThis.msRequestAnimationFrame;
 
 export default nativeRequestAnimationFrame;

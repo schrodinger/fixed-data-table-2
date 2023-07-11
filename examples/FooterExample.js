@@ -14,7 +14,7 @@ class FooterExample extends React.Component {
     super(props);
 
     this.state = {
-      dataList: new FakeObjectDataListStore(5),
+      dataList: new FakeObjectDataListStore(100),
     };
   }
 
