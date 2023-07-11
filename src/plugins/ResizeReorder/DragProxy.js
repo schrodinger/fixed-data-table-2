@@ -260,8 +260,8 @@ class DragProxy extends React.PureComponent {
     }
 
     const columnCount = this.props.isGroupHeader
-      ? this.context.getColumnGroupCount(cellGroupType)
-      : this.context.getColumnCount(cellGroupType);
+      ? this.context.getColumnGroupCount()
+      : this.context.getColumnCount();
     let columnBefore;
     let columnAfter;
 

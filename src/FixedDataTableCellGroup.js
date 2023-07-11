@@ -128,7 +128,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
       if (!recyclable || isHorizontallyVisible) {
         const key = columnProps.columnKey || 'cell_' + i;
         cells[i] = this._renderCell(
-          i,
           props.rowIndex,
           props.rowHeight,
           columnProps,
@@ -165,7 +164,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
   }
 
   _renderCell = (
-    /*number*/ columnIndex,
     /*number*/ rowIndex,
     /*number*/ height,
     /*object*/ columnProps,
@@ -186,7 +184,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     return (
       <FixedDataTableCell
-        columnIndex={columnIndex}
+        columnIndex={columnProps.index}
         isScrolling={this.props.isScrolling}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
         isHeader={this.props.isHeader}

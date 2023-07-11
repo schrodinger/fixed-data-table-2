@@ -17,14 +17,14 @@ describe('columnWidths', function () {
 
     const fixedGroup1 = [
       {
-        id: 2,
+        id: 1,
         fixed: true,
         flexGrow: 10,
         width: 50,
         groupIdx: 0,
       },
       {
-        id: 4,
+        id: 2,
         fixed: true,
         width: 60,
         groupIdx: 0,
@@ -32,13 +32,13 @@ describe('columnWidths', function () {
     ];
     const fixedGroup2 = [
       {
-        id: 5,
+        id: 3,
         fixed: true,
         width: 90,
         groupIdx: 2,
       },
       {
-        id: 7,
+        id: 4,
         fixed: true,
         width: 10,
         groupIdx: 2,
@@ -46,14 +46,14 @@ describe('columnWidths', function () {
     ];
     const scrollableGroup1 = [
       {
-        id: 1,
+        id: 5,
         fixed: false,
         flexGrow: 5,
         width: 50,
         groupIdx: 1,
       },
       {
-        id: 3,
+        id: 6,
         fixed: false,
         flexGrow: 10,
         width: 20,
@@ -62,7 +62,7 @@ describe('columnWidths', function () {
     ];
     const scrollableGroup2 = [
       {
-        id: 6,
+        id: 7,
         fixed: false,
         flexGrow: 1,
         width: 100,
@@ -107,15 +107,15 @@ describe('columnWidths', function () {
       );
     assert.deepEqual(
       columnProps.map((column) => column.id),
-      [2, 4, 1, 3, 5, 7, 6]
+      [1, 2, 3, 4, 5, 6, 7]
     );
     assert.deepEqual(
       fixedColumns.map((column) => column.id),
-      [2, 4, 5, 7]
+      [1, 2, 3, 4]
     );
     assert.deepEqual(
       scrollableColumns.map((column) => column.id),
-      [1, 3, 6]
+      [5, 6, 7]
     );
   });
 
@@ -131,11 +131,11 @@ describe('columnWidths', function () {
 
     assert.deepEqual(
       columnGroupProps.map((column) => column.width),
-      [110, 70, 100, 100]
+      [110, 100, 70, 100]
     );
     assert.deepEqual(
       columnProps.map((column) => column.width),
-      [50, 60, 50, 20, 90, 10, 100]
+      [50, 60, 90, 10, 50, 20, 100]
     );
     assert.deepEqual(
       fixedColumns.map((column) => column.width),
@@ -161,11 +161,11 @@ describe('columnWidths', function () {
 
     assert.deepEqual(
       columnGroupProps.map((column) => column.width),
-      [110 + 100, 70 + 150, 100, 100 + 10]
+      [110 + 100, 100, 70 + 150, 100 + 10]
     );
     assert.deepEqual(
       columnProps.map((column) => column.width),
-      [50 + 100, 60, 50 + 50, 20 + 100, 90, 10, 100 + 10]
+      [50 + 100, 60, 90, 10, 50 + 50, 20 + 100, 100 + 10]
     );
     assert.deepEqual(
       fixedColumns.map((column) => column.width),
@@ -192,11 +192,11 @@ describe('columnWidths', function () {
 
     assert.deepEqual(
       columnGroupProps.map((column) => column.width),
-      [110 + 100, 70 + 150, 100, 100 + 11]
+      [110 + 100, 100, 70 + 150, 100 + 11]
     );
     assert.deepEqual(
       columnProps.map((column) => column.width),
-      [50 + 100, 60, 50 + 50, 20 + 100, 90, 10, 100 + 11]
+      [50 + 100, 60, 90, 10, 50 + 50, 20 + 100, 100 + 11]
     );
     assert.deepEqual(
       fixedColumns.map((column) => column.width),
