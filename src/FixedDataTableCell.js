@@ -76,6 +76,11 @@ class FixedDataTableCell extends React.Component {
     isRTL: PropTypes.bool,
 
     /**
+     * Whether this cell is visible (i.e, inside the viewport) or not.
+     */
+    isVisible: PropTypes.bool.isRequired,
+
+    /**
      * @deprecated
      *
      * Callback that is called when resizer has been released
@@ -128,7 +133,11 @@ class FixedDataTableCell extends React.Component {
   };
 
   shouldComponentUpdate(nextProps) {
-    if (nextProps.isScrolling && this.props.rowIndex === nextProps.rowIndex) {
+    if (
+      nextProps.isScrolling &&
+      this.props.rowIndex === nextProps.rowIndex &&
+      this.props.isVisible === nextProps.isVisible
+    ) {
       return false;
     }
 
@@ -165,6 +174,7 @@ class FixedDataTableCell extends React.Component {
       height,
       width,
       columnIndex,
+      isVisible,
       columnKey,
       isHeaderOrFooter,
       ...props
@@ -203,6 +213,7 @@ class FixedDataTableCell extends React.Component {
       height: this.props.height,
       width: this.props.width,
       left: this.props.left,
+      isVisible,
     };
 
     if (props.rowIndex >= 0) {

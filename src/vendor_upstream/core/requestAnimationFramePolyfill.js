@@ -11,6 +11,7 @@
 
 import emptyFunction from './emptyFunction';
 import nativeRequestAnimationFrame from './nativeRequestAnimationFrame';
+import globalThis from './globalThisPolyfill';
 
 let lastTime = 0;
 
@@ -24,7 +25,7 @@ const requestAnimationFrame =
     const currTime = Date.now();
     const timeDelay = Math.max(0, 16 - (currTime - lastTime));
     lastTime = currTime + timeDelay;
-    return global.setTimeout(function () {
+    return globalThis.setTimeout(function () {
       callback(Date.now());
     }, timeDelay);
   };

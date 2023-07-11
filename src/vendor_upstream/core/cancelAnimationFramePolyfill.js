@@ -9,16 +9,18 @@
  * @providesModule cancelAnimationFramePolyfill
  */
 
+import globalThis from './globalThisPolyfill';
+
 /**
  * Here is the native and polyfill version of cancelAnimationFrame.
  * Please don't use it directly and use cancelAnimationFrame module instead.
  */
 const cancelAnimationFrame =
-  global.cancelAnimationFrame ||
-  global.webkitCancelAnimationFrame ||
-  global.mozCancelAnimationFrame ||
-  global.oCancelAnimationFrame ||
-  global.msCancelAnimationFrame ||
-  global.clearTimeout;
+  globalThis.cancelAnimationFrame ||
+  globalThis.webkitCancelAnimationFrame ||
+  globalThis.mozCancelAnimationFrame ||
+  globalThis.oCancelAnimationFrame ||
+  globalThis.msCancelAnimationFrame ||
+  globalThis.clearTimeout;
 
 export default cancelAnimationFrame;

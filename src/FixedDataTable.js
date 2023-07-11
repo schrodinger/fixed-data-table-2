@@ -508,43 +508,77 @@ class FixedDataTable extends React.Component {
     this._didScrollStop = debounceCore(this._didScrollStopSync, 200, this);
     this._onKeyDown = this._onKeyDown.bind(this);
 
-    this._wheelHandler = new ReactWheelHandler(
-      this._onScroll,
-      this._shouldHandleWheelX,
-      this._shouldHandleWheelY,
-      this.props.isRTL,
-      this.props.stopScrollDefaultHandling,
-      this.props.stopScrollPropagation
-    );
-
-    this._touchHandler = new ReactTouchHandler(
-      this._onScroll,
-      this._shouldHandleTouchX,
-      this._shouldHandleTouchY,
-      this.props.stopScrollDefaultHandling,
-      this.props.stopScrollPropagation
-    );
+    this._setupHandlers();
   }
 
   componentWillUnmount() {
-    // TODO (pradeep): Remove these and pass to our table component directly after
-    // React provides an API where event handlers can be specified to be non-passive (facebook/react#6436)
-    this._divRef &&
-      this._divRef.removeEventListener('wheel', this._wheelHandler.onWheel, {
-        passive: false,
-      });
-    this._divRef &&
-      this._divRef.removeEventListener(
-        'touchmove',
-        this._touchHandler.onTouchMove,
-        { passive: false }
-      );
-    this._wheelHandler = null;
-    this._touchHandler = null;
+    this._cleanupHandlers();
 
     // Cancel any pending debounced scroll handling and handle immediately.
     this._didScrollStop.reset();
     this._didScrollStopSync();
+  }
+
+  _setupHandlers() {
+    if (!this._wheelHandler) {
+      this._wheelHandler = new ReactWheelHandler(
+        this._onScroll,
+        this._shouldHandleWheelX,
+        this._shouldHandleWheelY,
+        this.props.isRTL,
+        this.props.stopScrollDefaultHandling,
+        this.props.stopScrollPropagation
+      );
+    }
+
+    if (!this._touchHandler) {
+      this._touchHandler = new ReactTouchHandler(
+        this._onScroll,
+        this._shouldHandleTouchX,
+        this._shouldHandleTouchY,
+        this.props.stopScrollDefaultHandling,
+        this.props.stopScrollPropagation
+      );
+    }
+
+    // TODO (pradeep): Remove these and pass to our table component directly after
+    // React provides an API where event handlers can be specified to be non-passive (facebook/react#6436)
+    if (this._divRef) {
+      this._divRef.addEventListener('wheel', this._wheelHandler.onWheel, {
+        passive: false,
+      });
+    }
+    if (this.props.touchScrollEnabled && this._divRef) {
+      this._divRef.addEventListener(
+        'touchmove',
+        this._touchHandler.onTouchMove,
+        { passive: false }
+      );
+    }
+  }
+
+  _cleanupHandlers() {
+    if (this._wheelHandler) {
+      if (this._divRef) {
+        this._divRef.removeEventListener('wheel', this._wheelHandler.onWheel, {
+          passive: false,
+        });
+      }
+      this._wheelHandler = null;
+    }
+
+    if (this._touchHandler) {
+      if (this._divRef) {
+        this._divRef.removeEventListener(
+          'touchmove',
+          this._touchHandler.onTouchMove,
+          {
+            passive: false,
+          }
+        );
+      }
+      this._touchHandler = null;
+    }
   }
 
   _shouldHandleTouchX = (/*number*/ delta) /*boolean*/ =>
@@ -646,18 +680,7 @@ class FixedDataTable extends React.Component {
   }
 
   componentDidMount() {
-    this._divRef &&
-      this._divRef.addEventListener('wheel', this._wheelHandler.onWheel, {
-        passive: false,
-      });
-    if (this.props.touchScrollEnabled) {
-      this._divRef &&
-        this._divRef.addEventListener(
-          'touchmove',
-          this._touchHandler.onTouchMove,
-          { passive: false }
-        );
-    }
+    this._setupHandlers();
     this._reportContentHeight();
     this._reportScrollBarsUpdates();
   }
@@ -1005,8 +1028,12 @@ class FixedDataTable extends React.Component {
 
   _onRef = (div) => {
     this._divRef = div;
-    if (this.props.stopReactWheelPropagation) {
-      this._wheelHandler.setRoot(div);
+    if (this._wheelHandler) {
+      if (this.props.stopReactWheelPropagation) {
+        this._wheelHandler.setRoot(div);
+      } else {
+        this._wheelHandler.setRoot(null);
+      }
     }
   };
 
