@@ -22,24 +22,24 @@ jobs:
 
     steps:
 
-    # checkout our repo for the current commit
-    - name: Check out repo
-      uses: actions/checkout@v3
+      # checkout our repo for the current commit
+      - name: Check out repo
+        uses: actions/checkout@v3
 
-    # setup specified node version
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
+      # setup specified node version
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
 
-    - name: Install dependencies
-      run: yarn install --frozen-lockfile # do a clean install of all of our dependencies
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile # do a clean install of all of our dependencies
 
-    # build our library to catch any build errors
-    - name: Build!
-      run: yarn run build-dist
+      # build our library to catch any build errors
+      - name: Build!
+        run: yarn run build-dist
 
-    # run all of our tests
-    - name: Test!
-      run: yarn test
+      # run all of our tests
+      - name: Test!
+        run: yarn test
