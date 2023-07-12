@@ -16,29 +16,45 @@ const DOCS_MARKDOWN_FILES = {
   [DocsPages.DOCS.CODEBASE_OVERVIEW
     .location]: require('../../docs/codebase.md'),
 
-  // API
-  [DocsPages.API.TABLE_API.location]: require('../../docs/api/TableAPI.md'),
-  [DocsPages.API.COLUMN_API.location]: require('../../docs/api/ColumnAPI.md'),
-  [DocsPages.API.COLUMNGROUP_API
+  // COMPONENTS
+  [DocsPages.COMPONENTS.TABLE_API
+    .location]: require('../../docs/api/TableAPI.md'),
+  [DocsPages.COMPONENTS.COLUMN_API
+    .location]: require('../../docs/api/ColumnAPI.md'),
+  [DocsPages.COMPONENTS.COLUMNGROUP_API
     .location]: require('../../docs/api/ColumnGroupAPI.md'),
-  [DocsPages.API.CELL_API.location]: require('../../docs/api/CellAPI.md'),
+  [DocsPages.COMPONENTS.CELL_API
+    .location]: require('../../docs/api/CellAPI.md'),
 
-  // Plugins API
-  [DocsPages.PLUGIN_API.REORDERCELL_API
+  // PLUGINS
+  [DocsPages.PLUGINS.REORDERCELL_API
     .location]: require('../../docs/api/ReorderCell.md'),
-  [DocsPages.PLUGIN_API.RESIZECELL_API
+  [DocsPages.PLUGINS.RESIZECELL_API
     .location]: require('../../docs/api/ResizeCell.md'),
+
+  // PUBLIC API
+  [DocsPages.PUBLIC_API.OVERVIEW
+    .location]: require('../../docs/public_api/overview.md'),
+  [DocsPages.PUBLIC_API.GETTING_STARTED
+    .location]: require('../../docs/public_api/getting_started.md'),
+  [DocsPages.PUBLIC_API.API_REFERENCE
+    .location]: require('../../docs/public_api/api_reference.md'),
 };
 
 class DocsPage extends React.Component {
   render() {
     const HTML = DOCS_MARKDOWN_FILES[this.props.page.location];
 
+    let pageClassname = 'pageBody';
+    if (this.props.page.pageClassname) {
+      pageClassname += ' ' + this.props.page.pageClassname;
+    }
+
     return (
       <div className="docsPage">
         <MiniHeader />
 
-        <div className="pageBody" id="body">
+        <div className={pageClassname} id="body">
           <div className="contents">
             <SideBar title="API" pages={DocsPages} page={this.props.page} />
             <StaticHTMLBlock className="docContents" html={HTML} />

@@ -26,21 +26,50 @@ import PropTypes from 'prop-types';
 const BORDER_WIDTH = 1;
 
 /**
- * HOC that enables reordering functionality by rendering a handle, which can be used to drag the cell around.
+ * ![Reorder Cell](../images/ReorderCell.png "Reorder Cell")
  *
- * While dragging takes place, this components rerenders a proxy component into a seperate React root, referred here as the "Drag Proxy".
- * ReorderCell then hides itself, while the Drag Proxy becomes visible and is what the user actually sees and drags around.
+ * Cell HOC that enables reordering functionality by rendering a handle, which can be used to drag the cell around.
  *
- * This ensures that even if ReorderCell unmounts (which can happen when the table scrolls far away), the Drag Proxy
- * which is rendered in a separate React root is still alive, and hence doesn't break dragging functionality.
+ * Example usage:
+ * ```
+ * <Column
+ *   columnKey="firstName"
+ *   header={
+ *     <Plugins.ReorderCell
+ *       onColumnReorderStart={(columnKey) => {
+ *         console.log("Starting reordering:", columnKey);
+ *       }}
+ *       onColumnReorderEnd={(columnBeforeKey, columnAfterKey, reorderColumnKey) => {
+ *         console.log(columnBeforeKey, " comes before ", reorderColumnKey);
+ *         console.log(columnAfterKey, " comes after ", reorderColumnKey);
+ *       }}
+ *     >
+ *       First Name
+ *     </Plugins.ReorderCell>
+ *   }
+ *   cell={<DataCell>Name</DataCell>}
+ *   width={200}
+ * />
+ * ```
  *
- * Once dragging ends, the proxy is destroyed, and the original ReorderCell becomes visible again.
+ * Live example at https://schrodinger.github.io/fixed-data-table-2/example-reorder.html
  */
 class ReorderCell extends React.PureComponent {
   state = {
     isReordering: false,
   };
 
+  /**
+   * The container for dragged cell.
+   *
+   * While dragging takes place, ReorderCell renders a proxy component into a seperate React root, referred here as the "Drag Proxy".
+   * ReorderCell then hides itself, while the Drag Proxy becomes visible and is what the user actually sees and drags around.
+   *
+   * This ensures that even if ReorderCell unmounts (which can happen when the table scrolls far away), the Drag Proxy
+   * which is rendered in a separate React root is still alive, and hence doesn't break dragging functionality.
+   *
+   * Once dragging ends, the proxy is destroyed, and the original ReorderCell becomes visible again.
+   */
   dragContainer = null;
   cellRef = React.createRef();
   isMounted = false;

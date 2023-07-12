@@ -1,5 +1,6 @@
 .docsPage {
   @import (less) '../base.less';
+  @import (less) '../apiReference.less';
 
   .pageBody {
     padding: 0 36px;
@@ -35,6 +36,23 @@
 
   .sideBar .curSideItem .arrowBullet {
     visibility: visible;
+  }
+
+  .note {
+    background:rgba(190, 230, 255, 0.3);
+    border: 1px solid #eeccff;
+    border-left: 10px solid #999;
+    color: black;
+    font-size: 0.9em;
+    padding: 10px;
+    margin: 0 8px;
+  }
+
+  .deprecated {
+    border: 1px solid #ff77aa; 
+    background: #ff99cc55; 
+    padding:4px; 
+    color: black;
   }
 
   .disclaimer {
