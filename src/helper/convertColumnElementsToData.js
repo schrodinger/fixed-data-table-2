@@ -15,6 +15,7 @@ import React from 'react';
 import forEach from 'lodash/forEach';
 import invariant from '../stubs/invariant';
 import map from 'lodash/map';
+import groupBy from 'lodash/groupBy';
 import pick from 'lodash/pick';
 
 function _extractProps(column) {
@@ -39,6 +40,24 @@ function _extractTemplates(elementTemplates, columnElement) {
   elementTemplates.cell.push(columnElement.props.cell);
   elementTemplates.footer.push(columnElement.props.footer);
   elementTemplates.header.push(columnElement.props.header);
+}
+
+function sortByCellGroupType(elements) {
+  const unorderedColumnGroups = groupBy(elements, (child) => {
+    if (child?.props?.fixed) {
+      return 'fixed';
+    } else if (child?.props?.fixedRight) {
+      return 'fixedRight';
+    } else {
+      return 'scrollable';
+    }
+  });
+
+  return Array.prototype.concat.call(
+    unorderedColumnGroups.fixed || [],
+    unorderedColumnGroups.scrollable || [],
+    unorderedColumnGroups.fixedRight || []
+  );
 }
 
 /**
@@ -69,8 +88,10 @@ function convertColumnElementsToData(childComponents) {
   const hasGroupHeader =
     children.length && children[0].type.__TableColumnGroup__;
   if (hasGroupHeader) {
-    const columnGroupProps = map(children, _extractProps);
-    forEach(children, (columnGroupElement, index) => {
+    const columnGroupProps = [];
+    sortByCellGroupType(children).forEach((columnGroupElement, index) => {
+      const columnGroup = _extractProps(columnGroupElement);
+      columnGroupProps.push(columnGroup);
       elementTemplates.groupHeader.push(columnGroupElement.props.header);
 
       React.Children.forEach(columnGroupElement.props.children, (child) => {
@@ -90,10 +111,12 @@ function convertColumnElementsToData(childComponents) {
   }
 
   // Use a default column group
-  forEach(children, (child) => {
-    columnProps.push(_extractProps(child));
+  sortByCellGroupType(children).forEach((child) => {
+    const column = _extractProps(child);
+    columnProps.push(column);
     _extractTemplates(elementTemplates, child);
   });
+
   return {
     columnGroupProps: [],
     columnProps,
