@@ -96,7 +96,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
     isHeader: PropTypes.bool,
 
     /**
-     * Whether this cell group is visible (i.e, inside the viewport) or not.
+     * Whether this cell group is visible (i.e, vertically within the viewport) or not.
      */
     isVisible: PropTypes.bool.isRequired,
   };

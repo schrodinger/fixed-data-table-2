@@ -3,7 +3,7 @@
 # This workflow will be run whenever a new release is published.
 
 # NOTE (pradeep): I'm having this workflow bail out if the release doesn't target v1.2.x. 
-# This is because we don't have a way (yet) to support multiple FDT versions/docs  be deployed at the same time,
+# This is because we don't have a way (yet) to support multiple FDT versions/docs be deployed at the same time,
 # and hence we choose to deploy only the most stable release.
 
 # Guide: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
@@ -14,10 +14,15 @@ on:
   release:
     types: [published]
 
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
 
   check-release:
-    name: Check if release is stable
+    name: Check release version
     runs-on: ubuntu-latest
 
     # map step output to job output
@@ -43,39 +48,59 @@ jobs:
           echo "This is not a stable release!"
           echo "::set-output name=is_stable::false"
         fi
-
   
-  deploy:
-    name: Deploy website via gh-pages!
+  build:
+    name: Build and upload artifacts
     needs: check-release
     runs-on: ubuntu-latest
-    
+
     # skip deploying to gh-pages if release is not "stable"
     if: ${{ needs.check-release.outputs.is_stable == 'true' }}
 
     steps:
 
-    # checkout our repo for the current commit
-    - name: Check out repo
-      uses: actions/checkout@v3
+      # checkout our repo for the current commit
+      - name: Check out repo
+        uses: actions/checkout@v3
 
-    # setup node version 16 which is not old but still stable
-    - name: Use Node.js 16
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16
-        cache: 'yarn'
+      # setup node version 16 which is not old but still stable
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
 
-    - name: Install dependencies
-      run: yarn install --frozen-lockfile # do a clean install of all of our dependencies
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile # do a clean install of all of our dependencies
 
-    # build our static contents
-    - name: Build static site!
-      run: yarn run site-build
+      # build our static site contents
+      - name: Build static site!
+        run: yarn run site-build
+  
+      # upload the static site contents as an artifact.
+      # the artifact is non-optional, and is consumed in the next job.
+      - name: Upload static site artifacts
+        uses: actions/upload-pages-artifact@v1.0.7
+        with:
+          path: "__site__/"
 
-    # publish our site to gh-pages
-    - name: Deploy to gh-pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }} # authenticate the action to our workflow
-        publish_dir: ./__site__ # this directory will be copied over to gh-pages
+  deploy:
+    name: Deploy site
+    needs: build
+    runs-on: ubuntu-latest
+    
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate soure
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # publish our site to gh-pages
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1.2.4

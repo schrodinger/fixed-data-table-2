@@ -205,6 +205,7 @@ class FixedDataTableCell extends React.Component {
     );
 
     let cellProps = {
+      isVisible,
       isHeader: this.props.isHeader,
       isGroupHeader: this.props.isGroupHeader,
       cellGroupType: this.props.cellGroupType,
@@ -213,7 +214,6 @@ class FixedDataTableCell extends React.Component {
       height: this.props.height,
       width: this.props.width,
       left: this.props.left,
-      isVisible,
     };
 
     if (props.rowIndex >= 0) {
