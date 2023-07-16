@@ -17,16 +17,18 @@ import { createSelector } from 'reselect';
 const emptyArray = [];
 const emptyObject = {};
 
+const cacheOptions = {
+  memoizeOptions: {
+    maxSize: 12, // 3 cell group types * 4 template types
+  },
+};
+
 export const sumPropWidths = createSelector(
   (columns) => columns || emptyArray,
   (columns) => {
     return columns.reduce((accum, column) => accum + column.props.width, 0);
   },
-  {
-    memoizeOptions: {
-      maxSize: 6,
-    },
-  }
+  cacheOptions
 );
 
 export const getTotalWidth = createSelector(
@@ -34,11 +36,7 @@ export const getTotalWidth = createSelector(
   (columns) => {
     return columns.reduce((accum, column) => accum + column.width, 0);
   },
-  {
-    memoizeOptions: {
-      maxSize: 6,
-    },
-  }
+  cacheOptions
 );
 
 export function getTotalWidthContainer(container) {
@@ -64,9 +62,5 @@ export const getTotalFlexGrow = createSelector(
     }
     return flexGrow;
   },
-  {
-    memoizeOptions: {
-      maxSize: 6,
-    },
-  }
+  cacheOptions
 );

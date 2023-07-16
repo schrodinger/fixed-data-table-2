@@ -184,10 +184,6 @@ const slice = createSlice({
         state.scrolling = state.scrolling || true;
       }
 
-      Object.freeze(state.columnElements);
-      Object.freeze(state.columnGroupElements);
-      Object.freeze(state.elementTemplates);
-
       // TODO REDUX_MIGRATION solve w/ evil-diff
       // TODO (jordan) check if relevant props unchanged and
       // children column widths and flex widths are unchanged
@@ -261,6 +257,18 @@ function setStateFromProps(state, props) {
     elementTemplates,
     propsRevision: state.propsRevision + 1,
   });
+
+  // NOTE (pradeep): We pre-freeze these large collections to avoid
+  // performance bottle necks
+  //
+  // From Immer's docs:
+  //     Immer freezes everything recursively. For large data objects
+  //     that won't be changed in the future this might be over-kill,
+  //     in that case it can be more efficient to shallowly
+  //     pre-freeze data using the freeze utility.
+  Object.freeze(state.columnElements);
+  Object.freeze(state.columnGroupElements);
+  Object.freeze(state.elementTemplates);
 
   state.elementHeights = Object.assign(
     {},

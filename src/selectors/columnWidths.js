@@ -16,7 +16,7 @@ import {
   getTotalWidthContainer,
 } from '../helper/widthHelper';
 import scrollbarsVisible from './scrollbarsVisible';
-import { concat } from 'lodash';
+import concat from 'lodash/concat';
 
 /**
  * @typedef {{

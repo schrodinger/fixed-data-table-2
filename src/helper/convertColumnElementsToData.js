@@ -12,30 +12,42 @@
 'use strict';
 
 import React from 'react';
-import forEach from 'lodash/forEach';
 import invariant from '../stubs/invariant';
-import map from 'lodash/map';
-import groupBy from 'lodash/groupBy';
-import pick from 'lodash/pick';
 import { CellGroupType } from '../enums/CellGroup';
-import { transform } from 'lodash';
 
+// NOTE (pradeep): This can be simplified via _.pick()
+// However, _.pick is much slower than the hand written version here.
 function _extractProps(column) {
-  return pick(column.props, [
-    'align',
-    'allowCellsRecycling',
-    'cellClassName',
-    'columnKey',
-    'flexGrow',
-    'fixed',
-    'fixedRight',
-    'maxWidth',
-    'minWidth',
-    'isReorderable',
-    'isResizable',
-    'pureRendering',
-    'width',
-  ]);
+  const {
+    align,
+    allowCellsRecycling,
+    cellClassName,
+    columnKey,
+    flexGrow,
+    fixed,
+    fixedRight,
+    maxWidth,
+    minWidth,
+    isReorderable,
+    isResizable,
+    pureRendering,
+    width,
+  } = column.props;
+  return {
+    align,
+    allowCellsRecycling,
+    cellClassName,
+    columnKey,
+    flexGrow,
+    fixed,
+    fixedRight,
+    maxWidth,
+    minWidth,
+    isReorderable,
+    isResizable,
+    pureRendering,
+    width,
+  };
 }
 
 function _extractTemplates(elementTemplates, columnElement) {
