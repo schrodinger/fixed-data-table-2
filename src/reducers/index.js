@@ -23,7 +23,7 @@ import { getScrollAnchor, scrollTo } from './scrollAnchor';
 import columnStateHelper from './columnStateHelper';
 import computeRenderedRows from './computeRenderedRows';
 import Scrollbar from '../plugins/Scrollbar';
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, original } from '@reduxjs/toolkit';
 
 /**
  * @typedef {{
@@ -48,8 +48,8 @@ function getInitialState() {
     /*
      * Input state set from props
      */
-    columnProps: [],
-    columnGroupProps: [],
+    columnElements: [],
+    columnGroupElements: [],
     elementTemplates: {
       cell: [],
       footer: [],
@@ -152,7 +152,7 @@ const slice = createSlice({
     },
     propChange(state, action) {
       const { newProps, oldProps } = action.payload;
-      const oldState = clone(state);
+      const oldState = clone(original(state));
       setStateFromProps(state, newProps);
 
       if (
@@ -183,6 +183,10 @@ const slice = createSlice({
       ) {
         state.scrolling = state.scrolling || true;
       }
+
+      Object.freeze(state.columnElements);
+      Object.freeze(state.columnGroupElements);
+      Object.freeze(state.elementTemplates);
 
       // TODO REDUX_MIGRATION solve w/ evil-diff
       // TODO (jordan) check if relevant props unchanged and
@@ -244,12 +248,16 @@ function initializeRowHeightsAndOffsets(state) {
  * @private
  */
 function setStateFromProps(state, props) {
-  const { columnGroupProps, columnProps, elementTemplates, useGroupHeader } =
-    convertColumnElementsToData(props.children);
+  const {
+    columnGroupElements,
+    columnElements,
+    elementTemplates,
+    useGroupHeader,
+  } = convertColumnElementsToData(props.children);
 
   Object.assign(state, {
-    columnGroupProps,
-    columnProps,
+    columnGroupElements,
+    columnElements,
     elementTemplates,
     propsRevision: state.propsRevision + 1,
   });
