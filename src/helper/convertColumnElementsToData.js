@@ -69,8 +69,8 @@ function getCellGroupType(element) {
 function getElementsContainer() {
   return {
     [CellGroupType.FIXED]: [],
-    [CellGroupType.FIXED_RIGHT]: [],
     [CellGroupType.SCROLLABLE]: [],
+    [CellGroupType.FIXED_RIGHT]: [],
   };
 }
 
@@ -103,8 +103,9 @@ function convertColumnElementsToData(childComponents) {
   const columnElements = getElementsContainer();
   const columnGroupElements = getElementsContainer();
   const elementTemplates = getElementTemplates();
-  const useGroupHeader =
-    children.length && children[0].type.__TableColumnGroup__;
+  const useGroupHeader = !!(
+    children.length && children[0].type.__TableColumnGroup__
+  );
 
   let columnIndex = 0;
   let columnGroupIndex = 0;
@@ -150,4 +151,5 @@ function convertColumnElementsToData(childComponents) {
   };
 }
 
+export { getElementsContainer };
 export default convertColumnElementsToData;

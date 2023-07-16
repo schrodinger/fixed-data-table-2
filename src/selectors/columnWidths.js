@@ -8,7 +8,6 @@
  *
  * @providesModule columnWidths
  */
-import clone from 'lodash/clone';
 import shallowEqualSelector from '../helper/shallowEqualSelector';
 import {
   getTotalFlexGrow,
@@ -17,6 +16,7 @@ import {
 } from '../helper/widthHelper';
 import scrollbarsVisible from './scrollbarsVisible';
 import concat from 'lodash/concat';
+import { getElementsContainer } from '../helper/convertColumnElementsToData';
 
 /**
  * @typedef {{
@@ -112,17 +112,17 @@ function columnWidths(
  * }}
  */
 function flexWidths(columnGroupElements, columnElements, viewportWidth) {
-  const columnGroupElementsWithFlex = clone(columnGroupElements);
-  const columnElementsWithFlex = clone(columnElements);
+  const columnGroupElementsWithFlex = getElementsContainer();
+  const columnElementsWithFlex = getElementsContainer();
   const columnsWidth = getTotalWidthContainer(columnElements);
 
   let remainingFlexGrow = getTotalFlexGrow(columnElements);
   let remainingFlexWidth = Math.max(viewportWidth - columnsWidth, 0);
 
   const columnGroupWidths = [];
-  for (const cellGroupType in columnElementsWithFlex) {
-    const columnProps = columnGroupElementsWithFlex[cellGroupType];
-    // calculate widths and offsets for each column based on flex
+  // calculate widths and offsets for each column based on flex
+  for (const cellGroupType in columnElements) {
+    const columnProps = columnElements[cellGroupType];
     let offset = 0;
     let columnIndex = 0;
     for (const column of columnProps) {
@@ -148,8 +148,8 @@ function flexWidths(columnGroupElements, columnElements, viewportWidth) {
   }
 
   // calculate widths and offsets for each column group
-  for (const cellGroupType in columnGroupElementsWithFlex) {
-    const columnGroupProps = columnGroupElementsWithFlex[cellGroupType];
+  for (const cellGroupType in columnGroupElements) {
+    const columnGroupProps = columnGroupElements[cellGroupType];
     let offset = 0;
     let index = 0;
     for (const columnGroup of columnGroupProps) {
