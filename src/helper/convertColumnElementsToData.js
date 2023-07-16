@@ -12,28 +12,42 @@
 'use strict';
 
 import React from 'react';
-import forEach from 'lodash/forEach';
 import invariant from '../stubs/invariant';
-import map from 'lodash/map';
-import groupBy from 'lodash/groupBy';
-import pick from 'lodash/pick';
+import { CellGroupType } from '../enums/CellGroup';
 
+// NOTE (pradeep): This can be simplified via _.pick()
+// However, _.pick is much slower than the hand written version here.
 function _extractProps(column) {
-  return pick(column.props, [
-    'align',
-    'allowCellsRecycling',
-    'cellClassName',
-    'columnKey',
-    'flexGrow',
-    'fixed',
-    'fixedRight',
-    'maxWidth',
-    'minWidth',
-    'isReorderable',
-    'isResizable',
-    'pureRendering',
-    'width',
-  ]);
+  const {
+    align,
+    allowCellsRecycling,
+    cellClassName,
+    columnKey,
+    flexGrow,
+    fixed,
+    fixedRight,
+    maxWidth,
+    minWidth,
+    isReorderable,
+    isResizable,
+    pureRendering,
+    width,
+  } = column.props;
+  return {
+    align,
+    allowCellsRecycling,
+    cellClassName,
+    columnKey,
+    flexGrow,
+    fixed,
+    fixedRight,
+    maxWidth,
+    minWidth,
+    isReorderable,
+    isResizable,
+    pureRendering,
+    width,
+  };
 }
 
 function _extractTemplates(elementTemplates, columnElement) {
@@ -42,22 +56,31 @@ function _extractTemplates(elementTemplates, columnElement) {
   elementTemplates.header.push(columnElement.props.header);
 }
 
-function sortByCellGroupType(elements) {
-  const unorderedColumnGroups = groupBy(elements, (child) => {
-    if (child?.props?.fixed) {
-      return 'fixed';
-    } else if (child?.props?.fixedRight) {
-      return 'fixedRight';
-    } else {
-      return 'scrollable';
-    }
-  });
+function getCellGroupType(element) {
+  if (element?.props?.fixed) {
+    return CellGroupType.FIXED;
+  } else if (element?.props?.fixedRight) {
+    return CellGroupType.FIXED_RIGHT;
+  } else {
+    return CellGroupType.SCROLLABLE;
+  }
+}
 
-  return Array.prototype.concat.call(
-    unorderedColumnGroups.fixed || [],
-    unorderedColumnGroups.scrollable || [],
-    unorderedColumnGroups.fixedRight || []
-  );
+function getElementsContainer() {
+  return {
+    [CellGroupType.FIXED]: [],
+    [CellGroupType.FIXED_RIGHT]: [],
+    [CellGroupType.SCROLLABLE]: [],
+  };
+}
+
+function getElementTemplates() {
+  return {
+    groupHeader: [],
+    header: [],
+    cell: [],
+    footer: [],
+  };
 }
 
 /**
@@ -77,51 +100,53 @@ function convertColumnElementsToData(childComponents) {
     children.push(child);
   });
 
-  const elementTemplates = {
-    cell: [],
-    footer: [],
-    groupHeader: [],
-    header: [],
-  };
-
-  const columnProps = [];
-  const hasGroupHeader =
+  const columnElements = getElementsContainer();
+  const columnGroupElements = getElementsContainer();
+  const elementTemplates = getElementTemplates();
+  const useGroupHeader =
     children.length && children[0].type.__TableColumnGroup__;
-  if (hasGroupHeader) {
-    const columnGroupProps = [];
-    sortByCellGroupType(children).forEach((columnGroupElement, index) => {
-      const columnGroup = _extractProps(columnGroupElement);
-      columnGroupProps.push(columnGroup);
-      elementTemplates.groupHeader.push(columnGroupElement.props.header);
 
-      React.Children.forEach(columnGroupElement.props.children, (child) => {
-        const column = _extractProps(child);
-        column.groupIdx = index;
-        columnProps.push(column);
-        _extractTemplates(elementTemplates, child);
-      });
-    });
+  let columnIndex = 0;
+  let columnGroupIndex = 0;
 
-    return {
-      columnGroupProps,
-      columnProps,
-      elementTemplates,
-      useGroupHeader: true,
-    };
+  if (useGroupHeader) {
+    for (const columnGroupReactElement of children) {
+      const cellGroupType = getCellGroupType(columnGroupReactElement);
+      const columnGroupProps = _extractProps(columnGroupReactElement);
+      columnGroupProps.index = columnGroupIndex;
+      columnGroupElements[cellGroupType].push(columnGroupProps);
+      elementTemplates.groupHeader.push(columnGroupReactElement.props.header);
+
+      React.Children.forEach(
+        columnGroupReactElement.props.children,
+        (columnReactElement) => {
+          const columnProps = _extractProps(columnReactElement);
+          columnProps.index = columnIndex;
+          columnProps.groupIdx = columnGroupIndex;
+          columnElements[cellGroupType].push(columnProps);
+          _extractTemplates(elementTemplates, columnReactElement);
+          columnIndex++;
+        }
+      );
+
+      columnGroupIndex++;
+    }
+  } else {
+    for (const columnReactElement of children) {
+      const cellGroupType = getCellGroupType(columnReactElement);
+      const columnProps = _extractProps(columnReactElement);
+      columnProps.index = columnIndex;
+      columnElements[cellGroupType].push(columnProps);
+      _extractTemplates(elementTemplates, columnReactElement);
+      columnIndex++;
+    }
   }
 
-  // Use a default column group
-  sortByCellGroupType(children).forEach((child) => {
-    const column = _extractProps(child);
-    columnProps.push(column);
-    _extractTemplates(elementTemplates, child);
-  });
-
   return {
-    columnGroupProps: [],
-    columnProps,
+    columnGroupElements,
+    columnElements,
     elementTemplates,
-    useGroupHeader: false,
+    useGroupHeader,
   };
 }
 
