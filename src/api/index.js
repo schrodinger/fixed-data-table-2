@@ -39,6 +39,9 @@ const createApi = function () {
 
   const getApiData = getApiDataSelector();
   const getApiMethods = getApiMethodsSelector();
+  // console.log(getApiData.tableHeight,'hello')
+
+  // console.log(getApiMethods)
 
   return {
     /**

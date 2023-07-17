@@ -344,3 +344,13 @@
 html[dir="rtl"] .exampleContents {
   margin-right: @sidebar-width;
 }
+
+.hiddenDiv {
+  display: none;
+  width: fit-content;
+
+}
+.Example:hover + .hidden-div{
+  display:block;
+  width: fit-content;
+}

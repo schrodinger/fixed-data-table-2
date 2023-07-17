@@ -33,6 +33,7 @@ class ScrollContainer extends React.Component {
   };
 
   _onHorizontalScroll = (/*number*/ scrollPos) => {
+    // console.log('Hello')
     if (this.state.scrollToX !== undefined) {
       this.state.scrollToX(scrollPos);
     }

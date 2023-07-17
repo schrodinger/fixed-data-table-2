@@ -26,6 +26,7 @@ import Scrollbar from '../plugins/Scrollbar';
 import { createSlice } from '@reduxjs/toolkit';
 import computeRenderedCols from './computeRenderedCols';
 import { initializeFlexColumnWidths } from './flexColumnWidths';
+import Shared from '../impl.js';
 
 // NOTE (pradeep): Custom class objects are ignored by immer. (see https://immerjs.github.io/immer/complex-objects/)
 // We wrap our non-user defined structures from "internal" state into these wrapper classes so that immer
@@ -178,8 +179,10 @@ const slice = createSlice({
       computeRenderedCols(state, columnAnchor);
     },
     propChange(state, action) {
+      // console.log('Hello')
       const { newProps, oldProps } = action.payload;
       const oldState = _.clone(state);
+
       setStateFromProps(state, newProps);
 
       if (
@@ -250,10 +253,13 @@ const slice = createSlice({
       computeRenderedRows(state, scrollAnchor);
     },
     scrollToX(state, action) {
+      // console.log(action.payload)
       const scrollX = action.payload;
       state.scrolling = true;
       const columnAnchor = scrollToXAnchor(state, scrollX);
       computeRenderedCols(state, columnAnchor);
+      // console.log(Shared.setscrollLeft)
+      // Shared.setscrollLeft(scrollX,tableNumber)
     },
   },
 });
@@ -351,6 +357,7 @@ function initializeScrollableColumnWidthsAndOffsets(state) {
  * @private
  */
 function setStateFromProps(state, props) {
+  // console.log(props)
   state.propsRevision = state.propsRevision + 1;
 
   state.elementHeights = Object.assign(

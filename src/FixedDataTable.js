@@ -589,13 +589,16 @@ class FixedDataTable extends React.Component {
     this._didScrollStopSync();
   }
 
-  _shouldHandleTouchX = (/*number*/ delta) /*boolean*/ =>
+  _shouldHandleTouchX = (/*number*/ delta) /*boolean*/ => {
     this.props.touchScrollEnabled && this._shouldHandleWheelX(delta);
+    console.log('hello');
+  };
 
   _shouldHandleTouchY = (/*number*/ delta) /*boolean*/ =>
     this.props.touchScrollEnabled && this._shouldHandleWheelY(delta);
 
   _shouldHandleWheelX = (/*number*/ delta) /*boolean*/ => {
+    // console.log('hello')
     const { maxScrollX, scrollFlags, scrollX } = this.props;
     const { overflowX } = scrollFlags;
 
@@ -710,7 +713,10 @@ class FixedDataTable extends React.Component {
   };
 
   _reportContentHeight = () => {
-    const { contentHeight } = tableHeightsSelector(this.props);
+    const { contentHeight } = tableHeightsSelector(
+      this.props,
+      this.props.tableNumber
+    );
     const { onContentHeightChange } = this.props;
 
     if (contentHeight !== this._contentHeight && onContentHeightChange) {
@@ -738,14 +744,14 @@ class FixedDataTable extends React.Component {
     }
     this._reportViewportInfo({});
     this._reportContentHeight();
-    this._reportScrollBarsUpdates();
+    if (this.props.defaultScrollbars) this._reportScrollBarsUpdates();
   }
 
   componentDidUpdate(/*object*/ prevProps) {
     this._didScroll(prevProps);
     this._reportViewportInfo(prevProps);
     this._reportContentHeight();
-    this._reportScrollBarsUpdates();
+    if (this.props.defaultScrollbars) this._reportScrollBarsUpdates();
   }
 
   /**
@@ -754,7 +760,7 @@ class FixedDataTable extends React.Component {
    */
   _reportScrollBarsUpdates() {
     const { bodyOffsetTop, scrollbarXOffsetTop, visibleRowsHeight } =
-      tableHeightsSelector(this.props);
+      tableHeightsSelector(this.props, this.props.tableNumber);
     const {
       tableSize: { width },
       scrollContentHeight,
@@ -773,6 +779,7 @@ class FixedDataTable extends React.Component {
       scrollTo: this._scrollTo,
       scrollToX: this.props.scrollActions.scrollToX,
       scrollToY: this.props.scrollActions.scrollToY,
+      tableNumber: this.props.tableNumber,
     };
     if (!shallowEqual(this.previousScrollState, newScrollState)) {
       this.props.onScrollBarsUpdate(newScrollState);
@@ -805,7 +812,7 @@ class FixedDataTable extends React.Component {
       footOffsetTop,
       scrollbarXOffsetTop,
       visibleRowsHeight,
-    } = tableHeightsSelector(this.props);
+    } = tableHeightsSelector(this.props, this.props.tableNumber);
 
     const {
       className,
@@ -831,7 +838,10 @@ class FixedDataTable extends React.Component {
       groupHeaderHeight,
       headerHeight,
     } = elementHeights;
-    const { scrollEnabledX, scrollEnabledY } = scrollbarsVisible(this.props);
+    const { scrollEnabledX, scrollEnabledY } = scrollbarsVisible(
+      this.props,
+      this.props.tableNumber
+    );
     const attributes = gridAttributesGetter && gridAttributesGetter();
 
     let groupHeader;
@@ -1193,6 +1203,7 @@ class FixedDataTable extends React.Component {
    * Calls the user specified scroll callbacks -- onScrollStart, onScrollEnd, onHorizontalScroll, onVerticalScroll.
    */
   _didScroll = (/* !object */ prevProps) => {
+    // console.log('Hello')
     const {
       onScrollStart,
       scrollX,
