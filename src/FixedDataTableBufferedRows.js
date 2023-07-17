@@ -228,8 +228,10 @@ class FixedDataTableBufferedRows extends React.Component {
         fixedRightColumnsWidth={this.props.fixedRightColumnsWidth}
         firstViewportColumnIndex={this.props.firstViewportColumnIndex}
         endViewportColumnIndex={this.props.endViewportColumnIndex}
+        shouldUseLegacyComponents={this.props.shouldUseLegacyComponents}
       />
     );
   }
 }
+//}
 export default FixedDataTableBufferedRows;

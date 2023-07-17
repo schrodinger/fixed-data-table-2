@@ -15,13 +15,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import cx from './vendor_upstream/stubs/cx';
 import FixedDataTableCell from './FixedDataTableCell';
-import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 import _ from 'lodash';
 import inRange from 'lodash/inRange';
+import CellGroup from './FixedDataCellGroupFunction';
+import CellGroupLegacy from './FixedDataCellGroupLegacyFunction';
 
-class FixedDataTableCellGroupImpl extends React.Component {
+class FixedDataTableCellGroup extends React.Component {
   /**
    * PropTypes are disabled in this component, because having them on slows
    * down the FixedDataTable hugely in DEV mode. You can enable them back for
@@ -58,6 +58,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
     touchEnabled: PropTypes.bool,
 
     isHeaderOrFooter: PropTypes.bool,
+
+    offsetLeft: PropTypes.number,
 
     isRTL: PropTypes.bool,
 
@@ -114,6 +116,20 @@ class FixedDataTableCellGroupImpl extends React.Component {
   componentDidMount() {
     this._initialRender = false;
   }
+  shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
+    /// if offsets haven't changed for the same cell group while scrolling, then skip update
+    return !(
+      nextProps.isScrolling &&
+      this.props.rowIndex === nextProps.rowIndex &&
+      this.props.left === nextProps.left &&
+      this.props.offsetLeft === nextProps.offsetLeft
+    );
+  }
+
+  static defaultProps = /*object*/ {
+    left: 0,
+    offsetLeft: 0,
+  };
 
   render() /*object*/ {
     var props = this.props;
@@ -147,32 +163,21 @@ class FixedDataTableCellGroupImpl extends React.Component {
       this._staticCells[i] = this._renderCell(i, localColumnIndex);
     }
 
-    var style = {
-      height: props.height,
-      position: 'absolute',
-      width: props.contentWidth,
-      zIndex: props.zIndex,
-    };
-    FixedDataTableTranslateDOMPosition(
-      style,
-      -1 * props.left,
-      0,
-      this._initialRender,
-      this.props.isRTL
-    );
-
     // NOTE (pradeep): Sort the cells by column index so that they appear with the right order in the DOM (see #221)
     const sortedCells = _.sortBy(this._staticCells, (cell) =>
       _.get(cell, 'props.localColumnIndex', Infinity)
     );
 
+    const CellGroupComponent = this.props.shouldUseLegacyComponents
+      ? CellGroupLegacy
+      : CellGroup;
+
     return (
-      <div
-        className={cx('fixedDataTableCellGroupLayout/cellGroup')}
-        style={style}
-      >
-        {sortedCells}
-      </div>
+      <CellGroupComponent
+        {...props}
+        _initialRender={this._initialRender}
+        sortedCells={sortedCells}
+      />
     );
   }
 
@@ -222,71 +227,10 @@ class FixedDataTableCellGroupImpl extends React.Component {
         isRTL={this.props.isRTL}
         visible={visible}
         cellGroupType={this.props.cellGroupType}
+        shouldUseLegacyComponents={this.props.shouldUseLegacyComponents}
       />
     );
   };
 }
 
-class FixedDataTableCellGroup extends React.Component {
-  /**
-   * PropTypes are disabled in this component, because having them on slows
-   * down the FixedDataTable hugely in DEV mode. You can enable them back for
-   * development, but please don't commit this component with enabled propTypes.
-   */
-  static propTypes_DISABLED_FOR_PERFORMANCE = {
-    isScrolling: PropTypes.bool,
-    /**
-     * Height of the row.
-     */
-    height: PropTypes.number.isRequired,
-
-    offsetLeft: PropTypes.number,
-
-    left: PropTypes.number,
-    /**
-     * Z-index on which the row will be displayed. Used e.g. for keeping
-     * header and footer in front of other rows.
-     */
-    zIndex: PropTypes.number.isRequired,
-  };
-
-  shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
-    /// if offsets haven't changed for the same cell group while scrolling, then skip update
-    return !(
-      nextProps.isScrolling &&
-      this.props.rowIndex === nextProps.rowIndex &&
-      this.props.left === nextProps.left &&
-      this.props.offsetLeft === nextProps.offsetLeft
-    );
-  }
-
-  static defaultProps = /*object*/ {
-    left: 0,
-    offsetLeft: 0,
-  };
-
-  render() /*object*/ {
-    var { offsetLeft, ...props } = this.props;
-
-    var style = {
-      height: props.cellGroupWrapperHeight || props.height,
-      width: props.width,
-    };
-
-    if (this.props.isRTL) {
-      style.right = offsetLeft;
-    } else {
-      style.left = offsetLeft;
-    }
-
-    return (
-      <div
-        style={style}
-        className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}
-      >
-        <FixedDataTableCellGroupImpl {...props} />
-      </div>
-    );
-  }
-}
 export default FixedDataTableCellGroup;
