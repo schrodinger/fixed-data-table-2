@@ -27,6 +27,7 @@ class AutoScrollExample extends React.Component {
       // columnGroups: [],
       columnsCount: 100,
       shouldUseLegacyComponents: false, //we have to pass this as a prop to FixedDataTableContainer
+      isPin: false,
     };
     //these are legacy function because we are already providing the styles in FixedDataTableCell for this so there is no need of any div here
     const cellRendererLegacy = (props) =>
@@ -77,7 +78,7 @@ class AutoScrollExample extends React.Component {
     for (let i = 0; i < 100; i++) {
       // const columnGroupIndex = Math.floor(i / 2);
       this.state.columns1[i] = {
-        columnKey: 'C' + i,
+        columnKey: 'Column ' + i,
         // columnGroupIndex,
         header: this.state.shouldUseLegacyComponents
           ? headercellRendererLegacy
@@ -87,7 +88,7 @@ class AutoScrollExample extends React.Component {
           : i % 2
           ? cellRendererDatacell
           : cellRendererDiv,
-        width: 50,
+        width: 100,
         // allowCellsRecycling: true,
         // fixed: i < 2 ? true : false,
         // fixedRight: i >= 10000 - 4 ? true : false,
@@ -145,25 +146,64 @@ class AutoScrollExample extends React.Component {
     // };
     const style = {
       display: Shared.display,
-      top: '500px',
-      position: 'absolute',
-      left: Shared.tableLeft,
+      // top: '500px',
+      // position: 'absolute',
+      // left: Shared.tableLeft,
       // top:'100px'
     };
     // console.log(this.state.display)
     // style.display='block'
     const style1 = {
-      position: 'absolute',
+      // position: 'absolute',
     };
     return (
       <div className="autoScrollContainer">
         {this.renderControls()}
         <div style={style1}>{this.renderTable1({ tableNumber: 1 })}</div>
-        <div style={style}> {this.renderTable2({ tableNumber: 2 })}</div>
+        <div
+          style={style}
+          // onMouseEnter={this._onMouseEnter}
+          // onMouseMove={this._onMouseMove}
+          onMouseLeave={this._onMouseLeave}
+        >
+          <img
+            id="myImage"
+            src={require('./pin-button.png')}
+            alt="Pin Button"
+            className="pin-button-img"
+            onClick={() => this.pinned(this.state.isPin)}
+            height="50px"
+            width="50px"
+          ></img>
+          {this.renderTable2({ tableNumber: 2 })}
+        </div>
       </div>
     );
   }
-
+  pinned = (isPin) => {
+    var image = document.getElementById('myImage');
+    if (isPin === true) {
+      this.state.isPin = false;
+      image.src = require('./pin-button.png');
+    } else {
+      this.state.isPin = true;
+      image.src = require('./unpin-button.png');
+    }
+    // console.log(this.state.isPin)
+  };
+  // _onMouseMove = (event) => {
+  //   /** @type {object} */
+  //   // console.log('hello')
+  //   Shared.setDisplay('block');
+  // };
+  // _onMouseEnter = (event) => {
+  //   /** @type {object} */
+  //   // console.log('hello')
+  //   Shared.setDisplay('block');
+  // };
+  _onMouseLeave = (event) => {
+    if (!this.state.isPin) Shared.setDisplay('none');
+  };
   renderControls() {
     return (
       <div className="autoScrollControls">
@@ -204,7 +244,7 @@ class AutoScrollExample extends React.Component {
         headerHeight={50}
         rowsCount={dataList.getSize()}
         width={this.props.width}
-        height={this.props.height}
+        height={this.props.height / 3}
         // scrollLeft={scrollLeft}
         // scrollTop={scrollTop}
         // onVerticalScroll={this.onVerticalScroll}
@@ -222,16 +262,16 @@ class AutoScrollExample extends React.Component {
     return (
       <Table
         // groupHeaderHeight={50}
-        rowHeight={25}
-        headerHeight={25}
+        rowHeight={50}
+        headerHeight={50}
         rowsCount={dataList.getSize()}
-        width={this.props.width / 2}
-        height={this.props.height / 2}
+        width={this.props.width}
+        height={this.props.height / 3}
         // scrollLeft={scrollLeft}
         // scrollTop={scrollTop}
         // onVerticalScroll={this.onVerticalScroll}
         // onHorizontalScroll={this.onHorizontalScroll}
-        defaultScrollbars={false}
+        // defaultScrollbars={false}
         // showScrollbarY= {'false'}
 
         columnsCount={this.state.columnsCount}

@@ -15,14 +15,16 @@ const Shared = {
     // autoScrollExample.displayChange(displayGiv)
   },
   setTableLeft: (left) => {
-    console.log(left);
+    // console.log(left);
     Shared.tableLeft = left;
   },
   setscrollX: (scrollX) => {
     // console.log(Shared.subscribers)
     Shared.scrollX = scrollX;
+    // console.log(scrollX)
     for (let i = 0; i < Shared.subscribers.length; i++) {
       if (Shared.subscribers[i].getState().scrollX !== Shared.scrollX) {
+        // console.log(Shared.scrollX)
         Shared.subscribers[i].dispatch(scrollToX(scrollX));
       }
     }
