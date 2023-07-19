@@ -166,8 +166,13 @@ const slice = createSlice({
   initialState: {},
   reducers: {
     initialize(state, action) {
-      const props = action.payload;
+      let props = action.payload;
+      // console.log(props)
+
       Object.assign(state, getInitialState());
+
+      // props = {...props, ...Shared.getAllData()};
+
       setStateFromProps(state, props);
       initializeRowHeightsAndOffsets(state);
       initializeFixedColumnWidthsAndOffsets(state);
@@ -213,16 +218,16 @@ const slice = createSlice({
       }
 
       const scrollAnchor = getScrollAnchor(state, newProps, oldProps);
-      // const columnAnchor = getColumnAnchor(state, newProps, oldProps);
+      const columnAnchor = getColumnAnchor(state, newProps, oldProps);
 
       // If anything has changed in state, update our rendered rows
       if (!shallowEqual(state, oldState)) {
         computeRenderedRows(state, scrollAnchor);
-        // computeRenderedCols(state, columnAnchor);
+        computeRenderedCols(state, columnAnchor);
       } else if (scrollAnchor.changed) {
         computeRenderedRows(state, scrollAnchor);
       } else if (columnAnchor.changed) {
-        // computeRenderedCols(state, columnAnchor);
+        computeRenderedCols(state, columnAnchor);
       }
 
       // if scroll values have changed, then we're scrolling!

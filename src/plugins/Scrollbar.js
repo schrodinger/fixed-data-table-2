@@ -565,7 +565,7 @@ class Scrollbar extends React.PureComponent {
       );
       // console.log(position)
       // console.log(nextState)
-
+      // console.log(Shared.subscribers)
       Shared.setscrollX(Math.round(nextState.position));
     } else {
       nextState = {};

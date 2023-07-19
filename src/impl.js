@@ -10,6 +10,14 @@ const Shared = {
   subscribers: [],
   storedWidths: [],
   isHover: false,
+  firstIndex: 0,
+  firstOffset: 0,
+  setFirstIndex: (firstIndex) => {
+    Shared.firstIndex = firstIndex;
+  },
+  setFirstOffset: (firstOffset) => {
+    Shared.firstOffset = firstOffset;
+  },
   setisHover: (isHover) => {
     // console.log(isHover)
     Shared.isHover = isHover;
