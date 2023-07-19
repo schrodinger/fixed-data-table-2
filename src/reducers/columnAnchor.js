@@ -33,6 +33,8 @@ import columnCounts from '../selectors/columnCounts';
  * }}
  */
 export function getColumnAnchor(state, newProps, oldProps) {
+  // console.log(newProps,oldProps)
+  console.log(state.firstColumnIndex, state.firstColumnOffset);
   if (
     newProps.scrollToColumn !== undefined &&
     newProps.scrollToColumn !== null &&

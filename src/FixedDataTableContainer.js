@@ -138,6 +138,7 @@ class FixedDataTableContainer extends React.Component {
   render() {
     const fixedDataTableContextValue = this.getApi();
     // console.log(fixedDataTableContextValue)
+    // console.log('hello')
 
     const fdt = (
       <FixedDataTable

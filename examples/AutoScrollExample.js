@@ -28,6 +28,7 @@ class AutoScrollExample extends React.Component {
       columnsCount: 100,
       shouldUseLegacyComponents: false, //we have to pass this as a prop to FixedDataTableContainer
       isPin: false,
+      isHover: false,
     };
     //these are legacy function because we are already providing the styles in FixedDataTableCell for this so there is no need of any div here
     const cellRendererLegacy = (props) =>
@@ -51,6 +52,11 @@ class AutoScrollExample extends React.Component {
     const headerCellRenderer = (props) => (
       <DataCell {...props}>{props.columnKey}</DataCell>
     );
+    function getRandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
     for (let i = 0; i < 100; i++) {
       // const columnGroupIndex = Math.floor(i / 2);
@@ -65,7 +71,7 @@ class AutoScrollExample extends React.Component {
           : i % 2
           ? cellRendererDatacell
           : cellRendererDiv,
-        width: 100,
+        width: 50 + Math.floor((i * 300) / this.state.columnsCount),
         // allowCellsRecycling: true,
         // fixed: i < 2 ? true : false,
         // fixedRight: i >= 10000 - 4 ? true : false,
@@ -88,7 +94,7 @@ class AutoScrollExample extends React.Component {
           : i % 2
           ? cellRendererDatacell
           : cellRendererDiv,
-        width: 100,
+        width: getRandomInt(100, 200),
         // allowCellsRecycling: true,
         // fixed: i < 2 ? true : false,
         // fixedRight: i >= 10000 - 4 ? true : false,
@@ -121,29 +127,11 @@ class AutoScrollExample extends React.Component {
   }
 
   render() {
-    // const hoverableDiv = document.querySelector('.hoverable-div');
-    // const hiddenDiv = document.querySelector('.hidden-div');
+    var fdt;
+    if (Shared.isHover) {
+      fdt = this.renderTable2({ tableNumber: 2 });
+    }
 
-    // hoverableDiv.addEventListener('mouseenter', () => {
-    //   hiddenDiv.style.display = 'block';
-    // });
-
-    // hoverableDiv.addEventListener('mouseleave', () => {
-    //   hiddenDiv.style.display = 'none';
-    // });
-    // const _onMouseEnter=()=>{
-    //   var style;
-    //   style.display='block'
-    //   return style
-    // }
-    // const _onMouseLeave=()=>{
-    //   var style;
-    //   style.display='none'
-    //   return style
-    // }
-    // const style={
-    //   display:this.
-    // };
     const style = {
       display: Shared.display,
       // top: '500px',
@@ -175,7 +163,7 @@ class AutoScrollExample extends React.Component {
             height="50px"
             width="50px"
           ></img>
-          {this.renderTable2({ tableNumber: 2 })}
+          {fdt}
         </div>
       </div>
     );
@@ -202,7 +190,11 @@ class AutoScrollExample extends React.Component {
   //   Shared.setDisplay('block');
   // };
   _onMouseLeave = (event) => {
-    if (!this.state.isPin) Shared.setDisplay('none');
+    if (!this.state.isPin) {
+      Shared.subscribers.pop();
+      Shared.setisHover(false);
+      Shared.setDisplay('none');
+    }
   };
   renderControls() {
     return (
@@ -275,7 +267,7 @@ class AutoScrollExample extends React.Component {
         // showScrollbarY= {'false'}
 
         columnsCount={this.state.columnsCount}
-        getColumn={(i) => this.state.columns1[i]}
+        getColumn={(i) => this.state.columns[i]}
         // getColumnGroup={(i) => this.state.columnGroups[i]}
         shouldUseLegacyComponents={this.state.shouldUseLegacyComponents}
         {...additionalProps}

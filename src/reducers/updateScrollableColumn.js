@@ -13,6 +13,7 @@
 
 import _ from 'lodash';
 import convertColumnElementsToData from '../helper/convertColumnElementsToData';
+import Shared from '../impl.js';
 
 /**
  * Get's the scrollable column props for a specific index and also stores a cache of it
@@ -62,6 +63,8 @@ export function getScrollableColumn(state, localColIdx) {
 
   state.storedScrollableColumns.object[localColIdx] = column;
   updateScrollableColumnWidth(state, localColIdx, column.props.width);
+  Shared.setStoredWidths(state.storedWidths);
+
   return column;
 }
 
@@ -89,6 +92,6 @@ export function updateScrollableColumnWidth(state, localColIdx, newWidth) {
   state.scrollableColOffsetIntervalTree.set(localColIdx, newWidth);
   state.scrollContentWidth += newWidth - state.storedWidths.array[localColIdx];
   state.storedWidths.array[localColIdx] = newWidth;
-
+  // Shared.setStoredWidths(state.storedWidths)
   return newWidth;
 }

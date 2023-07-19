@@ -188,7 +188,7 @@ class Scrollbar extends React.PureComponent {
         onBlur={this._onBlur}
         onKeyDown={this._onKeyDown}
         onMouseDown={this._onMouseDown}
-        onMouseMove={this._onMouseMove}
+        onMouseMove={this._onMouseMoveHover}
         // onMouseEnter={this._onMouseEnter}
         onMouseLeave={this._onMouseLeave}
         onTouchCancel={this._onTouchCancel}
@@ -363,6 +363,8 @@ class Scrollbar extends React.PureComponent {
   };
 
   _onMouseDown = (/*object*/ event) => {
+    // console.log('Hlo')
+    // console.log(event.nativeEvent)
     /** @type {object} */
     var nextState;
 
@@ -405,7 +407,22 @@ class Scrollbar extends React.PureComponent {
     // Focus the node so it may receive keyboard event.
     this._rootRef.focus();
   };
+  _onMouseMove = (/*number*/ deltaX, /*number*/ deltaY) => {
+    var props = this.props;
+    var delta = this.state.isHorizontal
+      ? deltaX * (this.props.isRTL ? -1 : 1)
+      : deltaY;
+    delta /= this.state.scale;
 
+    this._setNextState(
+      this._calculateState(
+        this.state.position + delta,
+        props.size,
+        props.contentSize,
+        props.orientation
+      )
+    );
+  };
   _onMouseEnter = (event) => {
     /** @type {object} */
     var nextState;
@@ -451,6 +468,8 @@ class Scrollbar extends React.PureComponent {
     // console.log(targetDiv)
     Shared.setDisplay('block');
     Shared.setTableLeft(mouseX);
+    this._mouseMoveTracker.captureMouseMoves(event);
+
     // targetDiv.style.display='block'
 
     //  this._mouseMoveTracker.captureMouseMoves(event);
@@ -491,9 +510,10 @@ class Scrollbar extends React.PureComponent {
     // nextState.focused = false;
     // this._setNextState(nextState);
     // Shared.setDisplay('none');
-    // this._mouseMoveTracker.releaseMouseMoves(event);
+    this._mouseMoveTracker.releaseMouseMoves(event);
     // Focus the node so it may receive keyboard event.
     // this._rootRef.focus();
+    // Shared.setisHover(false)
   };
 
   _onTouchCancel = (/*object*/ event) => {
@@ -513,22 +533,7 @@ class Scrollbar extends React.PureComponent {
     this._onMouseDown(event);
   };
 
-  _onMouseMove = (event) => {
-    // console.log('hello')
-    // var props = this.props;
-    // var delta = this.state.isHorizontal
-    //   ? deltaX * (this.props.isRTL ? -1 : 1)
-    //   : deltaY;
-    // delta /= this.state.scale;
-
-    // this._setNextState(
-    //   this._calculateState(
-    //     this.state.position + delta,
-    //     props.size,
-    //     props.contentSize,
-    //     props.orientation
-    //   )
-    // );
+  _onMouseMoveHover = (event) => {
     /** @type {object} */
     var nextState;
     //  console.log(event)
@@ -573,6 +578,7 @@ class Scrollbar extends React.PureComponent {
     // console.log(targetDiv)
     Shared.setDisplay('block');
     Shared.setTableLeft(mouseX);
+    Shared.setisHover(true);
     // targetDiv.style.display='block'
 
     //  this._mouseMoveTracker.captureMouseMoves(event);

@@ -8,6 +8,12 @@ const Shared = {
   display: 'none',
   tableLeft: 0,
   subscribers: [],
+  storedWidths: [],
+  isHover: false,
+  setisHover: (isHover) => {
+    // console.log(isHover)
+    Shared.isHover = isHover;
+  },
   setDisplay: (displayGiv) => {
     // console.log(displayGiv)
     Shared.display = displayGiv;
@@ -17,6 +23,16 @@ const Shared = {
   setTableLeft: (left) => {
     // console.log(left);
     Shared.tableLeft = left;
+  },
+  setStoredWidths: (storedWidths) => {
+    // console.log(Shared.storedWidths)
+    Shared.storedWidths = storedWidths;
+    // for (let i = 0; i < Shared.subscribers.length; i++) {
+    //     if (Shared.subscribers[i].getState().scrollX !== Shared.scrollX) {
+    //       // console.log(Shared.scrollX)
+    //       Shared.subscribers[i].dispatch(scrollToX(scrollX));
+    //     }
+    // }
   },
   setscrollX: (scrollX) => {
     // console.log(Shared.subscribers)
