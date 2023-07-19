@@ -111,6 +111,7 @@ class AutoScrollExample extends React.Component {
     this.setHorizontalScrollDelta = this.setHorizontalScrollDelta.bind(this);
     this.setVerticalScrollDelta = this.setVerticalScrollDelta.bind(this);
     this.displayChange = this.displayChange.bind(this);
+    this.hoverChange = this.hoverChange.bind(this);
   }
 
   componentDidMount() {
@@ -128,6 +129,8 @@ class AutoScrollExample extends React.Component {
 
   render() {
     var fdt;
+    // console.log('hi')
+
     if (Shared.isHover) {
       fdt = this.renderTable2({ tableNumber: 2 });
     }
@@ -288,6 +291,9 @@ class AutoScrollExample extends React.Component {
     this.state.display = display;
     // this.setState({display})
     // console.log(this.state.display)
+  }
+  hoverChange(isHover) {
+    this.setState({ isHover });
   }
 
   toggleAutoScroll() {

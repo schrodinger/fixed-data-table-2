@@ -21,6 +21,8 @@ const Shared = {
   setisHover: (isHover) => {
     // console.log(isHover)
     Shared.isHover = isHover;
+    const autoScrollExample = new AutoScrollExample();
+    autoScrollExample.hoverChange(isHover);
   },
   setDisplay: (displayGiv) => {
     // console.log(displayGiv)

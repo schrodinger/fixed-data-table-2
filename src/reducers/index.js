@@ -345,12 +345,12 @@ function initializeScrollableColumnWidthsAndOffsets(state) {
   const storedScrollableColumns = new ObjectWrapper();
   let storedWidths;
   if (Shared.storedWidths.length === 0) {
-    console.log('hello');
+    // console.log('hello');
     storedWidths = new ArrayWrapper(scrollableColumnsCount);
     storedWidths.array.fill(defaultColumnWidth);
   } else {
     storedWidths = Shared.storedWidths;
-    console.log(storedWidths);
+    // console.log(storedWidths);
   }
 
   Object.assign(state, {
