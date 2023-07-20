@@ -135,8 +135,15 @@ class AutoScrollExample extends React.Component {
       return null;
     }
 
+    const containerStyles = {
+      position: 'absolute',
+      top: -3,
+      display: 'flex',
+      flexDirection: 'column',
+    };
+
     return (
-      <div style={{ top: -3, position: 'absolute' }}>
+      <div style={containerStyles}>
         {this.renderPin()}
         {this.renderTable2({ tableNumber: 2 })}
       </div>
@@ -146,6 +153,7 @@ class AutoScrollExample extends React.Component {
     return (
       <img
         id="myImage"
+        style={{ alignSelf: 'end' }}
         src={require('./pin-button.png')}
         alt="Pin Button"
         className="pin-button-img"
