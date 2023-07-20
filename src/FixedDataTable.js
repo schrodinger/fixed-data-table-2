@@ -779,7 +779,9 @@ class FixedDataTable extends React.Component {
       scrollTo: this._scrollTo,
       scrollToX: this.props.scrollActions.scrollToX,
       scrollToY: this.props.scrollActions.scrollToY,
+      scrollToHover: this.props.scrollActions.scrollToHover,
       tableNumber: this.props.tableNumber,
+      onScrollbarHover: this.props.onScrollbarHover,
     };
     if (!shallowEqual(this.previousScrollState, newScrollState)) {
       this.props.onScrollBarsUpdate(newScrollState);

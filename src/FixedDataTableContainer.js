@@ -36,11 +36,11 @@ class FixedDataTableContainer extends React.Component {
 
   constructor(props) {
     super(props);
-
+    // console.log(props.tableNumber)
     this.reduxStore = FixedDataTableStore.get();
     // console.log(Shared)
     this.scrollActions = getScrollActions(this.reduxStore, () => this.props);
-
+    // console.log(this.props)
     this.reduxStore.dispatch(initialize(props));
 
     this.unsubscribe = this.reduxStore.subscribe(this.onStoreUpdate.bind(this));
@@ -55,13 +55,14 @@ class FixedDataTableContainer extends React.Component {
     // console.log(props.tableNumber)
     // Shared.subscribe()
     // console.log(Shared)
-    if (this.props.tableNumber === 2) {
-      Shared.subscribers.push(this.reduxStore);
-    }
+    // if (this.props.tableNumber === 2) {
+    //   Shared.subscribers.push(this.reduxStore);
+    // }
   }
 
   static getDerivedStateFromProps(nextProps, currentState) {
-    // console.log(nextProps,currentState.props)
+    // console.log(nextProps)
+    // console.log('hello')
     invariant(
       nextProps.height !== undefined || nextProps.maxHeight !== undefined,
       'You must set either a height or a maxHeight'
@@ -114,6 +115,7 @@ class FixedDataTableContainer extends React.Component {
    * @returns
    */
   getApi() {
+    // console.log(this.reduxStore)
     return this.fixedDataTableApi.getValue(
       {
         ...this.props,
@@ -139,7 +141,8 @@ class FixedDataTableContainer extends React.Component {
     const fixedDataTableContextValue = this.getApi();
     // console.log(fixedDataTableContextValue)
     // console.log('hello')
-
+    // console.log(this.props.storedWidths)
+    // console.log(this.props.scrollableColOffsetIntervalTree)
     const fdt = (
       <FixedDataTable
         {...this.props}

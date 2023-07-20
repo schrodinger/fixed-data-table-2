@@ -399,7 +399,10 @@ class Scrollbar extends React.PureComponent {
       nextState = {};
     }
     // console.log(nextState)
-
+    // if(this.props.onScrollbarHover){
+    //   // console.log('hell')
+    //   this.props.onScrollbarHover(true)
+    // }
     nextState.focused = true;
     this._setNextState(nextState);
 
@@ -566,19 +569,31 @@ class Scrollbar extends React.PureComponent {
       // console.log(position)
       // console.log(nextState)
       // console.log(Shared.subscribers)
-      Shared.setscrollX(Math.round(nextState.position));
+      // Shared.setscrollX(Math.round(nextState.position));
+      this.props.onHover(nextState.position);
     } else {
       nextState = {};
     }
-    var mouseX = event.clientX;
+    // var mouseX = event.clientX;
+    // console.log(this.props)
+    if (this.props.onScrollbarHover) {
+      // console.log('hell')
+      this.props.onScrollbarHover(true);
+    }
 
     nextState.focused = true;
+    // if(this.props.onHover){
+    // console.log(nextState.position)
+    // console.log(this.props)
+
+    // }
+
     //  this._setNextState(nextState);
     // const targetDiv = document.getElementById('Example');
     // console.log(targetDiv)
-    Shared.setDisplay('block');
-    Shared.setTableLeft(mouseX);
-    Shared.setisHover(true);
+    // Shared.setDisplay('block');
+    // Shared.setTableLeft(mouseX);
+    // Shared.setisHover(true);
     // targetDiv.style.display='block'
 
     //  this._mouseMoveTracker.captureMouseMoves(event);

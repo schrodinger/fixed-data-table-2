@@ -24,6 +24,7 @@ class ScrollContainer extends React.Component {
 
   _onScrollBarsUpdate = (args) => {
     this.setState(args);
+    // console.log(this.state)
   };
 
   _onVerticalScroll = (/*number*/ scrollPos) => {
@@ -36,6 +37,14 @@ class ScrollContainer extends React.Component {
     // console.log('Hello')
     if (this.state.scrollToX !== undefined) {
       this.state.scrollToX(scrollPos);
+    }
+  };
+
+  _onHoverScroll = (scrollPos) => {
+    // console.log('111')
+    if (this.state.scrollToHover !== undefined) {
+      // console.log(scrollPos)
+      this.state.scrollToHover(scrollPos);
     }
   };
 
@@ -56,10 +65,12 @@ class ScrollContainer extends React.Component {
         contentSize={this.state.contentWidth}
         offset={this.state.scrollbarXOffsetTop}
         onScroll={this._onHorizontalScroll}
+        onHover={this._onHoverScroll}
         position={this.state.scrollX}
         size={this.state.viewportWidth}
         touchEnabled={this.props.touchScrollEnabled}
         isRTL={this.props.isRTL}
+        onScrollbarHover={this.state.onScrollbarHover}
       />
     );
 

@@ -51,21 +51,21 @@ export function getColumnAnchor(state, newProps, oldProps) {
   ) {
     return scrollToX(state, newProps.scrollLeft);
   }
-  if (newProps.tableNumber === 1) {
-    return {
-      firstIndex: state.firstColumnIndex,
-      firstOffset: state.firstColumnOffset,
-      lastIndex: undefined,
-      changed: false,
-    };
-  } else {
-    return {
-      firstIndex: Shared.firstIndex,
-      firstOffset: Shared.firstOffset,
-      lastIndex: undefined,
-      changed: false,
-    };
-  }
+  return {
+    firstIndex: state.firstColumnIndex,
+    firstOffset: state.firstColumnOffset,
+    lastIndex: undefined,
+    changed: false,
+  };
+
+  // else {
+  //   return {
+  //     firstIndex: Shared.firstIndex,
+  //     firstOffset: Shared.firstOffset,
+  //     lastIndex: undefined,
+  //     changed: false,
+  //   };
+  // }
 }
 
 /**
@@ -81,6 +81,7 @@ export function getColumnAnchor(state, newProps, oldProps) {
  * }}
  */
 export function scrollToX(state, scrollX) {
+  // console.log('hh')
   const { availableWidth } = scrollbarsVisibleSelector(state);
   const { scrollableColOffsetIntervalTree, scrollContentWidth } = state;
 
@@ -119,8 +120,8 @@ export function scrollToX(state, scrollX) {
       scrollableColOffsetIntervalTree.sumUntil(firstIndex);
     firstOffset = firstColPosition - scrollX;
   }
-  Shared.setFirstIndex(firstIndex);
-  Shared.setFirstOffset(firstOffset);
+  // Shared.setFirstIndex(firstIndex);
+  // Shared.setFirstOffset(firstOffset);
   return {
     firstIndex,
     firstOffset,

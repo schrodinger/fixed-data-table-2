@@ -18,7 +18,7 @@ class AutoScrollExample extends React.Component {
     this.state = {
       dataList: new FakeObjectDataListStore(10000),
       display: 'none',
-      autoScrollEnabled: true,
+      autoScrollEnabled: false,
       horizontalScrollDelta: 0,
       verticalScrollDelta: 0,
       columns: [],
@@ -29,7 +29,14 @@ class AutoScrollExample extends React.Component {
       shouldUseLegacyComponents: false, //we have to pass this as a prop to FixedDataTableContainer
       isPin: false,
       isHover: false,
+      // shared:new Shared(),
+      // shared: (new Shared()).state
     };
+    // const x = {
+    //   y: 5
+    // };
+    this.shared = new Shared(this.forceUpdate.bind(this));
+    // console.log(this.state.shared)
     //these are legacy function because we are already providing the styles in FixedDataTableCell for this so there is no need of any div here
     const cellRendererLegacy = (props) =>
       `${props.columnKey}, ${props.rowIndex}`;
@@ -59,10 +66,8 @@ class AutoScrollExample extends React.Component {
     }
 
     for (let i = 0; i < 100; i++) {
-      // const columnGroupIndex = Math.floor(i / 2);
       this.state.columns[i] = {
         columnKey: 'Column ' + i,
-        // columnGroupIndex,
         header: this.state.shouldUseLegacyComponents
           ? headercellRendererLegacy
           : headerCellRenderer,
@@ -72,20 +77,11 @@ class AutoScrollExample extends React.Component {
           ? cellRendererDatacell
           : cellRendererDiv,
         width: 50 + Math.floor((i * 300) / this.state.columnsCount),
-        // allowCellsRecycling: true,
-        // fixed: i < 2 ? true : false,
-        // fixedRight: i >= 10000 - 4 ? true : false,
       };
-      // this.state.columnGroups[columnGroupIndex] = {
-      //   columnKey: 'Column Group ' + columnGroupIndex,
-      //   header: headerCellRenderer,
-      // };
     }
     for (let i = 0; i < 100; i++) {
-      // const columnGroupIndex = Math.floor(i / 2);
       this.state.columns1[i] = {
         columnKey: 'Column ' + i,
-        // columnGroupIndex,
         header: this.state.shouldUseLegacyComponents
           ? headercellRendererLegacy
           : headerCellRenderer,
@@ -95,14 +91,7 @@ class AutoScrollExample extends React.Component {
           ? cellRendererDatacell
           : cellRendererDiv,
         width: getRandomInt(100, 200),
-        // allowCellsRecycling: true,
-        // fixed: i < 2 ? true : false,
-        // fixedRight: i >= 10000 - 4 ? true : false,
       };
-      // this.state.columnGroups[columnGroupIndex] = {
-      //   columnKey: 'Column Group ' + columnGroupIndex,
-      //   header: headerCellRenderer,
-      // };
     }
 
     this.onVerticalScroll = this.onVerticalScroll.bind(this);
@@ -131,12 +120,13 @@ class AutoScrollExample extends React.Component {
     var fdt;
     // console.log('hi')
 
-    if (Shared.isHover) {
+    if (this.state.isHover) {
+      // console.log('hi')
       fdt = this.renderTable2({ tableNumber: 2 });
     }
 
     const style = {
-      display: Shared.display,
+      // display: Shared.display,
       // top: '500px',
       // position: 'absolute',
       // left: Shared.tableLeft,
@@ -147,6 +137,10 @@ class AutoScrollExample extends React.Component {
     const style1 = {
       // position: 'absolute',
     };
+    // console.log('helo')
+
+    console.log('ScrollX = ', this.shared.state.scrollLeft);
+
     return (
       <div className="autoScrollContainer">
         {this.renderControls()}
@@ -193,11 +187,11 @@ class AutoScrollExample extends React.Component {
   //   Shared.setDisplay('block');
   // };
   _onMouseLeave = (event) => {
-    if (!this.state.isPin) {
-      Shared.subscribers.pop();
-      Shared.setisHover(false);
-      Shared.setDisplay('none');
-    }
+    // if (!this.state.isPin) {
+    //   Shared.subscribers.pop();
+    //   Shared.setisHover(false);
+    //   Shared.setDisplay('none');
+    // }
   };
   renderControls() {
     return (
@@ -232,15 +226,19 @@ class AutoScrollExample extends React.Component {
 
   renderTable1(additionalProps) {
     var { dataList, scrollLeft, scrollTop } = this.state;
+    // console.log(this.shared.setRef)
     return (
       <Table
-        // groupHeaderHeight={50}
+        ref={this.shared.setRef}
         rowHeight={50}
         headerHeight={50}
         rowsCount={dataList.getSize()}
         width={this.props.width}
         height={this.props.height / 3}
-        // scrollLeft={scrollLeft}
+        onScrollbarHover={(isHover) => this.setState({ isHover })}
+        // scrollHover={this.shared.state.scrollHover}
+
+        scrollLeft={this.shared.state.scrollLeft}
         // scrollTop={scrollTop}
         // onVerticalScroll={this.onVerticalScroll}
         // onHorizontalScroll={this.onHorizontalScroll}
@@ -254,6 +252,7 @@ class AutoScrollExample extends React.Component {
   }
   renderTable2(additionalProps) {
     var { dataList, scrollLeft, scrollTop } = this.state;
+    // console.log(this.shared.state.storedWidths)
     return (
       <Table
         // groupHeaderHeight={50}
@@ -262,6 +261,13 @@ class AutoScrollExample extends React.Component {
         rowsCount={dataList.getSize()}
         width={this.props.width}
         height={this.props.height / 3}
+        scrollLeft={this.shared.state.scrollHover}
+        storedWidths={this.shared.state.storedWidths}
+        scrollableColOffsetIntervalTree={
+          this.shared.state.scrollableColOffsetIntervalTree
+        }
+        // scrollHover={this.shared.state.scrollHover}
+
         // scrollLeft={scrollLeft}
         // scrollTop={scrollTop}
         // onVerticalScroll={this.onVerticalScroll}

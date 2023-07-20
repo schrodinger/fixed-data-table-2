@@ -63,7 +63,7 @@ export function getScrollableColumn(state, localColIdx) {
 
   state.storedScrollableColumns.object[localColIdx] = column;
   updateScrollableColumnWidth(state, localColIdx, column.props.width);
-  Shared.setStoredWidths(state.storedWidths);
+  // Shared.setStoredWidths(state.storedWidths);
 
   return column;
 }
