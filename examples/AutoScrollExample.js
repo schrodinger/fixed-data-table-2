@@ -27,17 +27,12 @@ class AutoScrollExample extends React.Component {
       // columnGroups: [],
       columnsCount: 100,
       shouldUseLegacyComponents: false, //we have to pass this as a prop to FixedDataTableContainer
-      isPin: false,
-      isHover: false,
+      isPinned: false,
       scrollbarHoverLeft: 0,
-      // shared:new Shared(),
-      // shared: (new Shared()).state
+      isScrollbarHovering: false,
+      isPinContainerHovering: false,
     };
-    // const x = {
-    //   y: 5
-    // };
     this.shared = new Shared(this.forceUpdate.bind(this));
-    // console.log(this.state.shared)
     //these are legacy function because we are already providing the styles in FixedDataTableCell for this so there is no need of any div here
     const cellRendererLegacy = (props) =>
       `${props.columnKey}, ${props.rowIndex}`;
@@ -100,7 +95,6 @@ class AutoScrollExample extends React.Component {
     this.toggleAutoScroll = this.toggleAutoScroll.bind(this);
     this.setHorizontalScrollDelta = this.setHorizontalScrollDelta.bind(this);
     this.setVerticalScrollDelta = this.setVerticalScrollDelta.bind(this);
-    this.displayChange = this.displayChange.bind(this);
     this.hoverChange = this.hoverChange.bind(this);
   }
 
@@ -118,73 +112,58 @@ class AutoScrollExample extends React.Component {
   }
 
   render() {
-    var fdt = this.renderTable2({ tableNumber: 2 });
-
-    const style = {
-      // display: Shared.display,
-      // top: '500px',
-      // position: 'absolute',
-      // left: Shared.tableLeft,
-      // top:'100px'
-    };
-    // console.log(this.state.display)
-    // style.display='block'
-    const style1 = {
-      // position: 'absolute',
-    };
-    // console.log('helo')
-
     return (
       <div className="autoScrollContainer">
         {this.renderControls()}
-        <div style={style1}>{this.renderTable1({ tableNumber: 1 })}</div>
+        <div>{this.renderTable1({ tableNumber: 1 })}</div>
         <div
-          style={style}
-          // onMouseEnter={this._onMouseEnter}
-          // onMouseMove={this._onMouseMove}
-          onMouseLeave={this._onMouseLeave}
+          style={{ position: 'relative' }}
+          onMouseEnter={() => this.setState({ isPinContainerHovering: true })}
+          onMouseLeave={() => this.setState({ isPinContainerHovering: false })}
         >
-          <img
-            id="myImage"
-            src={require('./pin-button.png')}
-            alt="Pin Button"
-            className="pin-button-img"
-            onClick={() => this.pinned(this.state.isPin)}
-            height="50px"
-            width="50px"
-          ></img>
-          {fdt}
+          {this.renderPinAndTable()}
         </div>
       </div>
     );
   }
-  pinned = (isPin) => {
+  renderPinAndTable() {
+    if (
+      !this.state.isScrollbarHovering &&
+      !this.state.isPinned &&
+      !this.state.isPinContainerHovering
+    ) {
+      return null;
+    }
+
+    return (
+      <div style={{ top: -3, position: 'absolute' }}>
+        {this.renderPin()}
+        {this.renderTable2({ tableNumber: 2 })}
+      </div>
+    );
+  }
+  renderPin() {
+    return (
+      <img
+        id="myImage"
+        src={require('./pin-button.png')}
+        alt="Pin Button"
+        className="pin-button-img"
+        onClick={() => this.pinned(this.state.isPinned)}
+        height="50px"
+        width="50px"
+      />
+    );
+  }
+  pinned = (isPinned) => {
     var image = document.getElementById('myImage');
-    if (isPin === true) {
-      this.state.isPin = false;
+    if (isPinned === true) {
+      this.state.isPinned = false;
       image.src = require('./pin-button.png');
     } else {
-      this.state.isPin = true;
+      this.state.isPinned = true;
       image.src = require('./unpin-button.png');
     }
-    // console.log(this.state.isPin)
-  };
-  // _onMouseMove = (event) => {
-  //   /** @type {object} */
-  //   // console.log('hello')
-  //   Shared.setDisplay('block');
-  // };
-  // _onMouseEnter = (event) => {
-  //   /** @type {object} */
-  //   // console.log('hello')
-  //   Shared.setDisplay('block');
-  // };
-  _onMouseLeave = (event) => {
-    // if (!this.state.isPin) {
-    //   Shared.subscribers.pop();
-    //   Shared.setisHover(false);
-    //   Shared.setDisplay('none');
-    // }
   };
   renderControls() {
     return (
@@ -222,11 +201,19 @@ class AutoScrollExample extends React.Component {
     return (
       <Table
         ref={this.shared.setRef}
-        onScrollHoverMove={(scrollbarHoverLeft) =>
-          this.setState({ scrollbarHoverLeft })
-        }
-        onScrollHoverStart={() => this.setState({ isScrollbarHovering: true })}
-        onScrollHoverEnd={() => this.setState({ isScrollbarHovering: false })}
+        onScrollHoverMove={(scrollbarHoverLeft) => {
+          clearTimeout(window.hoverTimeoutId);
+          this.setState({ scrollbarHoverLeft });
+        }}
+        onScrollHoverStart={() => {
+          this.setState({ isScrollbarHovering: true });
+          clearTimeout(window.hoverTimeoutId);
+        }}
+        onScrollHoverEnd={() => {
+          window.hoverTimeoutId = setTimeout(() => {
+            this.setState({ isScrollbarHovering: false });
+          }, 500);
+        }}
         rowHeight={50}
         headerHeight={50}
         rowsCount={dataList.getSize()}
@@ -247,12 +234,7 @@ class AutoScrollExample extends React.Component {
     );
   }
   renderTable2(additionalProps) {
-    if (!this.state.isScrollbarHovering) {
-      return null;
-    }
-
     var { dataList, scrollLeft, scrollTop } = this.state;
-    // console.log(this.shared.state.storedWidths)
     return (
       <Table
         // groupHeaderHeight={50}
@@ -292,12 +274,6 @@ class AutoScrollExample extends React.Component {
     this.setState({ scrollLeft });
   }
 
-  displayChange(display) {
-    // console.log(display)
-    this.state.display = display;
-    // this.setState({display})
-    // console.log(this.state.display)
-  }
   hoverChange(isHover) {
     this.setState({ isHover });
   }
