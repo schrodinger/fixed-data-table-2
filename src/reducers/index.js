@@ -131,7 +131,6 @@ function getInitialState(props) {
     scrollbarYWidth: Scrollbar.SIZE,
     scrolling: false,
     scrollingX: false,
-    scrollHover: 0,
     scrollableColumns: {}, // we use a sparse object to represent the currently required set of columns
     scrollableColumnGroups: {}, // we use a sparse object to represent the currently required set of columns
     fixedColumns: [],
@@ -271,13 +270,6 @@ const slice = createSlice({
       computeRenderedCols(state, columnAnchor);
       // console.log(Shared.setscrollLeft)
       // Shared.setscrollLeft(scrollX,tableNumber)
-    },
-    scrollToHover(state, action) {
-      // const scrollHover = action.payload;
-      // // state.scrolling = true;
-      // const columnAnchor = scrollToXAnchor(state, scrollHover);
-      // computeRenderedCols(state, columnAnchor);
-      state.scrollHover = action.payload;
     },
   },
 });
@@ -453,12 +445,6 @@ function setStateFromProps(state, props) {
 }
 
 const { reducer, actions } = slice;
-export const {
-  initialize,
-  propChange,
-  scrollEnd,
-  scrollToX,
-  scrollToY,
-  scrollToHover,
-} = actions;
+export const { initialize, propChange, scrollEnd, scrollToX, scrollToY } =
+  actions;
 export default reducer;

@@ -19,7 +19,6 @@ const getApiDataSelector = () =>
       (state) => state.maxScrollX,
       (state) => tableHeights(state).availableScrollWidth,
       (state) => state.isRTL,
-      (state) => state.scrollHover,
       (state) => state.storedWidths,
       (state) => state.scrollableColOffsetIntervalTree,
     ],
@@ -30,7 +29,6 @@ const getApiDataSelector = () =>
       /*number*/ maxScrollX,
       /*number*/ availableScrollWidth,
       /*boolean*/ isRTL,
-      scrollHover,
       storedWidths,
       scrollableColOffsetIntervalTree
     ) => {
@@ -41,7 +39,6 @@ const getApiDataSelector = () =>
         maxScrollX,
         availableScrollWidth,
         isRTL,
-        scrollHover,
         storedWidths,
         scrollableColOffsetIntervalTree,
       };

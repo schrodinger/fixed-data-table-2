@@ -10,7 +10,6 @@ class Shared {
     this.forceUpdatetmp = forceUpdate;
     this.state = {
       scrollLeft: 0,
-      scrollHover: 0,
       storedWidths: null,
       scrollableColOffsetIntervalTree: null,
     };
@@ -22,16 +21,11 @@ class Shared {
       // console.log(this.current.getApi())
       this.current.getApi().subscribe(() => {
         // console.log(this.current.getApi())
-        const {
-          scrollX,
-          scrollHover,
-          storedWidths,
-          scrollableColOffsetIntervalTree,
-        } = this.current.getApi();
+        const { scrollX, storedWidths, scrollableColOffsetIntervalTree } =
+          this.current.getApi();
         //  console.log(storedWidhts)
         const oldScrollX = this.state.scrollLeft;
         this.setScrollLeft(scrollX);
-        this.setScrollHover(scrollHover);
         this.setStoredWidths(storedWidths);
         this.setscrollableColOffsetIntervalTree(
           scrollableColOffsetIntervalTree
@@ -44,9 +38,6 @@ class Shared {
   }
   setScrollLeft(scrollLeft) {
     this.state.scrollLeft = scrollLeft;
-  }
-  setScrollHover(scrollHover) {
-    this.state.scrollHover = scrollHover;
   }
   setStoredWidths(storedWidths) {
     this.state.storedWidths = storedWidths;

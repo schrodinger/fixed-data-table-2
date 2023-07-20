@@ -29,6 +29,7 @@ class AutoScrollExample extends React.Component {
       shouldUseLegacyComponents: false, //we have to pass this as a prop to FixedDataTableContainer
       isPin: false,
       isHover: false,
+      scrollbarHoverLeft: 0,
       // shared:new Shared(),
       // shared: (new Shared()).state
     };
@@ -117,13 +118,7 @@ class AutoScrollExample extends React.Component {
   }
 
   render() {
-    var fdt;
-    // console.log('hi')
-
-    if (this.state.isHover) {
-      // console.log('hi')
-      fdt = this.renderTable2({ tableNumber: 2 });
-    }
+    var fdt = this.renderTable2({ tableNumber: 2 });
 
     const style = {
       // display: Shared.display,
@@ -138,8 +133,6 @@ class AutoScrollExample extends React.Component {
       // position: 'absolute',
     };
     // console.log('helo')
-
-    console.log('ScrollX = ', this.shared.state.scrollLeft);
 
     return (
       <div className="autoScrollContainer">
@@ -226,16 +219,19 @@ class AutoScrollExample extends React.Component {
 
   renderTable1(additionalProps) {
     var { dataList, scrollLeft, scrollTop } = this.state;
-    // console.log(this.shared.setRef)
     return (
       <Table
         ref={this.shared.setRef}
+        onScrollHoverMove={(scrollbarHoverLeft) =>
+          this.setState({ scrollbarHoverLeft })
+        }
+        onScrollHoverStart={() => this.setState({ isScrollbarHovering: true })}
+        onScrollHoverEnd={() => this.setState({ isScrollbarHovering: false })}
         rowHeight={50}
         headerHeight={50}
         rowsCount={dataList.getSize()}
         width={this.props.width}
         height={this.props.height / 3}
-        onScrollbarHover={(isHover) => this.setState({ isHover })}
         // scrollHover={this.shared.state.scrollHover}
 
         scrollLeft={this.shared.state.scrollLeft}
@@ -251,6 +247,10 @@ class AutoScrollExample extends React.Component {
     );
   }
   renderTable2(additionalProps) {
+    if (!this.state.isScrollbarHovering) {
+      return null;
+    }
+
     var { dataList, scrollLeft, scrollTop } = this.state;
     // console.log(this.shared.state.storedWidths)
     return (
@@ -261,7 +261,7 @@ class AutoScrollExample extends React.Component {
         rowsCount={dataList.getSize()}
         width={this.props.width}
         height={this.props.height / 3}
-        scrollLeft={this.shared.state.scrollHover}
+        scrollLeft={Math.round(this.state.scrollbarHoverLeft)}
         storedWidths={this.shared.state.storedWidths}
         scrollableColOffsetIntervalTree={
           this.shared.state.scrollableColOffsetIntervalTree
