@@ -114,7 +114,7 @@ class AutoScrollExample extends React.Component {
   render() {
     return (
       <div className="autoScrollContainer">
-        {this.renderControls()}
+        {/* {this.renderControls()} */}
         <div>{this.renderTable1({ tableNumber: 1 })}</div>
         <div
           style={{ position: 'relative' }}
@@ -135,12 +135,23 @@ class AutoScrollExample extends React.Component {
       return null;
     }
 
-    const containerStyles = {
+    let containerStyles = {
       position: 'absolute',
-      top: -3,
+      top: '-175px',
       display: 'flex',
       flexDirection: 'column',
+      transform: 'scale(0.5)',
+      transformOrigin: 'top',
     };
+
+    if (this.state.isPinned) {
+      containerStyles = {
+        position: 'absolute',
+        top: -3,
+        display: 'flex',
+        flexDirection: 'column',
+      };
+    }
 
     return (
       <div style={containerStyles}>
@@ -166,12 +177,13 @@ class AutoScrollExample extends React.Component {
   pinned = (isPinned) => {
     var image = document.getElementById('myImage');
     if (isPinned === true) {
-      this.state.isPinned = false;
       image.src = require('./pin-button.png');
     } else {
-      this.state.isPinned = true;
       image.src = require('./unpin-button.png');
     }
+    this.setState({
+      isPinned: !isPinned,
+    });
   };
   renderControls() {
     return (
@@ -226,7 +238,7 @@ class AutoScrollExample extends React.Component {
         headerHeight={50}
         rowsCount={dataList.getSize()}
         width={this.props.width}
-        height={this.props.height / 3}
+        height={this.state.isPinned ? this.props.height / 2 : this.props.height}
         // scrollHover={this.shared.state.scrollHover}
 
         scrollLeft={this.shared.state.scrollLeft}
@@ -250,7 +262,7 @@ class AutoScrollExample extends React.Component {
         headerHeight={50}
         rowsCount={dataList.getSize()}
         width={this.props.width}
-        height={this.props.height / 3}
+        height={this.props.height / 2}
         scrollLeft={Math.round(this.state.scrollbarHoverLeft)}
         storedWidths={this.shared.state.storedWidths}
         scrollableColOffsetIntervalTree={
