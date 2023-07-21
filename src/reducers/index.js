@@ -26,7 +26,7 @@ import Scrollbar from '../plugins/Scrollbar';
 import { createSlice } from '@reduxjs/toolkit';
 import computeRenderedCols from './computeRenderedCols';
 import { initializeFlexColumnWidths } from './flexColumnWidths';
-import Shared from '../impl.js';
+import Shared from '../SharedClass.js';
 import { isEmpty } from 'lodash';
 
 // NOTE (pradeep): Custom class objects are ignored by immer. (see https://immerjs.github.io/immer/complex-objects/)
@@ -170,12 +170,8 @@ const slice = createSlice({
   reducers: {
     initialize(state, action) {
       let props = action.payload;
-      // console.log(props)
 
       Object.assign(state, getInitialState());
-      // console.log(state.storedWidths)
-
-      // props = {...props, ...Shared.getAllData()};
 
       setStateFromProps(state, props);
       initializeRowHeightsAndOffsets(state);
@@ -184,12 +180,10 @@ const slice = createSlice({
       initializeFlexColumnWidths(state);
       const scrollAnchor = getScrollAnchor(state, props);
       const columnAnchor = getColumnAnchor(state, props);
-      // console.log(columnAnchor)
       computeRenderedRows(state, scrollAnchor);
       computeRenderedCols(state, columnAnchor);
     },
     propChange(state, action) {
-      // console.log('Hello')
       const { newProps, oldProps } = action.payload;
       const oldState = _.clone(state);
 
@@ -208,9 +202,9 @@ const slice = createSlice({
         columnCounts(oldState);
       const { scrollableColumnsCount: newScrollableColumnsCount } =
         columnCounts(state);
-      // if (oldScrollableColumnsCount !== newScrollableColumnsCount) {
+
       initializeScrollableColumnWidthsAndOffsets(state, newProps);
-      // }
+
       initializeFlexColumnWidths(state);
 
       if (oldProps.rowsCount !== newProps.rowsCount) {
@@ -263,13 +257,10 @@ const slice = createSlice({
       computeRenderedRows(state, scrollAnchor);
     },
     scrollToX(state, action) {
-      // console.log(action.payload)
       const scrollX = action.payload;
       state.scrolling = true;
       const columnAnchor = scrollToXAnchor(state, scrollX);
       computeRenderedCols(state, columnAnchor);
-      // console.log(Shared.setscrollLeft)
-      // Shared.setscrollLeft(scrollX,tableNumber)
     },
   },
 });
@@ -342,8 +333,6 @@ function initializeScrollableColumnWidthsAndOffsets(state, props) {
   const defaultColumnWidth = columnSettings.defaultColumnWidth;
   const scrollContentWidth = scrollableColumnsCount * defaultColumnWidth;
   let scrollableColOffsetIntervalTree;
-  // console.log(state.scrollableColOffsetIntervalTree)
-  // console.log('hello')
   if (props.scrollableColOffsetIntervalTree) {
     scrollableColOffsetIntervalTree = props.scrollableColOffsetIntervalTree;
   } else if (state.scrollableColOffsetIntervalTree) {
@@ -384,7 +373,6 @@ function initializeScrollableColumnWidthsAndOffsets(state, props) {
  * @private
  */
 function setStateFromProps(state, props) {
-  // console.log(props)
   state.propsRevision = state.propsRevision + 1;
 
   state.elementHeights = Object.assign(

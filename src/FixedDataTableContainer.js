@@ -24,7 +24,7 @@ import { FixedDataTableContext } from './FixedDataTableContext';
 import { createApi } from './api';
 import { initialize, propChange } from './reducers';
 import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
-import Shared from './impl.js';
+import Shared from './SharedClass.js';
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
@@ -36,11 +36,11 @@ class FixedDataTableContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    // console.log(props.tableNumber)
+
     this.reduxStore = FixedDataTableStore.get();
-    // console.log(Shared)
+
     this.scrollActions = getScrollActions(this.reduxStore, () => this.props);
-    // console.log(this.props)
+
     this.reduxStore.dispatch(initialize(props));
 
     this.unsubscribe = this.reduxStore.subscribe(this.onStoreUpdate.bind(this));
@@ -52,17 +52,9 @@ class FixedDataTableContainer extends React.Component {
 
     this.fixedDataTableApi = createApi();
     this.previousApiValue = null;
-    // console.log(props.tableNumber)
-    // Shared.subscribe()
-    // console.log(Shared)
-    // if (this.props.tableNumber === 2) {
-    //   Shared.subscribers.push(this.reduxStore);
-    // }
   }
 
   static getDerivedStateFromProps(nextProps, currentState) {
-    // console.log(nextProps)
-    // console.log('hello')
     invariant(
       nextProps.height !== undefined || nextProps.maxHeight !== undefined,
       'You must set either a height or a maxHeight'
@@ -71,14 +63,11 @@ class FixedDataTableContainer extends React.Component {
     // getDerivedStateFromProps is called for both prop and state updates.
     // If props are unchanged here, then there's no need to recalculate derived state.
     if (nextProps === currentState.props) {
-      // console.log(nextProps)
-
       // return null to indicate that state should be unchanged
       return null;
     }
 
     // Props have changed, so update the redux store with the latest props
-    // Shared.update(nextProps,currentState.props)
 
     currentState.reduxStore.dispatch(
       propChange({
@@ -115,7 +104,6 @@ class FixedDataTableContainer extends React.Component {
    * @returns
    */
   getApi() {
-    // console.log(this.reduxStore)
     return this.fixedDataTableApi.getValue(
       {
         ...this.props,
@@ -139,10 +127,6 @@ class FixedDataTableContainer extends React.Component {
 
   render() {
     const fixedDataTableContextValue = this.getApi();
-    // console.log(fixedDataTableContextValue)
-    // console.log('hello')
-    // console.log(this.props.storedWidths)
-    // console.log(this.props.scrollableColOffsetIntervalTree)
     const fdt = (
       <FixedDataTable
         {...this.props}
@@ -151,19 +135,16 @@ class FixedDataTableContainer extends React.Component {
       />
     );
     // For backward compatibility, by default we render FDT-2 scrollbars
-    // console.log(this.props.defaultScrollbars,this.props.tableNumber)
     if (this.props.defaultScrollbars) {
       return (
         <FixedDataTableContext.Provider value={fixedDataTableContextValue}>
           <ScrollContainer {...this.props}>{fdt}</ScrollContainer>
-          {/* {fdt} */}
         </FixedDataTableContext.Provider>
       );
     }
     return (
-      // console.log('hello')
       <FixedDataTableContext.Provider value={fixedDataTableContextValue}>
-        {/* //   {fdt} */}
+        {fdt}
       </FixedDataTableContext.Provider>
     );
   }
@@ -231,7 +212,6 @@ class FixedDataTableContainer extends React.Component {
     const newBoundState = FixedDataTableContainer.getBoundState(
       this.reduxStore
     );
-    // Shared.setscrollX(newBoundState.scrollX)
 
     // If onStoreUpdate was called through a prop change, then skip updating local state.
     // This is fine because getDerivedStateFromProps already calculates the new state.

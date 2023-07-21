@@ -8,7 +8,7 @@ import FakeObjectDataListStore from './helpers/FakeObjectDataListStore';
 import { ImageCell, LinkCell, TextCell } from './helpers/cells';
 import { Table, Column, DataCell, Plugins } from 'fixed-data-table-2';
 import React from 'react';
-import Shared from '../src/impl';
+import Shared from '../src/SharedClass';
 import cx from '../src/vendor_upstream/stubs/cx';
 import joinClasses from '../src/vendor_upstream/core/joinClasses';
 
@@ -17,22 +17,19 @@ class AutoScrollExample extends React.Component {
     super(props);
     this.state = {
       dataList: new FakeObjectDataListStore(10000),
-      display: 'none',
-      autoScrollEnabled: false,
-      horizontalScrollDelta: 0,
-      verticalScrollDelta: 0,
       columns: [],
-      columns1: [],
-
-      // columnGroups: [],
       columnsCount: 100,
       shouldUseLegacyComponents: false, //we have to pass this as a prop to FixedDataTableContainer
+      isSplitted: false,
       isPinned: false,
       scrollbarHoverLeft: 0,
+      tablePosition: 0,
       isScrollbarHovering: false,
       isPinContainerHovering: false,
     };
+
     this.shared = new Shared(this.forceUpdate.bind(this));
+
     //these are legacy function because we are already providing the styles in FixedDataTableCell for this so there is no need of any div here
     const cellRendererLegacy = (props) =>
       `${props.columnKey}, ${props.rowIndex}`;
@@ -55,11 +52,6 @@ class AutoScrollExample extends React.Component {
     const headerCellRenderer = (props) => (
       <DataCell {...props}>{props.columnKey}</DataCell>
     );
-    function getRandomInt(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
 
     for (let i = 0; i < 100; i++) {
       this.state.columns[i] = {
@@ -75,49 +67,17 @@ class AutoScrollExample extends React.Component {
         width: 50 + Math.floor((i * 300) / this.state.columnsCount),
       };
     }
-    for (let i = 0; i < 100; i++) {
-      this.state.columns1[i] = {
-        columnKey: 'Column ' + i,
-        header: this.state.shouldUseLegacyComponents
-          ? headercellRendererLegacy
-          : headerCellRenderer,
-        cell: this.state.shouldUseLegacyComponents
-          ? cellRendererLegacy
-          : i % 2
-          ? cellRendererDatacell
-          : cellRendererDiv,
-        width: getRandomInt(100, 200),
-      };
-    }
-
-    this.onVerticalScroll = this.onVerticalScroll.bind(this);
-    this.onHorizontalScroll = this.onHorizontalScroll.bind(this);
-    this.toggleAutoScroll = this.toggleAutoScroll.bind(this);
-    this.setHorizontalScrollDelta = this.setHorizontalScrollDelta.bind(this);
-    this.setVerticalScrollDelta = this.setVerticalScrollDelta.bind(this);
-    this.hoverChange = this.hoverChange.bind(this);
-  }
-
-  componentDidMount() {
-    setInterval(() => {
-      if (!this.state.autoScrollEnabled) {
-        return;
-      }
-      this.setState((prevState) => ({
-        scrollTop: prevState.scrollTop + (prevState.verticalScrollDelta || 0),
-        scrollLeft:
-          prevState.scrollLeft + (prevState.horizontalScrollDelta || 0),
-      }));
-    }, 16);
   }
 
   render() {
     return (
       <div className="autoScrollContainer">
-        {/* {this.renderControls()} */}
-        <div>{this.renderTable1({ tableNumber: 1 })}</div>
+        <div>{this.renderMainTable()}</div>
         <div
-          style={{ position: 'relative' }}
+          style={{
+            position: 'relative',
+            left: this.state.isSplitted ? 0 : this.state.tablePosition,
+          }}
           onMouseEnter={() => this.setState({ isPinContainerHovering: true })}
           onMouseLeave={() => this.setState({ isPinContainerHovering: false })}
         >
@@ -127,55 +87,96 @@ class AutoScrollExample extends React.Component {
     );
   }
   renderPinAndTable() {
-    if (
-      !this.state.isScrollbarHovering &&
-      !this.state.isPinned &&
-      !this.state.isPinContainerHovering
-    ) {
-      return null;
-    }
+    if (!this.state.isPinned) {
+      if (
+        !this.state.isScrollbarHovering &&
+        !this.state.isSplitted &&
+        !this.state.isPinContainerHovering
+      ) {
+        return null;
+      } else {
+        let containerStyles = {
+          position: 'absolute',
+          top: '-270px',
+          display: 'flex',
+          flexDirection: 'column',
+          transform: 'scale(0.5)',
+          transformOrigin: 'top left',
+        };
 
-    let containerStyles = {
-      position: 'absolute',
-      top: '-175px',
-      display: 'flex',
-      flexDirection: 'column',
-      transform: 'scale(0.5)',
-      transformOrigin: 'top',
-    };
+        if (this.state.isSplitted) {
+          containerStyles = {
+            position: 'absolute',
+            top: -3,
+            display: 'flex',
+            flexDirection: 'column',
+          };
+        }
+        let buttonStyles = {
+          alignSelf: 'end',
+          display: 'flex',
+        };
+        return (
+          <div style={containerStyles}>
+            <div style={buttonStyles}>
+              {this.renderPin()}
+              {this.renderSplit()}
+            </div>
 
-    if (this.state.isPinned) {
-      containerStyles = {
+            {this.renderPreviewTable()}
+          </div>
+        );
+      }
+    } else {
+      let containerStyles = {
         position: 'absolute',
-        top: -3,
+        top: '-270px',
         display: 'flex',
         flexDirection: 'column',
+        transform: 'scale(0.5)',
+        transformOrigin: 'top left',
       };
-    }
 
-    return (
-      <div style={containerStyles}>
-        {this.renderPin()}
-        {this.renderTable2({ tableNumber: 2 })}
-      </div>
-    );
+      if (this.state.isSplitted) {
+        containerStyles = {
+          position: 'absolute',
+          top: -3,
+          display: 'flex',
+          flexDirection: 'column',
+        };
+      }
+      let buttonStyles = {
+        display: 'flex',
+        alignSelf: 'end',
+      };
+      return (
+        <div style={containerStyles}>
+          <div style={buttonStyles}>
+            {this.renderPin()}
+            {this.renderSplit()}
+          </div>
+
+          {this.renderPreviewTable()}
+        </div>
+      );
+    }
   }
   renderPin() {
     return (
       <img
-        id="myImage"
-        style={{ alignSelf: 'end' }}
+        id="myImagePin"
+        style={{ alignSelf: 'end', padding: '5px', margin: '5px' }}
         src={require('./pin-button.png')}
         alt="Pin Button"
-        className="pin-button-img"
+        className="button-img"
         onClick={() => this.pinned(this.state.isPinned)}
-        height="50px"
-        width="50px"
+        height="30px"
+        width="30px"
       />
     );
   }
   pinned = (isPinned) => {
-    var image = document.getElementById('myImage');
+    var image = document.getElementById('myImagePin');
     if (isPinned === true) {
       image.src = require('./pin-button.png');
     } else {
@@ -185,49 +186,52 @@ class AutoScrollExample extends React.Component {
       isPinned: !isPinned,
     });
   };
-  renderControls() {
+  renderSplit() {
     return (
-      <div className="autoScrollControls">
-        <label>
-          Auto Scroll Enabled
-          <input
-            type="checkbox"
-            checked={this.state.autoScrollEnabled}
-            onChange={this.toggleAutoScroll}
-          />
-        </label>
-        <label>
-          Horizontal Scroll Delta
-          <input
-            type="number"
-            value={this.state.horizontalScrollDelta}
-            onChange={this.setHorizontalScrollDelta}
-          />
-        </label>
-        <label>
-          Vertical Scroll Delta
-          <input
-            type="number"
-            value={this.state.verticalScrollDelta}
-            onChange={this.setVerticalScrollDelta}
-          />
-        </label>
-      </div>
+      <img
+        id="myImage"
+        style={{ alignSelf: 'end', padding: '5px', margin: '5px' }}
+        src={require('./split-button.png')}
+        alt="Split Button"
+        className="button-img"
+        onClick={() => this.splitted(this.state.isSplitted)}
+        height="30px"
+        width="30px"
+      />
     );
   }
+  splitted = (isSplitted) => {
+    var image = document.getElementById('myImage');
+    if (isSplitted === true) {
+      image.src = require('./split-button.png');
+    } else {
+      image.src = require('./unsplit-button.png');
+    }
+    this.setState({
+      isSplitted: !isSplitted,
+    });
+  };
 
-  renderTable1(additionalProps) {
-    var { dataList, scrollLeft, scrollTop } = this.state;
+  renderMainTable() {
+    var { dataList } = this.state;
     return (
       <Table
         ref={this.shared.setRef}
-        onScrollHoverMove={(scrollbarHoverLeft) => {
-          clearTimeout(window.hoverTimeoutId);
-          this.setState({ scrollbarHoverLeft });
+        onScrollHoverMove={(scrollbarHoverLeft, tablePosition) => {
+          if (!this.state.isPinned) {
+            clearTimeout(window.hoverTimeoutId);
+            this.setState({ scrollbarHoverLeft });
+            if (tablePosition + this.props.width / 2 > this.props.width) {
+              tablePosition = this.props.width - this.props.width / 2 - 15;
+            }
+            this.setState({ tablePosition });
+          }
         }}
         onScrollHoverStart={() => {
-          this.setState({ isScrollbarHovering: true });
-          clearTimeout(window.hoverTimeoutId);
+          if (!this.state.isPinned) {
+            this.setState({ isScrollbarHovering: true });
+            clearTimeout(window.hoverTimeoutId);
+          }
         }}
         onScrollHoverEnd={() => {
           window.hoverTimeoutId = setTimeout(() => {
@@ -238,26 +242,20 @@ class AutoScrollExample extends React.Component {
         headerHeight={50}
         rowsCount={dataList.getSize()}
         width={this.props.width}
-        height={this.state.isPinned ? this.props.height / 2 : this.props.height}
-        // scrollHover={this.shared.state.scrollHover}
-
+        height={
+          this.state.isSplitted ? this.props.height / 2 : this.props.height
+        }
         scrollLeft={this.shared.state.scrollLeft}
-        // scrollTop={scrollTop}
-        // onVerticalScroll={this.onVerticalScroll}
-        // onHorizontalScroll={this.onHorizontalScroll}
         columnsCount={this.state.columnsCount}
         getColumn={(i) => this.state.columns[i]}
-        // getColumnGroup={(i) => this.state.columnGroups[i]}
         shouldUseLegacyComponents={this.state.shouldUseLegacyComponents}
-        {...additionalProps}
       />
     );
   }
-  renderTable2(additionalProps) {
-    var { dataList, scrollLeft, scrollTop } = this.state;
+  renderPreviewTable() {
+    var { dataList } = this.state;
     return (
       <Table
-        // groupHeaderHeight={50}
         rowHeight={50}
         headerHeight={50}
         rowsCount={dataList.getSize()}
@@ -268,60 +266,11 @@ class AutoScrollExample extends React.Component {
         scrollableColOffsetIntervalTree={
           this.shared.state.scrollableColOffsetIntervalTree
         }
-        // scrollHover={this.shared.state.scrollHover}
-
-        // scrollLeft={scrollLeft}
-        // scrollTop={scrollTop}
-        // onVerticalScroll={this.onVerticalScroll}
-        // onHorizontalScroll={this.onHorizontalScroll}
-        // defaultScrollbars={false}
-        // showScrollbarY= {'false'}
-
         columnsCount={this.state.columnsCount}
         getColumn={(i) => this.state.columns[i]}
-        // getColumnGroup={(i) => this.state.columnGroups[i]}
         shouldUseLegacyComponents={this.state.shouldUseLegacyComponents}
-        {...additionalProps}
       />
     );
-  }
-
-  onVerticalScroll(scrollTop) {
-    this.setState({ scrollTop });
-  }
-
-  onHorizontalScroll(scrollLeft) {
-    this.setState({ scrollLeft });
-  }
-
-  hoverChange(isHover) {
-    this.setState({ isHover });
-  }
-
-  toggleAutoScroll() {
-    this.setState((prevState) => ({
-      autoScrollEnabled: !prevState.autoScrollEnabled,
-    }));
-  }
-
-  setHorizontalScrollDelta(event) {
-    const { value } = event.target;
-    if (isNaN(value)) {
-      return;
-    }
-    this.setState({
-      horizontalScrollDelta: parseInt(value),
-    });
-  }
-
-  setVerticalScrollDelta(event) {
-    const { value } = event.target;
-    if (isNaN(value)) {
-      return;
-    }
-    this.setState({
-      verticalScrollDelta: parseInt(value),
-    });
   }
 }
 

@@ -22,7 +22,7 @@ import DOMMouseMoveTracker from '../vendor_upstream/dom/DOMMouseMoveTracker';
 
 import cssVar from '../stubs/cssVar';
 import FixedDataTableTranslateDOMPosition from '../FixedDataTableTranslateDOMPosition';
-import Shared from '../impl.js';
+import Shared from '../SharedClass.js';
 
 var UNSCROLLABLE_STATE = {
   position: 0,
@@ -364,8 +364,6 @@ class Scrollbar extends React.PureComponent {
   };
 
   _onMouseDown = (/*object*/ event) => {
-    // console.log('Hlo')
-    // console.log(event.nativeEvent)
     /** @type {object} */
     var nextState;
 
@@ -384,11 +382,8 @@ class Scrollbar extends React.PureComponent {
       // MouseDown on the scroll-track directly, move the center of the
       // scroll-face to the mouse position.
       var props = this.props;
-      // console.log(props)
-      // console.log(position)
 
       position /= this.state.scale;
-      // console.log(position)
 
       nextState = this._calculateState(
         position - (this.state.faceSize * 0.5) / this.state.scale,
@@ -399,11 +394,6 @@ class Scrollbar extends React.PureComponent {
     } else {
       nextState = {};
     }
-    // console.log(nextState)
-    // if(this.props.onScrollbarHover){
-    //   // console.log('hell')
-    //   this.props.onScrollbarHover(true)
-    // }
     nextState.focused = true;
     this._setNextState(nextState);
 
@@ -430,8 +420,7 @@ class Scrollbar extends React.PureComponent {
   _onMouseEnter = (event) => {
     /** @type {object} */
     var nextState;
-    //  console.log(event)
-    // console.log(this.state.position)
+
     if (event.target !== this._faceRef) {
       // Both `offsetX` and `layerX` are non-standard DOM property but they are
       // magically available for browsers somehow.
@@ -446,10 +435,8 @@ class Scrollbar extends React.PureComponent {
 
       // MouseDown on the scroll-track directly, move the center of the
       // scroll-face to the mouse position.
-      // console.log(position)
       var props = this.props;
       position /= this.state.scale;
-      // console.log(position)
 
       nextState = this._calculateState(
         position - (this.state.faceSize * 0.5) / this.state.scale,
@@ -457,10 +444,6 @@ class Scrollbar extends React.PureComponent {
         props.contentSize,
         props.orientation
       );
-      // console.log(position)
-      // console.log(nextState)
-
-      // Shared.setscrollX(Math.round(nextState.position));
 
       if (this.props.onScrollHoverStart) {
         this.props.onScrollHoverStart();
@@ -468,17 +451,7 @@ class Scrollbar extends React.PureComponent {
     } else {
       nextState = {};
     }
-    var mouseX = event.clientX;
 
-    nextState.focused = true;
-    //  this._setNextState(nextState);
-    // const targetDiv = document.getElementById('Example');
-    // console.log(targetDiv)
-    // Shared.setTableLeft(mouseX);
-
-    // targetDiv.style.display='block'
-
-    //  this._mouseMoveTracker.captureMouseMoves(event);
     // Focus the node so it may receive keyboard event.
     this._rootRef.focus();
   };
@@ -487,44 +460,12 @@ class Scrollbar extends React.PureComponent {
   };
   _onMouseLeave = (event) => {
     /** @type {object} */
-    var nextState;
-    // console.log(event)
 
-    // if (event.target !== this._faceRef) {
-    //   // Both `offsetX` and `layerX` are non-standard DOM property but they are
-    //   // magically available for browsers somehow.
-    //   var nativeEvent = event.nativeEvent;
-    //   var position = this.state.isHorizontal
-    //     ? nativeEvent.offsetX ||
-    //       nativeEvent.layerX ||
-    //       this.getTouchX(nativeEvent)
-    //     : nativeEvent.offsetY ||
-    //       nativeEvent.layerY ||
-    //       this.getTouchY(nativeEvent);
-
-    //   // MouseDown on the scroll-track directly, move the center of the
-    //   // scroll-face to the mouse position.
-    //   var props = this.props;
-    //   position /= this.state.scale;
-    //   nextState = this._calculateState(
-    //     position - (this.state.faceSize * 0.5) / this.state.scale,
-    //     props.size,
-    //     props.contentSize,
-    //     props.orientation
-    //   );
-    // } else {
-    //   nextState = {};
-    // }
-
-    // nextState.focused = false;
-    // this._setNextState(nextState);
-    // Shared.setDisplay('none');
     if (this.props.onScrollHoverEnd) {
       this.props.onScrollHoverEnd();
     }
     // Focus the node so it may receive keyboard event.
-    // this._rootRef.focus();
-    // Shared.setisHover(false)
+    this._rootRef.focus();
   };
 
   _onTouchCancel = (/*object*/ event) => {
@@ -547,8 +488,7 @@ class Scrollbar extends React.PureComponent {
   _onMouseMoveHover = (event) => {
     /** @type {object} */
     var nextState;
-    //  console.log(event)
-    // console.log(this.state.position)
+
     if (event.target !== this._faceRef) {
       // Both `offsetX` and `layerX` are non-standard DOM property but they are
       // magically available for browsers somehow.
@@ -563,10 +503,8 @@ class Scrollbar extends React.PureComponent {
 
       // MouseDown on the scroll-track directly, move the center of the
       // scroll-face to the mouse position.
-      // console.log(position)
       var props = this.props;
       position /= this.state.scale;
-      // console.log(position)
 
       nextState = this._calculateState(
         position - (this.state.faceSize * 0.5) / this.state.scale,
@@ -576,28 +514,14 @@ class Scrollbar extends React.PureComponent {
       );
 
       if (this.props.onScrollHoverMove) {
-        this.props.onScrollHoverMove(nextState.position);
+        this.props.onScrollHoverMove(nextState.position, event.clientX - 198);
       }
     } else {
       nextState = {};
     }
 
     nextState.focused = true;
-    // if(this.props.onHover){
-    // console.log(nextState.position)
-    // console.log(this.props)
 
-    // }
-
-    //  this._setNextState(nextState);
-    // const targetDiv = document.getElementById('Example');
-    // console.log(targetDiv)
-    // Shared.setDisplay('block');
-    // Shared.setTableLeft(mouseX);
-    // Shared.setisHover(true);
-    // targetDiv.style.display='block'
-
-    //  this._mouseMoveTracker.captureMouseMoves(event);
     // Focus the node so it may receive keyboard event.
     this._rootRef.focus();
   };
@@ -740,7 +664,6 @@ class Scrollbar extends React.PureComponent {
     } else {
       // Scrolling is controlled. Don't update the state and let the owner
       // to update the scrollbar instead.
-      // console.log(nextState.position)
       if (
         nextState.position !== undefined &&
         nextState.position !== this.state.position
@@ -757,7 +680,6 @@ class Scrollbar extends React.PureComponent {
   };
 
   _didScroll = () => {
-    // console.log('acc')
     this.props.onScroll(this.state.position);
   };
 }

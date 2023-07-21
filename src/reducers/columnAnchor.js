@@ -16,7 +16,7 @@ import clamp from '../vendor_upstream/core/clamp';
 import scrollbarsVisibleSelector from '../selectors/scrollbarsVisible';
 import { getScrollableColumnWidth } from './updateScrollableColumn';
 import columnCounts from '../selectors/columnCounts';
-import Shared from '../impl.js';
+import Shared from '../SharedClass.js';
 
 /**
  * Get the anchor for scrolling.
@@ -34,8 +34,6 @@ import Shared from '../impl.js';
  * }}
  */
 export function getColumnAnchor(state, newProps, oldProps) {
-  // console.log(newProps,oldProps)
-  // console.log(state.firstColumnIndex, state.firstColumnOffset);
   if (
     newProps.scrollToColumn !== undefined &&
     newProps.scrollToColumn !== null &&
@@ -57,15 +55,6 @@ export function getColumnAnchor(state, newProps, oldProps) {
     lastIndex: undefined,
     changed: false,
   };
-
-  // else {
-  //   return {
-  //     firstIndex: Shared.firstIndex,
-  //     firstOffset: Shared.firstOffset,
-  //     lastIndex: undefined,
-  //     changed: false,
-  //   };
-  // }
 }
 
 /**
@@ -81,7 +70,6 @@ export function getColumnAnchor(state, newProps, oldProps) {
  * }}
  */
 export function scrollToX(state, scrollX) {
-  // console.log('hh')
   const { availableWidth } = scrollbarsVisibleSelector(state);
   const { scrollableColOffsetIntervalTree, scrollContentWidth } = state;
 
@@ -120,8 +108,7 @@ export function scrollToX(state, scrollX) {
       scrollableColOffsetIntervalTree.sumUntil(firstIndex);
     firstOffset = firstColPosition - scrollX;
   }
-  // Shared.setFirstIndex(firstIndex);
-  // Shared.setFirstOffset(firstOffset);
+
   return {
     firstIndex,
     firstOffset,

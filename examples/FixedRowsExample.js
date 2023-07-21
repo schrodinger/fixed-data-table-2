@@ -54,15 +54,6 @@ class FixedRowsExample extends React.Component {
       scrollLeft: 0,
     };
   }
-  // componentDidMount() {
-  //   const { scrollContentWidth, getColumnAtOffset } = this.tableRef.current.getApi();
-
-  //   console.log(this.tableRef.current.getApi())
-  // }
-  // componentDidUpdate(){
-  //   console.log(this.tableRef.current.getApi())
-
-  // }
 
   render() {
     const {
@@ -70,7 +61,7 @@ class FixedRowsExample extends React.Component {
       topDataList,
       middleDataList,
       bottomDataList,
-      // scrollLeft,
+      scrollLeft,
     } = this.state;
 
     const totalTableHeight = this.props.height;
@@ -86,27 +77,27 @@ class FixedRowsExample extends React.Component {
           showScrollbarY: false,
           showScrollbarX: false,
           headerHeight,
-          // scrollLeft,
+          scrollLeft,
         })}
         {this.renderTable(topDataList, {
           height: topTableHeight,
           showScrollbarY: false,
           showScrollbarX: false,
           headerHeight: 0,
-          // scrollLeft,
+          scrollLeft,
         })}
         {this.renderTable(middleDataList, {
           height: middleTableHeight,
           showScrollbarX: false,
           headerHeight: 0,
-          // scrollLeft,
+          scrollLeft,
         })}
         {this.renderTable(bottomDataList, {
           height: bottomTableHeight,
           showScrollbarY: false,
           headerHeight: 0,
-          // onHorizontalScroll: this.onHorizontalScroll,
-          // scrollLeft,
+          onHorizontalScroll: this.onHorizontalScroll,
+          scrollLeft,
         })}
       </div>
     );

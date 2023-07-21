@@ -591,14 +591,12 @@ class FixedDataTable extends React.Component {
 
   _shouldHandleTouchX = (/*number*/ delta) /*boolean*/ => {
     this.props.touchScrollEnabled && this._shouldHandleWheelX(delta);
-    console.log('hello');
   };
 
   _shouldHandleTouchY = (/*number*/ delta) /*boolean*/ =>
     this.props.touchScrollEnabled && this._shouldHandleWheelY(delta);
 
   _shouldHandleWheelX = (/*number*/ delta) /*boolean*/ => {
-    // console.log('hello')
     const { maxScrollX, scrollFlags, scrollX } = this.props;
     const { overflowX } = scrollFlags;
 
@@ -1204,7 +1202,6 @@ class FixedDataTable extends React.Component {
    * Calls the user specified scroll callbacks -- onScrollStart, onScrollEnd, onHorizontalScroll, onVerticalScroll.
    */
   _didScroll = (/* !object */ prevProps) => {
-    // console.log('Hello')
     const {
       onScrollStart,
       scrollX,

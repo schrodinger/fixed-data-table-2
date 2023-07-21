@@ -13,7 +13,7 @@
 
 import _ from 'lodash';
 import convertColumnElementsToData from '../helper/convertColumnElementsToData';
-import Shared from '../impl.js';
+import Shared from '../SharedClass.js';
 
 /**
  * Get's the scrollable column props for a specific index and also stores a cache of it

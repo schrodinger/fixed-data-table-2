@@ -24,7 +24,6 @@ class ScrollContainer extends React.Component {
 
   _onScrollBarsUpdate = (args) => {
     this.setState(args);
-    // console.log(this.state)
   };
 
   _onVerticalScroll = (/*number*/ scrollPos) => {
@@ -34,7 +33,6 @@ class ScrollContainer extends React.Component {
   };
 
   _onHorizontalScroll = (/*number*/ scrollPos) => {
-    // console.log('Hello')
     if (this.state.scrollToX !== undefined) {
       this.state.scrollToX(scrollPos);
     }

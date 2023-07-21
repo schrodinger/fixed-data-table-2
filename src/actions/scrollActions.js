@@ -38,9 +38,7 @@ const getScrollActions = (store, getProps) => {
 
     const { onHorizontalScroll } = getProps();
     if (onHorizontalScroll ? onHorizontalScroll(roundedScrollPos) : true) {
-      // console.log(roundedScrollPos,tableNumber)
       scrollActions.scrollToX(roundedScrollPos);
-      // scrollActions.scrollToX({scrollPos:roundedScrollPos,tableNumber:tableNumber});
     }
   };
 
