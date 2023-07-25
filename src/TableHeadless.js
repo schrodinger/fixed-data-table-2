@@ -76,7 +76,10 @@ class Headless {
   getColumns(scrollLeft) {
     this.reduxStore.dispatch(scrollToX(scrollLeft));
     let currentState = this.reduxStore.getState();
-    return currentState.columnsToRender;
+    return {
+      columnOffsets: currentState.columnOffsets,
+      columns: currentState.columnsToRender,
+    };
     //     let _staticCells=[];
     //     var columns = currentState.scrollableColumns;
     //     let columnsToRender = currentState.columnsToRender || [];

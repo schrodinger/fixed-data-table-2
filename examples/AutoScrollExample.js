@@ -17,6 +17,7 @@ import ScrollContainer from '../src/plugins/ScrollContainer';
 
 import cx from '../src/vendor_upstream/stubs/cx';
 import joinClasses from '../src/vendor_upstream/core/joinClasses';
+import './user-table.css';
 // import Headless from '../src/TableHeadless';
 
 class AutoScrollExample extends React.Component {
@@ -73,7 +74,8 @@ class AutoScrollExample extends React.Component {
           : i % 2
           ? cellRendererDatacell
           : cellRendererDiv,
-        width: 50 + Math.floor((i * 300) / this.state.columnsCount),
+        // width: 50 + Math.floor((i * 300) / this.state.columnsCount),
+        width: 50,
       };
     }
     this.headlessProps = {
@@ -89,8 +91,8 @@ class AutoScrollExample extends React.Component {
   componentDidMount() {
     setInterval(() => {
       this.setState((prevState) => ({
-        scrollTop: prevState.scrollTop + 2,
-        screenLeft: prevState.scrollLeft + 2,
+        scrollTop: prevState.scrollTop + 5,
+        scrollLeft: prevState.scrollLeft + 5,
       }));
     }, 16);
   }
@@ -126,34 +128,63 @@ class AutoScrollExample extends React.Component {
     `;
     const rowsInfo = this.newTable.getRows(this.state.scrollTop);
     // console.log(rowsInfo)
-    const columns = this.newTable.getColumns(this.state.scrollLeft);
+    const columnsInfo = this.newTable.getColumns(this.state.scrollLeft);
     return (
       <div className="autoScrollContainer">
-        <ScrollContainer {...this.headlessProps}>
-          <Styles>
-            <table>
-              <tbody style={{ position: 'relative' }}>
-                {rowsInfo.rows.map((rowIndex) => {
-                  const cells = columns.map((column) => {
-                    return (
-                      <td height="50px" width="50px">
-                        {rowIndex}, {column}
-                      </td>
-                    );
-                  });
-                  // const tmp = this.newTable.prepareRow(row, 500);
-                  const rowOffsets = rowsInfo.rowOffsets;
-                  // console.log(rowOffsets[rowIndex])
-                  const style = {
-                    top: rowOffsets[rowIndex] - this.state.scrollTop,
-                    position: 'absolute',
-                  };
-                  return <tr style={style}>{cells}</tr>;
-                })}
-              </tbody>
-            </table>
-          </Styles>
-        </ScrollContainer>
+        {/* <ScrollContainer {...this.headlessProps}> */}
+        <div
+          className="user-table"
+          style={{
+            height: this.props.height,
+            width: this.props.width,
+            border: '1px solid black',
+            overflow: 'hidden',
+          }}
+        >
+          <div style={{ position: 'relative' }}>
+            {rowsInfo.rows.map((rowIndex, rowKey) => {
+              const cells = columnsInfo.columns.map(
+                (columnIndex, columnKey) => {
+                  return (
+                    <div
+                      style={{
+                        height: '50px',
+                        width: this.state.columns[columnIndex].width,
+                        border: '1px solid black',
+                        padding: '0',
+                        left:
+                          columnsInfo.columnOffsets[columnIndex] -
+                          this.state.scrollLeft,
+                        position: 'absolute',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      key={columnKey}
+                    >
+                      {rowIndex}, {columnIndex}
+                    </div>
+                  );
+                }
+              );
+              // const tmp = this.newTable.prepareRow(row, 500);
+              const rowOffsets = rowsInfo.rowOffsets;
+              // console.log(rowOffsets[rowIndex])
+              const style = {
+                top: rowOffsets[rowIndex] - this.state.scrollTop,
+                position: 'absolute',
+                height: 50,
+                width: this.props.width,
+              };
+              return (
+                <div key={rowKey} style={style}>
+                  {cells}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        {/* </ScrollContainer> */}
       </div>
     );
   }
