@@ -94,7 +94,7 @@ class AutoScrollExample extends React.Component {
         scrollTop: prevState.scrollTop + 5,
         scrollLeft: prevState.scrollLeft + 5,
       }));
-    }, 16);
+    }, 160);
   }
 
   render() {
@@ -139,50 +139,37 @@ class AutoScrollExample extends React.Component {
             width: this.props.width,
             border: '1px solid black',
             overflow: 'hidden',
+            position: 'relative',
           }}
         >
-          <div style={{ position: 'relative' }}>
-            {rowsInfo.rows.map((rowIndex, rowKey) => {
-              const cells = columnsInfo.columns.map(
-                (columnIndex, columnKey) => {
-                  return (
-                    <div
-                      style={{
-                        height: '50px',
-                        width: this.state.columns[columnIndex].width,
-                        border: '1px solid black',
-                        padding: '0',
-                        left:
-                          columnsInfo.columnOffsets[columnIndex] -
-                          this.state.scrollLeft,
-                        position: 'absolute',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                      key={columnKey}
-                    >
-                      {rowIndex}, {columnIndex}
-                    </div>
-                  );
-                }
-              );
-              // const tmp = this.newTable.prepareRow(row, 500);
+          {rowsInfo.rows.map((rowIndex, rowKey) => {
+            const cells = columnsInfo.columns.map((columnIndex, columnKey) => {
               const rowOffsets = rowsInfo.rowOffsets;
-              // console.log(rowOffsets[rowIndex])
               const style = {
                 top: rowOffsets[rowIndex] - this.state.scrollTop,
+                left:
+                  columnsInfo.columnOffsets[columnIndex] -
+                  this.state.scrollLeft,
                 position: 'absolute',
                 height: 50,
-                width: this.props.width,
+                width: this.state.columns[columnIndex].width,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1px solid black',
               };
+
               return (
-                <div key={rowKey} style={style}>
-                  {cells}
+                <div
+                  key={rowKey.toString() + columnKey.toString()}
+                  style={style}
+                >
+                  {rowIndex}, {columnIndex}
                 </div>
               );
-            })}
-          </div>
+            });
+            return cells;
+          })}
         </div>
         {/* </ScrollContainer> */}
       </div>
