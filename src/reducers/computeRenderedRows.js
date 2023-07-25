@@ -61,7 +61,7 @@ export default function computeRenderedRows(state, scrollAnchor) {
   const firstRowIndex = rowRange.firstViewportIdx;
   const endRowIndex = rowRange.endViewportIdx;
 
-  computeRenderedRowOffsets(newState, rowRange, state.scrolling);
+  computeRenderedRowOffsets(newState, rowRange);
 
   let scrollY = 0;
   if (rowsCount > 0) {
@@ -222,17 +222,11 @@ function calculateRenderedRowRange(state, scrollAnchor) {
  *   firstBufferIdx: number,
  *   firstViewportIdx: number,
  * }} rowRange
- * @param {boolean} viewportOnly
  * @private
  */
-function computeRenderedRowOffsets(state, rowRange, viewportOnly) {
+function computeRenderedRowOffsets(state, rowRange) {
   const { rowBufferSet, rowOffsetIntervalTree, storedHeights } = state;
-  const {
-    endBufferIdx,
-    endViewportIdx,
-    firstBufferIdx,
-    firstViewportIdx,
-  } = rowRange;
+  const { endBufferIdx, firstBufferIdx } = rowRange;
 
   const renderedRowsCount = endBufferIdx - firstBufferIdx;
   if (renderedRowsCount === 0) {
@@ -241,18 +235,15 @@ function computeRenderedRowOffsets(state, rowRange, viewportOnly) {
     return;
   }
 
-  const startIdx = viewportOnly ? firstViewportIdx : firstBufferIdx;
-  const endIdx = viewportOnly ? endViewportIdx : endBufferIdx;
-
   // output for this function
   const rows = []; // state.rows
   const rowOffsets = {}; // state.rowOffsets
 
   // incremental way for calculating rowOffset
-  let runningOffset = rowOffsetIntervalTree.sumUntil(startIdx);
+  let runningOffset = rowOffsetIntervalTree.sumUntil(firstBufferIdx);
 
   // compute row index and offsets for every rows inside the buffer
-  for (let rowIdx = startIdx; rowIdx < endIdx; rowIdx++) {
+  for (let rowIdx = firstBufferIdx; rowIdx < endBufferIdx; rowIdx++) {
     // Update the offset for rendering the row
     rowOffsets[rowIdx] = runningOffset;
     runningOffset += storedHeights[rowIdx];
@@ -261,8 +252,8 @@ function computeRenderedRowOffsets(state, rowRange, viewportOnly) {
     const rowPosition = addRowToBuffer(
       rowIdx,
       rowBufferSet,
-      startIdx,
-      endIdx,
+      firstBufferIdx,
+      endBufferIdx,
       renderedRowsCount
     );
     rows[rowPosition] = rowIdx;
