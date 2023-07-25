@@ -170,8 +170,9 @@ const slice = createSlice({
   reducers: {
     initialize(state, action) {
       let props = action.payload;
-
+      // console.log('hh')
       Object.assign(state, getInitialState());
+      // console.log('hh')
 
       setStateFromProps(state, props);
       initializeRowHeightsAndOffsets(state);
@@ -181,7 +182,10 @@ const slice = createSlice({
       const scrollAnchor = getScrollAnchor(state, props);
       const columnAnchor = getColumnAnchor(state, props);
       computeRenderedRows(state, scrollAnchor);
+      // console.log('gg')
+
       computeRenderedCols(state, columnAnchor);
+      // console.log('hh')
     },
     propChange(state, action) {
       const { newProps, oldProps } = action.payload;

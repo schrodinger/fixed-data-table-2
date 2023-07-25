@@ -40,6 +40,7 @@ import columnCounts from '../selectors/columnCounts';
  * @return {!Object} The updated state object
  */
 export default function computeRenderedCols(state, scrollAnchor) {
+  // console.log('hh')
   let colRange = calculateRenderedColRange(state, scrollAnchor);
 
   const { scrollContentWidth } = state;
@@ -289,7 +290,9 @@ function computeRenderedColumnGroups(state) {
  * @private
  */
 function calculateRenderedColRange(state, scrollAnchor) {
+  // console.log('hell')
   const { bufferColCount, maxAvailableWidth } = roughHeightsSelector(state);
+  // console.log(bufferColCount)
 
   const { scrollableColumnsCount } = columnCounts(state);
 

@@ -101,6 +101,7 @@ function roughHeights(
 
   const { height, maxHeight, useMaxHeight, width } = tableSize;
   const maxComponentHeight = Math.round(useMaxHeight ? maxHeight : height);
+  // console.log(reservedHeight)
   const roughAvailableHeight = maxComponentHeight - reservedHeight;
   const roughAvailableWidth = Math.max(0, width - fixedContentWidth);
 
@@ -123,10 +124,11 @@ function roughHeights(
   let maxAvailableHeight = roughAvailableHeight;
   let minAvailableWidth = roughAvailableWidth;
   let maxAvailableWidth = roughAvailableWidth;
+  // console.log(maxAvailableHeight)
   switch (scrollStateX) {
     case ScrollbarState.VISIBLE: {
-      minAvailableHeight -= scrollbarXHeight;
-      maxAvailableHeight -= scrollbarXHeight;
+      minAvailableHeight -= scrollbarXHeight ? scrollbarXHeight : 2;
+      maxAvailableHeight -= scrollbarXHeight ? scrollbarXHeight : 2;
       break;
     }
     case ScrollbarState.JOINT_SCROLLBARS: {
@@ -134,7 +136,7 @@ function roughHeights(
       break;
     }
   }
-
+  // console.log(maxAvailableHeight)
   const scrollStateY = getScrollStateY(
     scrollFlags,
     roughAvailableHeight,
@@ -144,8 +146,8 @@ function roughHeights(
 
   switch (scrollStateY) {
     case ScrollbarState.VISIBLE: {
-      minAvailableWidth -= scrollbarYWidth;
-      maxAvailableWidth -= scrollbarYWidth;
+      minAvailableWidth -= scrollbarYWidth ? scrollbarYWidth : 2;
+      maxAvailableWidth -= scrollbarYWidth ? scrollbarYWidth : 2;
       break;
     }
     case ScrollbarState.JOINT_SCROLLBARS: {
@@ -242,12 +244,15 @@ function getScrollStateY(
  */
 function getBufferRowCount(maxAvailableHeight, rowSettings) {
   const { bufferRowCount, rowHeight, subRowHeight } = rowSettings;
+  // console.log(bufferRowCount)
   if (bufferRowCount !== undefined) {
     return bufferRowCount;
   }
 
   const fullRowHeight = rowHeight + subRowHeight;
+  // console.log(maxAvailableHeight)
   const avgVisibleRowCount = Math.ceil(maxAvailableHeight / fullRowHeight) + 1;
+  // console.log(avgVisibleRowCount)
   return clamp(
     Math.floor(avgVisibleRowCount / 2),
     MIN_BUFFER_ROWS,

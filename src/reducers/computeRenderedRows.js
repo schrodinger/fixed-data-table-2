@@ -59,6 +59,7 @@ export default function computeRenderedRows(state, scrollAnchor) {
 
   const firstRowIndex = rowRange.firstViewportIdx;
   const endRowIndex = rowRange.endViewportIdx;
+  // console.log(rowRange)
 
   computeRenderedRowOffsets(state, rowRange, state.scrolling);
 
@@ -167,7 +168,10 @@ function calculateRenderedRowRange(state, scrollAnchor) {
 
   // Loop to walk the leading buffer
   let firstViewportIdx = Math.min(startIdx, endIdx);
+  // console.log(firstViewportIdx,bufferRowCount)
   const firstBufferIdx = Math.max(firstViewportIdx - bufferRowCount, 0);
+  // console.log(firstBufferIdx)
+
   for (rowIdx = firstBufferIdx; rowIdx < firstViewportIdx; rowIdx++) {
     updateRowHeight(state, rowIdx);
   }
@@ -225,11 +229,13 @@ function computeRenderedRowOffsets(state, rowRange, viewportOnly) {
     rowRange;
 
   const renderedRowsCount = endBufferIdx - firstBufferIdx;
+
   if (renderedRowsCount === 0) {
     state.rowOffsets = {};
     state.rows = [];
     return;
   }
+  // console.log(firstViewportIdx,firstBufferIdx)
 
   const startIdx = viewportOnly ? firstViewportIdx : firstBufferIdx;
   const endIdx = viewportOnly ? endViewportIdx : endBufferIdx;
@@ -239,9 +245,11 @@ function computeRenderedRowOffsets(state, rowRange, viewportOnly) {
   const rowOffsets = {}; // state.rowOffsets
 
   // incremental way for calculating rowOffset
+
   let runningOffset = rowOffsetIntervalTree.sumUntil(startIdx);
 
   // compute row index and offsets for every rows inside the buffer
+
   for (let rowIdx = startIdx; rowIdx < endIdx; rowIdx++) {
     // Update the offset for rendering the row
     rowOffsets[rowIdx] = runningOffset;

@@ -36,7 +36,7 @@ class FixedDataTableContainer extends React.Component {
 
   constructor(props) {
     super(props);
-
+    // console.log(props)
     this.reduxStore = FixedDataTableStore.get();
 
     this.scrollActions = getScrollActions(this.reduxStore, () => this.props);

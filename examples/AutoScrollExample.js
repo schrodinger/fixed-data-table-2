@@ -9,8 +9,15 @@ import { ImageCell, LinkCell, TextCell } from './helpers/cells';
 import { Table, Column, DataCell, Plugins } from 'fixed-data-table-2';
 import React from 'react';
 import Shared from '../src/SharedClass';
+import Headless from '../src/TableHeadless';
+import styled from 'styled-components';
+import { FixedSizeList } from 'react-window';
+
+import ScrollContainer from '../src/plugins/ScrollContainer';
+
 import cx from '../src/vendor_upstream/stubs/cx';
 import joinClasses from '../src/vendor_upstream/core/joinClasses';
+// import Headless from '../src/TableHeadless';
 
 class AutoScrollExample extends React.Component {
   constructor(props) {
@@ -67,22 +74,80 @@ class AutoScrollExample extends React.Component {
         width: 50 + Math.floor((i * 300) / this.state.columnsCount),
       };
     }
+    let headlessProps = {
+      rowHeight: 50,
+      rowsCount: this.state.dataList.getSize(),
+      width: this.props.width,
+      height: this.props.height,
+      columnsCount: this.state.columnsCount,
+      getColumn: (i) => this.state.columns[i],
+    };
+    this.newTable = new Headless(headlessProps);
   }
 
   render() {
+    const Styles = styled.div`
+      padding: 1rem;
+
+      table {
+        border-spacing: 0;
+        border: 1px solid black;
+
+        tr {
+          :last-child {
+            td {
+              border-bottom: 0;
+            }
+          }
+        }
+
+        th,
+        td {
+          margin: 0;
+          padding: 0.5rem;
+          border-bottom: 1px solid black;
+          border-right: 1px solid black;
+
+          :last-child {
+            border-right: 0;
+          }
+        }
+      }
+    `;
+    const rows = this.newTable.getRows(200);
+    // console.log(rows)
+    const columns = this.newTable.getColumns(250);
     return (
       <div className="autoScrollContainer">
-        <div>{this.renderMainTable()}</div>
-        <div
-          style={{
-            position: 'relative',
-            left: this.state.isSplitted ? 0 : this.state.tablePosition,
-          }}
-          onMouseEnter={() => this.setState({ isPinContainerHovering: true })}
-          onMouseLeave={() => this.setState({ isPinContainerHovering: false })}
-        >
-          {this.renderPinAndTable()}
-        </div>
+        {/* <ScrollContainer {...this.props}> */}
+        <Styles>
+          <table>
+            <tbody>
+              {/* <FixedSizeList
+                height={this.props.height}
+                itemCount={rows.length}
+                itemSize={50}
+                width={this.props.width}
+              >
+                {RenderRow} */}
+
+              {rows.map((row) => {
+                const cells = columns.map((column) => {
+                  return (
+                    <td height="50px" width="50px">
+                      {row}, {column}
+                    </td>
+                  );
+                });
+                const tmp = this.newTable.prepareRow(row, 500);
+                // console.log(tmp)
+                return <tr {...tmp}>{cells}</tr>;
+              })}
+              {/* </FixedSizeList> */}
+            </tbody>
+          </table>
+        </Styles>
+        {/* </ScrollContainer> */}
       </div>
     );
   }
