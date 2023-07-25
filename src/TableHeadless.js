@@ -21,7 +21,10 @@ class Headless {
     let currentState = this.reduxStore.getState();
     // console.log(currentState)
 
-    return currentState.rows;
+    return {
+      rows: currentState.rows,
+      rowOffsets: currentState.rowOffsets,
+    };
     // console.log(currentState)
     // let _staticRowArray = [];
     // const {

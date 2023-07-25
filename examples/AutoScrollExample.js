@@ -33,6 +33,8 @@ class AutoScrollExample extends React.Component {
       tablePosition: 0,
       isScrollbarHovering: false,
       isPinContainerHovering: false,
+      scrollTop: 0,
+      scrollLeft: 0,
     };
 
     this.shared = new Shared(this.forceUpdate.bind(this));
@@ -74,7 +76,7 @@ class AutoScrollExample extends React.Component {
         width: 50 + Math.floor((i * 300) / this.state.columnsCount),
       };
     }
-    let headlessProps = {
+    this.headlessProps = {
       rowHeight: 50,
       rowsCount: this.state.dataList.getSize(),
       width: this.props.width,
@@ -82,7 +84,15 @@ class AutoScrollExample extends React.Component {
       columnsCount: this.state.columnsCount,
       getColumn: (i) => this.state.columns[i],
     };
-    this.newTable = new Headless(headlessProps);
+    this.newTable = new Headless(this.headlessProps);
+  }
+  componentDidMount() {
+    setInterval(() => {
+      this.setState((prevState) => ({
+        scrollTop: prevState.scrollTop + 2,
+        screenLeft: prevState.scrollLeft + 2,
+      }));
+    }, 16);
   }
 
   render() {
@@ -114,40 +124,36 @@ class AutoScrollExample extends React.Component {
         }
       }
     `;
-    const rows = this.newTable.getRows(200);
-    // console.log(rows)
-    const columns = this.newTable.getColumns(250);
+    const rowsInfo = this.newTable.getRows(this.state.scrollTop);
+    // console.log(rowsInfo)
+    const columns = this.newTable.getColumns(this.state.scrollLeft);
     return (
       <div className="autoScrollContainer">
-        {/* <ScrollContainer {...this.props}> */}
-        <Styles>
-          <table>
-            <tbody>
-              {/* <FixedSizeList
-                height={this.props.height}
-                itemCount={rows.length}
-                itemSize={50}
-                width={this.props.width}
-              >
-                {RenderRow} */}
-
-              {rows.map((row) => {
-                const cells = columns.map((column) => {
-                  return (
-                    <td height="50px" width="50px">
-                      {row}, {column}
-                    </td>
-                  );
-                });
-                const tmp = this.newTable.prepareRow(row, 500);
-                // console.log(tmp)
-                return <tr {...tmp}>{cells}</tr>;
-              })}
-              {/* </FixedSizeList> */}
-            </tbody>
-          </table>
-        </Styles>
-        {/* </ScrollContainer> */}
+        <ScrollContainer {...this.headlessProps}>
+          <Styles>
+            <table>
+              <tbody style={{ position: 'relative' }}>
+                {rowsInfo.rows.map((rowIndex) => {
+                  const cells = columns.map((column) => {
+                    return (
+                      <td height="50px" width="50px">
+                        {rowIndex}, {column}
+                      </td>
+                    );
+                  });
+                  // const tmp = this.newTable.prepareRow(row, 500);
+                  const rowOffsets = rowsInfo.rowOffsets;
+                  // console.log(rowOffsets[rowIndex])
+                  const style = {
+                    top: rowOffsets[rowIndex] - this.state.scrollTop,
+                    position: 'absolute',
+                  };
+                  return <tr style={style}>{cells}</tr>;
+                })}
+              </tbody>
+            </table>
+          </Styles>
+        </ScrollContainer>
       </div>
     );
   }
