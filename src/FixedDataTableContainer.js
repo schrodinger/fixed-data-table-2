@@ -24,6 +24,7 @@ import { FixedDataTableContext } from './FixedDataTableContext';
 import { createApi } from './api';
 import { initialize, propChange } from './reducers';
 import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
+import Shared from './SharedClass.js';
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
@@ -67,6 +68,7 @@ class FixedDataTableContainer extends React.Component {
     }
 
     // Props have changed, so update the redux store with the latest props
+
     currentState.reduxStore.dispatch(
       propChange({
         newProps: nextProps,
@@ -125,7 +127,6 @@ class FixedDataTableContainer extends React.Component {
 
   render() {
     const fixedDataTableContextValue = this.getApi();
-
     const fdt = (
       <FixedDataTable
         {...this.props}

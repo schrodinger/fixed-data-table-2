@@ -59,6 +59,9 @@ class ScrollContainer extends React.Component {
         size={this.state.viewportWidth}
         touchEnabled={this.props.touchScrollEnabled}
         isRTL={this.props.isRTL}
+        onScrollHoverMove={this.props.onScrollHoverMove}
+        onScrollHoverStart={this.props.onScrollHoverStart}
+        onScrollHoverEnd={this.props.onScrollHoverEnd}
       />
     );
 

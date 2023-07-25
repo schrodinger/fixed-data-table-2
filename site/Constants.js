@@ -201,9 +201,9 @@ exports.ExamplePages = {
   AUTO_SCROLL_EXAMPLE: {
     location: 'example-auto-scroll.html',
     fileName: 'AutoScrollExample.js',
-    title: 'Auto Scroll',
+    title: 'Preview Table',
     description:
-      'An example using Controlled Scrolling to mimic auto scrolling',
+      'An example for a POC on sharing the states between different fdt instances',
   },
 };
 

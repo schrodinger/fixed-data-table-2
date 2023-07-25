@@ -16,6 +16,7 @@ import clamp from '../vendor_upstream/core/clamp';
 import scrollbarsVisibleSelector from '../selectors/scrollbarsVisible';
 import { getScrollableColumnWidth } from './updateScrollableColumn';
 import columnCounts from '../selectors/columnCounts';
+import Shared from '../SharedClass.js';
 
 /**
  * Get the anchor for scrolling.
@@ -48,7 +49,6 @@ export function getColumnAnchor(state, newProps, oldProps) {
   ) {
     return scrollToX(state, newProps.scrollLeft);
   }
-
   return {
     firstIndex: state.firstColumnIndex,
     firstOffset: state.firstColumnOffset,

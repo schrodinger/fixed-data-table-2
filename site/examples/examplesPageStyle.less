@@ -344,3 +344,35 @@
 html[dir="rtl"] .exampleContents {
   margin-right: @sidebar-width;
 }
+
+.hiddenDiv {
+  display: none;
+  width: fit-content;
+
+}
+.Example:hover + .hidden-div{
+  display:block;
+  width: fit-content;
+}
+
+#myImage:hover {
+  cursor: pointer;
+  transform: scale(2);
+  transform-origin:bottom;
+  z-index:100;
+}
+#myImagePin:hover {
+  cursor: pointer;
+  transform: scale(2);
+  transform-origin:bottom;
+  z-index:100;
+}
+.resizable {
+  width: 500px;
+  height: 400px;
+  border: 2px solid #ccc;
+  resize: both;
+  overflow: auto;
+  padding: 10px;
+  z-index: -1;
+}

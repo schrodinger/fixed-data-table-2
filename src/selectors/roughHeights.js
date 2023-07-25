@@ -256,6 +256,7 @@ function getBufferRowCount(maxAvailableHeight, rowSettings) {
 }
 
 function getBufferColCount(maxAvailableWidth, columnSettings) {
+  // return 0;
   const { bufferColCount, defaultColumnWidth } = columnSettings;
   if (bufferColCount !== undefined) {
     return bufferColCount;
