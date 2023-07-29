@@ -29,13 +29,14 @@ class AutoScrollExample extends React.Component {
         {rowIndex}, {columnKey}{' '}
       </div>
     );
+    const headerRenderer = ({ columnKey }) => <div> {columnKey} </div>;
 
     for (let i = 0; i < 100; i++) {
       this.columns[i] = (
         <Column
           key={i}
           columnKey={i}
-          header={<div> {i} </div>}
+          header={headerRenderer}
           cell={cellRenderer}
           width={100}
           allowCellsRecycling={true}
