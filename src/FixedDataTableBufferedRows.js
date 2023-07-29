@@ -15,8 +15,6 @@ import React from 'react';
 import defaultTo from 'lodash/defaultTo';
 import inRange from 'lodash/inRange';
 import isNil from 'lodash/isNil';
-import get from 'lodash/get';
-import sortBy from 'lodash/sortBy';
 
 import cx from './vendor_upstream/stubs/cx';
 import emptyFunction from './vendor_upstream/core/emptyFunction';
@@ -131,7 +129,7 @@ class FixedDataTableBufferedRows extends React.Component {
       // if the row doesn't exist in the buffer set, then take the previous one
       const rowIndex = defaultTo(
         rowsToRender[i],
-        get(this._staticRowArray[i], ['props', 'index'])
+        this._staticRowArray[i]?.props.index
       );
       if (
         isNil(rowIndex) ||
@@ -156,9 +154,7 @@ class FixedDataTableBufferedRows extends React.Component {
     FixedDataTableTranslateDOMPosition(style, 0, containerOffsetTop, false);
 
     // NOTE (pradeep): Sort the rows by row index so that they appear with the right order in the DOM (see #221)
-    const sortedRows = this._staticRowArray.sort(
-      (row) => row?.props?.ariaRowIndex || Infinity
-    );
+    const sortedRows = this._staticRowArray.toSorted(this.rowSortComparator);
 
     return <div style={style}>{sortedRows}</div>;
   }
@@ -230,6 +226,16 @@ class FixedDataTableBufferedRows extends React.Component {
         {...rowProps}
       />
     );
+  }
+
+  /**
+   * @param {?React.ReactElement} rowA
+   * @param {?React.ReactElement} rowB
+   * @returns {number}
+   * @private
+   */
+  rowSortComparator(rowA, rowB) {
+    return (rowA?.props.ariaRowIndex || -1) - (rowB?.props.ariaRowIndex || -1);
   }
 }
 export default FixedDataTableBufferedRows;
