@@ -156,10 +156,9 @@ class FixedDataTableBufferedRows extends React.Component {
     FixedDataTableTranslateDOMPosition(style, 0, containerOffsetTop, false);
 
     // // NOTE (pradeep): Sort the rows by row index so that they appear with the right order in the DOM (see #221)
-    // const sortedRows = sortBy(this._staticRowArray, (row) =>
-    //   get(row, 'props.ariaRowIndex', Infinity)
-    // );
-    const sortedRows = this._staticRowArray;
+    const sortedRows = this._staticRowArray.sort(
+      (row) => row?.props?.ariaRowIndex || Infinity
+    );
 
     return <div style={style}>{sortedRows}</div>;
   }
