@@ -116,6 +116,7 @@ class FixedDataTableRowImpl extends React.Component {
      * @param object event
      */
     onColumnResize: PropTypes.func,
+    onColumnResizerDoubleClick: PropTypes.func,
 
     isColumnReordering: PropTypes.bool,
     /**
@@ -215,6 +216,7 @@ class FixedDataTableRowImpl extends React.Component {
         columns={this.props.fixedColumns}
         touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
+        onColumnResizerDoubleClick={this.props.onColumnResizerDoubleClick}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
@@ -244,6 +246,7 @@ class FixedDataTableRowImpl extends React.Component {
         columns={this.props.fixedRightColumns}
         touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
+        onColumnResizerDoubleClick={this.props.onColumnResizerDoubleClick}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
@@ -280,6 +283,7 @@ class FixedDataTableRowImpl extends React.Component {
         columns={this.props.scrollableColumns}
         touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
+        onColumnResizerDoubleClick={this.props.onColumnResizerDoubleClick}
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
