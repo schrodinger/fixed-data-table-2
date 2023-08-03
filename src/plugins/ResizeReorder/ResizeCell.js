@@ -18,6 +18,33 @@ import PropTypes from 'prop-types';
 
 const BORDER_WIDTH = 1;
 
+/**
+ * ![Resize Cell](../images/ResizeCell.png "Resize Cell")
+ *
+ * Cell HOC that enables resizing functionality by rendering a draggable handle.
+ *
+ * Example usage:
+ * ```
+ * <Column
+ *   columnKey="firstName"
+ *   header={
+ *     <ResizeCell
+ *       onColumnResizeEnd={(newWidth, columnKey) => {
+ *         console.log("New width: ", newWidth);
+ *       }}
+ *       minWidth={50}
+ *       maxWidth={300}
+ *     >
+ *       First Name
+ *     </ResizeCell>
+ *   }
+ *   cell={<DataCell>Name</DataCell>}
+ *   width={150}
+ * />
+ * ```
+ *
+ * Live example at https://schrodinger.github.io/fixed-data-table-2/example-resize.html
+ */
 class ResizeCell extends React.PureComponent {
   render() {
     const {

@@ -31,7 +31,7 @@ var FILES_TO_READ = [
   },
   {
     path: path.join(PROJECT_ROOT, 'src/FixedDataTableCellDefault.js'),
-    name: 'Cell',
+    name: 'DataCell',
     markdownFileName: 'CellAPI.md'
   },
   {
