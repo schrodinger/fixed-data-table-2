@@ -83,13 +83,8 @@ class FixedDataTableBufferedRows extends React.Component {
   }
 
   render() /*object*/ {
-    let {
-      offsetTop,
-      rowOffsets,
-      scrollTop,
-      isScrolling,
-      rowsToRender,
-    } = this.props;
+    let { offsetTop, rowOffsets, scrollTop, isScrolling, rowsToRender } =
+      this.props;
     rowsToRender = rowsToRender || [];
 
     if (isScrolling) {

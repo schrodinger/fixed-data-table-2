@@ -104,9 +104,8 @@ class DOMMouseMoveTracker {
       this._deltaX = 0;
       this._deltaY = 0;
       this._isDragging = true;
-      const coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(
-        event
-      );
+      const coordinates =
+        FixedDataTableEventHelper.getCoordinatesFromEvent(event);
       const x = coordinates.x;
       const y = coordinates.y;
       this._x = x;
@@ -165,9 +164,8 @@ class DOMMouseMoveTracker {
    * Calls onMove passed into constructor and updates internal state.
    */
   _onMouseMove(/*object*/ event) {
-    const coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(
-      event
-    );
+    const coordinates =
+      FixedDataTableEventHelper.getCoordinatesFromEvent(event);
     const x = coordinates.x;
     const y = coordinates.y;
 

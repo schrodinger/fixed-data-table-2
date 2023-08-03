@@ -200,16 +200,14 @@ const getApiMethodsSelector = () =>
             fixedRightColumnGroups.length
           );
         }
-        const container = _getColumnGroupContainerByCellGroupType(
-          cellGroupType
-        );
+        const container =
+          _getColumnGroupContainerByCellGroupType(cellGroupType);
         return container.length;
       };
 
       const _getColumnGroup = (columnGroupIndex, cellGroupType) => {
-        const container = _getColumnGroupContainerByCellGroupType(
-          cellGroupType
-        );
+        const container =
+          _getColumnGroupContainerByCellGroupType(cellGroupType);
         const localColumnGroupIndex = _getLocalColumnGroupIndex(
           columnGroupIndex,
           cellGroupType
@@ -219,9 +217,8 @@ const getApiMethodsSelector = () =>
 
       const getColumnGroup = (columnGroupIndex) => {
         validateColumnGroupIndex(columnGroupIndex);
-        const cellGroupType = _getCellGroupTypeFromColumnGroupIndex(
-          columnGroupIndex
-        );
+        const cellGroupType =
+          _getCellGroupTypeFromColumnGroupIndex(columnGroupIndex);
         return _getColumnGroup(columnGroupIndex, cellGroupType);
       };
 
@@ -335,9 +332,8 @@ const getApiMethodsSelector = () =>
         cellGroupType = CellGroupType.SCROLLABLE
       ) => {
         validateCellGroupType(cellGroupType);
-        const container = _getColumnGroupContainerByCellGroupType(
-          cellGroupType
-        );
+        const container =
+          _getColumnGroupContainerByCellGroupType(cellGroupType);
 
         let { element, distanceFromOffset } = _getElementAtOffset(
           container,

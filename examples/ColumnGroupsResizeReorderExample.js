@@ -142,8 +142,8 @@ class ColumnGroupsExample extends React.Component {
 
   render() {
     const { dataList, columnWidths, columnOrder } = this.state;
-    const onColumnGroupReorderEndCallback = this
-      ._onColumnGroupReorderEndCallback;
+    const onColumnGroupReorderEndCallback =
+      this._onColumnGroupReorderEndCallback;
     const onColumnReorderEndCallback = this._onColumnReorderEndCallback;
     const onColumnGroupResizeEndCallback = this._onColumnGroupResizeEndCallback;
     const onColumnResizeEndCallback = this._onColumnResizeEndCallback;
