@@ -16,7 +16,7 @@ import {
 } from '../helper/widthHelper';
 import scrollbarsVisible from './scrollbarsVisible';
 import concat from 'lodash/concat';
-import { getElementsContainer } from '../helper/convertColumnElementsToData';
+import { getEmptyElementsContainer } from '../helper/convertColumnElementsToData';
 
 /**
  * @typedef {{
@@ -112,8 +112,8 @@ function columnWidths(
  * }}
  */
 function flexWidths(columnGroupElements, columnElements, viewportWidth) {
-  const columnGroupElementsWithFlex = getElementsContainer();
-  const columnElementsWithFlex = getElementsContainer();
+  const columnGroupElementsWithFlex = getEmptyElementsContainer();
+  const columnElementsWithFlex = getEmptyElementsContainer();
   const columnsWidth = getTotalWidthContainer(columnElements);
 
   let remainingFlexGrow = getTotalFlexGrow(columnElements);

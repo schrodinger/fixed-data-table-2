@@ -66,7 +66,7 @@ function getCellGroupType(element) {
   }
 }
 
-function getElementsContainer() {
+function getEmptyElementsContainer() {
   return {
     [CellGroupType.FIXED]: [],
     [CellGroupType.SCROLLABLE]: [],
@@ -74,7 +74,7 @@ function getElementsContainer() {
   };
 }
 
-function getElementTemplates() {
+function getEmptyTemplatesContainer() {
   return {
     groupHeader: [],
     header: [],
@@ -84,7 +84,7 @@ function getElementTemplates() {
 }
 
 function _sortByCellGroupType(reactElements) {
-  const container = getElementsContainer();
+  const container = getEmptyElementsContainer();
   for (const element of reactElements) {
     const cellGroupType = getCellGroupType(element);
     container[cellGroupType].push(element);
@@ -130,9 +130,9 @@ function convertColumnElementsToData(childComponents) {
     children.push(child);
   });
 
-  const columnElements = getElementsContainer();
-  const columnGroupElements = getElementsContainer();
-  const elementTemplates = getElementTemplates();
+  const columnElements = getEmptyElementsContainer();
+  const columnGroupElements = getEmptyElementsContainer();
+  const elementTemplates = getEmptyTemplatesContainer();
   const useGroupHeader = children[0]?.type.__TableColumnGroup__ ?? false;
 
   if (useGroupHeader) {
@@ -176,5 +176,5 @@ function convertColumnElementsToData(childComponents) {
   };
 }
 
-export { getElementsContainer };
+export { getEmptyElementsContainer };
 export default convertColumnElementsToData;
