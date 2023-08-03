@@ -83,6 +83,36 @@ function getElementTemplates() {
   };
 }
 
+function _sortByCellGroupType(reactElements) {
+  const container = getElementsContainer();
+  for (const element of reactElements) {
+    const cellGroupType = getCellGroupType(element);
+    container[cellGroupType].push(element);
+  }
+  const result = [];
+  result.push.apply(result, container[CellGroupType.FIXED]);
+  result.push.apply(result, container[CellGroupType.SCROLLABLE]);
+  result.push.apply(result, container[CellGroupType.FIXED_RIGHT]);
+  return result;
+}
+
+function _getElementIndex(elementsContainer, cellGroupType) {
+  if (cellGroupType === CellGroupType.FIXED) {
+    return elementsContainer[CellGroupType.FIXED].length;
+  } else if (cellGroupType === CellGroupType.SCROLLABLE) {
+    return (
+      elementsContainer[CellGroupType.FIXED].length +
+      elementsContainer[CellGroupType.SCROLLABLE].length
+    );
+  } else {
+    return (
+      elementsContainer[CellGroupType.FIXED].length +
+      elementsContainer[CellGroupType.SCROLLABLE].length +
+      elementsContainer[CellGroupType.FIXED_RIGHT].length
+    );
+  }
+}
+
 /**
  * Converts React column / column group elements into props and cell rendering templates
  */
@@ -107,14 +137,15 @@ function convertColumnElementsToData(childComponents) {
     children.length && children[0].type.__TableColumnGroup__
   );
 
-  let columnIndex = 0;
-  let columnGroupIndex = 0;
-
   if (useGroupHeader) {
-    for (const columnGroupReactElement of children) {
+    let columnIndex = 0;
+    for (const columnGroupReactElement of _sortByCellGroupType(children)) {
       const cellGroupType = getCellGroupType(columnGroupReactElement);
       const columnGroupProps = _extractProps(columnGroupReactElement);
-      columnGroupProps.index = columnGroupIndex;
+      columnGroupProps.index = _getElementIndex(
+        columnGroupElements,
+        cellGroupType
+      );
       columnGroupElements[cellGroupType].push(columnGroupProps);
       elementTemplates.groupHeader.push(columnGroupReactElement.props.header);
 
@@ -122,24 +153,20 @@ function convertColumnElementsToData(childComponents) {
         columnGroupReactElement.props.children,
         (columnReactElement) => {
           const columnProps = _extractProps(columnReactElement);
-          columnProps.index = columnIndex;
-          columnProps.groupIdx = columnGroupIndex;
+          columnProps.index = columnIndex++;
+          columnProps.groupIdx = columnGroupProps.index;
           columnElements[cellGroupType].push(columnProps);
           _extractTemplates(elementTemplates, columnReactElement);
-          columnIndex++;
         }
       );
-
-      columnGroupIndex++;
     }
   } else {
-    for (const columnReactElement of children) {
+    for (const columnReactElement of _sortByCellGroupType(children)) {
       const cellGroupType = getCellGroupType(columnReactElement);
       const columnProps = _extractProps(columnReactElement);
-      columnProps.index = columnIndex;
+      columnProps.index = _getElementIndex(columnElements, cellGroupType);
       columnElements[cellGroupType].push(columnProps);
       _extractTemplates(elementTemplates, columnReactElement);
-      columnIndex++;
     }
   }
 
