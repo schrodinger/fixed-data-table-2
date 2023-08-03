@@ -43,9 +43,8 @@ class IntegerBufferSet {
     this.getNewPositionForValue = this.getNewPositionForValue.bind(this);
     this.getValuePosition = this.getValuePosition.bind(this);
     this.getSize = this.getSize.bind(this);
-    this.replaceFurthestValuePosition = this.replaceFurthestValuePosition.bind(
-      this
-    );
+    this.replaceFurthestValuePosition =
+      this.replaceFurthestValuePosition.bind(this);
   }
 
   getSize() /*number*/ {

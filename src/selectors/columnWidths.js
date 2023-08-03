@@ -55,9 +55,8 @@ function columnWidths(
     columnProps,
     viewportWidth
   );
-  const { fixedColumns, fixedRightColumns, scrollableColumns } = groupColumns(
-    newColumnProps
-  );
+  const { fixedColumns, fixedRightColumns, scrollableColumns } =
+    groupColumns(newColumnProps);
 
   const availableScrollWidth =
     viewportWidth -

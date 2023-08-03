@@ -130,8 +130,8 @@ class ColumnResizerLine extends React.PureComponent {
       <div
         className={cx({
           'fixedDataTableColumnResizerLineLayout/main': true,
-          'fixedDataTableColumnResizerLineLayout/hiddenElem': !this.props
-            .visible,
+          'fixedDataTableColumnResizerLineLayout/hiddenElem':
+            !this.props.visible,
           'public/fixedDataTableColumnResizerLine/main': true,
         })}
         style={style}

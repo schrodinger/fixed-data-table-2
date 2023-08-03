@@ -170,14 +170,15 @@ class FixedDataTableRowImpl extends React.Component {
       return true;
     }
 
+    // if row is not visible then no need to render it
+    // change in visibility is handled by the parent
+    if (!nextProps.visible) {
+      return false;
+    }
+
     // if row's visibility has changed, then update it
     if (this.props.visible !== nextProps.visible) {
       return true;
-    }
-
-    // if row is still not visible then no need to update
-    if (!nextProps.visible) {
-      return false;
     }
 
     // Only update the row if scrolling leads to a change in horizontal offsets.

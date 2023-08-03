@@ -215,14 +215,8 @@ class FixedDataTableCell extends React.Component {
   };
 
   render() /*object*/ {
-    var {
-      height,
-      width,
-      isVisible,
-      columnKey,
-      isHeaderOrFooter,
-      ...props
-    } = this.props;
+    var { height, width, isVisible, columnKey, isHeaderOrFooter, ...props } =
+      this.props;
 
     var style = {
       height,
@@ -253,8 +247,8 @@ class FixedDataTableCell extends React.Component {
         'public/fixedDataTableCell/highlighted': props.highlighted,
         'public/fixedDataTableCell/main': true,
         'public/fixedDataTableCell/hasReorderHandle': !!props.onColumnReorder,
-        'public/fixedDataTableCell/reordering': this.state
-          .isReorderingThisColumn,
+        'public/fixedDataTableCell/reordering':
+          this.state.isReorderingThisColumn,
       }),
       props.className
     );

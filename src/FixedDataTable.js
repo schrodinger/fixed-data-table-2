@@ -696,11 +696,8 @@ class FixedDataTable extends React.Component {
    * @private
    */
   _reportScrollBarsUpdates() {
-    const {
-      bodyOffsetTop,
-      scrollbarXOffsetTop,
-      visibleRowsHeight,
-    } = tableHeightsSelector(this.props);
+    const { bodyOffsetTop, scrollbarXOffsetTop, visibleRowsHeight } =
+      tableHeightsSelector(this.props);
     const {
       tableSize: { width },
       scrollContentHeight,
@@ -1081,9 +1078,8 @@ class FixedDataTable extends React.Component {
     /*number|string*/ columnKey,
     /*object*/ event
   ) => {
-    const coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(
-      event
-    );
+    const coordinates =
+      FixedDataTableEventHelper.getCoordinatesFromEvent(event);
     const clientX = coordinates.x;
     const clientY = coordinates.y;
     this.props.columnActions.resizeColumn({
@@ -1194,12 +1190,8 @@ class FixedDataTable extends React.Component {
   };
 
   _scrollToX = (/*number*/ scrollPos) => {
-    const {
-      onHorizontalScroll,
-      scrollActions,
-      scrollX,
-      scrolling,
-    } = this.props;
+    const { onHorizontalScroll, scrollActions, scrollX, scrolling } =
+      this.props;
 
     if (scrollPos === scrollX) {
       return;
