@@ -1,7 +1,7 @@
 'use strict';
 
-var FakeObjectDataListStore =
-  require('../../examples/helpers/FakeObjectDataListStore').default;
+var FakeObjectDataListStore = require('../../examples/helpers/FakeObjectDataListStore')
+  .default;
 var FixedDataTable = require('fixed-data-table-2');
 var React = require('react');
 var Constants = require('../Constants');

@@ -240,8 +240,12 @@ function initializeRowHeightsAndOffsets(state) {
  * @private
  */
 function setStateFromProps(state, props) {
-  const { columnGroupProps, columnProps, elementTemplates, useGroupHeader } =
-    convertColumnElementsToData(props.children);
+  const {
+    columnGroupProps,
+    columnProps,
+    elementTemplates,
+    useGroupHeader,
+  } = convertColumnElementsToData(props.children);
 
   const newState = Object.assign({}, state, {
     columnGroupProps,

@@ -227,8 +227,12 @@ function calculateRenderedRowRange(state, scrollAnchor) {
  */
 function computeRenderedRowOffsets(state, rowRange, viewportOnly) {
   const { rowBufferSet, rowOffsetIntervalTree, storedHeights } = state;
-  const { endBufferIdx, endViewportIdx, firstBufferIdx, firstViewportIdx } =
-    rowRange;
+  const {
+    endBufferIdx,
+    endViewportIdx,
+    firstBufferIdx,
+    firstViewportIdx,
+  } = rowRange;
 
   const renderedRowsCount = endBufferIdx - firstBufferIdx;
   if (renderedRowsCount === 0) {
