@@ -133,9 +133,7 @@ function convertColumnElementsToData(childComponents) {
   const columnElements = getElementsContainer();
   const columnGroupElements = getElementsContainer();
   const elementTemplates = getElementTemplates();
-  const useGroupHeader = !!(
-    children.length && children[0].type.__TableColumnGroup__
-  );
+  const useGroupHeader = children[0]?.type.__TableColumnGroup__ ?? false;
 
   if (useGroupHeader) {
     let columnIndex = 0;
