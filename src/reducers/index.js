@@ -244,8 +244,12 @@ function initializeRowHeightsAndOffsets(state) {
  * @private
  */
 function setStateFromProps(state, props) {
-  const { columnGroupProps, columnProps, elementTemplates, useGroupHeader } =
-    convertColumnElementsToData(props.children);
+  const {
+    columnGroupProps,
+    columnProps,
+    elementTemplates,
+    useGroupHeader,
+  } = convertColumnElementsToData(props.children);
 
   Object.assign(state, {
     columnGroupProps,
@@ -298,6 +302,11 @@ function setStateFromProps(state, props) {
 }
 
 const { reducer, actions } = slice;
-export const { initialize, propChange, scrollEnd, scrollToX, scrollToY } =
-  actions;
+export const {
+  initialize,
+  propChange,
+  scrollEnd,
+  scrollToX,
+  scrollToY,
+} = actions;
 export default reducer;

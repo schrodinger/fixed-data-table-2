@@ -76,8 +76,11 @@ function scrollTo(state, props, oldScrollToColumn, scrollX) {
     return scrollX;
   }
 
-  const { availableScrollWidth, fixedColumns, scrollableColumns } =
-    columnWidths(state);
+  const {
+    availableScrollWidth,
+    fixedColumns,
+    scrollableColumns,
+  } = columnWidths(state);
   const fixedColumnsCount = fixedColumns.length;
   const scrollableColumnsCount = scrollableColumns.length;
 

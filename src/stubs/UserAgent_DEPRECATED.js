@@ -76,10 +76,9 @@ function _populate() {
   //
   // Opera/9.80 (foo) Presto/2.2.15 Version/10.10
   const uas = navigator.userAgent;
-  let agent =
-    /(?:MSIE.(\d+\.\d+))|(?:(?:Firefox|GranParadiso|Iceweasel).(\d+\.\d+))|(?:Opera(?:.+Version.|.)(\d+\.\d+))|(?:AppleWebKit.(\d+(?:\.\d+)?))|(?:Trident\/\d+\.\d+.*rv:(\d+\.\d+))/.exec(
-      uas
-    );
+  let agent = /(?:MSIE.(\d+\.\d+))|(?:(?:Firefox|GranParadiso|Iceweasel).(\d+\.\d+))|(?:Opera(?:.+Version.|.)(\d+\.\d+))|(?:AppleWebKit.(\d+(?:\.\d+)?))|(?:Trident\/\d+\.\d+.*rv:(\d+\.\d+))/.exec(
+    uas
+  );
   const os = /(Mac OS X)|(Windows)|(Linux)/.exec(uas);
 
   _iphone = /\b(iPhone|iP[ao]d)/.exec(uas);

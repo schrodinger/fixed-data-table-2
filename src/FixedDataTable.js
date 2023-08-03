@@ -696,8 +696,11 @@ class FixedDataTable extends React.Component {
    * @private
    */
   _reportScrollBarsUpdates() {
-    const { bodyOffsetTop, scrollbarXOffsetTop, visibleRowsHeight } =
-      tableHeightsSelector(this.props);
+    const {
+      bodyOffsetTop,
+      scrollbarXOffsetTop,
+      visibleRowsHeight,
+    } = tableHeightsSelector(this.props);
     const {
       tableSize: { width },
       scrollContentHeight,

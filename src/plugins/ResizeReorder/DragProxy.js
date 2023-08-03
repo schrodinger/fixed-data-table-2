@@ -215,13 +215,17 @@ class DragProxy extends React.PureComponent {
     let target;
     let targetColumnOffset;
     if (this.props.isGroupHeader) {
-      const { columnGroup, distanceFromOffset: columnGroupOffset } =
-        this.context.getColumnGroupAtOffset(offset, cellGroupType);
+      const {
+        columnGroup,
+        distanceFromOffset: columnGroupOffset,
+      } = this.context.getColumnGroupAtOffset(offset, cellGroupType);
       target = columnGroup;
       targetColumnOffset = columnGroupOffset;
     } else {
-      const { column, distanceFromOffset: columnOffset } =
-        this.context.getColumnAtOffset(offset, cellGroupType);
+      const {
+        column,
+        distanceFromOffset: columnOffset,
+      } = this.context.getColumnAtOffset(offset, cellGroupType);
       target = column;
       targetColumnOffset = columnOffset;
     }
