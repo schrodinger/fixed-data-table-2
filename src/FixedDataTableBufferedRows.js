@@ -83,13 +83,8 @@ class FixedDataTableBufferedRows extends React.Component {
   }
 
   render() /*object*/ {
-    let {
-      offsetTop,
-      rowOffsets,
-      scrollTop,
-      isScrolling,
-      rowsToRender,
-    } = this.props;
+    let { offsetTop, rowOffsets, scrollTop, isScrolling, rowsToRender } =
+      this.props;
     rowsToRender = rowsToRender || [];
 
     if (isScrolling) {
@@ -237,7 +232,11 @@ class FixedDataTableBufferedRows extends React.Component {
    * @private
    */
   rowSortComparator(rowA, rowB) {
-    return (rowA?.props.ariaRowIndex || -1) - (rowB?.props.ariaRowIndex || -1);
+    // NOTE (pradeep): Aria row index can't be zero, but the row itself can be undefined.
+    // I picked -1 as the default here. As long as the default sites outside the usual row index range,
+    // it should work. I purposefully didn't choose Infinity or -Infinity, as they might break
+    // arithmetic operations.
+    return (rowA?.props.ariaRowIndex ?? -1) - (rowB?.props.ariaRowIndex ?? -1);
   }
 }
 export default FixedDataTableBufferedRows;

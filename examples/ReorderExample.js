@@ -48,9 +48,8 @@ class ReorderExample extends React.Component {
       ],
     };
 
-    this._onColumnReorderEndCallback = this._onColumnReorderEndCallback.bind(
-      this
-    );
+    this._onColumnReorderEndCallback =
+      this._onColumnReorderEndCallback.bind(this);
   }
 
   _onColumnReorderEndCallback(event) {

@@ -104,9 +104,8 @@ class DOMMouseMoveTracker {
       this._deltaX = 0;
       this._deltaY = 0;
       this._isDragging = true;
-      var coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(
-        event
-      );
+      var coordinates =
+        FixedDataTableEventHelper.getCoordinatesFromEvent(event);
       var x = coordinates.x;
       var y = coordinates.y;
       this._x = x;

@@ -21,13 +21,8 @@ class ResponsiveExample extends React.Component {
 
   render() {
     const { dataList } = this.state;
-    const {
-      height,
-      width,
-      containerHeight,
-      containerWidth,
-      ...props
-    } = this.props;
+    const { height, width, containerHeight, containerWidth, ...props } =
+      this.props;
     return (
       <Table
         rowHeight={50}

@@ -71,9 +71,8 @@ class ReactWheelHandler {
 
     // if shift is held, swap the axis of scrolling.
     if (event.shiftKey && ReactWheelHandler._allowInternalAxesSwap()) {
-      normalizedEvent = ReactWheelHandler._swapNormalizedWheelAxis(
-        normalizedEvent
-      );
+      normalizedEvent =
+        ReactWheelHandler._swapNormalizedWheelAxis(normalizedEvent);
     } else if (!event.shiftKey) {
       normalizedEvent.pixelX *= this._isRTL ? -1 : 1;
     }

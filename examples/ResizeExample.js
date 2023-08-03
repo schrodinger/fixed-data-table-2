@@ -23,9 +23,8 @@ class ResizeExample extends React.Component {
       },
     };
 
-    this._onColumnResizeEndCallback = this._onColumnResizeEndCallback.bind(
-      this
-    );
+    this._onColumnResizeEndCallback =
+      this._onColumnResizeEndCallback.bind(this);
   }
 
   _onColumnResizeEndCallback(newColumnWidth, columnKey) {

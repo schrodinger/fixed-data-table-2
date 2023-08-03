@@ -59,29 +59,25 @@ describe('convertColumnElementsToData', function () {
   });
 
   it('should return appropriate columnGroupProps, columnProps, and elementTemplates', function () {
-    const {
-      columnGroupProps,
-      columnProps,
-      elementTemplates,
-      useGroupHeader,
-    } = convertColumnElementsToData([
-      {
-        props: {
-          fixed: true,
-          children: [column1, column2],
-          header: { id: 'g1' },
+    const { columnGroupProps, columnProps, elementTemplates, useGroupHeader } =
+      convertColumnElementsToData([
+        {
+          props: {
+            fixed: true,
+            children: [column1, column2],
+            header: { id: 'g1' },
+          },
+          type: { __TableColumnGroup__: true },
         },
-        type: { __TableColumnGroup__: true },
-      },
-      {
-        props: {
-          fixed: false,
-          children: [column3],
-          header: { id: 'g2' },
+        {
+          props: {
+            fixed: false,
+            children: [column3],
+            header: { id: 'g2' },
+          },
+          type: { __TableColumnGroup__: true },
         },
-        type: { __TableColumnGroup__: true },
-      },
-    ]);
+      ]);
 
     assert.deepEqual(columnGroupProps, [{ fixed: true }, { fixed: false }]);
     assert.deepEqual(columnProps, [
@@ -114,12 +110,8 @@ describe('convertColumnElementsToData', function () {
   });
 
   it('should not specify a groupIdx if none exists', function () {
-    const {
-      columnGroupProps,
-      columnProps,
-      elementTemplates,
-      useGroupHeader,
-    } = convertColumnElementsToData([column1, column2]);
+    const { columnGroupProps, columnProps, elementTemplates, useGroupHeader } =
+      convertColumnElementsToData([column1, column2]);
 
     assert.deepEqual(columnGroupProps, []);
     assert.deepEqual(columnProps, [
