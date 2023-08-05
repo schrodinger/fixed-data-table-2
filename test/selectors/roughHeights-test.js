@@ -6,23 +6,27 @@ import roughHeights, { ScrollbarState } from '../../src/selectors/roughHeights';
 import Scrollbar from '../../src/plugins/Scrollbar';
 
 describe('roughHeights', function () {
-  let columnProps;
+  let columnElements;
   let elementHeights;
   let rowSettings;
   let scrollFlags;
   let tableSize;
 
   beforeEach(function () {
-    columnProps = [
-      {
-        fixed: true,
-        width: 250,
-      },
-      {
-        fixed: false,
-        width: 350,
-      },
-    ];
+    columnElements = {
+      fixed: [
+        {
+          fixed: true,
+          width: 250,
+        },
+      ],
+      scrollable: [
+        {
+          fixed: false,
+          width: 350,
+        },
+      ],
+    };
     elementHeights = {
       footerHeight: 0,
       groupHeaderHeight: 0,
@@ -57,7 +61,7 @@ describe('roughHeights', function () {
 
     it('should estimate component heights', function () {
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -79,7 +83,7 @@ describe('roughHeights', function () {
       tableSize.width = 500;
 
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -101,7 +105,7 @@ describe('roughHeights', function () {
       tableSize.width = 610;
 
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -128,7 +132,7 @@ describe('roughHeights', function () {
       };
 
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -151,7 +155,7 @@ describe('roughHeights', function () {
       tableSize.width = 610;
 
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -172,21 +176,25 @@ describe('roughHeights', function () {
 
   describe('scrollStateX', function () {
     beforeEach(function () {
-      columnProps = [
-        {
-          fixed: true,
-          width: 250,
-        },
-        {
-          fixed: false,
-          width: 750,
-        },
-      ];
+      columnElements = {
+        fixed: [
+          {
+            fixed: true,
+            width: 250,
+          },
+        ],
+        scrollable: [
+          {
+            fixed: false,
+            width: 750,
+          },
+        ],
+      };
     });
 
     it('should show scrollbar if content width exceeds width', function () {
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -199,10 +207,10 @@ describe('roughHeights', function () {
     });
 
     it('should have a conditional scrollbar if content is within a scrollbar size of width', function () {
-      columnProps[0].width -= 210;
+      columnElements.fixed[0].width -= 210;
 
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -215,10 +223,10 @@ describe('roughHeights', function () {
     });
 
     it('should show not show scrollbar if content width is less than width', function () {
-      columnProps[1].width -= 500;
+      columnElements.scrollable[0].width -= 500;
 
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -234,7 +242,7 @@ describe('roughHeights', function () {
       scrollFlags.overflowX = 'hidden';
 
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -250,7 +258,7 @@ describe('roughHeights', function () {
       scrollFlags.showScrollbarX = false;
 
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -266,7 +274,7 @@ describe('roughHeights', function () {
   describe('bufferRowCount', function () {
     it('should return half the max visible rows count', function () {
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -288,7 +296,7 @@ describe('roughHeights', function () {
       tableSize.height = 427;
 
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -310,7 +318,7 @@ describe('roughHeights', function () {
       tableSize.height = 402;
 
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -332,7 +340,7 @@ describe('roughHeights', function () {
       tableSize.height = 152;
 
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -354,7 +362,7 @@ describe('roughHeights', function () {
       tableSize.height = 652;
 
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,
@@ -376,7 +384,7 @@ describe('roughHeights', function () {
       rowSettings.bufferRowCount = 1;
 
       const result = roughHeights.resultFunc(
-        columnProps,
+        columnElements,
         elementHeights,
         rowSettings,
         scrollFlags,

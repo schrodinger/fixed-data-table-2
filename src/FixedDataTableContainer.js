@@ -150,8 +150,8 @@ class FixedDataTableContainer extends React.Component {
   static getBoundState(reduxStore) {
     const state = reduxStore.getState();
     const boundState = pick(state, [
-      'columnGroupProps',
-      'columnProps',
+      'columnGroupElements',
+      'columnElements',
       'columnReorderingData',
       'columnResizingData',
       'elementHeights',

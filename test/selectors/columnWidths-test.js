@@ -6,8 +6,8 @@ import columnWidths from '../../src/selectors/columnWidths';
 import Scrollbar from '../../src/plugins/Scrollbar';
 
 describe('columnWidths', function () {
-  let columnGroupPropsIn;
-  let columnPropsIn;
+  let columnGroupElementsIn;
+  let columnElementsIn;
   let scrollEnabledY;
   let width;
 
@@ -35,13 +35,13 @@ describe('columnWidths', function () {
         id: 3,
         fixed: true,
         width: 90,
-        groupIdx: 2,
+        groupIdx: 1,
       },
       {
         id: 4,
         fixed: true,
         width: 10,
-        groupIdx: 2,
+        groupIdx: 1,
       },
     ];
     const scrollableGroup1 = [
@@ -50,14 +50,14 @@ describe('columnWidths', function () {
         fixed: false,
         flexGrow: 5,
         width: 50,
-        groupIdx: 1,
+        groupIdx: 2,
       },
       {
         id: 6,
         fixed: false,
         flexGrow: 10,
         width: 20,
-        groupIdx: 1,
+        groupIdx: 2,
       },
     ];
     const scrollableGroup2 = [
@@ -69,38 +69,45 @@ describe('columnWidths', function () {
         groupIdx: 3,
       },
     ];
-    columnPropsIn = [].concat(
-      fixedGroup1,
-      scrollableGroup1,
-      fixedGroup2,
-      scrollableGroup2
-    );
-
-    columnGroupPropsIn = [
-      {
-        fixed: true,
-        width: 110,
-      },
-      {
-        fixed: false,
-        width: 70,
-      },
-      {
-        fixed: true,
-        width: 100,
-      },
-      {
-        fixed: false,
-        width: 100,
-      },
-    ];
+    columnElementsIn = {
+      fixed: [...fixedGroup1, ...fixedGroup2],
+      scrollable: [...scrollableGroup1, ...scrollableGroup2],
+      fixedRight: [],
+    };
+    columnGroupElementsIn = {
+      fixed: [
+        {
+          fixed: true,
+          width: 110,
+          index: 0,
+        },
+        {
+          fixed: true,
+          width: 100,
+          index: 1,
+        },
+      ],
+      scrollable: [
+        {
+          fixed: false,
+          width: 70,
+          index: 2,
+        },
+        {
+          fixed: false,
+          width: 100,
+          index: 3,
+        },
+      ],
+      fixedRight: [],
+    };
   });
 
   it('should partition columns on fixed flag', function () {
     const { columnProps, fixedColumns, scrollableColumns } =
       columnWidths.resultFunc(
-        columnGroupPropsIn,
-        columnPropsIn,
+        columnGroupElementsIn,
+        columnElementsIn,
         scrollEnabledY,
         width,
         Scrollbar.SIZE
@@ -122,13 +129,14 @@ describe('columnWidths', function () {
   it('should maintain widths when no surplus', function () {
     const { columnGroupProps, columnProps, fixedColumns, scrollableColumns } =
       columnWidths.resultFunc(
-        columnGroupPropsIn,
-        columnPropsIn,
+        columnGroupElementsIn,
+        columnElementsIn,
         scrollEnabledY,
         width,
         Scrollbar.SIZE
       );
 
+    console.log('NIRANJAN', columnGroupProps);
     assert.deepEqual(
       columnGroupProps.map((column) => column.width),
       [110, 100, 70, 100]
@@ -152,8 +160,8 @@ describe('columnWidths', function () {
 
     const { columnGroupProps, columnProps, fixedColumns, scrollableColumns } =
       columnWidths.resultFunc(
-        columnGroupPropsIn,
-        columnPropsIn,
+        columnGroupElementsIn,
+        columnElementsIn,
         scrollEnabledY,
         width,
         Scrollbar.SIZE
@@ -183,8 +191,8 @@ describe('columnWidths', function () {
 
     const { columnGroupProps, columnProps, fixedColumns, scrollableColumns } =
       columnWidths.resultFunc(
-        columnGroupPropsIn,
-        columnPropsIn,
+        columnGroupElementsIn,
+        columnElementsIn,
         scrollEnabledY,
         width,
         Scrollbar.SIZE
@@ -212,8 +220,8 @@ describe('columnWidths', function () {
     width = 300;
 
     const { availableScrollWidth, maxScrollX } = columnWidths.resultFunc(
-      columnGroupPropsIn,
-      columnPropsIn,
+      columnGroupElementsIn,
+      columnElementsIn,
       scrollEnabledY,
       width,
       Scrollbar.SIZE

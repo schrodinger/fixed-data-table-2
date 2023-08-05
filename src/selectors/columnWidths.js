@@ -8,13 +8,15 @@
  *
  * @providesModule columnWidths
  */
-import forEach from 'lodash/forEach';
-import map from 'lodash/map';
-
 import shallowEqualSelector from '../helper/shallowEqualSelector';
-import { getTotalFlexGrow, getTotalWidth } from '../helper/widthHelper';
+import {
+  getTotalFlexGrow,
+  getTotalWidth,
+  getTotalWidthContainer,
+} from '../helper/widthHelper';
 import scrollbarsVisible from './scrollbarsVisible';
-import { concat } from 'lodash';
+import concat from 'lodash/concat';
+import { getEmptyElementsContainer } from '../helper/convertColumnElementsToData';
 
 /**
  * @typedef {{
@@ -45,8 +47,8 @@ import { concat } from 'lodash';
  * }} The total width of all columns.
  */
 function columnWidths(
-  columnGroupProps,
-  columnProps,
+  columnGroupElements,
+  columnElements,
   scrollEnabledY,
   width,
   scrollbarYWidth
@@ -55,27 +57,31 @@ function columnWidths(
   const viewportWidth = width - scrollbarSpace;
 
   const {
-    columnGroupProps: columnGroupPropsWithFlex,
-    columnProps: columnPropsWithFlex,
-  } = flexWidths(columnGroupProps, columnProps, viewportWidth);
+    columnGroupElements: columnGroupElementsWithFlex,
+    columnElements: columnElementsWithFlex,
+  } = flexWidths(columnGroupElements, columnElements, viewportWidth);
   const {
     fixed: fixedColumns,
     fixedRight: fixedRightColumns,
     scrollable: scrollableColumns,
-  } = groupElements(columnPropsWithFlex);
+  } = groupElementsByCellGroup(columnElementsWithFlex);
   const {
     fixed: fixedColumnGroups,
     fixedRight: fixedRightColumnGroups,
     scrollable: scrollableColumnGroups,
-  } = groupElements(columnGroupPropsWithFlex);
+  } = groupElementsByCellGroup(columnGroupElementsWithFlex);
 
+  const fixedColumnsTotalWidth = getTotalWidth(fixedColumns);
+  const fixedRightColumnsTotalWidth = getTotalWidth(fixedRightColumns);
+  const scrollableColumnsTotalWidth = getTotalWidth(scrollableColumns);
   const availableScrollWidth =
-    viewportWidth -
-    getTotalWidth(fixedColumns) -
-    getTotalWidth(fixedRightColumns);
+    viewportWidth - fixedColumnsTotalWidth - fixedRightColumnsTotalWidth;
   const maxScrollX = Math.max(
     0,
-    getTotalWidth(columnPropsWithFlex) - viewportWidth
+    fixedColumnsTotalWidth +
+      fixedRightColumnsTotalWidth +
+      scrollableColumnsTotalWidth -
+      viewportWidth
   );
 
   return {
@@ -105,54 +111,59 @@ function columnWidths(
  *   columnProps: !Array.<columnDefinition>
  * }}
  */
-function flexWidths(columnGroupProps, columnProps, viewportWidth) {
-  let newColumnProps = columnProps;
-  let remainingFlexGrow = getTotalFlexGrow(columnProps);
+function flexWidths(columnGroupElements, columnElements, viewportWidth) {
+  const columnGroupElementsWithFlex = getEmptyElementsContainer();
+  const columnElementsWithFlex = getEmptyElementsContainer();
+  const columnsWidth = getTotalWidthContainer(columnElements);
 
-  // if any column is a flex column, we'll need to calculate the widths for every column
-  if (remainingFlexGrow !== 0) {
-    const columnsWidth = getTotalWidth(columnProps);
-    let remainingFlexWidth = Math.max(viewportWidth - columnsWidth, 0);
+  let remainingFlexGrow = getTotalFlexGrow(columnElements);
+  let remainingFlexWidth = Math.max(viewportWidth - columnsWidth, 0);
 
-    // calculate and set width for each column
-    newColumnProps = map(columnProps, (column) => {
-      const { flexGrow } = column;
+  const columnGroupWidths = [];
+  // calculate widths and offsets for each column based on flex
+  for (const cellGroupType in columnElements) {
+    const columnProps = columnElements[cellGroupType];
+    let offset = 0;
+    let columnIndex = 0;
+    for (const column of columnProps) {
+      const flexGrow = column.flexGrow || 0;
 
-      // if no flexGrow is specified, column defaults to original width
-      if (!flexGrow) {
-        return column;
+      let flexWidth = 0;
+      if (flexGrow) {
+        flexWidth = Math.floor(
+          (flexGrow * remainingFlexWidth) / remainingFlexGrow
+        );
       }
-
-      const flexWidth = Math.floor(
-        (flexGrow * remainingFlexWidth) / remainingFlexGrow
-      );
-      const newWidth = column.width + flexWidth;
+      const width = column.width + flexWidth;
       remainingFlexGrow -= flexGrow;
       remainingFlexWidth -= flexWidth;
 
-      return Object.assign({}, column, { width: newWidth });
-    });
+      const newColumn = Object.assign({}, column, { width, offset });
+      offset += width;
+      columnGroupWidths[column.groupIdx] =
+        width + (columnGroupWidths[column.groupIdx] || 0);
+      columnElementsWithFlex[cellGroupType][columnIndex] = newColumn;
+      columnIndex++;
+    }
   }
 
-  // calculate width for each column group
-  const columnGroupWidths = map(columnGroupProps, () => 0);
-  forEach(newColumnProps, (column) => {
-    if (column.groupIdx !== undefined) {
-      columnGroupWidths[column.groupIdx] += column.width;
+  // calculate widths and offsets for each column group
+  for (const cellGroupType in columnGroupElements) {
+    const columnGroupProps = columnGroupElements[cellGroupType];
+    let offset = 0;
+    let index = 0;
+    for (const columnGroup of columnGroupProps) {
+      const width = columnGroupWidths[columnGroup.index];
+      const newColumnGroup = Object.assign({}, columnGroup, { width, offset });
+      offset += width;
+      columnGroupElementsWithFlex[cellGroupType][index] = newColumnGroup;
+      index++;
     }
-  });
-
-  // set the width for each column group
-  const newColumnGroupProps = map(columnGroupProps, (columnGroup, idx) => {
-    if (columnGroupWidths[idx] === columnGroup.width) {
-      return columnGroup;
-    }
-    return Object.assign({}, columnGroup, { width: columnGroupWidths[idx] });
-  });
+  }
 
   return {
-    columnGroupProps: newColumnGroupProps,
-    columnProps: newColumnProps,
+    columnGroupElements: columnGroupElementsWithFlex,
+    columnElements: columnElementsWithFlex,
   };
 }
 
@@ -164,55 +175,18 @@ function flexWidths(columnGroupProps, columnProps, viewportWidth) {
  *   scrollableColumns: !Array.<columnDefinition>
  * }}
  */
-function groupElements(elements) {
-  const fixed = { offset: 0, elements: [] };
-  const fixedRight = { offset: 0, elements: [] };
-  const scrollable = { offset: 0, elements: [] };
-
-  forEach(elements, (element) => {
-    let container = scrollable;
-    if (element.fixed) {
-      container = fixed;
-    } else if (element.fixedRight) {
-      container = fixedRight;
-    }
-
-    // add offset and index of element within group
-    const newElement = {
-      ...element,
-      offset: container.offset,
-    };
-
-    container.offset += newElement.width;
-    container.elements.push(newElement);
-  });
-
-  // Assign index to each column in same order they appear in table
-  let index = 0;
-  forEach(fixed.elements, (element) => {
-    element.index = index;
-    index += 1;
-  });
-  forEach(scrollable.elements, (element) => {
-    element.index = index;
-    index += 1;
-  });
-  forEach(fixedRight.elements, (element) => {
-    element.index = index;
-    index += 1;
-  });
-
+function groupElementsByCellGroup(elements) {
   return {
-    fixed: fixed.elements,
-    fixedRight: fixedRight.elements,
-    scrollable: scrollable.elements,
+    fixed: elements.fixed,
+    fixedRight: elements.fixedRight,
+    scrollable: elements.scrollable,
   };
 }
 
 export default shallowEqualSelector(
   [
-    (state) => state.columnGroupProps,
-    (state) => state.columnProps,
+    (state) => state.columnGroupElements,
+    (state) => state.columnElements,
     (state) => scrollbarsVisible(state).scrollEnabledY,
     (state) => state.tableSize.width,
     (state) => state.scrollbarYWidth,

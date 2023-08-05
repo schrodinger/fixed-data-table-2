@@ -12,7 +12,7 @@
 import clamp from '../vendor_upstream/core/clamp';
 
 import shallowEqualSelector from '../helper/shallowEqualSelector';
-import { getTotalWidth } from '../helper/widthHelper';
+import { getTotalWidthContainer } from '../helper/widthHelper';
 
 const BORDER_HEIGHT = 1;
 const MIN_BUFFER_ROWS = 3;
@@ -77,7 +77,7 @@ export const ScrollbarState = {
  * }}
  */
 function roughHeights(
-  columnProps,
+  columnElements,
   elementHeights,
   rowSettings,
   scrollFlags,
@@ -101,7 +101,7 @@ function roughHeights(
   const roughAvailableHeight = maxComponentHeight - reservedHeight;
 
   const scrollStateX = getScrollStateX(
-    columnProps,
+    columnElements,
     scrollFlags,
     width,
     scrollbarYWidth
@@ -148,9 +148,9 @@ function roughHeights(
  * @param {number} width
  * @return {ScrollbarState}
  */
-function getScrollStateX(columnProps, scrollFlags, width, scrollbarYWidth) {
+function getScrollStateX(columnElements, scrollFlags, width, scrollbarYWidth) {
   const { overflowX, showScrollbarX } = scrollFlags;
-  const minColWidth = getTotalWidth(columnProps);
+  const minColWidth = getTotalWidthContainer(columnElements);
   if (overflowX === 'hidden' || showScrollbarX === false) {
     return ScrollbarState.HIDDEN;
   } else if (minColWidth > width) {
@@ -190,7 +190,7 @@ function getBufferRowCount(maxAvailableHeight, rowSettings) {
 
 export default shallowEqualSelector(
   [
-    (state) => state.columnProps,
+    (state) => state.columnElements,
     (state) => state.elementHeights,
     (state) => state.rowSettings,
     (state) => state.scrollFlags,

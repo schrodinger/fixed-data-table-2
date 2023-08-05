@@ -12,16 +12,55 @@
 
 'use strict';
 
-import reduce from 'lodash/reduce';
+import { createSelector } from 'reselect';
 
-export function sumPropWidths(columns) {
-  return reduce(columns, (accum, column) => accum + column.props.width, 0);
+const emptyArray = [];
+const emptyObject = {};
+
+const cacheOptions = {
+  memoizeOptions: {
+    maxSize: 12, // 3 cell group types * 4 template types
+  },
+};
+
+export const sumPropWidths = createSelector(
+  (columns) => columns || emptyArray,
+  (columns) => {
+    return columns.reduce((accum, column) => accum + column.props.width, 0);
+  },
+  cacheOptions
+);
+
+export const getTotalWidth = createSelector(
+  (columns) => columns || emptyArray,
+  (columns) => {
+    return columns.reduce((accum, column) => accum + column.width, 0);
+  },
+  cacheOptions
+);
+
+export function getTotalWidthContainer(container) {
+  return (
+    getTotalWidth(container.fixed) +
+    getTotalWidth(container.fixedRight) +
+    getTotalWidth(container.scrollable)
+  );
 }
 
-export function getTotalWidth(columns) {
-  return reduce(columns, (accum, column) => accum + column.width, 0);
-}
+export const getTotalFlexGrow = createSelector(
+  (container) => container || emptyObject,
+  (container) => {
+    const columns = Array.prototype.concat.call(
+      container.fixed,
+      container.scrollable,
+      container.fixedRight
+    );
 
-export function getTotalFlexGrow(columns) {
-  return reduce(columns, (accum, column) => accum + (column.flexGrow || 0), 0);
-}
+    let flexGrow = 0;
+    for (const column of columns) {
+      flexGrow += column.flexGrow || 0;
+    }
+    return flexGrow;
+  },
+  cacheOptions
+);
