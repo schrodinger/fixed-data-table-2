@@ -2,7 +2,7 @@
 # The deploy script will publish the build to gh-pages.
 # This workflow will be run whenever a new release is published.
 
-# NOTE (pradeep): I'm having this workflow bail out if the release doesn't target v1.2.x. 
+# NOTE (pradeep): I'm having this workflow bail out if the release doesn't target v2.0.x
 # This is because we don't have a way (yet) to support multiple FDT versions/docs be deployed at the same time,
 # and hence we choose to deploy only the most stable release.
 
@@ -37,10 +37,10 @@ jobs:
         RELEASE_TAG: ${{ github.event.release.tag_name }}
 
       # Check if the release tag name is a stable candidate for deployment
-      # NOTE (pradeep): Only allow 1.2.x versions to be deployed right now
+      # NOTE (pradeep): Only allow 2.0.x versions to be deployed right now
       run: |
         echo "RELEASE_TAG is: " $RELEASE_TAG
-        if [[ $RELEASE_TAG =~ ^v1\.2\.[0-9]+$ ]]; 
+        if [[ $RELEASE_TAG =~ ^v2\.0\.[0-9]+$ ]]; 
         then
           echo "This is a stable release!"
           echo "::set-output name=is_stable::true"
