@@ -96,7 +96,6 @@ class ReorderCellTest extends React.Component {
         rowHeight={30}
         headerHeight={50}
         rowsCount={dataList.getSize()}
-        isColumnReordering={false}
         width={1000}
         height={500}
         {...this.props}

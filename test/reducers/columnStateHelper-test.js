@@ -16,10 +16,6 @@ describe('columnStateHelper', function () {
 
     beforeEach(function () {
       oldState = {
-        columnResizingData: {
-          placeholder: true,
-        },
-        isColumnResizing: true,
         scrollX: 300,
       };
       newState = cloneDeep(oldState);
@@ -81,14 +77,11 @@ describe('columnStateHelper', function () {
     });
 
     it('should overwrite column resizing from props', function () {
-      newState.isColumnResizing = false;
       columnStateHelper.initialize(newState, {}, {});
 
       assert.deepEqual(
         newState,
         Object.assign({}, oldState, {
-          columnResizingData: {},
-          isColumnResizing: false,
           maxScrollX: 400,
         })
       );

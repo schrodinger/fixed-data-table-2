@@ -14,12 +14,7 @@
 import isNil from 'lodash/isNil';
 import clamp from 'lodash/clamp';
 
-import emptyFunction from '../vendor_upstream/core/emptyFunction';
-
 import columnWidths from '../selectors/columnWidths';
-
-const DRAG_SCROLL_SPEED = 15;
-const DRAG_SCROLL_BUFFER = 100;
 
 /**
  * Initialize scrollX state
@@ -31,7 +26,7 @@ const DRAG_SCROLL_BUFFER = 100;
  */
 function initialize(state, props, oldProps) {
   const { scrollLeft, scrollToColumn } = props;
-  let { columnResizingData, isColumnResizing, scrollX } = state;
+  let { scrollX } = state;
 
   if (
     scrollLeft !== undefined &&
@@ -45,16 +40,7 @@ function initialize(state, props, oldProps) {
   const { maxScrollX } = columnWidths(state);
   scrollX = clamp(scrollX, 0, maxScrollX);
 
-  // isColumnResizing should be overwritten by value from props if available
-  isColumnResizing =
-    props.isColumnResizing !== undefined
-      ? props.isColumnResizing
-      : isColumnResizing;
-  columnResizingData = isColumnResizing ? columnResizingData : {};
-
   Object.assign(state, {
-    columnResizingData,
-    isColumnResizing,
     maxScrollX,
     scrollX,
   });
