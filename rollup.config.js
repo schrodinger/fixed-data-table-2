@@ -51,7 +51,9 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      file: 'dist/fixed-data-table-2.js', // NOTE (pradeep): I prefer this to be in dist/umd, but that'll break backward compatibility
+      // NOTE (pradeep): I prefer this to be in "dist/umd" instead of just "dist/", but that'll break backward compatibility.
+      // I also prefer this to be named fixed-data-table-2.js, but that also breaks backward compatibility.
+      file: 'dist/fixed-data-table.js',
       name: 'FixedDataTable',
       format: 'umd',
       globals: {
@@ -86,7 +88,9 @@ export default [
   {
     input: 'src/index.js',
     output: {
-      file: 'dist/fixed-data-table-2.min.js', // NOTE (pradeep): I prefer this to be in dist/umd, but that'll break backward compatibility
+      // NOTE (pradeep): I prefer this to be in "dist/umd" instead of just "dist/", but that'll break backward compatibility.
+      // I also prefer this to be named fixed-data-table-2.js, but that also breaks backward compatibility.
+      file: 'dist/fixed-data-table.min.js',
       name: 'FixedDataTable',
       format: 'umd',
       globals: {
