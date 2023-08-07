@@ -136,8 +136,8 @@ class FixedDataTableColumn extends React.Component {
     flexGrow: PropTypes.number,
 
     /**
-     * @deprecated This prop is deprecated in favor of the ResizeReorder plugin
-     * component. Please refer the Resizable Columns example.
+     * @deprecated This prop is deprecated in favor of the ResizeCell plugin
+     * component. Please refer to the "Resizable columns" example for usage.
      *
      * Whether the column can be resized.
      * Please note that if a column has a flex grow, once you resize
@@ -150,8 +150,8 @@ class FixedDataTableColumn extends React.Component {
     isResizable: PropTypes.bool,
 
     /**
-     * @deprecated This prop is deprecated in favor of the ResizeReorder plugin
-     * component. Please refer the Reorderable Columns example.
+     * @deprecated This prop is deprecated in favor of the ReorderCell plugin
+     * component. Please refer to the "Reorderable columns" example for usage.
      *
      * Whether the column can be dragged to reorder.
      *

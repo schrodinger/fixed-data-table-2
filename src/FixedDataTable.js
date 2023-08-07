@@ -405,6 +405,9 @@ class FixedDataTable extends React.Component {
     onRowTouchMove: PropTypes.func,
 
     /**
+     * @deprecated This prop is deprecated in favor of the ResizeCell plugin
+     * component. Please refer to the "Resizable columns" example for usage.
+     *
      * Callback that is called when resizer has been released
      * and column needs to be updated.
      *
@@ -420,6 +423,9 @@ class FixedDataTable extends React.Component {
     onColumnResizeEndCallback: PropTypes.func,
 
     /**
+     * @deprecated This prop is deprecated in favor of the ReorderCell plugin
+     * component. Please refer to the "Reorderable columns" example for usage.
+     *
      * Callback that is called when reordering has been completed
      * and columns need to be updated.
      *
