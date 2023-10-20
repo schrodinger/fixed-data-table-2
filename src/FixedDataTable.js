@@ -313,6 +313,21 @@ class FixedDataTable extends React.Component {
     scrollTop: PropTypes.number,
 
     /**
+     * By default when table uses `scrollTop` it makes an optimization
+     * in order to not ask for all the rows heights till the `scrollTop` value.
+     * It uses the cached stored heights, that are initialized to the constant `rowHeight` property
+     * Those heights are updated with the actual value (requested using `rowHeightGetter`)
+     * only when the rows becomes visible.
+     * So when the `scrollTop` is incremented step by step, the actual displayed row is exact,
+     * but when the `scrollTop` is set to a far position, the actual displayed row is inexact
+     *
+     * E.g. : first row height = 30, but the rest of the rows height = 500px,
+     * and the constant `rowheight` property = 30,
+     * when scrollTop changes from 0 to 5000, the displayd first row instead of being 11 is 57
+     */
+    exactScrollTopInCaseOfVariableRowHeights: PropTypes.bool,
+
+    /**
      * Index of row to scroll to.
      */
     scrollToRow: PropTypes.number,
@@ -494,6 +509,7 @@ class FixedDataTable extends React.Component {
     keyboardPageEnabled: false,
     touchScrollEnabled: false,
     stopScrollPropagation: false,
+    exactScrollTopInCaseOfVariableRowHeights: false,
   };
 
   constructor(props) {

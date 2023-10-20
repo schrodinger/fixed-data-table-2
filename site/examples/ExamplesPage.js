@@ -79,6 +79,8 @@ const EXAMPLE_COMPONENTS = {
     .location]: require('../../examples/FixedRowsExample'),
   [ExamplePages.AUTO_SCROLL_EXAMPLE
     .location]: require('../../examples/AutoScrollExample'),
+  [ExamplePages.EXACT_SCROLL_TOP_EXAMPLE
+    .location]: require('../../examples/ExactScrollTopExample'),
 };
 
 class ExamplesPage extends React.Component {
@@ -100,6 +102,7 @@ class ExamplesPage extends React.Component {
   }
 
   _renderPage() {
+    console.log('**********' + this.props.page.location);
     const Example = EXAMPLE_COMPONENTS[this.props.page.location].default;
 
     return (

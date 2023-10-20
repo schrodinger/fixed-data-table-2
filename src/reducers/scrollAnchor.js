@@ -45,6 +45,17 @@ export function getScrollAnchor(state, newProps, oldProps) {
     newProps.scrollTop !== null &&
     (!oldProps || newProps.scrollTop !== oldProps.scrollTop)
   ) {
+    if (
+      newProps.rowHeightGetter &&
+      newProps.exactScrollTopInCaseOfVariableRowHeights
+    ) {
+      let row = 0;
+      let rowsTotalHeight = 0;
+      while (rowsTotalHeight < newProps.scrollTop && row < newProps.rowsCount) {
+        rowsTotalHeight += updateRowHeight(state, row++);
+      }
+    }
+
     return scrollTo(state, newProps.scrollTop);
   }
 

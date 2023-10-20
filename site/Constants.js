@@ -231,6 +231,13 @@ exports.ExamplePages = {
     description:
       'An example using Controlled Scrolling to mimic auto scrolling',
   },
+  EXACT_SCROLL_TOP_EXAMPLE: {
+    location: 'example-scroll-top.html',
+    fileName: 'ExactScrollTopExample.js',
+    title: 'Exact scroll top',
+    description:
+      'A table example that can scroll exact/inexact to a given position',
+  },
 };
 
 Object.keys(exports.ExamplePages).forEach(
