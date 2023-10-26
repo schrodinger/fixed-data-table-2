@@ -79,8 +79,6 @@ const EXAMPLE_COMPONENTS = {
     .location]: require('../../examples/FixedRowsExample'),
   [ExamplePages.AUTO_SCROLL_EXAMPLE
     .location]: require('../../examples/AutoScrollExample'),
-  [ExamplePages.EXACT_SCROLL_TOP_EXAMPLE
-    .location]: require('../../examples/ExactScrollTopExample'),
 };
 
 class ExamplesPage extends React.Component {

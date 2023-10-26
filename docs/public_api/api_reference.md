@@ -96,8 +96,8 @@ function(scrollX: number)
 ```
 
 #### updateRowHeights()
-Should be called whenever row heights changes
-@see exactScrollTopInCaseOfVariableRowHeights
+In case of variable row heights the FDT asks only once for the row heights before the current visible rows (by calling `rowHeightGetter()`) and it caches those heights.
+If any of the row heights changes meantime, the user should call `updateRowHeight()` in order for the new row height to be updated
 ```ts
 function()
 ```

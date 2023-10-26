@@ -45,12 +45,7 @@ export function getScrollAnchor(state, newProps, oldProps) {
     newProps.scrollTop !== null &&
     (!oldProps || newProps.scrollTop !== oldProps.scrollTop)
   ) {
-    return scrollTo(
-      state,
-      newProps.scrollTop,
-      newProps.rowHeightGetter &&
-        newProps.exactScrollTopInCaseOfVariableRowHeights
-    );
+    return scrollTo(state, newProps.scrollTop);
   }
 
   return {
@@ -73,13 +68,15 @@ export function getScrollAnchor(state, newProps, oldProps) {
  *   changed: boolean,
  * }}
  */
-export function scrollTo(state, scrollY, exactScroll) {
+export function scrollTo(state, scrollY) {
   const { availableHeight } = scrollbarsVisibleSelector(state);
   const { rowSettings, scrollContentHeight } = state;
   const { rowOffsetIntervalTree } = state.getInternal();
   const { rowsCount } = rowSettings;
 
-  if (exactScroll) {
+  if (state.rowSettings.rowHeightGetter != undefined) {
+    // In case of variable row height, ask for the actual heights of the rows before the scroll position.
+    // Only for the ones that were not asked before
     let { rowUntilOffsetsAreExact, rowOffsetIntervalTree } =
       state.getInternal();
 

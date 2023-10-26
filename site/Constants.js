@@ -231,13 +231,6 @@ exports.ExamplePages = {
     description:
       'An example using Controlled Scrolling to mimic auto scrolling',
   },
-  EXACT_SCROLL_TOP_EXAMPLE: {
-    location: 'example-scroll-top.html',
-    fileName: 'ExactScrollTopExample.js',
-    title: 'Exact scroll top',
-    description:
-      'As an optimization, in case of variable row heights, FDT asks for the actual row heights only when the rows becomes visible. This can be changed by setting `exactScrollTopInCaseOfVariableRowHeights = true` as seen in this example. Here the first row height is 30 px, the rest of the row heights are 500 px',
-  },
 };
 
 Object.keys(exports.ExamplePages).forEach(
