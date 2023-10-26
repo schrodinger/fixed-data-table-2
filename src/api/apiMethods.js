@@ -351,6 +351,7 @@ const getApiMethodsSelector = () =>
       };
 
       const scrollToX = actions.scrollToX;
+      const updateRowHeights = actions.updateRowHeights;
 
       return {
         /** get element */
@@ -371,6 +372,7 @@ const getApiMethodsSelector = () =>
 
         /** actions */
         scrollToX,
+        updateRowHeights,
       };
     }
   );

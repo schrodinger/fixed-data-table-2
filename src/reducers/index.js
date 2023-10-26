@@ -24,12 +24,14 @@ import columnStateHelper from './columnStateHelper';
 import computeRenderedRows from './computeRenderedRows';
 import Scrollbar from '../plugins/Scrollbar';
 import { createSlice, original } from '@reduxjs/toolkit';
+import updateRowHeight from './updateRowHeight';
 
 /**
  * @typedef {{
  *   rowBufferSet: IntegerBufferSet,
  *   rowOffsetIntervalTree: PrefixIntervalTree,
- *   storedHeights: !Array.<number>
+ *   storedHeights: !Array.<number>,
+ *   rowUntilOffsetsAreExact: number
  * }}
  */
 const InternalState = {};
@@ -128,6 +130,7 @@ function createInternalState() {
     rowBufferSet: new IntegerBufferSet(),
     rowOffsetIntervalTree: null, // PrefixIntervalTree
     storedHeights: [],
+    rowUntilOffsetsAreExact: 0,
   };
 }
 
@@ -208,6 +211,18 @@ const slice = createSlice({
       const scrollX = action.payload;
       state.scrolling = true;
       state.scrollX = scrollX;
+    },
+    updateRowHeights(state) {
+      // Invalidate all the previous computed row heights
+      state.getInternal().rowUntilOffsetsAreExact = 0;
+      // Refresh the current scroll position according to the new row heights
+      const currentScrollY =
+        state
+          .getInternal()
+          .rowOffsetIntervalTree.sumUntil(state.firstRowIndex) -
+        state.firstRowOffset;
+      const scrollAnchor = scrollTo(state, currentScrollY, true);
+      computeRenderedRows(state, scrollAnchor);
     },
   },
 });
@@ -314,6 +329,12 @@ function setStateFromProps(state, props) {
 }
 
 const { reducer, actions } = slice;
-export const { initialize, propChange, scrollEnd, scrollToX, scrollToY } =
-  actions;
+export const {
+  initialize,
+  propChange,
+  scrollEnd,
+  scrollToX,
+  scrollToY,
+  updateRowHeights,
+} = actions;
 export default reducer;

@@ -54,7 +54,7 @@ class ExactScrollTopExample extends React.Component {
             })
           }
         >
-          Scroll to 5000
+          Scroll to 5000 px
         </button>
         <button
           onClick={() =>
@@ -63,7 +63,7 @@ class ExactScrollTopExample extends React.Component {
             })
           }
         >
-          Scroll to 0
+          Scroll to 0 px
         </button>
         <label>
           Exact scroll top

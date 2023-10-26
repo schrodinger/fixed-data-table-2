@@ -95,6 +95,14 @@ Scrolls the table to given horizontal offset.
 function(scrollX: number)
 ```
 
+#### updateRowHeights()
+Should be called whenever row heights changes
+@see exactScrollTopInCaseOfVariableRowHeights
+```ts
+function()
+```
+
+
 ## Types
 #### Column
 ```ts

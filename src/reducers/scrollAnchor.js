@@ -45,18 +45,12 @@ export function getScrollAnchor(state, newProps, oldProps) {
     newProps.scrollTop !== null &&
     (!oldProps || newProps.scrollTop !== oldProps.scrollTop)
   ) {
-    if (
+    return scrollTo(
+      state,
+      newProps.scrollTop,
       newProps.rowHeightGetter &&
-      newProps.exactScrollTopInCaseOfVariableRowHeights
-    ) {
-      let row = 0;
-      let rowsTotalHeight = 0;
-      while (rowsTotalHeight < newProps.scrollTop && row < newProps.rowsCount) {
-        rowsTotalHeight += updateRowHeight(state, row++);
-      }
-    }
-
-    return scrollTo(state, newProps.scrollTop);
+        newProps.exactScrollTopInCaseOfVariableRowHeights
+    );
   }
 
   return {
@@ -79,11 +73,22 @@ export function getScrollAnchor(state, newProps, oldProps) {
  *   changed: boolean,
  * }}
  */
-export function scrollTo(state, scrollY) {
+export function scrollTo(state, scrollY, exactScroll) {
   const { availableHeight } = scrollbarsVisibleSelector(state);
   const { rowSettings, scrollContentHeight } = state;
   const { rowOffsetIntervalTree } = state.getInternal();
   const { rowsCount } = rowSettings;
+
+  if (exactScroll) {
+    let { rowUntilOffsetsAreExact, rowOffsetIntervalTree } =
+      state.getInternal();
+
+    let exactHeight = rowOffsetIntervalTree.sumUntil(rowUntilOffsetsAreExact);
+    while (exactHeight < scrollY && rowUntilOffsetsAreExact < rowsCount) {
+      exactHeight += updateRowHeight(state, rowUntilOffsetsAreExact++);
+    }
+    state.rowUntilOffsetsAreExact = rowUntilOffsetsAreExact;
+  }
 
   if (rowsCount === 0) {
     return {
