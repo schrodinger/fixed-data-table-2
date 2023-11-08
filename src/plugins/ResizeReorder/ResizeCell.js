@@ -89,7 +89,7 @@ class ResizeCell extends React.PureComponent {
       <>
         <ResizerKnob
           height={this.props.height}
-          resizerLineHeight={this.context.tableHeight}
+          resizerLineHeight={this.context.bodyAndHeaderHeight}
           onColumnResizeEnd={this.props.onColumnResizeEnd}
           width={this.props.width}
           minWidth={this.props.minWidth}
