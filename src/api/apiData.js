@@ -9,11 +9,12 @@
  */
 import columnWidths from '../selectors/columnWidths';
 import shallowEqualSelector from '../helper/shallowEqualSelector';
+import tableHeightsSelector from '../selectors/tableHeights';
 
 const getApiDataSelector = () =>
   shallowEqualSelector(
     [
-      (state) => state.tableSize.height,
+      (state) => tableHeightsSelector(state).componentHeight,
       (state) => state.elementHeights.groupHeaderHeight,
       (state) => state.scrollX,
       (state) => state.maxScrollX,
