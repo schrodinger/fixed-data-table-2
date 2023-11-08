@@ -14,11 +14,7 @@ import tableHeightsSelector from '../selectors/tableHeights';
 const getApiDataSelector = () =>
   shallowEqualSelector(
     [
-      (state) => state.tableSize.height,
-      (state) =>
-        (state.headerHeight ? state.headerHeight : 0) +
-        (state.groupHeaderHeight ? state.groupHeaderHeight : 0) +
-        tableHeightsSelector(state).visibleRowsHeight,
+      (state) => tableHeightsSelector(state).componentHeight,
       (state) => state.elementHeights.groupHeaderHeight,
       (state) => state.scrollX,
       (state) => state.maxScrollX,
@@ -27,7 +23,6 @@ const getApiDataSelector = () =>
     ],
     (
       /*number*/ tableHeight,
-      /*number*/ bodyAndHeaderHeight,
       /*number*/ groupHeaderHeight,
       /*number*/ scrollX,
       /*number*/ maxScrollX,
@@ -36,7 +31,6 @@ const getApiDataSelector = () =>
     ) => {
       return {
         tableHeight,
-        bodyAndHeaderHeight,
         groupHeaderHeight,
         scrollX,
         maxScrollX,
