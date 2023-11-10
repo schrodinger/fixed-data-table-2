@@ -20,7 +20,6 @@ const getApiDataSelector = () =>
       (state) => state.maxScrollX,
       (state) => columnWidths(state).availableScrollWidth,
       (state) => state.isRTL,
-      (state) => state.touchScrollEnabled,
     ],
     (
       /*number*/ tableHeight,
@@ -28,8 +27,7 @@ const getApiDataSelector = () =>
       /*number*/ scrollX,
       /*number*/ maxScrollX,
       /*number*/ availableScrollWidth,
-      /*boolean*/ isRTL,
-      /*boolean*/ touchEnabled
+      /*boolean*/ isRTL
     ) => {
       return {
         tableHeight,
@@ -38,7 +36,6 @@ const getApiDataSelector = () =>
         maxScrollX,
         availableScrollWidth,
         isRTL,
-        touchEnabled,
       };
     }
   );
