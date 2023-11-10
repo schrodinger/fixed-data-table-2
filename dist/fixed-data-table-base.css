@@ -114,6 +114,42 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
+ * @providesModule fixedDataTableCellGroupLayout
+ */
+
+.fixedDataTableCellGroupLayout_cellGroup {
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+
+.fixedDataTable_isRTL .fixedDataTableCellGroupLayout_cellGroup {
+  right: 0;
+  left: auto;
+}
+
+.fixedDataTableCellGroupLayout_cellGroup > .public_fixedDataTableCell_main {
+  display: inline-block;
+  vertical-align: top;
+  white-space: normal;
+}
+
+.fixedDataTableCellGroupLayout_cellGroupWrapper {
+  position: absolute;
+  top: 0;
+}
+/**
+ * Copyright Schrodinger, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
  * @providesModule fixedDataTableCellLayout
  */
 
@@ -221,42 +257,6 @@
 }
 
 
-/**
- * Copyright Schrodinger, LLC
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule fixedDataTableCellGroupLayout
- */
-
-.fixedDataTableCellGroupLayout_cellGroup {
-  -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
-  left: 0;
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  white-space: nowrap;
-}
-
-.fixedDataTable_isRTL .fixedDataTableCellGroupLayout_cellGroup {
-  right: 0;
-  left: auto;
-}
-
-.fixedDataTableCellGroupLayout_cellGroup > .public_fixedDataTableCell_main {
-  display: inline-block;
-  vertical-align: top;
-  white-space: normal;
-}
-
-.fixedDataTableCellGroupLayout_cellGroupWrapper {
-  position: absolute;
-  top: 0;
-}
 /**
  * Copyright Schrodinger, LLC
  * All rights reserved.

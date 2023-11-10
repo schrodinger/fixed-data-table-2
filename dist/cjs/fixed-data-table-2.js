@@ -21451,9 +21451,6 @@ let getApiDataSelector = function getApiDataSelector() {
       function (state) {
         return state.isRTL;
       },
-      function (state) {
-        return state.touchScrollEnabled;
-      },
     ],
     function (
       /*number*/
@@ -21467,9 +21464,7 @@ let getApiDataSelector = function getApiDataSelector() {
       /*number*/
       availableScrollWidth,
       /*boolean*/
-      isRTL,
-      /*boolean*/
-      touchEnabled
+      isRTL
     ) {
       return {
         tableHeight,
@@ -21478,7 +21473,6 @@ let getApiDataSelector = function getApiDataSelector() {
         maxScrollX,
         availableScrollWidth,
         isRTL,
-        touchEnabled,
       };
     }
   );

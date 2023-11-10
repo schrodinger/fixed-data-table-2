@@ -21353,9 +21353,6 @@
         function (state) {
           return state.isRTL;
         },
-        function (state) {
-          return state.touchScrollEnabled;
-        },
       ],
       function (
         /*number*/
@@ -21369,9 +21366,7 @@
         /*number*/
         availableScrollWidth,
         /*boolean*/
-        isRTL,
-        /*boolean*/
-        touchEnabled
+        isRTL
       ) {
         return {
           tableHeight,
@@ -21380,7 +21375,6 @@
           maxScrollX,
           availableScrollWidth,
           isRTL,
-          touchEnabled,
         };
       }
     );
