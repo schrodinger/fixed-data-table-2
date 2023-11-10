@@ -86,17 +86,20 @@ class DOMMouseMoveTracker {
       this._eventTouchStartToken = EventListener.listen(
         this._domNode,
         'touchstart',
-        this._onMouseMove
+        this._onMouseMove,
+        { passive: false }
       );
       this._eventTouchMoveToken = EventListener.listen(
-        this._domNode,
+        event.target,
         'touchmove',
-        this._onMouseMove
+        this._onMouseMove,
+        { passive: false }
       );
       this._eventTouchEndToken = EventListener.listen(
-        this._domNode,
+        event.target,
         'touchend',
-        this._onMouseUp
+        this._onMouseUp,
+        { passive: false }
       );
     }
 

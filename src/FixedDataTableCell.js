@@ -177,6 +177,7 @@ class FixedDataTableCell extends React.Component {
       isVisible,
       columnKey,
       isHeaderOrFooter,
+      touchEnabled,
       ...props
     } = this.props;
 
@@ -205,6 +206,7 @@ class FixedDataTableCell extends React.Component {
     );
 
     let cellProps = {
+      touchEnabled,
       isVisible,
       isHeader: this.props.isHeader,
       isGroupHeader: this.props.isGroupHeader,
