@@ -101,6 +101,8 @@ class ResizerKnob extends React.PureComponent {
   };
 
   setupHandlers() {
+    // TODO (pradeep): Remove these and pass to our knob component directly after React
+    // provides an API where event handlers can be specified to be non-passive (facebook/react#6436).
     this.resizerKnobRef.addEventListener('mousedown', this.onMouseDown, {
       passive: false,
     });
