@@ -212,9 +212,13 @@ const slice = createSlice({
       state.scrolling = true;
       state.scrollX = scrollX;
     },
-    updateRowHeights(state) {
-      // Invalidate all the previous computed row heights
-      state.getInternal().rowUntilOffsetsAreExact = 0;
+    updateRowHeights(state, action) {
+      const firstUpdatedRowIndex = action.payload || 0;
+      if (firstUpdatedRowIndex >= state.getInternal().rowUntilOffsetsAreExact) {
+        return;
+      }
+      // Invalidate all the previous computed row heights till the updated row
+      state.getInternal().rowUntilOffsetsAreExact = firstUpdatedRowIndex;
       // Refresh the current scroll position according to the new row heights
       const currentScrollY =
         state

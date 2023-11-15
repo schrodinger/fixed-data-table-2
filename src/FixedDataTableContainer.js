@@ -109,11 +109,11 @@ class FixedDataTableContainer extends React.Component {
       },
       {
         ...this.scrollActions,
-        updateRowHeights: () =>
+        updateRowHeights: (firstUpdatedRowIndex) =>
           bindActionCreators(
             { updateRowHeights },
             this.reduxStore.dispatch
-          ).updateRowHeights(),
+          ).updateRowHeights(firstUpdatedRowIndex),
       }
     );
   }

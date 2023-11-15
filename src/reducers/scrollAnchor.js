@@ -77,14 +77,13 @@ export function scrollTo(state, scrollY) {
   if (state.rowSettings.rowHeightGetter != undefined) {
     // In case of variable row height, ask for the actual heights of the rows before the scroll position.
     // Only for the ones that were not asked before
-    let { rowUntilOffsetsAreExact, rowOffsetIntervalTree } =
-      state.getInternal();
+    let { rowUntilOffsetsAreExact } = state.getInternal();
 
     let exactHeight = rowOffsetIntervalTree.sumUntil(rowUntilOffsetsAreExact);
     while (exactHeight < scrollY && rowUntilOffsetsAreExact < rowsCount) {
       exactHeight += updateRowHeight(state, rowUntilOffsetsAreExact++);
     }
-    state.rowUntilOffsetsAreExact = rowUntilOffsetsAreExact;
+    state.getInternal().rowUntilOffsetsAreExact = rowUntilOffsetsAreExact;
   }
 
   if (rowsCount === 0) {
