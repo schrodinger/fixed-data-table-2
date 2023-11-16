@@ -48,7 +48,7 @@ class ResizerKnob extends React.PureComponent {
    * Ref to ResizerKnob
    * @type {HTMLDivElement}
    */
-  curRef = null;
+  resizerKnobRef = null;
 
   /**
    *
@@ -62,8 +62,14 @@ class ResizerKnob extends React.PureComponent {
 
   componentDidMount() {
     this.setState({
-      top: this.curRef.getBoundingClientRect().top,
+      top: this.resizerKnobRef.getBoundingClientRect().top,
     });
+
+    this.setupHandlers();
+  }
+
+  componentWillUnmount() {
+    this.cleanupHandlers();
   }
 
   render() {
@@ -82,15 +88,55 @@ class ResizerKnob extends React.PureComponent {
     return (
       <div
         className={cx('fixedDataTableCellLayout/columnResizerContainer')}
-        ref={(element) => (this.curRef = element)}
+        ref={this.setResizerKnobRef}
         style={resizerKnobStyle}
-        onMouseDown={this.onMouseDown}
-        onTouchStart={this.props.touchEnabled ? this.onMouseDown : null}
-        onTouchEnd={this.props.touchEnabled ? this.suppressEvent : null}
-        onTouchMove={this.props.touchEnabled ? this.suppressEvent : null}
       >
         {resizerLine}
       </div>
+    );
+  }
+
+  setResizerKnobRef = (element) => {
+    this.resizerKnobRef = element;
+  };
+
+  setupHandlers() {
+    // TODO (pradeep): Remove these and pass to our knob component directly after React
+    // provides an API where event handlers can be specified to be non-passive (facebook/react#6436).
+    this.resizerKnobRef.addEventListener('mousedown', this.onMouseDown, {
+      passive: false,
+    });
+    this.resizerKnobRef.addEventListener('touchstart', this.onTouchStart, {
+      passive: false,
+    });
+    this.resizerKnobRef.addEventListener(
+      'touchmove',
+      this.suppressEventIfInTouchMode,
+      { passive: false }
+    );
+    this.resizerKnobRef.addEventListener(
+      'touchend',
+      this.suppressEventIfInTouchMode,
+      { passive: false }
+    );
+  }
+
+  cleanupHandlers() {
+    this.resizerKnobRef.removeEventListener('mousedown', this.onMouseDown, {
+      passive: false,
+    });
+    this.resizerKnobRef.removeEventListener('touchstart', this.onTouchStart, {
+      passive: false,
+    });
+    this.resizerKnobRef.removeEventListener(
+      'touchmove',
+      this.suppressEventIfInTouchMode,
+      { passive: false }
+    );
+    this.resizerKnobRef.removeEventListener(
+      'touchend',
+      this.suppressEventIfInTouchMode,
+      { passive: false }
     );
   }
 
@@ -106,6 +152,15 @@ class ResizerKnob extends React.PureComponent {
       this.props.touchEnabled
     );
     this.mouseMoveTracker.captureMouseMoves(event);
+  };
+
+  /**
+   * @param {TouchEvent} event The touch start event
+   */
+  onTouchStart = (event) => {
+    if (this.props.touchEnabled) {
+      this.onMouseDown(event);
+    }
   };
 
   /**
@@ -185,7 +240,10 @@ class ResizerKnob extends React.PureComponent {
   /**
    * @param {Object} event
    */
-  suppressEvent = (event) => {
+  suppressEventIfInTouchMode = (event) => {
+    if (!this.props.touchEnabled) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
   };

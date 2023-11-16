@@ -23,14 +23,15 @@ const EventListener = {
    * @param {DOMEventTarget} target DOM element to register listener on.
    * @param {string} eventType Event type, e.g. 'click' or 'mouseover'.
    * @param {function} callback Callback function.
+   * @param {object} options Extra options to customize the listener
    * @return {object} Object with a `remove` method.
    */
-  listen(target, eventType, callback) {
+  listen(target, eventType, callback, options = {}) {
     if (target.addEventListener) {
-      target.addEventListener(eventType, callback, false);
+      target.addEventListener(eventType, callback, options || false);
       return {
         remove() {
-          target.removeEventListener(eventType, callback, false);
+          target.removeEventListener(eventType, callback, options || false);
         },
       };
     } else if (target.attachEvent) {

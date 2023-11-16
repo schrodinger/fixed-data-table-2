@@ -96,6 +96,7 @@ class FixedDataTableCellDefault extends React.Component {
       isGroupHeader,
       maxWidth,
       minWidth,
+      touchEnabled,
       ...props
     } = this.props;
 

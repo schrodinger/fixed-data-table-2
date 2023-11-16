@@ -115,10 +115,9 @@ class ReorderCell extends React.PureComponent {
       onColumnReorderStart,
       onColumnReorderEnd,
       reorderStartEvent,
+      children,
       ...props
     } = this.props;
-
-    const { children, left } = props;
 
     let className = joinClasses(
       cx({
@@ -167,16 +166,26 @@ class ReorderCell extends React.PureComponent {
 
     return (
       <div
+        ref={this.setReorderHandle}
         className={cx({
           'fixedDataTableCellLayout/columnReorderContainer': true,
           'fixedDataTableCellLayout/columnReorderContainer/active': false,
         })}
-        onMouseDown={this.onMouseDown}
-        onTouchStart={this.onTouchStart}
         style={style}
       />
     );
   }
+
+  setReorderHandle = (element) => {
+    if (element) {
+      element.addEventListener('mousedown', this.onMouseDown, {
+        passive: false,
+      });
+      element.addEventListener('touchstart', this.onTouchStart, {
+        passive: false,
+      });
+    }
+  };
 
   onTouchStart = (ev) => {
     if (!this.props.touchEnabled) {

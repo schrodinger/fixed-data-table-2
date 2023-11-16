@@ -90,6 +90,7 @@ class ReorderExample extends React.Component {
         rowsCount={dataList.getSize()}
         width={1000}
         height={500}
+        touchScrollEnabled={true}
         {...this.props}
       >
         {this.state.columnOrder.map(function (columnKey, i) {
