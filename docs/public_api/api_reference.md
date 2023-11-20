@@ -101,7 +101,7 @@ If any of the row heights changes meantime, the user should call `updateRowHeigh
 starting with the ```firstUpdatedRowIndex```
 If the method is called without passing the ```firstUpdatedRowIndex``` it updates all the row heights 
 ```ts
-function()
+function(firstUpdatedRowIndex: number)
 ```
 
 
