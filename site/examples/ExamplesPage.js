@@ -100,7 +100,6 @@ class ExamplesPage extends React.Component {
   }
 
   _renderPage() {
-    console.log('**********' + this.props.page.location);
     const Example = EXAMPLE_COMPONENTS[this.props.page.location].default;
 
     return (
