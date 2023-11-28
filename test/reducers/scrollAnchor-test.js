@@ -7,7 +7,6 @@ import {
   getScrollAnchor,
 } from '../../src/reducers/scrollAnchor';
 import PrefixIntervalTree from '../../src/vendor_upstream/struct/PrefixIntervalTree';
-import { updateRowHeights } from '../../src/reducers';
 
 describe('scrollAnchor', function () {
   beforeEach(function () {
@@ -99,7 +98,11 @@ describe('scrollAnchor', function () {
       it('should ask for rowHeightGetter() if the row height were not computed before', function () {
         oldState.getInternal().rowUntilOffsetsAreExact = 0;
 
-        let scrollAnchor = getScrollAnchor(oldState, { scrollTop: 300 }, {});
+        let scrollAnchor = getScrollAnchor(
+          oldState,
+          { scrollTop: 300, isScrollTopExact: true },
+          {}
+        );
         assert.deepEqual(scrollAnchor, {
           firstIndex: 3,
           firstOffset: 0,
@@ -111,7 +114,11 @@ describe('scrollAnchor', function () {
       it('should use the cached row heights if they were computed before', function () {
         oldState.getInternal().rowUntilOffsetsAreExact = 4;
 
-        let scrollAnchor = getScrollAnchor(oldState, { scrollTop: 300 }, {});
+        let scrollAnchor = getScrollAnchor(
+          oldState,
+          { scrollTop: 300, isScrollTopExact: true },
+          {}
+        );
         assert.deepEqual(scrollAnchor, {
           firstIndex: 5,
           firstOffset: 0,
