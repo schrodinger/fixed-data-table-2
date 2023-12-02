@@ -35,11 +35,6 @@ class ResizerKnob extends React.PureComponent {
      * @type {number} Total displacement of mouse calculated from initial position when resizing started
      */
     totalDisplacement: 0,
-
-    /**
-     * @type {number} Top position of ResizerKnow. It is passed to ResizerLine to render at appropriate position.
-     */
-    top: 0,
   };
 
   state = { ...this.initialState };
@@ -61,10 +56,6 @@ class ResizerKnob extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.setState({
-      top: this.resizerKnobRef.getBoundingClientRect().top,
-    });
-
     this.setupHandlers();
   }
 
@@ -81,7 +72,7 @@ class ResizerKnob extends React.PureComponent {
         height={this.props.resizerLineHeight}
         visible={!!this.state.isColumnResizing}
         left={this.state.currentMouseXCoordinate}
-        top={this.state.top}
+        parentRef={this.resizerKnobRef}
       />
     );
 
@@ -169,7 +160,10 @@ class ResizerKnob extends React.PureComponent {
   onMouseDown = (ev) => {
     this.initializeDOMMouseMoveTracker(ev);
     const initialMouseXCoordinate =
-      FixedDataTableEventHelper.getCoordinatesFromEvent(ev).x;
+      FixedDataTableEventHelper.getCoordinatesFromEvent(ev).x -
+      ev.currentTarget
+        .closest(cx('.fixedDataTableLayout/main'))
+        .getBoundingClientRect().left;
     this.setState({
       initialMouseXCoordinate,
       isColumnResizing: true,
