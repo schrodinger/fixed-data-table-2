@@ -225,7 +225,7 @@ const slice = createSlice({
           .getInternal()
           .rowOffsetIntervalTree.sumUntil(state.firstRowIndex) -
         state.firstRowOffset;
-      const scrollAnchor = scrollTo(state, currentScrollY);
+      const scrollAnchor = scrollTo(state, currentScrollY, true);
       computeRenderedRows(state, scrollAnchor);
     },
   },
