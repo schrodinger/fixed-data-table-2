@@ -39,9 +39,9 @@ class ResizerLine extends React.PureComponent {
     left: PropTypes.number.isRequired,
 
     /**
-     * Top position of resizer line
+     * The parent HTML Element.
      */
-    top: PropTypes.number.isRequired,
+    parentRef: PropTypes.object,
   };
 
   render() {
@@ -49,14 +49,19 @@ class ResizerLine extends React.PureComponent {
       return null;
     }
 
+    const tableRef = this.getTableRef();
+    if (!tableRef) {
+      return null;
+    }
+
     const style = {
       height: this.props.height,
-      top: this.props.top,
+      top: 0,
       left: this.props.left,
     };
 
     return (
-      <Portal>
+      <Portal node={tableRef}>
         <div
           className={joinClasses(
             cx('fixedDataTableColumnResizerLineLayout/main'),
@@ -71,6 +76,15 @@ class ResizerLine extends React.PureComponent {
         </div>
       </Portal>
     );
+  }
+
+  getTableRef() {
+    const parentRef = this.props.parentRef;
+    if (!parentRef) {
+      return null;
+    }
+
+    return parentRef.closest(cx('.fixedDataTableLayout/main'));
   }
 }
 
