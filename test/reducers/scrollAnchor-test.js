@@ -100,7 +100,7 @@ describe('scrollAnchor', function () {
 
         let scrollAnchor = getScrollAnchor(
           oldState,
-          { scrollTop: 300, isScrollTopExact: true },
+          { scrollTop: 300, isVerticalScrollExact: true },
           {}
         );
         assert.deepEqual(scrollAnchor, {
@@ -116,7 +116,7 @@ describe('scrollAnchor', function () {
 
         let scrollAnchor = getScrollAnchor(
           oldState,
-          { scrollTop: 300, isScrollTopExact: true },
+          { scrollTop: 300, isVerticalScrollExact: true },
           {}
         );
         assert.deepEqual(scrollAnchor, {

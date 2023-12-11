@@ -326,10 +326,10 @@ class FixedDataTable extends React.Component {
      * and the constant `rowheight` property = 30,
      * when scrollTop changes from 0 to 5000, the displayed first row instead of being 11 is 57
      *
-     * By setting ```isScrollTopExact``` to true, when trying to scroll to ```scrollTop``` position, the table will consider
+     * By setting ```isVerticalScrollExact``` to true, when trying to scroll to ```scrollTop``` position, the table will consider
      * the exact row heights, so the offset of the displayed rows will be correct
      */
-    isScrollTopExact: PropTypes.bool,
+    isVerticalScrollExact: PropTypes.bool,
 
     /**
      * Index of row to scroll to.
