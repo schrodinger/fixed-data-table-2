@@ -97,12 +97,9 @@ describe('scrollAnchor', function () {
       });
       it('should ask for rowHeightGetter() if the row height were not computed before', function () {
         oldState.getInternal().rowUntilOffsetsAreExact = 0;
+        oldState.isVerticalScrollExact = true;
 
-        let scrollAnchor = getScrollAnchor(
-          oldState,
-          { scrollTop: 300, isVerticalScrollExact: true },
-          {}
-        );
+        let scrollAnchor = getScrollAnchor(oldState, { scrollTop: 300 }, {});
         assert.deepEqual(scrollAnchor, {
           firstIndex: 3,
           firstOffset: 0,
@@ -113,12 +110,9 @@ describe('scrollAnchor', function () {
 
       it('should use the cached row heights if they were computed before', function () {
         oldState.getInternal().rowUntilOffsetsAreExact = 4;
+        oldState.isVerticalScrollExact = true;
 
-        let scrollAnchor = getScrollAnchor(
-          oldState,
-          { scrollTop: 300, isVerticalScrollExact: true },
-          {}
-        );
+        let scrollAnchor = getScrollAnchor(oldState, { scrollTop: 300 }, {});
         assert.deepEqual(scrollAnchor, {
           firstIndex: 5,
           firstOffset: 0,

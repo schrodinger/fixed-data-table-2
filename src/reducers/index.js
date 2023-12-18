@@ -225,7 +225,7 @@ const slice = createSlice({
           .getInternal()
           .rowOffsetIntervalTree.sumUntil(state.firstRowIndex) -
         state.firstRowOffset;
-      const scrollAnchor = scrollTo(state, currentScrollY, true);
+      const scrollAnchor = scrollTo(state, currentScrollY);
       computeRenderedRows(state, scrollAnchor);
     },
   },
@@ -275,6 +275,7 @@ function setStateFromProps(state, props) {
     columnElements,
     elementTemplates,
     propsRevision: state.propsRevision + 1,
+    isVerticalScrollExact: props.isVerticalScrollExact,
   });
 
   // NOTE (pradeep): We pre-freeze these large collections to avoid
