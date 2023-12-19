@@ -95,6 +95,16 @@ Scrolls the table to given horizontal offset.
 function(scrollX: number)
 ```
 
+#### updateRowHeights(firstUpdatedRowIndex)
+In case of variable row heights the FDT asks only once for the row heights before the current visible rows (by calling `rowHeightGetter()`) and it caches those heights.
+If any of the row heights changes meantime, the user should call `updateRowHeights(firstUpdatedRowIndex)` in order for the new row heights to be updated
+starting with the ```firstUpdatedRowIndex```
+If the method is called without passing the ```firstUpdatedRowIndex``` it updates all the row heights 
+```ts
+function(firstUpdatedRowIndex: number)
+```
+
+
 ## Types
 #### Column
 ```ts

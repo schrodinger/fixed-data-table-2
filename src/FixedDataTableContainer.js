@@ -22,8 +22,9 @@ import Scrollbar from './plugins/Scrollbar';
 import ScrollContainer from './plugins/ScrollContainer';
 import { FixedDataTableContext } from './FixedDataTableContext';
 import { createApi } from './api';
-import { initialize, propChange } from './reducers';
+import { initialize, propChange, updateRowHeights } from './reducers';
 import { polyfill as lifecycleCompatibilityPolyfill } from 'react-lifecycles-compat';
+import { bindActionCreators } from 'redux';
 
 class FixedDataTableContainer extends React.Component {
   static defaultProps = {
@@ -106,7 +107,14 @@ class FixedDataTableContainer extends React.Component {
         ...this.props,
         ...this.reduxStore.getState(),
       },
-      this.scrollActions
+      {
+        ...this.scrollActions,
+        updateRowHeights: (firstUpdatedRowIndex) =>
+          bindActionCreators(
+            { updateRowHeights },
+            this.reduxStore.dispatch
+          ).updateRowHeights(firstUpdatedRowIndex),
+      }
     );
   }
 
