@@ -74,6 +74,20 @@ export function scrollTo(state, scrollY) {
   const { rowOffsetIntervalTree } = state.getInternal();
   const { rowsCount } = rowSettings;
 
+  if (
+    state.rowSettings.rowHeightGetter != undefined &&
+    state.isVerticalScrollExact
+  ) {
+    // In case of variable row height, ask for the actual heights of the rows before the scroll position.
+    // Only for the ones that were not asked before
+    let { rowUntilOffsetsAreExact } = state.getInternal();
+
+    while (rowUntilOffsetsAreExact < rowsCount) {
+      updateRowHeight(state, rowUntilOffsetsAreExact++);
+    }
+    state.getInternal().rowUntilOffsetsAreExact = rowsCount;
+  }
+
   if (rowsCount === 0) {
     return {
       firstIndex: 0,

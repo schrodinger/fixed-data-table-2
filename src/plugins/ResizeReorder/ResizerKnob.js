@@ -35,11 +35,6 @@ class ResizerKnob extends React.PureComponent {
      * @type {number} Total displacement of mouse calculated from initial position when resizing started
      */
     totalDisplacement: 0,
-
-    /**
-     * @type {number} Top position of ResizerKnow. It is passed to ResizerLine to render at appropriate position.
-     */
-    top: 0,
   };
 
   state = { ...this.initialState };
@@ -48,7 +43,7 @@ class ResizerKnob extends React.PureComponent {
    * Ref to ResizerKnob
    * @type {HTMLDivElement}
    */
-  curRef = null;
+  resizerKnobRef = null;
 
   /**
    *
@@ -61,9 +56,11 @@ class ResizerKnob extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.setState({
-      top: this.curRef.getBoundingClientRect().top,
-    });
+    this.setupHandlers();
+  }
+
+  componentWillUnmount() {
+    this.cleanupHandlers();
   }
 
   render() {
@@ -75,22 +72,62 @@ class ResizerKnob extends React.PureComponent {
         height={this.props.resizerLineHeight}
         visible={!!this.state.isColumnResizing}
         left={this.state.currentMouseXCoordinate}
-        top={this.state.top}
+        parentRef={this.resizerKnobRef}
       />
     );
 
     return (
       <div
         className={cx('fixedDataTableCellLayout/columnResizerContainer')}
-        ref={(element) => (this.curRef = element)}
+        ref={this.setResizerKnobRef}
         style={resizerKnobStyle}
-        onMouseDown={this.onMouseDown}
-        onTouchStart={this.props.touchEnabled ? this.onMouseDown : null}
-        onTouchEnd={this.props.touchEnabled ? this.suppressEvent : null}
-        onTouchMove={this.props.touchEnabled ? this.suppressEvent : null}
       >
         {resizerLine}
       </div>
+    );
+  }
+
+  setResizerKnobRef = (element) => {
+    this.resizerKnobRef = element;
+  };
+
+  setupHandlers() {
+    // TODO (pradeep): Remove these and pass to our knob component directly after React
+    // provides an API where event handlers can be specified to be non-passive (facebook/react#6436).
+    this.resizerKnobRef.addEventListener('mousedown', this.onMouseDown, {
+      passive: false,
+    });
+    this.resizerKnobRef.addEventListener('touchstart', this.onTouchStart, {
+      passive: false,
+    });
+    this.resizerKnobRef.addEventListener(
+      'touchmove',
+      this.suppressEventIfInTouchMode,
+      { passive: false }
+    );
+    this.resizerKnobRef.addEventListener(
+      'touchend',
+      this.suppressEventIfInTouchMode,
+      { passive: false }
+    );
+  }
+
+  cleanupHandlers() {
+    this.resizerKnobRef.removeEventListener('mousedown', this.onMouseDown, {
+      passive: false,
+    });
+    this.resizerKnobRef.removeEventListener('touchstart', this.onTouchStart, {
+      passive: false,
+    });
+    this.resizerKnobRef.removeEventListener(
+      'touchmove',
+      this.suppressEventIfInTouchMode,
+      { passive: false }
+    );
+    this.resizerKnobRef.removeEventListener(
+      'touchend',
+      this.suppressEventIfInTouchMode,
+      { passive: false }
     );
   }
 
@@ -109,12 +146,24 @@ class ResizerKnob extends React.PureComponent {
   };
 
   /**
+   * @param {TouchEvent} event The touch start event
+   */
+  onTouchStart = (event) => {
+    if (this.props.touchEnabled) {
+      this.onMouseDown(event);
+    }
+  };
+
+  /**
    * @param {MouseEvent} ev Mouse down event
    */
   onMouseDown = (ev) => {
     this.initializeDOMMouseMoveTracker(ev);
     const initialMouseXCoordinate =
-      FixedDataTableEventHelper.getCoordinatesFromEvent(ev).x;
+      FixedDataTableEventHelper.getCoordinatesFromEvent(ev).x -
+      ev.currentTarget
+        .closest(cx('.fixedDataTableLayout/main'))
+        .getBoundingClientRect().left;
     this.setState({
       initialMouseXCoordinate,
       isColumnResizing: true,
@@ -185,7 +234,10 @@ class ResizerKnob extends React.PureComponent {
   /**
    * @param {Object} event
    */
-  suppressEvent = (event) => {
+  suppressEventIfInTouchMode = (event) => {
+    if (!this.props.touchEnabled) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
   };

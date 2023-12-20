@@ -30,7 +30,8 @@ import updateRowHeight from './updateRowHeight';
  * @typedef {{
  *   rowBufferSet: IntegerBufferSet,
  *   rowOffsetIntervalTree: PrefixIntervalTree,
- *   storedHeights: !Array.<number>
+ *   storedHeights: !Array.<number>,
+ *   rowUntilOffsetsAreExact: number
  * }}
  */
 const InternalState = {};
@@ -129,6 +130,7 @@ function createInternalState() {
     rowBufferSet: new IntegerBufferSet(),
     rowOffsetIntervalTree: null, // PrefixIntervalTree
     storedHeights: [],
+    rowUntilOffsetsAreExact: 0,
   };
 }
 
@@ -210,7 +212,6 @@ const slice = createSlice({
       state.scrolling = true;
       state.scrollX = scrollX;
     },
-
     updateRowHeights(state, action) {
       let firstUpdatedRowIndex = action.payload || 0;
       if (firstUpdatedRowIndex >= state.rowSettings.rowsCount) {

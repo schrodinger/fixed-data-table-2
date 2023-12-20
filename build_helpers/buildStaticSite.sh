@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-PATH=$(npm bin):$PATH
 
 rm -rf ./__site__
 rm -rf ./__site_prerender__

@@ -156,6 +156,7 @@ class ColumnGroupsExample extends React.Component {
         rowsCount={dataList.getSize()}
         width={1000}
         height={500}
+        touchScrollEnabled={true}
         {...this.props}
       >
         {this.state.columnGroupOrder.map(function (columnGroupKey, i) {
