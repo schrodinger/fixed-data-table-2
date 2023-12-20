@@ -101,6 +101,7 @@ export default function computeRenderedRows(state, scrollAnchor) {
  */
 function calculateRenderedRowRange(state, scrollAnchor) {
   const { bufferRowCount, maxAvailableHeight } = roughHeightsSelector(state);
+  const { rowOffsetIntervalTree } = state.getInternal();
   const rowsCount = state.rowSettings.rowsCount;
 
   if (rowsCount === 0) {
@@ -139,7 +140,11 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     rowIdx >= 0 &&
     totalHeight < maxAvailableHeight
   ) {
-    totalHeight += updateRowHeight(state, rowIdx);
+    if (state.isVerticalScrollExact) {
+      totalHeight += rowOffsetIntervalTree.get(rowIdx);
+    } else {
+      totalHeight += updateRowHeight(state, rowIdx);
+    }
     endIdx = rowIdx;
     rowIdx += step;
   }
@@ -158,24 +163,30 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     rowIdx = firstIndex - 1;
 
     while (rowIdx >= 0 && totalHeight < maxAvailableHeight) {
-      totalHeight += updateRowHeight(state, rowIdx);
+      if (state.isVerticalScrollExact) {
+        totalHeight += rowOffsetIntervalTree.get(rowIdx);
+      } else {
+        totalHeight += updateRowHeight(state, rowIdx);
+      }
       startIdx = rowIdx;
       --rowIdx;
     }
   }
-
-  // Loop to walk the leading buffer
   let firstViewportIdx = Math.min(startIdx, endIdx);
   const firstBufferIdx = Math.max(firstViewportIdx - bufferRowCount, 0);
-  for (rowIdx = firstBufferIdx; rowIdx < firstViewportIdx; rowIdx++) {
-    updateRowHeight(state, rowIdx);
-  }
-
-  // Loop to walk the trailing buffer
   const endViewportIdx = Math.max(startIdx, endIdx) + 1;
   const endBufferIdx = Math.min(endViewportIdx + bufferRowCount, rowsCount);
-  for (rowIdx = endViewportIdx; rowIdx < endBufferIdx; rowIdx++) {
-    updateRowHeight(state, rowIdx);
+
+  if (!state.isVerticalScrollExact) {
+    // Loop to walk the leading buffer
+    for (rowIdx = firstBufferIdx; rowIdx < firstViewportIdx; rowIdx++) {
+      updateRowHeight(state, rowIdx);
+    }
+
+    // Loop to walk the trailing buffer
+    for (rowIdx = endViewportIdx; rowIdx < endBufferIdx; rowIdx++) {
+      updateRowHeight(state, rowIdx);
+    }
   }
 
   const { availableHeight } = scrollbarsVisibleSelector(state);
