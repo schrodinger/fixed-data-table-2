@@ -164,17 +164,17 @@ function calculateRenderedRowRange(state, scrollAnchor) {
       --rowIdx;
     }
   }
-  let firstViewportIdx = Math.min(startIdx, endIdx);
-  const firstBufferIdx = Math.max(firstViewportIdx - bufferRowCount, 0);
-  const endViewportIdx = Math.max(startIdx, endIdx) + 1;
-  const endBufferIdx = Math.min(endViewportIdx + bufferRowCount, rowsCount);
 
   // Loop to walk the leading buffer
+  let firstViewportIdx = Math.min(startIdx, endIdx);
+  const firstBufferIdx = Math.max(firstViewportIdx - bufferRowCount, 0);
   for (rowIdx = firstBufferIdx; rowIdx < firstViewportIdx; rowIdx++) {
     updateRowHeight(state, rowIdx);
   }
 
   // Loop to walk the trailing buffer
+  const endViewportIdx = Math.max(startIdx, endIdx) + 1;
+  const endBufferIdx = Math.min(endViewportIdx + bufferRowCount, rowsCount);
   for (rowIdx = endViewportIdx; rowIdx < endBufferIdx; rowIdx++) {
     updateRowHeight(state, rowIdx);
   }
