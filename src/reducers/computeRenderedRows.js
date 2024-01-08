@@ -101,7 +101,6 @@ export default function computeRenderedRows(state, scrollAnchor) {
  */
 function calculateRenderedRowRange(state, scrollAnchor) {
   const { bufferRowCount, maxAvailableHeight } = roughHeightsSelector(state);
-  const { rowOffsetIntervalTree } = state.getInternal();
   const rowsCount = state.rowSettings.rowsCount;
 
   if (rowsCount === 0) {
