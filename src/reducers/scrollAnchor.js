@@ -148,9 +148,7 @@ function scrollToRow(state, rowIndex) {
   }
 
   rowIndex = clamp(rowIndex, 0, Math.max(rowsCount - 1, 0));
-  if (!state.isVerticalScrollExact) {
-    updateRowHeight(state, rowIndex);
-  }
+  updateRowHeight(state, rowIndex);
   let rowBegin = rowOffsetIntervalTree.sumUntil(rowIndex);
   let rowEnd = rowBegin + storedHeights[rowIndex];
 

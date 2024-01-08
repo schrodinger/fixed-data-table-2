@@ -140,11 +140,7 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     rowIdx >= 0 &&
     totalHeight < maxAvailableHeight
   ) {
-    if (state.isVerticalScrollExact) {
-      totalHeight += rowOffsetIntervalTree.get(rowIdx);
-    } else {
-      totalHeight += updateRowHeight(state, rowIdx);
-    }
+    totalHeight += updateRowHeight(state, rowIdx);
     endIdx = rowIdx;
     rowIdx += step;
   }
@@ -163,11 +159,7 @@ function calculateRenderedRowRange(state, scrollAnchor) {
     rowIdx = firstIndex - 1;
 
     while (rowIdx >= 0 && totalHeight < maxAvailableHeight) {
-      if (state.isVerticalScrollExact) {
-        totalHeight += rowOffsetIntervalTree.get(rowIdx);
-      } else {
-        totalHeight += updateRowHeight(state, rowIdx);
-      }
+      totalHeight += updateRowHeight(state, rowIdx);
       startIdx = rowIdx;
       --rowIdx;
     }
@@ -177,16 +169,14 @@ function calculateRenderedRowRange(state, scrollAnchor) {
   const endViewportIdx = Math.max(startIdx, endIdx) + 1;
   const endBufferIdx = Math.min(endViewportIdx + bufferRowCount, rowsCount);
 
-  if (!state.isVerticalScrollExact) {
-    // Loop to walk the leading buffer
-    for (rowIdx = firstBufferIdx; rowIdx < firstViewportIdx; rowIdx++) {
-      updateRowHeight(state, rowIdx);
-    }
+  // Loop to walk the leading buffer
+  for (rowIdx = firstBufferIdx; rowIdx < firstViewportIdx; rowIdx++) {
+    updateRowHeight(state, rowIdx);
+  }
 
-    // Loop to walk the trailing buffer
-    for (rowIdx = endViewportIdx; rowIdx < endBufferIdx; rowIdx++) {
-      updateRowHeight(state, rowIdx);
-    }
+  // Loop to walk the trailing buffer
+  for (rowIdx = endViewportIdx; rowIdx < endBufferIdx; rowIdx++) {
+    updateRowHeight(state, rowIdx);
   }
 
   const { availableHeight } = scrollbarsVisibleSelector(state);
