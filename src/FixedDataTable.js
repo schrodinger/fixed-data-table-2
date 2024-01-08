@@ -813,6 +813,7 @@ class FixedDataTable extends React.Component {
           fixedRightColumns={fixedRightColumnGroups}
           scrollableColumns={scrollableColumnGroups}
           visible={true}
+          touchEnabled={touchScrollEnabled}
           onColumnResizeEndCallback={onColumnResizeEndCallback}
           onColumnReorderEndCallback={onColumnReorderEndCallback}
           showScrollbarY={scrollEnabledY}
