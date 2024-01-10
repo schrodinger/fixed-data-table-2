@@ -213,12 +213,16 @@ const slice = createSlice({
       state.scrollX = scrollX;
     },
     updateRowHeights(state, action) {
-      const firstUpdatedRowIndex = action.payload || 0;
-      if (firstUpdatedRowIndex >= state.getInternal().rowUntilOffsetsAreExact) {
+      let firstUpdatedRowIndex = action.payload || 0;
+      if (firstUpdatedRowIndex >= state.rowSettings.rowsCount) {
         return;
       }
-      // Invalidate all the previous computed row heights till the updated row
-      state.getInternal().rowUntilOffsetsAreExact = firstUpdatedRowIndex;
+
+      // Recompute all the updated rows heights
+      while (firstUpdatedRowIndex < state.rowSettings.rowsCount) {
+        updateRowHeight(state, firstUpdatedRowIndex++);
+      }
+
       // Refresh the current scroll position according to the new row heights
       const currentScrollY =
         state
@@ -237,18 +241,28 @@ const slice = createSlice({
  * @param {!Object} state
  * @private
  */
-function initializeRowHeightsAndOffsets(state) {
-  const { rowHeight, rowsCount, subRowHeight } = state.rowSettings;
-  const defaultFullRowHeight = rowHeight + subRowHeight;
-  const rowOffsetIntervalTree = PrefixIntervalTree.uniform(
+export function initializeRowHeightsAndOffsets(state) {
+  const {
+    rowHeight,
     rowsCount,
-    defaultFullRowHeight
-  );
-  const scrollContentHeight = rowsCount * defaultFullRowHeight;
+    subRowHeight,
+    rowHeightGetter,
+    subRowHeightGetter,
+  } = state.rowSettings;
+  const defaultFullRowHeight = rowHeight + subRowHeight;
+  let scrollContentHeight = 0;
   const storedHeights = new Array(rowsCount);
   for (let idx = 0; idx < rowsCount; idx++) {
-    storedHeights[idx] = defaultFullRowHeight;
+    if (state.isVerticalScrollExact) {
+      storedHeights[idx] = rowHeightGetter(idx) + subRowHeightGetter(idx);
+    } else {
+      storedHeights[idx] = defaultFullRowHeight;
+    }
+    scrollContentHeight += storedHeights[idx];
   }
+
+  const rowOffsetIntervalTree = new PrefixIntervalTree(storedHeights);
+
   state.scrollContentHeight = scrollContentHeight;
   Object.assign(state.getInternal(), {
     rowOffsetIntervalTree,
