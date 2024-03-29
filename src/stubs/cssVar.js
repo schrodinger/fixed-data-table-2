@@ -19,7 +19,6 @@ const CSS_VARS = {
   '--scrollbar-face-margin': '4px',
   '--scrollbar-face-radius': '6px',
   '--scrollbar-size': '15px',
-  '--scrollbar-size-large': '17px',
   '--scrollbar-track-color': '#fff',
   '--border-color': '#d3d3d3',
   '--fbui-white': '#fff',

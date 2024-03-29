@@ -33,8 +33,6 @@ const FACE_MARGIN_2 = FACE_MARGIN * 2;
 const FACE_SIZE_MIN = 30;
 const KEYBOARD_SCROLL_AMOUNT = 40;
 
-let _lastScrolledScrollbar = null;
-
 class Scrollbar extends React.PureComponent {
   static propTypes = {
     contentSize: PropTypes.number.isRequired,
@@ -110,7 +108,7 @@ class Scrollbar extends React.PureComponent {
     let faceStyle;
     const isHorizontal = this.state.isHorizontal;
     const isVertical = !isHorizontal;
-    const isActive = this.state.focused || this.state.isDragging;
+    const isActive = this.state.isDragging;
     const faceSize = this.state.faceSize;
     const isOpaque = this.props.isOpaque;
     const verticalTop = this.props.verticalTop || 0;
@@ -182,8 +180,6 @@ class Scrollbar extends React.PureComponent {
 
     return (
       <div
-        onFocus={this._onFocus}
-        onBlur={this._onBlur}
         onKeyDown={this._onKeyDown}
         onMouseDown={this._onMouseDown}
         onTouchCancel={this._onTouchCancel}
@@ -243,9 +239,6 @@ class Scrollbar extends React.PureComponent {
     if (this._mouseMoveTracker) {
       this._mouseMoveTracker.releaseMouseMoves();
       this._mouseMoveTracker = null;
-    }
-    if (_lastScrolledScrollbar === this) {
-      _lastScrolledScrollbar = null;
     }
   }
 
@@ -313,15 +306,10 @@ class Scrollbar extends React.PureComponent {
       position = maxPosition;
     }
 
-    const isDragging = this._mouseMoveTracker
-      ? this._mouseMoveTracker.isDragging()
-      : false;
-
     // This function should only return flat values that can be compared quiclky
     // by `ReactComponentWithPureRenderMixin`.
     const state = {
       faceSize,
-      isDragging,
       isHorizontal,
       position,
       scale,
@@ -358,6 +346,8 @@ class Scrollbar extends React.PureComponent {
   };
 
   _onMouseDown = (/*object*/ event) => {
+    this.setState({ isDragging: true });
+
     /** @type {object} */
     let nextState;
 
@@ -387,7 +377,6 @@ class Scrollbar extends React.PureComponent {
       nextState = {};
     }
 
-    nextState.focused = true;
     this._setNextState(nextState);
 
     this._mouseMoveTracker.captureMouseMoves(event);
@@ -535,32 +524,6 @@ class Scrollbar extends React.PureComponent {
     );
   };
 
-  _onFocus = () => {
-    this.setState({
-      focused: true,
-    });
-  };
-
-  _onBlur = () => {
-    this.setState({
-      focused: false,
-    });
-  };
-
-  _blur = () => {
-    const el = ReactDOM.findDOMNode(this);
-    if (!el) {
-      return;
-    }
-
-    try {
-      this._onBlur();
-      el.blur();
-    } catch (oops) {
-      // pass
-    }
-  };
-
   getTouchX = (/*object*/ e) => {
     return Math.round(
       e.targetTouches[0].clientX - e.target.getBoundingClientRect().x
@@ -592,11 +555,6 @@ class Scrollbar extends React.PureComponent {
         this.props.onScroll(nextState.position);
       }
       return;
-    }
-
-    if (willScroll && _lastScrolledScrollbar !== this) {
-      _lastScrolledScrollbar && _lastScrolledScrollbar._blur();
-      _lastScrolledScrollbar = this;
     }
   };
 

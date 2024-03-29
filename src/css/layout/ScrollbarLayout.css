@@ -27,13 +27,6 @@
 .ScrollbarLayout/mainHorizontal {
   height: var(--scrollbar-size);
   left: 0;
-  transition-property: background-color height;
-}
-
-/* Touching the scroll-track directly makes the scroll-track bolder */
-.ScrollbarLayout/mainHorizontal.public/Scrollbar/mainActive,
-.ScrollbarLayout/mainHorizontal:hover {
-  height: var(--scrollbar-size-large);
 }
 
 .ScrollbarLayout/face {
@@ -41,9 +34,11 @@
   overflow: hidden;
   position: absolute;
   z-index: 1;
-  transition-duration: 250ms;
-  transition-timing-function: ease;
-  transition-property: width;
+
+  /* keep the thumb aligned to the center */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /**
@@ -57,7 +52,9 @@
   content: '';
   display: block;
   position: absolute;
-  transition: background-color 250ms ease;
+  transition-duration: 250ms;
+  transition-timing-function: ease;
+  transition-property: background-color, height, width;
 }
 
 .ScrollbarLayout/faceHorizontal {
@@ -67,10 +64,8 @@
 }
 
 .ScrollbarLayout/faceHorizontal:after {
-  bottom: var(--scrollbar-face-margin);
-  left: 0;
-  top: var(--scrollbar-face-margin);
   width: 100%;
+  height: calc(100% - var(--scrollbar-face-margin) * 2);
 }
 
 .fixedDataTable_isRTL .ScrollbarLayout/faceHorizontal,
@@ -79,9 +74,10 @@
   left: auto;
 }
 
+/* expand horizontal scrollbar face when active */
 .ScrollbarLayout/faceHorizontal.public/Scrollbar/faceActive:after,
 .ScrollbarLayout/main:hover .ScrollbarLayout/faceHorizontal:after {
-  bottom: calc(var(--scrollbar-face-margin)/2);
+  height: calc(100% - var(--scrollbar-face-margin));
 }
 
 .ScrollbarLayout/faceVertical {
@@ -92,13 +88,11 @@
 
 .ScrollbarLayout/faceVertical:after {
   height: 100%;
-  left: var(--scrollbar-face-margin);
-  right: var(--scrollbar-face-margin);
-  top: 0;
+  width: calc(100% - var(--scrollbar-face-margin) * 2);
 }
 
+/* expand veritcal scrollbar face when active */
 .ScrollbarLayout/main:hover .ScrollbarLayout/faceVertical:after,
 .ScrollbarLayout/faceVertical.public/Scrollbar/faceActive:after {
-  left: calc(var(--scrollbar-face-margin)/2);
-  right: calc(var(--scrollbar-face-margin)/2);
+  width: calc(100% - var(--scrollbar-face-margin));
 }
