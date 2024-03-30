@@ -13,8 +13,17 @@ import {
 
 import { Table, Column } from '../src/index';
 import Scrollbar from '../src/plugins/Scrollbar';
+import * as requestAnimationFramePolyfill from '../src/vendor_upstream/core/requestAnimationFramePolyfill';
 
 describe('FixedDataTableRoot', function () {
+  beforeEach(() => {
+    // NOTE (pradeep): Call the callback passed to requestAnimationFrame immediately.
+    // This simplifies the tests by making them behave synchronous.
+    jest
+      .spyOn(requestAnimationFramePolyfill, 'default')
+      .mockImplementation((callback) => callback());
+  });
+
   afterEach(() => {
     // restore all spys created with spyOn
     jest.restoreAllMocks();

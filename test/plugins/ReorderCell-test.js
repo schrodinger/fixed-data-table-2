@@ -123,12 +123,6 @@ class ReorderCellTest extends React.Component {
 }
 
 describe('ReorderCell', () => {
-  beforeEach(() => {
-    jest
-      .spyOn(requestAnimationFramePolyfill, 'default')
-      .mockImplementation((callback) => setTimeout(callback, 16));
-  });
-
   afterEach(() => {
     jest.restoreAllMocks();
   });

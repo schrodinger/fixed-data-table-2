@@ -9,7 +9,12 @@ describe('ReactTouchHandler', function () {
   let mockRequestAnimationFramePolyfill;
 
   beforeEach(function () {
-    // See https://stackoverflow.com/a/74269343
+    // NOTE (pradeep): Call the callback passed to `setInterval` immediately.
+    // This simplifies the tests by making them behave synchronous.
+    jest
+      .spyOn(globalThis, 'setInterval')
+      .mockImplementation((callback) => callback());
+
     mockRequestAnimationFramePolyfill = jest
       .spyOn(requestAnimationFrame, 'default')
       .mockImplementation(() => undefined);
