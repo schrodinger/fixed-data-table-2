@@ -1,7 +1,7 @@
 /**
  * Copyright Schrodinger, LLC
  */
-import { assert } from 'chai';
+import { expect } from '@jest/globals';
 import columnWidths from '../../src/selectors/columnWidths';
 import Scrollbar from '../../src/plugins/Scrollbar';
 
@@ -112,18 +112,11 @@ describe('columnWidths', function () {
         width,
         Scrollbar.SIZE
       );
-    assert.deepEqual(
-      columnProps.map((column) => column.id),
-      [1, 2, 3, 4, 5, 6, 7]
-    );
-    assert.deepEqual(
-      fixedColumns.map((column) => column.id),
-      [1, 2, 3, 4]
-    );
-    assert.deepEqual(
-      scrollableColumns.map((column) => column.id),
-      [5, 6, 7]
-    );
+    expect(columnProps.map((column) => column.id)).toEqual([
+      1, 2, 3, 4, 5, 6, 7,
+    ]);
+    expect(fixedColumns.map((column) => column.id)).toEqual([1, 2, 3, 4]);
+    expect(scrollableColumns.map((column) => column.id)).toEqual([5, 6, 7]);
   });
 
   it('should maintain widths when no surplus', function () {
@@ -136,23 +129,18 @@ describe('columnWidths', function () {
         Scrollbar.SIZE
       );
 
-    console.log('NIRANJAN', columnGroupProps);
-    assert.deepEqual(
-      columnGroupProps.map((column) => column.width),
-      [110, 100, 70, 100]
-    );
-    assert.deepEqual(
-      columnProps.map((column) => column.width),
-      [50, 60, 90, 10, 50, 20, 100]
-    );
-    assert.deepEqual(
-      fixedColumns.map((column) => column.width),
-      [50, 60, 90, 10]
-    );
-    assert.deepEqual(
-      scrollableColumns.map((column) => column.width),
-      [50, 20, 100]
-    );
+    expect(columnGroupProps.map((column) => column.width)).toEqual([
+      110, 100, 70, 100,
+    ]);
+    expect(columnProps.map((column) => column.width)).toEqual([
+      50, 60, 90, 10, 50, 20, 100,
+    ]);
+    expect(fixedColumns.map((column) => column.width)).toEqual([
+      50, 60, 90, 10,
+    ]);
+    expect(scrollableColumns.map((column) => column.width)).toEqual([
+      50, 20, 100,
+    ]);
   });
 
   it('should distribute flex width', function () {
@@ -167,22 +155,32 @@ describe('columnWidths', function () {
         Scrollbar.SIZE
       );
 
-    assert.deepEqual(
-      columnGroupProps.map((column) => column.width),
-      [110 + 100, 100, 70 + 150, 100 + 10]
-    );
-    assert.deepEqual(
-      columnProps.map((column) => column.width),
-      [50 + 100, 60, 90, 10, 50 + 50, 20 + 100, 100 + 10]
-    );
-    assert.deepEqual(
-      fixedColumns.map((column) => column.width),
-      [50 + 100, 60, 90, 10]
-    );
-    assert.deepEqual(
-      scrollableColumns.map((column) => column.width),
-      [50 + 50, 20 + 100, 100 + 10]
-    );
+    expect(columnGroupProps.map((column) => column.width)).toEqual([
+      110 + 100,
+      100,
+      70 + 150,
+      100 + 10,
+    ]);
+    expect(columnProps.map((column) => column.width)).toEqual([
+      50 + 100,
+      60,
+      90,
+      10,
+      50 + 50,
+      20 + 100,
+      100 + 10,
+    ]);
+    expect(fixedColumns.map((column) => column.width)).toEqual([
+      50 + 100,
+      60,
+      90,
+      10,
+    ]);
+    expect(scrollableColumns.map((column) => column.width)).toEqual([
+      50 + 50,
+      20 + 100,
+      100 + 10,
+    ]);
   });
 
   it('should take into account scrollbar visibility', function () {
@@ -198,22 +196,32 @@ describe('columnWidths', function () {
         Scrollbar.SIZE
       );
 
-    assert.deepEqual(
-      columnGroupProps.map((column) => column.width),
-      [110 + 100, 100, 70 + 150, 100 + 11]
-    );
-    assert.deepEqual(
-      columnProps.map((column) => column.width),
-      [50 + 100, 60, 90, 10, 50 + 50, 20 + 100, 100 + 11]
-    );
-    assert.deepEqual(
-      fixedColumns.map((column) => column.width),
-      [50 + 100, 60, 90, 10]
-    );
-    assert.deepEqual(
-      scrollableColumns.map((column) => column.width),
-      [50 + 50, 20 + 100, 100 + 11]
-    );
+    expect(columnGroupProps.map((column) => column.width)).toEqual([
+      110 + 100,
+      100,
+      70 + 150,
+      100 + 11,
+    ]);
+    expect(columnProps.map((column) => column.width)).toEqual([
+      50 + 100,
+      60,
+      90,
+      10,
+      50 + 50,
+      20 + 100,
+      100 + 11,
+    ]);
+    expect(fixedColumns.map((column) => column.width)).toEqual([
+      50 + 100,
+      60,
+      90,
+      10,
+    ]);
+    expect(scrollableColumns.map((column) => column.width)).toEqual([
+      50 + 50,
+      20 + 100,
+      100 + 11,
+    ]);
   });
 
   it('should compute availableScrollWidth and maxScrollX', function () {
@@ -227,11 +235,7 @@ describe('columnWidths', function () {
       Scrollbar.SIZE
     );
 
-    assert.strictEqual(
-      availableScrollWidth,
-      90,
-      'availableScrollWidth incorrect'
-    );
-    assert.strictEqual(maxScrollX, 80, 'maxScrollX incorrect');
+    expect(availableScrollWidth).toBe(90);
+    expect(maxScrollX).toBe(80);
   });
 });

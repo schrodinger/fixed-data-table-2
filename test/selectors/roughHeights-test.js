@@ -1,7 +1,7 @@
 /**
  * Copyright Schrodinger, LLC
  */
-import { assert } from 'chai';
+import { expect } from '@jest/globals';
 import roughHeights, { ScrollbarState } from '../../src/selectors/roughHeights';
 import Scrollbar from '../../src/plugins/Scrollbar';
 
@@ -70,7 +70,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.deepEqual(result, {
+      expect(result).toEqual({
         bufferRowCount: 6,
         minAvailableHeight: 713,
         maxAvailableHeight: 713,
@@ -92,7 +92,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.deepEqual(result, {
+      expect(result).toEqual({
         bufferRowCount: 6,
         minAvailableHeight: 698,
         maxAvailableHeight: 698,
@@ -114,7 +114,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.deepEqual(result, {
+      expect(result).toEqual({
         bufferRowCount: 6,
         minAvailableHeight: 698,
         maxAvailableHeight: 713,
@@ -141,7 +141,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.deepEqual(result, {
+      expect(result).toEqual({
         bufferRowCount: 4,
         minAvailableHeight: 298,
         maxAvailableHeight: 313,
@@ -164,7 +164,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.deepEqual(result, {
+      expect(result).toEqual({
         bufferRowCount: 3,
         minAvailableHeight: 0,
         maxAvailableHeight: 0,
@@ -203,7 +203,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.strictEqual(result.scrollStateX, ScrollbarState.VISIBLE);
+      expect(result.scrollStateX).toBe(ScrollbarState.VISIBLE);
     });
 
     it('should have a conditional scrollbar if content is within a scrollbar size of width', function () {
@@ -219,7 +219,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.strictEqual(result.scrollStateX, ScrollbarState.JOINT_SCROLLBARS);
+      expect(result.scrollStateX).toBe(ScrollbarState.JOINT_SCROLLBARS);
     });
 
     it('should show not show scrollbar if content width is less than width', function () {
@@ -235,7 +235,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.strictEqual(result.scrollStateX, ScrollbarState.HIDDEN);
+      expect(result.scrollStateX).toBe(ScrollbarState.HIDDEN);
     });
 
     it('should not show scrollbar if overflowX is hidden', function () {
@@ -251,7 +251,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.strictEqual(result.scrollStateX, ScrollbarState.HIDDEN);
+      expect(result.scrollStateX).toBe(ScrollbarState.HIDDEN);
     });
 
     it('should not show scrollbar if showScrollbarX is false', function () {
@@ -267,7 +267,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.strictEqual(result.scrollStateX, ScrollbarState.HIDDEN);
+      expect(result.scrollStateX).toBe(ScrollbarState.HIDDEN);
     });
   });
 
@@ -283,7 +283,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.deepEqual(result, {
+      expect(result).toEqual({
         bufferRowCount: 5,
         minAvailableHeight: 450,
         maxAvailableHeight: 450,
@@ -305,7 +305,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.deepEqual(result, {
+      expect(result).toEqual({
         bufferRowCount: 5,
         minAvailableHeight: 425,
         maxAvailableHeight: 425,
@@ -327,7 +327,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.deepEqual(result, {
+      expect(result).toEqual({
         bufferRowCount: 4,
         minAvailableHeight: 400,
         maxAvailableHeight: 400,
@@ -349,7 +349,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.deepEqual(result, {
+      expect(result).toEqual({
         bufferRowCount: 3,
         minAvailableHeight: 150,
         maxAvailableHeight: 150,
@@ -371,7 +371,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.deepEqual(result, {
+      expect(result).toEqual({
         bufferRowCount: 6,
         minAvailableHeight: 650,
         maxAvailableHeight: 650,
@@ -393,7 +393,7 @@ describe('roughHeights', function () {
         Scrollbar.SIZE
       );
 
-      assert.deepEqual(result, {
+      expect(result).toEqual({
         bufferRowCount: 1,
         minAvailableHeight: 450,
         maxAvailableHeight: 450,

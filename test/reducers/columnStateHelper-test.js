@@ -2,10 +2,10 @@
  * Copyright Schrodinger, LLC
  */
 
-import emptyFunction from '../../src/vendor_upstream/core/emptyFunction';
-import { assert } from 'chai';
+import { expect, jest } from '@jest/globals';
 
 import columnStateHelper from '../../src/reducers/columnStateHelper';
+import * as columnWidths from '../../src/selectors/columnWidths';
 import cloneDeep from 'lodash/cloneDeep';
 
 describe('columnStateHelper', function () {
@@ -21,7 +21,7 @@ describe('columnStateHelper', function () {
       newState = cloneDeep(oldState);
       availableWidth = 200;
 
-      columnStateHelper.__Rewire__('columnWidths', () => ({
+      jest.spyOn(columnWidths, 'default').mockImplementation(() => ({
         availableScrollWidth: availableWidth - 150,
         fixedColumns: [{ id: 1, width: 150 }],
         maxScrollX: 600 - availableWidth,
@@ -34,14 +34,13 @@ describe('columnStateHelper', function () {
     });
 
     afterEach(function () {
-      columnStateHelper.__ResetDependency__('columnWidths');
+      jest.restoreAllMocks();
     });
 
     it('should initialize column state as expected', function () {
       columnStateHelper.initialize(newState, {}, {});
 
-      assert.deepEqual(
-        newState,
+      expect(newState).toEqual(
         Object.assign(
           {
             maxScrollX: 400,
@@ -55,8 +54,7 @@ describe('columnStateHelper', function () {
       newState.scrollX = 700;
       columnStateHelper.initialize(newState, {}, {});
 
-      assert.deepEqual(
-        newState,
+      expect(newState).toEqual(
         Object.assign({}, oldState, {
           maxScrollX: 400,
           scrollX: 400,
@@ -67,8 +65,7 @@ describe('columnStateHelper', function () {
     it('should use scrollLeft when specified', function () {
       columnStateHelper.initialize(newState, { scrollLeft: 100 }, {});
 
-      assert.deepEqual(
-        newState,
+      expect(newState).toEqual(
         Object.assign({}, oldState, {
           maxScrollX: 400,
           scrollX: 100,
@@ -79,8 +76,7 @@ describe('columnStateHelper', function () {
     it('should overwrite column resizing from props', function () {
       columnStateHelper.initialize(newState, {}, {});
 
-      assert.deepEqual(
-        newState,
+      expect(newState).toEqual(
         Object.assign({}, oldState, {
           maxScrollX: 400,
         })
@@ -92,8 +88,7 @@ describe('columnStateHelper', function () {
       availableWidth = 350;
       columnStateHelper.initialize(newState, { scrollToColumn: 2 }, {});
 
-      assert.deepEqual(
-        newState,
+      expect(newState).toEqual(
         Object.assign({}, oldState, {
           maxScrollX: 250,
           scrollX: 100,
@@ -112,8 +107,7 @@ describe('columnStateHelper', function () {
         {}
       );
 
-      assert.deepEqual(
-        newState,
+      expect(newState).toEqual(
         Object.assign({}, oldState, {
           maxScrollX: 250,
           scrollX: 150,
@@ -132,8 +126,7 @@ describe('columnStateHelper', function () {
         {}
       );
 
-      assert.deepEqual(
-        newState,
+      expect(newState).toEqual(
         Object.assign({}, oldState, {
           maxScrollX: 250,
           scrollX: 125,
@@ -152,8 +145,7 @@ describe('columnStateHelper', function () {
         {}
       );
 
-      assert.deepEqual(
-        newState,
+      expect(newState).toEqual(
         Object.assign({}, oldState, {
           maxScrollX: 250,
           scrollX: 250,
@@ -174,8 +166,7 @@ describe('columnStateHelper', function () {
         }
       );
 
-      assert.deepEqual(
-        newState,
+      expect(newState).toEqual(
         Object.assign({}, oldState, {
           maxScrollX: 250,
           scrollX: 250,

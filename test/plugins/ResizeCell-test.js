@@ -1,7 +1,7 @@
+import { expect, jest } from '@jest/globals';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import noop from 'lodash/noop';
-import { assert, expect } from 'chai';
 import { createRenderer } from 'react-test-renderer/shallow';
 import {
   act,
@@ -123,7 +123,7 @@ describe('ResizeCell', () => {
       const renderer = createRenderer();
       renderer.render(reorderCell);
       const reorderCellRender = renderer.getRenderOutput();
-      assert.isTrue(isElement(reorderCellRender));
+      expect(isElement(reorderCellRender)).toBe(true);
     });
   });
 
@@ -155,7 +155,7 @@ describe('ResizeCell', () => {
     it('should set props correctly', () => {
       const resizeCells = renderTable();
       const resizeCell = resizeCells[0];
-      expect(resizeCell.props.left).eql(0);
+      expect(resizeCell.props.left).toBe(0);
     });
   });
 
@@ -179,7 +179,7 @@ describe('ResizeCell', () => {
       );
       const expectedWidth = 250;
       const actualWidth = newResizeCells[0].props.width;
-      expect(actualWidth, 'Unexpected width after resizing').eql(expectedWidth);
+      expect(actualWidth).toBe(expectedWidth);
     });
   });
 });

@@ -1,8 +1,9 @@
 /**
  * Copyright Schrodinger, LLC
  */
-import { assert } from 'chai';
+import { expect, jest } from '@jest/globals';
 import forEach from 'lodash/forEach';
+import * as React from 'react';
 
 import convertColumnElementsToData from '../../src/helper/convertColumnElementsToData';
 
@@ -27,16 +28,12 @@ function column(overrides) {
 }
 
 describe('convertColumnElementsToData', function () {
-  before(function () {
-    convertColumnElementsToData.__Rewire__('React', {
-      Children: {
-        forEach,
-      },
-    });
+  beforeAll(function () {
+    jest.spyOn(React.Children, 'forEach').mockImplementation(forEach);
   });
 
-  after(function () {
-    convertColumnElementsToData.__ResetDependency__('React');
+  afterAll(function () {
+    jest.restoreAllMocks();
   });
 
   let column1;
@@ -103,12 +100,12 @@ describe('convertColumnElementsToData', function () {
       },
     ]);
 
-    assert.deepEqual(columnGroupElements, {
+    expect(columnGroupElements).toEqual({
       fixed: [column({ fixed: true, index: 0 })],
       scrollable: [column({ fixed: false, index: 1 })],
       fixedRight: [],
     });
-    assert.deepEqual(columnElements, {
+    expect(columnElements).toEqual({
       fixed: [
         column({
           columnKey: 'bob',
@@ -136,13 +133,13 @@ describe('convertColumnElementsToData', function () {
       ],
       fixedRight: [],
     });
-    assert.deepEqual(elementTemplates, {
+    expect(elementTemplates).toEqual({
       cell: [{ id: 'c1' }, { id: 'c2' }, { id: 'c3' }],
       footer: [{ id: 'f1' }, { id: 'f2' }, { id: 'f3' }],
       groupHeader: [{ id: 'g1' }, { id: 'g2' }],
       header: [{ id: 'h1' }, { id: 'h2' }, { id: 'h3' }],
     });
-    assert.strictEqual(useGroupHeader, true);
+    expect(useGroupHeader).toBe(true);
   });
 
   it('should not specify a groupIdx if none exists', function () {
@@ -153,12 +150,12 @@ describe('convertColumnElementsToData', function () {
       useGroupHeader,
     } = convertColumnElementsToData([column1, column2]);
 
-    assert.deepEqual(columnGroupElements, {
+    expect(columnGroupElements).toEqual({
       fixed: [],
       scrollable: [],
       fixedRight: [],
     });
-    assert.deepEqual(columnElements, {
+    expect(columnElements).toEqual({
       fixed: [
         column({
           columnKey: 'bob',
@@ -177,13 +174,13 @@ describe('convertColumnElementsToData', function () {
       ],
       fixedRight: [],
     });
-    assert.deepEqual(elementTemplates, {
+    expect(elementTemplates).toEqual({
       cell: [{ id: 'c1' }, { id: 'c2' }],
       footer: [{ id: 'f1' }, { id: 'f2' }],
       groupHeader: [],
       header: [{ id: 'h1' }, { id: 'h2' }],
     });
-    assert.strictEqual(useGroupHeader, false);
+    expect(useGroupHeader).toBe(false);
   });
 
   it('should include all necessary props and remove all others', function () {
@@ -208,7 +205,7 @@ describe('convertColumnElementsToData', function () {
 
     const { columnElements } = convertColumnElementsToData([testColumn]);
 
-    assert.deepEqual(columnElements, {
+    expect(columnElements).toEqual({
       fixed: [
         column({
           align: 'center',
@@ -239,7 +236,7 @@ describe('convertColumnElementsToData', function () {
       column2,
     ]);
 
-    assert.deepEqual(columnElements, {
+    expect(columnElements).toEqual({
       fixed: [
         column({
           columnKey: 'bob',
@@ -259,7 +256,7 @@ describe('convertColumnElementsToData', function () {
       fixedRight: [],
     });
 
-    assert.deepEqual(elementTemplates, {
+    expect(elementTemplates).toEqual({
       cell: [{ id: 'c1' }, { id: 'c2' }],
       footer: [undefined, { id: 'f2' }],
       groupHeader: [],
