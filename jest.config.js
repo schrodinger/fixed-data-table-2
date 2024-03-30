@@ -2,9 +2,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'jsx'],
   moduleDirectories: ['node_modules'],
 
-  // testRegex: ['.*-test.js'],
-  // testRegex: ['columnWidths-test.js'],
-  testRegex: ['FixedDataTableRoot-test.js'],
+  testRegex: ['.*-test.js'],
 
   testEnvironment: 'jsdom',
 

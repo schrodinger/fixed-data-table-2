@@ -1,7 +1,7 @@
 /**
  * Copyright Schrodinger, LLC
  */
-import { expect, jest, test } from '@jest/globals';
+import { expect } from '@jest/globals';
 import columnTemplates from '../../src/selectors/columnTemplates';
 
 describe('columnTemplates', function () {

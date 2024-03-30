@@ -1,7 +1,7 @@
 /**
  * Copyright Schrodinger, LLC
  */
-import { expect, jest, test } from '@jest/globals';
+import { expect, jest } from '@jest/globals';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createRenderer } from 'react-test-renderer/shallow';
