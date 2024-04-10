@@ -1,5 +1,5 @@
+import { expect } from '@jest/globals';
 import { initializeRowHeightsAndOffsets } from '../../src/reducers';
-import { assert } from 'chai';
 import clone from 'lodash/clone';
 
 describe('initializeRowHeightsAndOffsets', function () {
@@ -26,22 +26,12 @@ describe('initializeRowHeightsAndOffsets', function () {
   it('if isVerticalScrollExact = false then rowheight is used instead of rowHeightGetter() for all the rows', function () {
     initializeRowHeightsAndOffsets(newState);
     for (let rowIdx = 0; rowIdx < 80; rowIdx++) {
-      assert.strictEqual(
-        newState.getInternal().storedHeights[rowIdx],
-        125,
-        'expected stored height of 125 for each row'
-      );
-      assert.strictEqual(
-        newState.getInternal().rowOffsetIntervalTree.get(rowIdx),
-        125,
-        'expected row offsets for each row to be set to 125'
+      expect(newState.getInternal().storedHeights[rowIdx]).toBe(125);
+      expect(newState.getInternal().rowOffsetIntervalTree.get(rowIdx)).toBe(
+        125
       );
     }
-    assert.strictEqual(
-      newState.scrollContentHeight,
-      10000,
-      'expected scrollContentHeight to be 10000'
-    );
+    expect(newState.scrollContentHeight).toBe(10000);
   });
 
   it('if isVerticalScrollExact = true then rowHeightGetter() is used for all the rows', function () {
@@ -49,24 +39,13 @@ describe('initializeRowHeightsAndOffsets', function () {
     initializeRowHeightsAndOffsets(newState);
     for (let rowIdx = 0; rowIdx < 80; rowIdx++) {
       const expectedRowHeight = rowIdx % 2 == 0 ? 100 : 200;
-      assert.strictEqual(
-        newState.getInternal().storedHeights[rowIdx],
-        expectedRowHeight,
-        'expected stored height of ' + expectedRowHeight + ' for row ' + rowIdx
+      expect(newState.getInternal().storedHeights[rowIdx]).toBe(
+        expectedRowHeight
       );
-      assert.strictEqual(
-        newState.getInternal().rowOffsetIntervalTree.get(rowIdx),
-        expectedRowHeight,
-        'expected row offsets for row ' +
-          rowIdx +
-          ' to be set to ' +
-          expectedRowHeight
+      expect(newState.getInternal().rowOffsetIntervalTree.get(rowIdx)).toBe(
+        expectedRowHeight
       );
     }
-    assert.strictEqual(
-      newState.scrollContentHeight,
-      12000,
-      'expected scrollContentHeight to be 12000'
-    );
+    expect(newState.scrollContentHeight).toBe(12000);
   });
 });

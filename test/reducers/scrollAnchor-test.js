@@ -1,22 +1,20 @@
 /**
  * Copyright Schrodinger, LLC
  */
-import { assert } from 'chai';
-import {
-  __RewireAPI__,
-  getScrollAnchor,
-} from '../../src/reducers/scrollAnchor';
+import { expect, jest } from '@jest/globals';
+import { getScrollAnchor } from '../../src/reducers/scrollAnchor';
 import PrefixIntervalTree from '../../src/vendor_upstream/struct/PrefixIntervalTree';
+import * as scrollbarsVisibleSelector from '../../src/selectors/scrollbarsVisible';
 
 describe('scrollAnchor', function () {
   beforeEach(function () {
-    __RewireAPI__.__Rewire__('scrollbarsVisibleSelector', () => ({
+    jest.spyOn(scrollbarsVisibleSelector, 'default').mockImplementation(() => ({
       availableHeight: 600,
     }));
   });
 
   afterEach(function () {
-    __RewireAPI__.__ResetDependency__('scrollbarsVisibleSelector');
+    jest.restoreAllMocks();
   });
 
   describe('scrollTo', function () {
@@ -39,7 +37,7 @@ describe('scrollAnchor', function () {
 
     it('should scroll to row and offset of scrollY', function () {
       const scrollAnchor = getScrollAnchor(oldState, { scrollTop: 2150 }, {});
-      assert.deepEqual(scrollAnchor, {
+      expect(scrollAnchor).toEqual({
         firstIndex: 21,
         firstOffset: -50,
         lastIndex: undefined,
@@ -49,7 +47,7 @@ describe('scrollAnchor', function () {
 
     it('should scroll to first index if scrollY < 0', function () {
       const scrollAnchor = getScrollAnchor(oldState, { scrollTop: -200 }, {});
-      assert.deepEqual(scrollAnchor, {
+      expect(scrollAnchor).toEqual({
         firstIndex: 0,
         firstOffset: 0,
         lastIndex: undefined,
@@ -59,7 +57,7 @@ describe('scrollAnchor', function () {
 
     it('should scroll to last index if scrollY is larger than max scroll', function () {
       const scrollAnchor = getScrollAnchor(oldState, { scrollTop: 9500 }, {});
-      assert.deepEqual(scrollAnchor, {
+      expect(scrollAnchor).toEqual({
         firstIndex: undefined,
         firstOffset: 0,
         lastIndex: 99,
@@ -71,7 +69,7 @@ describe('scrollAnchor', function () {
       oldState.rowSettings.rowsCount = 0;
 
       const scrollAnchor = getScrollAnchor(oldState, { scrollTop: 9500 }, {});
-      assert.deepEqual(scrollAnchor, {
+      expect(scrollAnchor).toEqual({
         firstIndex: 0,
         firstOffset: 0,
         lastIndex: undefined,
@@ -100,7 +98,7 @@ describe('scrollAnchor', function () {
         oldState.isVerticalScrollExact = true;
 
         let scrollAnchor = getScrollAnchor(oldState, { scrollTop: 300 }, {});
-        assert.deepEqual(scrollAnchor, {
+        expect(scrollAnchor).toEqual({
           firstIndex: 3,
           firstOffset: 0,
           lastIndex: undefined,
@@ -113,7 +111,7 @@ describe('scrollAnchor', function () {
         oldState.isVerticalScrollExact = true;
 
         let scrollAnchor = getScrollAnchor(oldState, { scrollTop: 300 }, {});
-        assert.deepEqual(scrollAnchor, {
+        expect(scrollAnchor).toEqual({
           firstIndex: 5,
           firstOffset: 0,
           lastIndex: undefined,
@@ -150,7 +148,7 @@ describe('scrollAnchor', function () {
       oldState.scrollY = 2000;
 
       const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: 40 }, {});
-      assert.deepEqual(scrollAnchor, {
+      expect(scrollAnchor).toEqual({
         firstIndex: undefined,
         firstOffset: 0,
         lastIndex: 40,
@@ -162,7 +160,7 @@ describe('scrollAnchor', function () {
       oldState.scrollY = 5000;
 
       const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: 40 }, {});
-      assert.deepEqual(scrollAnchor, {
+      expect(scrollAnchor).toEqual({
         firstIndex: 40,
         firstOffset: 0,
         lastIndex: undefined,
@@ -176,7 +174,7 @@ describe('scrollAnchor', function () {
       oldState.firstRowOffset = 50;
 
       const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: 40 }, {});
-      assert.deepEqual(scrollAnchor, {
+      expect(scrollAnchor).toEqual({
         firstIndex: 38,
         firstOffset: 50,
         lastIndex: undefined,
@@ -190,7 +188,7 @@ describe('scrollAnchor', function () {
       oldState.rowSettings.rowsCount = 0;
 
       const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: 40 }, {});
-      assert.deepEqual(scrollAnchor, {
+      expect(scrollAnchor).toEqual({
         firstIndex: 0,
         firstOffset: 0,
         lastIndex: undefined,
@@ -202,7 +200,7 @@ describe('scrollAnchor', function () {
       oldState.scrollY = 2000;
 
       const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: -20 }, {});
-      assert.deepEqual(scrollAnchor, {
+      expect(scrollAnchor).toEqual({
         firstIndex: 0,
         firstOffset: 0,
         lastIndex: undefined,
@@ -214,7 +212,7 @@ describe('scrollAnchor', function () {
       oldState.scrollY = 2000;
 
       const scrollAnchor = getScrollAnchor(oldState, { scrollToRow: 200 }, {});
-      assert.deepEqual(scrollAnchor, {
+      expect(scrollAnchor).toEqual({
         firstIndex: undefined,
         firstOffset: 0,
         lastIndex: 99,

@@ -1,30 +1,36 @@
 /**
  * Copyright Schrodinger, LLC
  */
+import { expect, jest } from '@jest/globals';
 import ReactTouchHandler from '../src/ReactTouchHandler';
-import sinon from 'sinon';
-import { assert } from 'chai';
+import * as requestAnimationFrame from '../src/vendor_upstream/core/requestAnimationFramePolyfill';
 
 describe('ReactTouchHandler', function () {
-  let requestAnimationFramePolyfillSpy;
+  let mockRequestAnimationFramePolyfill;
 
   beforeEach(function () {
-    requestAnimationFramePolyfillSpy = sinon.spy();
-    ReactTouchHandler.__Rewire__(
-      'requestAnimationFramePolyfill',
-      requestAnimationFramePolyfillSpy
-    );
+    // NOTE (pradeep): Call the callback passed to `setInterval` immediately.
+    // This simplifies the tests by making them behave synchronous.
+    jest
+      .spyOn(globalThis, 'setInterval')
+      .mockImplementation((callback) => callback());
+
+    mockRequestAnimationFramePolyfill = jest
+      .spyOn(requestAnimationFrame, 'default')
+      .mockImplementation(() => undefined);
   });
 
   afterEach(function () {
-    sinon.restore();
-    ReactTouchHandler.__ResetDependency__('requestAnimationFramePolyfill');
+    jest.restoreAllMocks();
   });
 
   describe('onTouchStart', function () {
     let fakeEvent;
     beforeEach(function () {
-      ReactTouchHandler.prototype._track = sinon.spy();
+      ReactTouchHandler.prototype._track = jest.spyOn(
+        ReactTouchHandler.prototype,
+        '_track'
+      );
       fakeEvent = {
         touches: [
           {
@@ -32,8 +38,8 @@ describe('ReactTouchHandler', function () {
             pageY: 312,
           },
         ],
-        preventDefault: sinon.spy(),
-        stopPropagation: sinon.spy(),
+        preventDefault: jest.fn(),
+        stopPropagation: jest.fn(),
       };
     });
 
@@ -49,7 +55,7 @@ describe('ReactTouchHandler', function () {
       reactTouchHandler.onTouchStart(fakeEvent);
 
       // --- Verify Expectations ---
-      assert.isTrue(fakeEvent.stopPropagation.calledOnce);
+      expect(fakeEvent.stopPropagation).toBeCalledTimes(1);
     });
 
     it('should not stop event propagation if flag is false', function () {
@@ -64,7 +70,7 @@ describe('ReactTouchHandler', function () {
       reactTouchHandler.onTouchStart(fakeEvent);
 
       // --- Verify Expectations ---
-      assert.isFalse(fakeEvent.stopPropagation.called);
+      expect(fakeEvent.stopPropagation).not.toBeCalled();
     });
 
     // NOTE (pradeep): this ensures that mouse events like clicks still fire
@@ -80,12 +86,10 @@ describe('ReactTouchHandler', function () {
       reactTouchHandler.onTouchStart(fakeEvent);
 
       // --- Verify Expectations ---
-      assert.isFalse(fakeEvent.preventDefault.called);
+      expect(fakeEvent.preventDefault).not.toBeCalledTimes(1);
     });
 
-    it('should start new interval', function () {
-      const clock = sinon.useFakeTimers();
-
+    it('should start new interval', function (done) {
       // --- Run Test ---
       const reactTouchHandler = new ReactTouchHandler(
         () => {},
@@ -95,10 +99,12 @@ describe('ReactTouchHandler', function () {
         false
       );
       reactTouchHandler.onTouchStart(fakeEvent);
-      clock.tick(100);
 
       // --- Verify Expectations ---
-      assert.isTrue(ReactTouchHandler.prototype._track.calledOnce);
+      setTimeout(() => {
+        expect(ReactTouchHandler.prototype._track).toBeCalledTimes(1);
+        done();
+      });
     });
   });
 
@@ -106,7 +112,7 @@ describe('ReactTouchHandler', function () {
     let fakeEvent, clearIntervalSpy;
 
     beforeEach(function () {
-      clearIntervalSpy = sinon.spy(global || window, 'clearInterval');
+      clearIntervalSpy = jest.spyOn(globalThis, 'clearInterval');
       fakeEvent = {
         touches: [
           {
@@ -114,8 +120,8 @@ describe('ReactTouchHandler', function () {
             pageY: 312,
           },
         ],
-        preventDefault: sinon.spy(),
-        stopPropagation: sinon.spy(),
+        preventDefault: jest.fn(),
+        stopPropagation: jest.fn(),
       };
     });
 
@@ -131,7 +137,7 @@ describe('ReactTouchHandler', function () {
       reactTouchHandler.onTouchEnd(fakeEvent);
 
       // --- Verify Expectations ---
-      assert.isTrue(fakeEvent.stopPropagation.calledOnce);
+      expect(fakeEvent.stopPropagation).toBeCalledTimes(1);
     });
 
     it('should not stop event propagation if flag is false', function () {
@@ -146,7 +152,7 @@ describe('ReactTouchHandler', function () {
       reactTouchHandler.onTouchEnd(fakeEvent);
 
       // --- Verify Expectations ---
-      assert.isFalse(fakeEvent.stopPropagation.called);
+      expect(fakeEvent.stopPropagation).not.toBeCalledTimes(1);
     });
 
     // NOTE (pradeep): this ensures that mouse events like clicks still fire
@@ -162,7 +168,7 @@ describe('ReactTouchHandler', function () {
       reactTouchHandler.onTouchEnd(fakeEvent);
 
       // --- Verify Expectations ---
-      assert.isFalse(fakeEvent.preventDefault.called);
+      expect(fakeEvent.preventDefault).not.toBeCalledTimes(1);
     });
 
     it('should clear last interval', function () {
@@ -177,7 +183,7 @@ describe('ReactTouchHandler', function () {
       reactTouchHandler.onTouchEnd(fakeEvent);
 
       // --- Verify Expectations ---
-      assert.isTrue(clearIntervalSpy.calledOnce);
+      expect(clearIntervalSpy).toBeCalledTimes(1);
     });
 
     it('Should start deceleration', function () {
@@ -192,7 +198,7 @@ describe('ReactTouchHandler', function () {
       reactTouchHandler.onTouchEnd(fakeEvent);
 
       // --- Verify Expectations ---
-      assert.isTrue(requestAnimationFramePolyfillSpy.calledOnce);
+      expect(mockRequestAnimationFramePolyfill).toBeCalledTimes(1);
     });
   });
 });

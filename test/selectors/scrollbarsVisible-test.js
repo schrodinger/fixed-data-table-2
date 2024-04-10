@@ -1,7 +1,7 @@
 /**
  * Copyright Schrodinger, LLC
  */
-import { assert } from 'chai';
+import { expect } from '@jest/globals';
 
 import { ScrollbarState } from '../../src/selectors/roughHeights';
 import scrollbarsVisible from '../../src/selectors/scrollbarsVisible';
@@ -30,7 +30,7 @@ describe('scrollbarsVisible', function () {
       scrollFlags
     );
 
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       availableHeight: 785,
       scrollEnabledX: true,
       scrollEnabledY: true,
@@ -50,7 +50,7 @@ describe('scrollbarsVisible', function () {
       scrollFlags
     );
 
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       availableHeight: 800,
       scrollEnabledX: false,
       scrollEnabledY: true,
@@ -66,7 +66,7 @@ describe('scrollbarsVisible', function () {
       scrollFlags
     );
 
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       availableHeight: 785,
       scrollEnabledX: true,
       scrollEnabledY: false,
@@ -82,7 +82,7 @@ describe('scrollbarsVisible', function () {
       scrollFlags
     );
 
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       availableHeight: 785,
       scrollEnabledX: true,
       scrollEnabledY: false,
@@ -110,7 +110,7 @@ describe('scrollbarsVisible', function () {
         scrollFlags
       );
 
-      assert.deepEqual(result, {
+      expect(result).toEqual({
         availableHeight: 800,
         scrollEnabledX: false,
         scrollEnabledY: false,
@@ -124,7 +124,7 @@ describe('scrollbarsVisible', function () {
         scrollFlags
       );
 
-      assert.deepEqual(result, {
+      expect(result).toEqual({
         availableHeight: 785,
         scrollEnabledX: true,
         scrollEnabledY: true,

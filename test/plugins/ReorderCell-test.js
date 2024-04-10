@@ -1,13 +1,11 @@
+import { expect, jest } from '@jest/globals';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import noop from 'lodash/noop';
-import { assert, expect } from 'chai';
 import { createRenderer } from 'react-test-renderer/shallow';
 import {
   act,
-  findRenderedComponentWithType,
   findRenderedDOMComponentWithClass,
-  findRenderedDOMComponentWithTag,
   isElement,
   scryRenderedComponentsWithType,
 } from 'react-dom/test-utils';
@@ -15,8 +13,8 @@ import FakeObjectDataListStore from '../../examples/helpers/FakeObjectDataListSt
 import { Column, Table, Plugins, DataCell } from '../../src/index';
 import ReorderCell from '../../src/plugins/ResizeReorder/ReorderCell';
 import cx from '../../src/vendor_upstream/stubs/cx';
-import sinon from 'sinon';
-import DOMMouseMoveTracker from '../../src/vendor_upstream/dom/DOMMouseMoveTracker';
+import * as FixedDataTableEventHelper from '../../src/FixedDataTableEventHelper';
+import * as requestAnimationFramePolyfill from '../../src/vendor_upstream/core/requestAnimationFramePolyfill';
 
 const columnTitles = {
   firstName: 'First Name',
@@ -125,13 +123,17 @@ class ReorderCellTest extends React.Component {
 }
 
 describe('ReorderCell', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   describe('render', () => {
     it('should not crash and burn', () => {
       const reorderCell = <ReorderCell onColumnReorderEnd={noop} />;
       const renderer = createRenderer();
       renderer.render(reorderCell);
       const reorderCellRender = renderer.getRenderOutput();
-      assert.isTrue(isElement(reorderCellRender));
+      expect(isElement(reorderCell)).toBe(true);
     });
   });
 
@@ -163,7 +165,7 @@ describe('ReorderCell', () => {
     it('should set props correctly', () => {
       const reorderCells = renderTable();
       const reorderCell = reorderCells[0];
-      expect(reorderCell.props.left).eql(0);
+      expect(reorderCell.props.left).toEqual(0);
     });
   });
 
@@ -197,11 +199,10 @@ describe('ReorderCell', () => {
       // NOTE (pradeep): JSDOM doesn't seem to pass in clientX for `mousemove` events,
       // which is crucial for DOMMouseMoveTracker to figure out the mouse position.
       // I'm fixing this by rewiring DOMMouseMoveTracker.
-      DOMMouseMoveTracker.__Rewire__('FixedDataTableEventHelper', {
-        getCoordinatesFromEvent: () => ({ x: targetMouseOffset, y: 0 }),
-      });
+      jest
+        .spyOn(FixedDataTableEventHelper.default, 'getCoordinatesFromEvent')
+        .mockImplementation(() => ({ x: targetMouseOffset, y: 0 }));
       document.body.dispatchEvent(mouseMoveEvent);
-      DOMMouseMoveTracker.__Rewire__.reset;
 
       // finish dragging
       let mouseUpEvent = new window.MouseEvent('mouseup', {
@@ -222,9 +223,7 @@ describe('ReorderCell', () => {
         'Zip Code',
       ];
       const actualOrder = newOrderCells.map((cell) => cell.props.children);
-      expect(actualOrder, 'Unexpected order after reordering').to.eql(
-        expectedOrder
-      );
+      expect(actualOrder).toEqual(expectedOrder);
     });
   });
 });

@@ -1,7 +1,7 @@
 /**
  * Copyright Schrodinger, LLC
  */
-import { assert } from 'chai';
+import { expect } from '@jest/globals';
 import tableHeights from '../../src/selectors/tableHeights';
 import Scrollbar from '../../src/plugins/Scrollbar';
 
@@ -40,7 +40,7 @@ describe('tableHeights', function () {
       Scrollbar.SIZE
     );
 
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       bodyHeight: 713,
       bodyOffsetTop: 75,
       componentHeight: 800,
@@ -68,7 +68,7 @@ describe('tableHeights', function () {
       Scrollbar.SIZE
     );
 
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       bodyHeight: 698,
       bodyOffsetTop: 75,
       componentHeight: 800,
@@ -93,7 +93,7 @@ describe('tableHeights', function () {
       Scrollbar.SIZE
     );
 
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       bodyHeight: 100,
       bodyOffsetTop: 75,
       componentHeight: 800,
@@ -118,7 +118,7 @@ describe('tableHeights', function () {
       Scrollbar.SIZE
     );
 
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       bodyHeight: 713,
       bodyOffsetTop: 75,
       componentHeight: 800,
@@ -144,7 +144,7 @@ describe('tableHeights', function () {
       Scrollbar.SIZE
     );
 
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       bodyHeight: 100,
       bodyOffsetTop: 75,
       componentHeight: 187,
@@ -169,7 +169,7 @@ describe('tableHeights', function () {
       Scrollbar.SIZE
     );
 
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       bodyHeight: 713,
       bodyOffsetTop: 75,
       componentHeight: 800,
@@ -196,7 +196,7 @@ describe('tableHeights', function () {
       Scrollbar.SIZE
     );
 
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       bodyHeight: 100,
       bodyOffsetTop: 75,
       componentHeight: 187,

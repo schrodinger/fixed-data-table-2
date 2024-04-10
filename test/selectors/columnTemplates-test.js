@@ -1,7 +1,7 @@
 /**
  * Copyright Schrodinger, LLC
  */
-import { assert } from 'chai';
+import { expect } from '@jest/globals';
 import columnTemplates from '../../src/selectors/columnTemplates';
 
 describe('columnTemplates', function () {
@@ -51,20 +51,20 @@ describe('columnTemplates', function () {
       scrollableColumns,
     } = columnTemplates.resultFunc(columnWidths, templates);
 
-    assert.deepEqual(fixedColumnGroups, [
+    expect(fixedColumnGroups).toStrictEqual([
       {
         props: { id: 10, fixed: true },
         template: { id: 'g10' },
       },
     ]);
-    assert.deepEqual(scrollableColumnGroups, [
+    expect(scrollableColumnGroups).toStrictEqual([
       {
         props: { id: 20, fixed: false },
         template: { id: 'g20' },
       },
     ]);
 
-    assert.deepEqual(fixedColumns, {
+    expect(fixedColumns).toStrictEqual({
       cell: [
         {
           props: { id: 1, fixed: true },
@@ -96,7 +96,7 @@ describe('columnTemplates', function () {
         },
       ],
     });
-    assert.deepEqual(scrollableColumns, {
+    expect(scrollableColumns).toStrictEqual({
       cell: [
         {
           props: { id: 3, fixed: false },

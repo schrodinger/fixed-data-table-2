@@ -1,32 +1,32 @@
 /**
  * Copyright Schrodinger, LLC
  */
+import { expect, jest } from '@jest/globals';
 import IntegerBufferSet from '../../src/vendor_upstream/struct/IntegerBufferSet';
 import PrefixIntervalTree from '../../src/vendor_upstream/struct/PrefixIntervalTree';
-import { assert } from 'chai';
-import sinon from 'sinon';
 import clone from 'lodash/clone';
 
 import computeRenderedRows from '../../src/reducers/computeRenderedRows';
+import * as roughHeightsSelector from '../../src/selectors/roughHeights';
+import * as scrollbarsVisibleSelector from '../../src/selectors/scrollbarsVisible';
+import * as tableHeightsSelector from '../../src/selectors/tableHeights';
 
 describe('computeRenderedRows', function () {
   beforeEach(function () {
-    computeRenderedRows.__Rewire__('roughHeightsSelector', () => ({
+    jest.spyOn(roughHeightsSelector, 'default').mockImplementation(() => ({
       bufferRowCount: 2,
       maxAvailableHeight: 600,
     }));
-    computeRenderedRows.__Rewire__('scrollbarsVisibleSelector', () => ({
+    jest.spyOn(scrollbarsVisibleSelector, 'default').mockImplementation(() => ({
       availableHeight: 600,
     }));
-    computeRenderedRows.__Rewire__('tableHeightsSelector', () => ({
+    jest.spyOn(tableHeightsSelector, 'default').mockImplementation(() => ({
       bodyHeight: 600,
     }));
   });
 
   afterEach(function () {
-    computeRenderedRows.__ResetDependency__('roughHeightsSelector');
-    computeRenderedRows.__ResetDependency__('scrollbarsVisibleSelector');
-    computeRenderedRows.__ResetDependency__('tableHeightsSelector');
+    jest.restoreAllMocks();
   });
 
   describe('computeRenderedRows', function () {
@@ -61,7 +61,7 @@ describe('computeRenderedRows', function () {
     });
 
     afterEach(function () {
-      sinon.restore();
+      jest.restoreAllMocks();
     });
 
     it('should update rowBufferSet & row heights for buffered rows', function () {
@@ -79,29 +79,24 @@ describe('computeRenderedRows', function () {
         expectedRows.push(rowIdx);
         expectedRowOffsets[rowIdx] = rowIdx * 125;
 
-        assert.strictEqual(
-          newState.getInternal().storedHeights[rowIdx],
-          125,
-          'expected stored height of 125 for each row'
+        // expected stored height of 125 for each row
+        expect(newState.getInternal().storedHeights[rowIdx]).toBe(125);
+        // expected row offsets for each row to be set to 125
+        expect(newState.getInternal().rowOffsetIntervalTree.get(rowIdx)).toBe(
+          125
         );
-        assert.strictEqual(
-          newState.getInternal().rowOffsetIntervalTree.get(rowIdx),
-          125,
-          'expected row offsets for each row to be set to 125'
-        );
-        assert.isNotNull(
-          newState.getInternal().rowBufferSet.getValuePosition(rowIdx),
-          `expected a buffer position for each row. rowIdx: ${rowIdx}`
-        );
+        // expected a buffer position for each row
+        expect(
+          newState.getInternal().rowBufferSet.getValuePosition(rowIdx)
+        ).not.toBeNull();
       }
 
-      assert.isNull(
-        newState.getInternal().rowBufferSet.getValuePosition(12),
-        'expected no buffer position for other row'
-      );
+      // expected no buffer position for other row
+      expect(
+        newState.getInternal().rowBufferSet.getValuePosition(12)
+      ).toBeNull();
 
-      assert.deepEqual(
-        newState,
+      expect(newState).toEqual(
         Object.assign(oldState, {
           firstRowIndex: 15,
           endRowIndex: 20,
@@ -130,29 +125,23 @@ describe('computeRenderedRows', function () {
         expectedRows.push(rowIdx);
         expectedRowOffsets[rowIdx] = rowIdx * 125;
 
-        assert.strictEqual(
-          newState.getInternal().storedHeights[rowIdx],
-          125,
-          'expected stored height of 125 for each row'
+        // expected stored height of 125 for each row
+        expect(newState.getInternal().storedHeights[rowIdx]).toBe(125);
+        // expected row offsets for each row to be set to 125
+        expect(newState.getInternal().rowOffsetIntervalTree.get(rowIdx)).toBe(
+          125
         );
-        assert.strictEqual(
-          newState.getInternal().rowOffsetIntervalTree.get(rowIdx),
-          125,
-          'expected row offsets for each row to be set to 125'
-        );
-        assert.isNotNull(
-          newState.getInternal().rowBufferSet.getValuePosition(rowIdx),
-          `expected a buffer position for each row. rowIdx: ${rowIdx}`
-        );
+        // expected a buffer position for each row
+        expect(
+          newState.getInternal().rowBufferSet.getValuePosition(rowIdx)
+        ).not.toBeNull();
       }
 
-      assert.isNull(
-        newState.getInternal().rowBufferSet.getValuePosition(12),
-        'expected no buffer position for other row'
-      );
-
-      assert.deepEqual(
-        newState,
+      // expected no buffer position for other row
+      expect(
+        newState.getInternal().rowBufferSet.getValuePosition(12)
+      ).toBeNull();
+      expect(newState).toEqual(
         Object.assign(oldState, {
           firstRowIndex: 26,
           endRowIndex: 31,
@@ -176,8 +165,7 @@ describe('computeRenderedRows', function () {
 
       computeRenderedRows(newState, scrollAnchor);
 
-      assert.deepEqual(
-        newState,
+      expect(newState).toEqual(
         Object.assign(oldState, {
           endRowIndex: 0,
           firstRowIndex: 0,
@@ -206,29 +194,24 @@ describe('computeRenderedRows', function () {
         expectedRows.push(rowIdx);
         expectedRowOffsets[rowIdx] = rowIdx * 125;
 
-        assert.strictEqual(
-          newState.getInternal().storedHeights[rowIdx],
-          125,
-          'expected stored height of 125 for each row'
+        // expected stored height of 125 for each row
+        expect(newState.getInternal().storedHeights[rowIdx]).toBe(125);
+        // expected row offsets for each row to be set to 125
+        expect(newState.getInternal().rowOffsetIntervalTree.get(rowIdx)).toBe(
+          125
         );
-        assert.strictEqual(
-          newState.getInternal().rowOffsetIntervalTree.get(rowIdx),
-          125,
-          'expected row offsets for each row to be set to 125'
-        );
-        assert.isNotNull(
-          newState.getInternal().rowBufferSet.getValuePosition(rowIdx),
-          `expected a buffer position for each row. rowIdx: ${rowIdx}`
-        );
+        // expected a buffer position for each row
+        expect(
+          newState.getInternal().rowBufferSet.getValuePosition(rowIdx)
+        ).not.toBeNull();
       }
 
-      assert.isNull(
-        newState.getInternal().rowBufferSet.getValuePosition(80),
-        'expected no buffer position for other row'
-      );
+      // expected no buffer position for other row
+      expect(
+        newState.getInternal().rowBufferSet.getValuePosition(80)
+      ).toBeNull();
 
-      assert.deepEqual(
-        newState,
+      expect(newState).toEqual(
         Object.assign(oldState, {
           firstRowIndex: 75,
           endRowIndex: 80,
@@ -250,19 +233,20 @@ describe('computeRenderedRows', function () {
       };
       newState.rowSettings.rowHeightGetter = () => 200;
 
-      const rowOffsetIntervalTreeMock = sinon.mock(
-        PrefixIntervalTree.prototype
+      const rowOffsetIntervalTreeSetMock = jest.spyOn(
+        PrefixIntervalTree.prototype,
+        'set'
       );
       newState.getInternal().rowOffsetIntervalTree = PrefixIntervalTree.uniform(
         80,
         125
       );
-      for (let rowIdx = 13; rowIdx < 21; rowIdx++) {
-        rowOffsetIntervalTreeMock.expects('set').once().withArgs(rowIdx, 200);
-      }
 
       computeRenderedRows(newState, scrollAnchor);
-      rowOffsetIntervalTreeMock.verify();
+      expect(rowOffsetIntervalTreeSetMock).toHaveBeenCalledTimes(8);
+      for (let rowIdx = 13; rowIdx < 21; rowIdx++) {
+        expect(rowOffsetIntervalTreeSetMock).toBeCalledWith(rowIdx, 200);
+      }
 
       let priorHeight = 1625;
       const expectedRowOffsets = {};
@@ -272,15 +256,11 @@ describe('computeRenderedRows', function () {
         expectedRowOffsets[rowIdx] = priorHeight;
         priorHeight += 200;
 
-        assert.strictEqual(
-          newState.getInternal().storedHeights[rowIdx],
-          200,
-          'expected stored height of 200 for each row'
-        );
+        // expected stored height of 200 for each row
+        expect(newState.getInternal().storedHeights[rowIdx]).toBe(200);
       }
 
-      assert.deepEqual(
-        newState,
+      expect(newState).toEqual(
         Object.assign(oldState, {
           firstRowIndex: 15,
           endRowIndex: 19,
