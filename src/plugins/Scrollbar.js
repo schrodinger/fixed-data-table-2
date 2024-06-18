@@ -356,11 +356,11 @@ class Scrollbar extends React.PureComponent {
       // magically available for browsers somehow.
       const nativeEvent = event.nativeEvent;
       let position = this.state.isHorizontal
-        ? nativeEvent.offsetX ||
-          nativeEvent.layerX ||
+        ? nativeEvent.offsetX ??
+          nativeEvent.layerX ??
           this.getTouchX(nativeEvent)
-        : nativeEvent.offsetY ||
-          nativeEvent.layerY ||
+        : nativeEvent.offsetY ??
+          nativeEvent.layerY ??
           this.getTouchY(nativeEvent);
 
       // MouseDown on the scroll-track directly, move the center of the
