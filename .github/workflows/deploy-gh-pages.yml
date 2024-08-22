@@ -80,7 +80,7 @@ jobs:
       # upload the static site contents as an artifact.
       # the artifact is non-optional, and is consumed in the next job.
       - name: Upload static site artifacts
-        uses: actions/upload-pages-artifact@v1.0.7
+        uses: actions/upload-pages-artifact@v3.0.1
         with:
           path: "__site__/"
 
@@ -103,4 +103,4 @@ jobs:
       # publish our site to gh-pages
       - name: Deploy GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1.2.4
+        uses: actions/deploy-pages@v4.0.5
