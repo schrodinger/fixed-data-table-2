@@ -39,41 +39,8 @@ import joinClasses from './vendor_upstream/core/joinClasses';
  * );
  * ```
  */
-class FixedDataTableCellDefault extends React.Component {
-  static propTypes = {
-    /**
-     * Outer height of the cell.
-     */
-    height: PropTypes.number,
-
-    /**
-     * Outer width of the cell.
-     */
-    width: PropTypes.number,
-
-    /**
-     * Optional prop that if specified on the `Column` will be passed to the
-     * cell. It can be used to uniquely identify which column is the cell is in.
-     */
-    columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-
-    /**
-     * Optional prop that represents the rows index in the table.
-     * For the 'cell' prop of a Column, this parameter will exist for any
-     * cell in a row with a positive index.
-     *
-     * Below that entry point the user is welcome to consume or
-     * pass the prop through at their discretion.
-     */
-    rowIndex: PropTypes.number,
-
-    /**
-     * Whether this cell is currently within the viewport.
-     */
-    isVisible: PropTypes.bool,
-  };
-
-  render() {
+const FixedDataTableCellDefault = React.forwardRef(
+  function FixedDataTableCellDefault(props, ref) {
     //Remove some props which we don't pass into div
     const {
       height,
@@ -92,8 +59,8 @@ class FixedDataTableCellDefault extends React.Component {
       maxWidth,
       minWidth,
       touchEnabled,
-      ...props
-    } = this.props;
+      ...cellProps
+    } = props;
 
     const innerStyle = {
       height,
@@ -103,7 +70,7 @@ class FixedDataTableCellDefault extends React.Component {
 
     return (
       <div
-        {...props}
+        {...cellProps}
         className={joinClasses(
           cx('fixedDataTableCellLayout/wrap'),
           cx('public/fixedDataTableCell/wrap'),
@@ -111,11 +78,45 @@ class FixedDataTableCellDefault extends React.Component {
           className
         )}
         style={innerStyle}
+        ref={ref}
       >
         {children}
       </div>
     );
   }
-}
+);
+
+FixedDataTableCellDefault.propTypes = {
+  /**
+   * Outer height of the cell.
+   */
+  height: PropTypes.number,
+
+  /**
+   * Outer width of the cell.
+   */
+  width: PropTypes.number,
+
+  /**
+   * Optional prop that if specified on the `Column` will be passed to the
+   * cell. It can be used to uniquely identify which column is the cell is in.
+   */
+  columnKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
+  /**
+   * Optional prop that represents the rows index in the table.
+   * For the 'cell' prop of a Column, this parameter will exist for any
+   * cell in a row with a positive index.
+   *
+   * Below that entry point the user is welcome to consume or
+   * pass the prop through at their discretion.
+   */
+  rowIndex: PropTypes.number,
+
+  /**
+   * Whether this cell is currently within the viewport.
+   */
+  isVisible: PropTypes.bool,
+};
 
 export default FixedDataTableCellDefault;
