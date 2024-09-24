@@ -72,7 +72,7 @@
     "react-tools": "0.13.3",
     "react-tooltip": "3.11.1",
     "rimraf": "^3.0.2",
-    "rollup": "^2.70.1",
+    "rollup": "^3.29.5",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-terser": "^7.0.2",
     "style-loader": "1.0.0",
