@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 
+const nodeEnv = process.env.NODE_ENV ?? 'development';
 const isDev = process.env.NODE_ENV !== 'production';
 
 module.exports = {
@@ -12,7 +13,9 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '../__site_prerender__/'),
     filename: 'renderPath.js',
-    libraryTarget: 'commonjs2',
+    library: {
+      type: 'commonjs2',
+    },
   },
 
   target: 'node',
@@ -21,10 +24,15 @@ module.exports = {
     rules: [
       {
         test: /\.md$/,
-        loader: [
-          'html-loader?{"minimize":false}',
+        use: [
+          {
+            loader: 'html-loader',
+            options: {
+              minimize: false,
+            },
+          },
           path.join(__dirname, '../build_helpers/markdownLoader'),
-        ].join('!'),
+        ],
       },
       {
         test: /\.js$/,
@@ -41,8 +49,10 @@ module.exports = {
       },
       {
         test: /\.png$/,
-        loader: 'file-loader',
-        query: { mimetype: 'image/png', name: 'images/[name]-[hash].[ext]' },
+        type: 'asset/resource',
+        generator: {
+          filename: 'images/[name]-[contentHash].[ext]',
+        },
       },
     ],
   },
@@ -52,11 +62,14 @@ module.exports = {
       'fixed-data-table-2/css': path.join(__dirname, '../src/css'),
       'fixed-data-table-2': path.join(__dirname, '../src/index'),
     },
+    fallback: {
+      url: false,
+    },
   },
 
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.NODE_ENV': JSON.stringify(nodeEnv),
       __DEV__: isDev,
     }),
   ],
