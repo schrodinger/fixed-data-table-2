@@ -3,7 +3,8 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
-const isDev = process.env.NODE_ENV !== 'production';
+const nodeEnv = process.env.NODE_ENV ?? 'development';
+const isDev = nodeEnv !== 'production';
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
@@ -14,7 +15,7 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, '../__site__/'),
-    filename: isDev ? '[name].js' : '[name]-[hash].js',
+    filename: isDev ? '[name].js' : '[name]-[contentHash].js',
     publicPath: '',
   },
 
@@ -24,10 +25,15 @@ module.exports = {
     rules: [
       {
         test: /\.md$/,
-        loader: [
-          'html-loader?{"minimize":false}',
+        use: [
+          {
+            loader: 'html-loader',
+            options: {
+              minimize: false,
+            },
+          },
           path.join(__dirname, '../build_helpers/markdownLoader'),
-        ].join('!'),
+        ],
       },
       {
         test: /\.js$/,
@@ -63,8 +69,10 @@ module.exports = {
       },
       {
         test: /\.png$/,
-        loader: 'file-loader',
-        query: { mimetype: 'image/png', name: 'images/[name]-[hash].[ext]' },
+        type: 'asset/resource',
+        generator: {
+          filename: 'images/[name]-[contentHash].[ext]',
+        },
       },
     ],
   },
@@ -73,6 +81,9 @@ module.exports = {
     alias: {
       'fixed-data-table-2/css': path.join(__dirname, '../src/css'),
       'fixed-data-table-2': path.join(__dirname, '../src/index'),
+    },
+    fallback: {
+      url: false,
     },
   },
 
@@ -83,10 +94,10 @@ module.exports = {
 
   plugins: [
     new MiniCssExtractPlugin({
-      filename: isDev ? '[name].css' : '[name]-[hash].css',
+      filename: isDev ? '[name].css' : '[name]-[contentHash].css',
     }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.NODE_ENV': JSON.stringify(nodeEnv),
       // 'process.env.NODE_ENV': JSON.stringify('production'),
       __DEV__: isDev,
     }),
