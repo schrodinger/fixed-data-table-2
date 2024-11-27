@@ -20,7 +20,7 @@ import { FixedDataTableContext as Context } from './FixedDataTableContext';
 import ResizeCell from './plugins/ResizeReorder/ResizeCell';
 import ReorderCell from './plugins/ResizeReorder/ReorderCell';
 
-const version = '0.0.16-experimental-column-virtualization';
+const version = '0.0.17-experimental-column-virtualization';
 
 const Plugins = {
   ResizeCell,
