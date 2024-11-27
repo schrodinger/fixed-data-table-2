@@ -11,6 +11,7 @@
 
 'use strict';
 
+import _ from 'lodash';
 import pick from 'lodash/pick';
 
 import IntegerBufferSet from '../vendor_upstream/struct/IntegerBufferSet';

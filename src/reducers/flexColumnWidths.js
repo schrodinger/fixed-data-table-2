@@ -11,6 +11,7 @@
 
 'use strict';
 
+import _ from 'lodash';
 import columnCounts from '../selectors/columnCounts';
 import scrollbarsVisibleSelector from '../selectors/scrollbarsVisible';
 import {

@@ -12,6 +12,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import _ from 'lodash';
 import inRange from 'lodash/inRange';
 
 import cx from './vendor_upstream/stubs/cx';
