@@ -36,18 +36,7 @@ class FixedDataTableContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.reduxStore = FixedDataTableStore.get();
-
-    this.scrollActions = getScrollActions(this.reduxStore, () => this.props);
-
-    this.reduxStore.dispatch(initialize(props));
-
-    this.unsubscribe = this.reduxStore.subscribe(this.onStoreUpdate.bind(this));
-    this.state = {
-      boundState: FixedDataTableContainer.getBoundState(this.reduxStore), // the state from the redux store
-      reduxStore: this.reduxStore, // put store instance in local state so that getDerivedStateFromProps can access it
-      props, // put props in local state so that getDerivedStateFromProps can access it
-    };
+    this._initialize(props);
 
     this.fixedDataTableApi = createApi();
     this.previousApiValue = null;
@@ -58,6 +47,10 @@ class FixedDataTableContainer extends React.Component {
       nextProps.height !== undefined || nextProps.maxHeight !== undefined,
       'You must set either a height or a maxHeight'
     );
+
+    if (!currentState) {
+      return null;
+    }
 
     // getDerivedStateFromProps is called for both prop and state updates.
     // If props are unchanged here, then there's no need to recalculate derived state.
@@ -83,16 +76,55 @@ class FixedDataTableContainer extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this._initialize(this.props);
+  }
+
   componentWillUnmount() {
-    if (this.unsubscribe) {
-      this.unsubscribe();
-      this.unsubscribe = null;
-    }
-    this.reduxStore = null;
+    this._cleanup();
   }
 
   componentDidUpdate() {
     this.notifyApiValueChanges();
+  }
+
+  _initialize(props) {
+    if (this.reduxStore) {
+      // already initialized
+      return;
+    }
+
+    this.reduxStore = FixedDataTableStore.get();
+    this.reduxStore.dispatch(initialize(props));
+
+    this.scrollActions = getScrollActions(this.reduxStore, () => this.props);
+
+    this.unsubscribe = this.reduxStore.subscribe(this.onStoreUpdate.bind(this));
+
+    const state = {
+      boundState: FixedDataTableContainer.getBoundState(this.reduxStore), // the state from the redux store
+      reduxStore: this.reduxStore, // put store instance in local state so that getDerivedStateFromProps can access it
+      props, // put props in local state so that getDerivedStateFromProps can access it
+    };
+
+    if (this.state) {
+      // component is already constructed, so just update state
+      this.setState(state);
+    } else {
+      // component isn't constructed yet, so initialize state
+      this.state = state;
+    }
+  }
+
+  _cleanup() {
+    if (!this.reduxStore) {
+      // already cleaned up
+      return;
+    }
+
+    this.unsubscribe();
+    this.unsubscribe = null;
+    this.reduxStore = null;
   }
 
   /**
