@@ -11,7 +11,8 @@
  */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { flushSync } from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import joinClasses from '../../vendor_upstream/core/joinClasses';
 import cx from '../../vendor_upstream/stubs/cx';
 import FixedDataTableCellDefault from '../../FixedDataTableCellDefault';
@@ -240,17 +241,20 @@ class ReorderCell extends React.PureComponent {
       contents: this.cellRef.current,
     };
 
-    ReactDOM.render(
-      // Since we're effectively rendering the proxy in a separate VDOM root, we cannot directly pass in our context.
-      // To solve this, we use ExternalContextProvider to pass down the context value.
-      // ExternalContextProvider also ensures that even if our cell gets unmounted, the dragged cell still receives updates from context.
-      <ExternalContextProvider value={this.context}>
-        <DragProxy {...this.props} {...additionalProps} />
-      </ExternalContextProvider>,
-      this.getDragContainer(),
-      // we consider our cell in a reordering state as soon as the drag proxy gets mounted
-      () => this.setState({ isReordering: true })
-    );
+    const root = ReactDOM.createRoot(this.getDragContainer());
+    this.dragContainer.reactRoot = root;
+    // Since we're effectively rendering the proxy in a separate VDOM root, we cannot directly pass in our context.
+    // To solve this, we use ExternalContextProvider to pass down the context value.
+    // ExternalContextProvider also ensures that even if our cell gets unmounted, the dragged cell still receives updates from context.
+    flushSync(() => {
+      root.render(
+        <ExternalContextProvider value={this.context}>
+          <DragProxy {...this.props} {...additionalProps} />
+        </ExternalContextProvider>
+      );
+      // we consider our cell to be in a reordering state as soon as the drag proxy gets mounted
+      this.setState({ isReordering: true })
+    });    
   }
 
   createDragContainer = () => {
@@ -287,7 +291,7 @@ class ReorderCell extends React.PureComponent {
 
   removeDragContainer = () => {
     // since the drag container is going to be removed, also unmount the drag proxy
-    ReactDOM.unmountComponentAtNode(this.dragContainer);
+    this.dragContainer.reactRoot.unmount();
 
     this.dragContainer.remove();
     this.dragContainer = null;

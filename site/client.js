@@ -1,7 +1,8 @@
 'use strict';
 
 const React = require('react');
-const ReactDOM = require('react-dom');
+const ReactDOMClient = require('react-dom/client');
 const IndexPage = require('./IndexPage');
 
-ReactDOM.render(<IndexPage {...window.INITIAL_PROPS} />, document);
+const root = ReactDOMClient.createRoot(document);
+root.render(<IndexPage {...window.INITIAL_PROPS} />);

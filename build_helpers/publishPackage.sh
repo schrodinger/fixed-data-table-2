@@ -77,7 +77,7 @@ git push
 
 if [ $BETA = true ]; then
   echo "Publishing beta tag"
-  npm publish --tag beta
+  npm publish --tag experimental-react-v19
 else
   echo "Publishing $next_ref to npm"
   npm publish

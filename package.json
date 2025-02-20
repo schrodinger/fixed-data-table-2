@@ -8,8 +8,8 @@
     "dist"
   ],
   "peerDependencies": {
-    "react": ">=17.0.1",
-    "react-dom": ">=17.0.1"
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.5.1",
@@ -63,9 +63,9 @@
     "postcss": "^8.4.12",
     "postcss-custom-properties": "^12.1.4",
     "prettier": "2",
-    "react": "17.0.1",
+    "react": "^19.0.0",
     "react-docgen": "4.1.1",
-    "react-dom": "17.0.1",
+    "react-dom": "^19.0.0",
     "react-test-renderer": "17.0.1",
     "react-tools": "0.13.3",
     "react-tooltip": "3.11.1",
