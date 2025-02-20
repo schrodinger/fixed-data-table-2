@@ -20,7 +20,7 @@ import { FixedDataTableContext as Context } from './FixedDataTableContext';
 import ResizeCell from './plugins/ResizeReorder/ResizeCell';
 import ReorderCell from './plugins/ResizeReorder/ReorderCell';
 
-const version = '3.0.0-react-v19';
+const version = '3.0.1-react-v19';
 
 const Plugins = {
   ResizeCell,
