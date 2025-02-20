@@ -252,9 +252,9 @@ class ReorderCell extends React.PureComponent {
           <DragProxy {...this.props} {...additionalProps} />
         </ExternalContextProvider>
       );
-      // we consider our cell to be in a reordering state as soon as the drag proxy gets mounted
-      this.setState({ isReordering: true })
-    });    
+    });
+    // we consider our cell to be in a reordering state as soon as the drag proxy gets mounted
+    this.setState({ isReordering: true });
   }
 
   createDragContainer = () => {
