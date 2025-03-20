@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { flushSync } from 'react-dom';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from '../../helper/react-dom-shim';
 import joinClasses from '../../vendor_upstream/core/joinClasses';
 import cx from '../../vendor_upstream/stubs/cx';
 import FixedDataTableCellDefault from '../../FixedDataTableCellDefault';
