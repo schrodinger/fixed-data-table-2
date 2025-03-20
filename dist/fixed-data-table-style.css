@@ -109,65 +109,6 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule fixedDataTableColumnResizerLine
- *
- */
-
-/**
- * Column resizer line.
- */
-.public_fixedDataTableColumnResizerLine_main {
-  border-color: #0284ff;
-  width: 1px;
-}
-
-/**
- * Copyright Schrodinger, LLC
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule fixedDataTableRow
- */
-
-/**
- * Table row.
- */
-.public_fixedDataTableRow_main {
-  background-color: #fff;
-}
-
-.public_fixedDataTableRow_highlighted,
-.public_fixedDataTableRow_highlighted .public_fixedDataTableCell_main {
-  background-color: #f6f7f8;
-}
-
-.public_fixedDataTableRow_fixedColumnsDivider {
-  border-color: #d3d3d3;
-}
-
-.public_fixedDataTableRow_columnsShadow {
-  background-image: linear-gradient(90deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
-}
-
-.fixedDataTable_isRTL .public_fixedDataTableRow_columnsShadow {
-  background-image: linear-gradient(270deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
-}
-
-.public_fixedDataTableRow_columnsRightShadow {
-  transform: rotate(180deg);
-}
-
-/**
- * Copyright Schrodinger, LLC
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
  * @providesModule fixedDataTableCell
  */
 
@@ -249,4 +190,63 @@
 .fixedDataTable_isRTL .fixedDataTableCellLayout_columnReorderContainer:after {
   left: auto;
   right: 1px;
+}
+
+/**
+ * Copyright Schrodinger, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule fixedDataTableColumnResizerLine
+ *
+ */
+
+/**
+ * Column resizer line.
+ */
+.public_fixedDataTableColumnResizerLine_main {
+  border-color: #0284ff;
+  width: 1px;
+}
+
+/**
+ * Copyright Schrodinger, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule fixedDataTableRow
+ */
+
+/**
+ * Table row.
+ */
+.public_fixedDataTableRow_main {
+  background-color: #fff;
+}
+
+.public_fixedDataTableRow_highlighted,
+.public_fixedDataTableRow_highlighted .public_fixedDataTableCell_main {
+  background-color: #f6f7f8;
+}
+
+.public_fixedDataTableRow_fixedColumnsDivider {
+  border-color: #d3d3d3;
+}
+
+.public_fixedDataTableRow_columnsShadow {
+  background-image: linear-gradient(90deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
+}
+
+.fixedDataTable_isRTL .public_fixedDataTableRow_columnsShadow {
+  background-image: linear-gradient(270deg, rgba(0,0,0,0.1), rgba(0,0,0,0));
+}
+
+.public_fixedDataTableRow_columnsRightShadow {
+  transform: rotate(180deg);
 }

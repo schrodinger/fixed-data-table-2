@@ -3,14 +3,14 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 let React$1 = require('react');
-let ReactDOM$2 = require('react-dom');
+let ReactDOM$1 = require('react-dom');
 
 function _interopDefaultLegacy(e) {
   return e && typeof e === 'object' && 'default' in e ? e : { default: e };
 }
 
 let React__default = /*#__PURE__*/ _interopDefaultLegacy(React$1);
-let ReactDOM__default = /*#__PURE__*/ _interopDefaultLegacy(ReactDOM$2);
+let ReactDOM__default = /*#__PURE__*/ _interopDefaultLegacy(ReactDOM$1);
 
 function _extends() {
   _extends =
@@ -16194,7 +16194,7 @@ if (process.env.NODE_ENV === 'production') {
  */
 let Scheduler = scheduler.exports,
   React = React__default['default'],
-  ReactDOM$1 = ReactDOM__default['default'];
+  ReactDOM = ReactDOM__default['default'];
 function formatProdErrorMessage(code) {
   let url = 'https://react.dev/errors/' + code;
   if (1 < arguments.length) {
@@ -16591,7 +16591,7 @@ function findCurrentHostFiberImpl(node) {
 }
 let isArrayImpl = Array.isArray,
   ReactDOMSharedInternals =
-    ReactDOM$1.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,
+    ReactDOM.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,
   sharedNotPendingObject = {
     pending: !1,
     data: null,
@@ -56058,7 +56058,7 @@ if (process.env.NODE_ENV === 'production') {
   client.exports = reactDomClient_development;
 }
 
-let ReactDOM = client.exports;
+let ReactDOMClient = client.exports;
 
 let _excluded$5 = [
   'height',
@@ -57149,12 +57149,33 @@ let ReorderCell = /*#__PURE__*/ (function (_React$PureComponent) {
             onColumnReorderEnd: this.onColumnReorderEnd,
             contents: this.cellRef.current,
           };
-          let root = ReactDOM.createRoot(this.getDragContainer());
+
+          if (!ReactDOMClient) {
+            ReactDOM__default['default'].render(
+              /*#__PURE__*/ React__default['default'].createElement(
+                ExternalContextProvider,
+                {
+                  value: this.context,
+                },
+                /*#__PURE__*/ React__default['default'].createElement(
+                  DragProxy,
+                  _extends({}, this.props, additionalProps)
+                )
+              ),
+              this.dragContainer,
+              this.setState({
+                isReordering: true,
+              })
+            );
+            return;
+          }
+
+          let root = ReactDOMClient.createRoot(this.getDragContainer());
           this.dragContainer.reactRoot = root; // Since we're effectively rendering the proxy in a separate VDOM root, we cannot directly pass in our context.
           // To solve this, we use ExternalContextProvider to pass down the context value.
           // ExternalContextProvider also ensures that even if our cell gets unmounted, the dragged cell still receives updates from context.
 
-          ReactDOM$2.flushSync(function () {
+          ReactDOM$1.flushSync(function () {
             root.render(
               /*#__PURE__*/ React__default['default'].createElement(
                 ExternalContextProvider,

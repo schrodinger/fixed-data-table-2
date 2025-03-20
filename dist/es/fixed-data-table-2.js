@@ -1,5 +1,5 @@
 import React$1 from 'react';
-import ReactDOM$2, { flushSync } from 'react-dom';
+import ReactDOM$1, { flushSync } from 'react-dom';
 
 function _extends() {
   _extends =
@@ -11696,7 +11696,7 @@ let Scrollbar = /*#__PURE__*/ (function (_React$PureComponent) {
          */
 
         let flushSync =
-          ReactDOM$2.flushSync ||
+          ReactDOM$1.flushSync ||
           function (fn) {
             return fn();
           }; // ReactDOM.flushSync doesn't exist in older versions of React
@@ -16180,7 +16180,7 @@ if (process.env.NODE_ENV === 'production') {
  */
 let Scheduler = scheduler.exports,
   React = React$1,
-  ReactDOM$1 = ReactDOM$2;
+  ReactDOM = ReactDOM$1;
 function formatProdErrorMessage(code) {
   let url = 'https://react.dev/errors/' + code;
   if (1 < arguments.length) {
@@ -16577,7 +16577,7 @@ function findCurrentHostFiberImpl(node) {
 }
 let isArrayImpl = Array.isArray,
   ReactDOMSharedInternals =
-    ReactDOM$1.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,
+    ReactDOM.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,
   sharedNotPendingObject = {
     pending: !1,
     data: null,
@@ -52223,7 +52223,7 @@ let reactDomClient_development = {};
       __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
     var Scheduler = scheduler.exports,
       React = React$1,
-      ReactDOM = ReactDOM$2,
+      ReactDOM = ReactDOM$1,
       REACT_LEGACY_ELEMENT_TYPE = Symbol.for('react.element'),
       REACT_ELEMENT_TYPE = Symbol.for('react.transitional.element'),
       REACT_PORTAL_TYPE = Symbol.for('react.portal'),
@@ -56044,7 +56044,7 @@ if (process.env.NODE_ENV === 'production') {
   client.exports = reactDomClient_development;
 }
 
-let ReactDOM = client.exports;
+let ReactDOMClient = client.exports;
 
 let _excluded$5 = [
   'height',
@@ -57130,7 +57130,28 @@ let ReorderCell = /*#__PURE__*/ (function (_React$PureComponent) {
             onColumnReorderEnd: this.onColumnReorderEnd,
             contents: this.cellRef.current,
           };
-          let root = ReactDOM.createRoot(this.getDragContainer());
+
+          if (!ReactDOMClient) {
+            ReactDOM$1.render(
+              /*#__PURE__*/ React$1.createElement(
+                ExternalContextProvider,
+                {
+                  value: this.context,
+                },
+                /*#__PURE__*/ React$1.createElement(
+                  DragProxy,
+                  _extends({}, this.props, additionalProps)
+                )
+              ),
+              this.dragContainer,
+              this.setState({
+                isReordering: true,
+              })
+            );
+            return;
+          }
+
+          let root = ReactDOMClient.createRoot(this.getDragContainer());
           this.dragContainer.reactRoot = root; // Since we're effectively rendering the proxy in a separate VDOM root, we cannot directly pass in our context.
           // To solve this, we use ExternalContextProvider to pass down the context value.
           // ExternalContextProvider also ensures that even if our cell gets unmounted, the dragged cell still receives updates from context.
@@ -57322,7 +57343,7 @@ let Portal$3 = (function (_React$Component) {
           this.defaultNode = document.createElement('div');
           document.body.appendChild(this.defaultNode);
         }
-        return ReactDOM$2.createPortal(
+        return ReactDOM$1.createPortal(
           this.props.children,
           this.props.node || this.defaultNode
         );
@@ -57423,7 +57444,7 @@ let Portal$2 = (function (_React$Component) {
     {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
-        ReactDOM$2.unmountComponentAtNode(this.defaultNode || this.props.node);
+        ReactDOM$1.unmountComponentAtNode(this.defaultNode || this.props.node);
         if (this.defaultNode) {
           document.body.removeChild(this.defaultNode);
         }
@@ -57445,7 +57466,7 @@ let Portal$2 = (function (_React$Component) {
           children = React$1.cloneElement(this.props.children);
         }
 
-        this.portal = ReactDOM$2.unstable_renderSubtreeIntoContainer(
+        this.portal = ReactDOM$1.unstable_renderSubtreeIntoContainer(
           this,
           children,
           this.props.node || this.defaultNode
@@ -57472,7 +57493,7 @@ Portal$2.propTypes = {
 
 let Portal = void 0;
 
-if (ReactDOM$2.createPortal) {
+if (ReactDOM$1.createPortal) {
   Portal = Portalv4;
 } else {
   Portal = LegacyPortal;
