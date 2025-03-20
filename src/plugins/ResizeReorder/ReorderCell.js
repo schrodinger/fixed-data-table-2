@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { flushSync } from 'react-dom';
-import ReactDOM from '../../helper/react-dom-shim';
+import { ReactDOMClient, ReactDOM } from '../../helper/react-dom-shim';
 import joinClasses from '../../vendor_upstream/core/joinClasses';
 import cx from '../../vendor_upstream/stubs/cx';
 import FixedDataTableCellDefault from '../../FixedDataTableCellDefault';
@@ -241,7 +241,18 @@ class ReorderCell extends React.PureComponent {
       contents: this.cellRef.current,
     };
 
-    const root = ReactDOM.createRoot(this.getDragContainer());
+    if (!ReactDOMClient) {
+      ReactDOM.render(
+        <ExternalContextProvider value={this.context}>
+          <DragProxy {...this.props} {...additionalProps} />
+        </ExternalContextProvider>,
+        this.dragContainer,
+        this.setState({ isReordering: true })
+      );
+      return;
+    }
+
+    const root = ReactDOMClient.createRoot(this.getDragContainer());
     this.dragContainer.reactRoot = root;
     // Since we're effectively rendering the proxy in a separate VDOM root, we cannot directly pass in our context.
     // To solve this, we use ExternalContextProvider to pass down the context value.
