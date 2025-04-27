@@ -249,11 +249,11 @@ class ReorderCell extends React.PureComponent {
       </ExternalContextProvider>
     );
 
-    if (this.props.__useReactRoot) {
+    if (this.props.__react19RootCreator) {
       const flushSync = ReactDOM.flushSync || ((fn) => fn()); // ReactDOM.flushSync doesn't exist in older versions of React
       // flushSync is required to ensure that the drag proxy gets mounted synchronously in newer version of React
       flushSync(() => {
-        const root = this.props.__useReactRoot(this.getDragContainer());
+        const root = this.props.__react19RootCreator(this.getDragContainer());
         this.dragContainer.root = root;
         root.render(proxy);
       });
@@ -304,7 +304,7 @@ class ReorderCell extends React.PureComponent {
 
   removeDragContainer = () => {
     // since the drag container is going to be removed, also unmount the drag proxy
-    if (this.props.__useReactRoot) {
+    if (this.props.__react19RootCreator) {
       this.dragContainer.root.unmount();
     } else {
       ReactDOM.unmountComponentAtNode(this.dragContainer);
@@ -394,7 +394,7 @@ ReorderCell.propTypes = {
    *
    * const reorderCell = (
    *  <ReorderCell
-   *   __useReactRoot={createRoot}
+   *   __react19RootCreator={createRoot}
    * />
    * ```
    *
@@ -402,7 +402,7 @@ ReorderCell.propTypes = {
    *
    * @deprecated This'll be removed in future major version updates of FDT.
    */
-  __useReactRoot: PropTypes.func,
+  __react19RootCreator: PropTypes.func,
 };
 
 export default ReorderCell;
