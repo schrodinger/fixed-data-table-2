@@ -240,13 +240,30 @@ class ReorderCell extends React.PureComponent {
       contents: this.cellRef.current,
     };
 
-    ReactDOM.render(
-      // Since we're effectively rendering the proxy in a separate VDOM root, we cannot directly pass in our context.
-      // To solve this, we use ExternalContextProvider to pass down the context value.
-      // ExternalContextProvider also ensures that even if our cell gets unmounted, the dragged cell still receives updates from context.
+    // Since we're effectively rendering the proxy in a separate VDOM root, we cannot directly pass in our context.
+    // To solve this, we use ExternalContextProvider to pass down the context value.
+    // ExternalContextProvider also ensures that even if our cell gets unmounted, the dragged cell still receives updates from context.
+    const proxy = (
       <ExternalContextProvider value={this.context}>
         <DragProxy {...this.props} {...additionalProps} />
-      </ExternalContextProvider>,
+      </ExternalContextProvider>
+    );
+
+    if (this.props.__react19RootCreator) {
+      const flushSync = ReactDOM.flushSync || ((fn) => fn()); // ReactDOM.flushSync doesn't exist in older versions of React
+      // flushSync is required to ensure that the drag proxy gets mounted synchronously in newer version of React
+      flushSync(() => {
+        const root = this.props.__react19RootCreator(this.getDragContainer());
+        this.dragContainer.root = root;
+        root.render(proxy);
+      });
+      // we consider our cell to be in a reordering state as soon as the drag proxy gets mounted
+      this.setState({ isReordering: true });
+      return;
+    }
+
+    ReactDOM.render(
+      proxy,
       this.getDragContainer(),
       // we consider our cell in a reordering state as soon as the drag proxy gets mounted
       () => this.setState({ isReordering: true })
@@ -287,7 +304,11 @@ class ReorderCell extends React.PureComponent {
 
   removeDragContainer = () => {
     // since the drag container is going to be removed, also unmount the drag proxy
-    ReactDOM.unmountComponentAtNode(this.dragContainer);
+    if (this.props.__react19RootCreator) {
+      this.dragContainer.root.unmount();
+    } else {
+      ReactDOM.unmountComponentAtNode(this.dragContainer);
+    }
 
     this.dragContainer.remove();
     this.dragContainer = null;
@@ -363,6 +384,25 @@ ReorderCell.propTypes = {
    * ```
    */
   onColumnReorderEnd: PropTypes.func.isRequired,
+
+  /**
+   * HACK to make this plugin work in a React v19 environment by letting the client pass the `createRoot` function from `react-dom/client`.
+   *
+   * Example usage:
+   * ```
+   * import { createRoot } from 'react-dom/client';
+   *
+   * const reorderCell = (
+   *  <ReorderCell
+   *   __react19RootCreator={createRoot}
+   * />
+   * ```
+   *
+   * See https://github.com/schrodinger/fixed-data-table-2/issues/743) for more information.
+   *
+   * @deprecated This'll be removed in future major version updates of FDT.
+   */
+  __react19RootCreator: PropTypes.func,
 };
 
 export default ReorderCell;
