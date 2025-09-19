@@ -12,7 +12,7 @@
     "react-dom": ">=17.0.1"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.5.1",
+    "@reduxjs/toolkit": "^2.9.0",
     "lodash": "^4.17.4",
     "prop-types": "^15.7.2",
     "react-lifecycles-compat": "^3.0.4",
